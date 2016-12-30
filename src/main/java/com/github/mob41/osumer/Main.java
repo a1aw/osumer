@@ -31,7 +31,7 @@ public class Main {
 			"osu!'s login server. This is a Open Source software.\n" +
 			"You can feel free to look through the code. If you still\n" +
 			"feel uncomfortable with this software, you can simply\n" +
-			"stop using it. Thank you!";
+			"stop using it. Thank you!\n";
 	;
 	
 	public static void main(String[] args){
