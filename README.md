@@ -3,7 +3,7 @@ Osu! beatmap download helper
 
 ![Capture 1](http://mob41.github.io/images/osumer/cap1.PNG)
 
-![Capture 2](http://mob41.github.io/images/osumer/cap1.PNG)
+![Capture 2](http://mob41.github.io/images/osumer/cap2.PNG)
 
 Requires osu! user account to work. This application will download beatmaps automatically when an arugment of the beatmap URL is passed to the application.
 
