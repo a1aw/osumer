@@ -14,10 +14,21 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
+
+import com.github.mob41.osumer.Config;
+
 import javax.swing.JButton;
 import javax.swing.BoxLayout;
 import java.awt.Component;
+import java.awt.Desktop;
+
 import javax.swing.JPasswordField;
+import java.awt.Color;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class UIFrame extends JFrame {
 
@@ -27,11 +38,11 @@ public class UIFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public UIFrame() {
+	public UIFrame(Config config) {
 		setResizable(false);
 		setTitle("osumer UI");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 531, 351);
+		setBounds(100, 100, 568, 428);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -54,22 +65,45 @@ public class UIFrame extends JFrame {
 		btnDownloadImport.setFont(new Font("PMingLiU", Font.PLAIN, 16));
 		
 		JPanel panel = new JPanel();
+		
+		JLabel lblCopyrightc = new JLabel("Copyright (c) 2016 mob41. Licenced under MIT Licence.");
+		lblCopyrightc.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		JLabel lblHttpsgithubcommobosumer = new JLabel("https://github.com/mob41/osumer");
+		lblHttpsgithubcommobosumer.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				try {
+					Desktop.getDesktop().browse(new URI("https://github.com/mob41/osumer"));
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (URISyntaxException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		lblHttpsgithubcommobosumer.setForeground(Color.BLUE);
+		lblHttpsgithubcommobosumer.setHorizontalAlignment(SwingConstants.CENTER);
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
-			gl_contentPane.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
-						.addComponent(panel, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 513, Short.MAX_VALUE)
-						.addGroup(Alignment.LEADING, gl_contentPane.createSequentialGroup()
+			gl_contentPane.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_contentPane.createSequentialGroup()
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblCopyrightc, GroupLayout.DEFAULT_SIZE, 542, Short.MAX_VALUE)
+						.addComponent(panel, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 542, Short.MAX_VALUE)
+						.addGroup(gl_contentPane.createSequentialGroup()
 							.addComponent(lblOsumer, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
+							.addPreferredGap(ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
 							.addComponent(lblTheEasiestexpressWay, GroupLayout.PREFERRED_SIZE, 392, GroupLayout.PREFERRED_SIZE))
-						.addGroup(Alignment.LEADING, gl_contentPane.createSequentialGroup()
+						.addGroup(gl_contentPane.createSequentialGroup()
 							.addComponent(lblBeatmapUrl)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(textField, GroupLayout.PREFERRED_SIZE, 251, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(btnDownloadImport, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+							.addComponent(btnDownloadImport, GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE))
+						.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
+							.addContainerGap()
+							.addComponent(lblHttpsgithubcommobosumer, GroupLayout.DEFAULT_SIZE, 532, Short.MAX_VALUE)))
 					.addContainerGap())
 		);
 		gl_contentPane.setVerticalGroup(
@@ -84,14 +118,22 @@ public class UIFrame extends JFrame {
 						.addComponent(textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(btnDownloadImport, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(panel, GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE))
+					.addComponent(panel, GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblCopyrightc)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblHttpsgithubcommobosumer, GroupLayout.DEFAULT_SIZE, 18, Short.MAX_VALUE)
+					.addGap(3))
 		);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 		
-		AccountSettingsPanel accPanel = new AccountSettingsPanel();
+		AccountSettingsPanel accPanel = new AccountSettingsPanel(config);
 		accPanel.setBorder(new TitledBorder(null, "Using account", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panel.add(accPanel);
 		
+		ExpressSettingsPanel xpPanel = new ExpressSettingsPanel(config);
+		xpPanel.setBorder(new TitledBorder(null, "osumerExpress settings", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel.add(xpPanel);
 		
 		contentPane.setLayout(gl_contentPane);
 	}

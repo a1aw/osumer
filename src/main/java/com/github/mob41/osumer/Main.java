@@ -12,6 +12,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import com.github.mob41.osumer.ui.DownloadDialog;
+import com.github.mob41.osumer.ui.UIFrame;
 
 public class Main {
 	
@@ -31,8 +32,10 @@ public class Main {
 			"feel uncomfortable with this software, you can simply\n" +
 			"don't use it. Thank you!\n";
 	;
-
+	
 	public static final String URL_PREFIX = "http://osu.ppy.sh/";
+
+	public static final String URL_PREFIX_SSL = "https://osu.ppy.sh/";
 	
 	public static final String BEATMAP_DIR = "b/";
 	
@@ -69,9 +72,12 @@ public class Main {
 			System.out.println("Processing URL: " + urlstr);
 			
 			if (isUrl(urlstr) &&
-				urlstr.length() > URL_PREFIX.length() + 2 &&
+				(urlstr.length() > URL_PREFIX.length() + 2 &&
 				(urlstr.substring(0, URL_PREFIX.length() + 2).equals(URL_PREFIX  + BEATMAP_DIR) ||
-						urlstr.substring(0, URL_PREFIX.length() + 2).equals(URL_PREFIX  + SONG_DIR))
+						urlstr.substring(0, URL_PREFIX.length() + 2).equals(URL_PREFIX  + SONG_DIR))) ||
+				(urlstr.length() > URL_PREFIX_SSL.length() + 2 &&
+						(urlstr.substring(0, URL_PREFIX_SSL.length() + 2).equals(URL_PREFIX_SSL  + BEATMAP_DIR) ||
+								urlstr.substring(0, URL_PREFIX_SSL.length() + 2).equals(URL_PREFIX_SSL  + SONG_DIR)))
 				){
 				
 				if (GraphicsEnvironment.isHeadless()){
@@ -91,10 +97,19 @@ public class Main {
 					dialog.setAlwaysOnTop(true);
 				}
 			} else {
+				System.out.println("Non-beatmap URL detected.");
+				
+				if (!config.isAutoSwitchBrowser()){
+					System.out.println("Auto switch to default browser is off. Nothing to do with such URL.");
+					return;
+				} else {
+					System.out.println("Switching to default browser with the URL.");
+				}
+				
 				String argstr = buildArgStr(args);
 				//Run the default browser application
 				if (!GraphicsEnvironment.isHeadless()){
-					if (config.getDefaultBrowserPath() == null){
+					if (config.getDefaultBrowserPath() == null || config.getDefaultBrowserPath().isEmpty()){
 						JOptionPane.showMessageDialog(null, "No default browser path is specified. Please maunally launch the following URL:\n" + urlstr, "osumer - Automatic browser switching", JOptionPane.INFORMATION_MESSAGE);
 						System.exit(-1);
 						return;
@@ -117,14 +132,16 @@ public class Main {
 					return;
 				}
 			}
+		} else {
+			if (GraphicsEnvironment.isHeadless()){
+				System.out.println("Error: Arguments are required to use this application. Otherwise, a graphics environment is required to show the downloader UI.");
+				System.exit(0);
+				return;
+			}
+			
+			UIFrame frame = new UIFrame(config);
+			frame.setVisible(true);
 		}
-		
-		if (GraphicsEnvironment.isHeadless()){
-			System.out.println("Error: Arguments are required to use this application. Otherwise, a graphics environment is required to show the downloader UI.");
-			System.exit(0);
-			return;
-		}
-		
 	}
 	
 	private static String buildArgStr(String[] args){
