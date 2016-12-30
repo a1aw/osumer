@@ -22,6 +22,8 @@ import java.awt.event.ActionEvent;
 public class ExpressSettingsPanel extends JPanel {
 	private JTextField pathFld;
 	private Config config;
+	private JCheckBox chckbxAutomaticallySwitchTo;
+	private JCheckBox chckbxSwitchToBrowser;
 
 	/**
 	 * Create the panel.
@@ -62,7 +64,7 @@ public class ExpressSettingsPanel extends JPanel {
 		btnUninstallOsumer.setToolTipText("Not implemented");
 		btnUninstallOsumer.setEnabled(false);
 		
-		JCheckBox chckbxAutomaticallySwitchTo = new JCheckBox("Automatically switch to browser for non-beatmaps");
+		chckbxAutomaticallySwitchTo = new JCheckBox("Automatically switch to browser for non-beatmaps");
 		chckbxAutomaticallySwitchTo.setSelected(true);
 		
 		JButton btnRemoveConfiguration = new JButton("Remove configuration / Reset");
@@ -72,6 +74,7 @@ public class ExpressSettingsPanel extends JPanel {
 				chckbxAutomaticallySwitchTo.setSelected(false);
 				config.removeDefaultBrowserPath();
 				config.setAutoSwitchBrowser(true);
+				config.setSwitchToBrowserIfWithoutUiArg(false);
 				try {
 					config.write();
 				} catch (IOException e1) {
@@ -86,6 +89,7 @@ public class ExpressSettingsPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				config.setDefaultBrowserPath(pathFld.getText());
 				config.setAutoSwitchBrowser(chckbxAutomaticallySwitchTo.isSelected());
+				config.setSwitchToBrowserIfWithoutUiArg(chckbxSwitchToBrowser.isSelected());
 				try {
 					config.write();
 				} catch (IOException e1) {
@@ -94,6 +98,8 @@ public class ExpressSettingsPanel extends JPanel {
 				}
 			}
 		});
+		
+		chckbxSwitchToBrowser = new JCheckBox("Switch to browser if no \"-ui\" argument specified");
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -103,13 +109,14 @@ public class ExpressSettingsPanel extends JPanel {
 						.addGroup(groupLayout.createSequentialGroup()
 							.addComponent(lblDefaultBrowserApplication, GroupLayout.PREFERRED_SIZE, 165, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(btnSelect, GroupLayout.DEFAULT_SIZE, 176, Short.MAX_VALUE))
-						.addComponent(pathFld, GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE)
-						.addComponent(btnInstallOsumerNext, GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE)
-						.addComponent(btnUninstallOsumer, GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE)
+							.addComponent(btnSelect, GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE))
+						.addComponent(pathFld, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
+						.addComponent(btnInstallOsumerNext, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
+						.addComponent(btnUninstallOsumer, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
 						.addComponent(chckbxAutomaticallySwitchTo, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
 						.addComponent(btnRemoveConfiguration, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
-						.addComponent(btnSaveConfiguration, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE))
+						.addComponent(btnSaveConfiguration, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
+						.addComponent(chckbxSwitchToBrowser, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE))
 					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
@@ -127,7 +134,9 @@ public class ExpressSettingsPanel extends JPanel {
 					.addComponent(btnUninstallOsumer)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(chckbxAutomaticallySwitchTo)
-					.addPreferredGap(ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(chckbxSwitchToBrowser)
+					.addPreferredGap(ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
 					.addComponent(btnSaveConfiguration)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(btnRemoveConfiguration)

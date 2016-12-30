@@ -93,6 +93,7 @@ public class DownloadDialog extends JDialog {
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				cancelButton = new JButton("Cancel");
+				cancelButton.setEnabled(false);
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						int option = JOptionPane.showOptionDialog(DownloadDialog.this, "Are you sure?", "Cancelling", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 1);
@@ -178,11 +179,21 @@ public class DownloadDialog extends JDialog {
 				
 				lblOsumer.setText("osuming...");
 				lblStatus.setText("Status: Downloading beatmap " + maplink.substring(3));
-				dwn = new Downloader(osu, url);
 				
+				String folder = System.getProperty("java.io.tmpdir");
+				dwn = new Downloader(folder, osu, url);
+				
+				cancelButton.setEnabled(true);
+				
+				System.out.println("Download started.");
 				while (dwn.getStatus() == Downloader.DOWNLOADING){
-					progressBar.setValue((int) dwn.getProgress());
+					int progress = (int) dwn.getProgress();
+					
+					System.out.print(""); //If not doing this, problems will happen in .exe version :(
+					
+					progressBar.setValue(progress);
 				}
+				cancelButton.setEnabled(false);
 				
 				lblOsumer.setText("osumed! Here you go!");
 				progressBar.setIndeterminate(true);
@@ -190,17 +201,20 @@ public class DownloadDialog extends JDialog {
 				
 				if (dwn.getStatus() == Downloader.ERROR){
 					lblStatus.setText("Status: Error occurred downloading");
+					cancelButton.setEnabled(true);
+					System.out.println("Download failed.");
 				} else if (dwn.getStatus() == Downloader.COMPLETED){
 					lblStatus.setText("Status: Download completed. Opening...");
+					System.out.println("Download completed. Importing...");
 					
 					try {
-						Desktop.getDesktop().open(new File(maplink.substring(3) + ".osz"));
+						Desktop.getDesktop().open(new File(folder + "\\" + maplink.substring(3) + ".osz"));
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
 					
 					try {
-						thread.sleep(2000);
+						Thread.sleep(2000);
 					} catch (InterruptedException e) {}
 					System.exit(0);
 					return;
