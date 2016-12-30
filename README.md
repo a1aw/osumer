@@ -17,6 +17,8 @@ The application only sends the ```username``` and ```password``` parameter to ``
 By using this software, I take no responsibility here. Use in your own risk.
 
 ## Tricks (osumerExpress)
+>:warning: WARNING: This will break your browser, system defaults on internet browsing if you DID NOT FOLLOW THE INSTRUCTIONS STRICTLY.
+
 >This only applies on Windows Vista, 7, 8, 8.1, 10
 
 Someone must wonder how this helps. Well, integration to web browsers are needed. As mentioned above, this application will download beatmaps automatically when an arugment of the beatmap URL is passed to the application.
