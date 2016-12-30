@@ -48,6 +48,10 @@ public class Config {
 		json.remove("pass");
 	}
 	
+	public void setSwitchToBrowserIfWithoutUiArg(boolean switchTo){
+		json.put("switchToBrowserIfWithoutUiArg", switchTo);
+	}
+	
 	public void setDefaultBrowserPath(String path){
 		json.put("defaultBrowserPath", path);
 	}
@@ -70,6 +74,14 @@ public class Config {
 		} catch (Exception e){
 			e.printStackTrace();
 		}
+	}
+	
+	public boolean isSwitchToBrowserIfWithoutUiArg(){
+		if (json.isNull("switchToBrowserIfWithoutUiArg")){
+			return false;
+		}
+		
+		return json.getBoolean("switchToBrowserIfWithoutUiArg");
 	}
 	
 	public boolean isAutoSwitchBrowser(){
