@@ -36,6 +36,10 @@ public class ExpressSettingsPanel extends JPanel {
 		pathFld = new JTextField();
 		pathFld.setColumns(10);
 		
+		if (config.getDefaultBrowserPath() != null){
+			pathFld.setText(config.getDefaultBrowserPath());
+		}
+		
 		JButton btnSelect = new JButton("Select");
 		btnSelect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -65,7 +69,7 @@ public class ExpressSettingsPanel extends JPanel {
 		btnUninstallOsumer.setEnabled(false);
 		
 		chckbxAutomaticallySwitchTo = new JCheckBox("Automatically switch to browser for non-beatmaps");
-		chckbxAutomaticallySwitchTo.setSelected(true);
+		chckbxAutomaticallySwitchTo.setSelected(config.isAutoSwitchBrowser());
 		
 		JButton btnRemoveConfiguration = new JButton("Remove configuration / Reset");
 		btnRemoveConfiguration.addActionListener(new ActionListener() {
@@ -100,6 +104,8 @@ public class ExpressSettingsPanel extends JPanel {
 		});
 		
 		chckbxSwitchToBrowser = new JCheckBox("Switch to browser if no \"-ui\" argument specified");
+		chckbxSwitchToBrowser.setSelected(config.isSwitchToBrowserIfWithoutUiArg());
+		
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)

@@ -45,15 +45,20 @@ public class DownloadDialog extends JDialog {
 	private JProgressBar progressBar;
 	private JButton cancelButton;
 	private Downloader dwn;
+	
+	public DownloadDialog(Config config, URL url){
+		this(config, url, true);
+	}
 
 	/**
 	 * Create the dialog.
 	 */
-	public DownloadDialog(Config config, URL url) {
+	public DownloadDialog(Config config, URL url, boolean systemExit) {
 		osu = new Osu();
 		
+		setTitle("Downloading beatmap...");
 		setUndecorated(true);
-		setBounds(100, 100, 450, 140);
+		setBounds(100, 100, 471, 167);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -69,11 +74,11 @@ public class DownloadDialog extends JDialog {
 		GroupLayout gl_contentPanel = new GroupLayout(contentPanel);
 		gl_contentPanel.setHorizontalGroup(
 			gl_contentPanel.createParallelGroup(Alignment.LEADING)
-				.addComponent(lblOsumer, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-				.addComponent(lblStatus, GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
+				.addComponent(lblOsumer, GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)
+				.addComponent(lblStatus, GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)
 				.addGroup(gl_contentPanel.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(progressBar, GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
+					.addComponent(progressBar, GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE)
 					.addContainerGap())
 		);
 		gl_contentPanel.setVerticalGroup(
@@ -82,9 +87,8 @@ public class DownloadDialog extends JDialog {
 					.addComponent(lblOsumer)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(lblStatus)
-					.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-					.addComponent(progressBar, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap())
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(progressBar, GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE))
 		);
 		contentPanel.setLayout(gl_contentPanel);
 		{
@@ -99,7 +103,13 @@ public class DownloadDialog extends JDialog {
 						int option = JOptionPane.showOptionDialog(DownloadDialog.this, "Are you sure?", "Cancelling", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 1);
 						if (option == JOptionPane.YES_OPTION){
 							dwn.cancel();
-							System.exit(0);
+							if (systemExit){
+								System.exit(0);
+								return;
+							} else {
+								dispose();
+								return;
+							}
 						}
 					}
 				});
@@ -123,8 +133,13 @@ public class DownloadDialog extends JDialog {
 							"specified in the configuration\n" +
 							"Download cannot be started without\n" +
 							"osu! user account.", "Error", JOptionPane.ERROR_MESSAGE);
-					System.exit(-1);
-					return;
+					if (systemExit){
+						System.exit(-1);
+						return;
+					} else {
+						dispose();
+						return;
+					}
 				}
 				
 				lblStatus.setText("Status: Logging in with account \"" + usr + "\"...");
@@ -138,8 +153,13 @@ public class DownloadDialog extends JDialog {
 							"Check your login information in the\n" +
 							"configuration, or the network connection.\n" +
 							"\nException: \n" + e, "Error", JOptionPane.ERROR_MESSAGE);
-					System.exit(-1);
-					return;
+					if (systemExit){
+						System.exit(-1);
+						return;
+					} else {
+						dispose();
+						return;
+					}
 				}
 				
 				lblStatus.setText("Status: Obtaining beatmap download link...");
@@ -155,8 +175,13 @@ public class DownloadDialog extends JDialog {
 							"Please check whether the beatmap URL link\n" +
 							"is valid. or thet network connection.\n" + 
 							"\nException: \n" + e, "Error", JOptionPane.ERROR_MESSAGE);
-					System.exit(-1);
-					return;
+					if (systemExit){
+						System.exit(-1);
+						return;
+					} else {
+						dispose();
+						return;
+					}
 				}
 				
 				URL url = null;
@@ -170,8 +195,13 @@ public class DownloadDialog extends JDialog {
 							"Please check whether the beatmap URL link\n" +
 							"is valid. or thet network connection.\n" + 
 							"\nException: \n" + e, "Error", JOptionPane.ERROR_MESSAGE);
-					System.exit(-1);
-					return;
+					if (systemExit){
+						System.exit(-1);
+						return;
+					} else {
+						dispose();
+						return;
+					}
 				}
 				
 				progressBar.setIndeterminate(false);
@@ -216,8 +246,14 @@ public class DownloadDialog extends JDialog {
 					try {
 						Thread.sleep(2000);
 					} catch (InterruptedException e) {}
-					System.exit(0);
-					return;
+					
+					if (systemExit){
+						System.exit(0);
+						return;
+					} else {
+						dispose();
+						return;
+					}
 				}
 				
 				
