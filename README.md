@@ -12,7 +12,7 @@ In the user interface, users can download beatmaps directly by pasting a beatmap
 ## Disclaimer
 This software does not contain malicious code that will send username and password to another server other than osu!'s login server. You can feel free to look through the code. If you still feel uncomfortable with this software, you can simply stop using it. Thank you!
 
-The application only sends the ```username``` and ```password``` parameter to ```http://osu.ppy.sh/forum/ucp.php?mode=login``` in [Osu.java#L112](https://github.com/mob41/osumer/blob/master/src/main/java/com/github/mob41/osumer/io/Osu.java#L112). And saves the username and password specified in the user interface to local configuration in [Config.java](https://github.com/mob41/osumer/blob/master/src/main/java/com/github/mob41/osumer/Config.java). Unless the data are sniffed by a hacker or your friends want to play tricks on you, the data is not anywhere other than osu! login server.
+The application only sends the ```username``` and ```password``` parameter to ```http://osu.ppy.sh/forum/ucp.php?mode=login``` in [Osu.java#L112](https://github.com/mob41/osumer/blob/master/src/main/java/com/github/mob41/osumer/io/Osu.java#L112). And saves the username and password specified in the user interface to local configuration in [Config.java](https://github.com/mob41/osumer/blob/master/src/main/java/com/github/mob41/osumer/Config.java). Unless the data are sniffed by a hacker or your friends want to play tricks on you, the data is not sent to anywhere other than osu! login server. (alright also sent to, proxies, firewalls, routers, switches, DNS servers, etc.)
 
 By using this software, I take no responsibility here. Use in your own risk.
 
@@ -43,7 +43,7 @@ We are here to move the default browser, and replace it with this application (o
 
 7. Tick ```Automatically switch to browser for non-beatmaps```. This must be ticked otherwise non-beatmaps URLs (e.g. ```http://www.google.com```) will not be opened.
 
-8. Tick ```Switch to browser if no "-ui" argument specified```. This must be ticked otherwise the all shortcuts will be broken.
+8. Tick ```Switch to browser if no "-ui" argument specified```. This must be ticked otherwise the all shortcuts will be broken. It will just open the osumer UI instead of the browser.
 
 9. Once you setup all the osumer settings (e.g. osu! user account, default browser .exe path, optimizations), place the ```osumer.exe``` (Must, .jar won't work) and ```osumer_configuration.json``` to the directory.
 
@@ -53,7 +53,7 @@ We are here to move the default browser, and replace it with this application (o
 
 12. That's it! Something might break (e.g. the shortcut icons on the desktop), but fixes are not mentioned here. Please refer to the wiki.
 
-
+13. You can try it by starting up osu! and go to a multiplayer match with a beatmap you don't have. Do the same thing that you do in usual, click the beatmap icon. A downloading dialog will pop out.
 
 ## License
 Based on MIT License.
