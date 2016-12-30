@@ -36,6 +36,26 @@ public class Config {
 		return json;
 	}
 	
+	public void removeDefaultBrowserPath(){
+		json.remove("defaultBrowserPath");
+	}
+	
+	public void removeUser(){
+		json.remove("user");
+	}
+	
+	public void removePass(){
+		json.remove("pass");
+	}
+	
+	public void setDefaultBrowserPath(String path){
+		json.put("defaultBrowserPath", path);
+	}
+	
+	public void setAutoSwitchBrowser(boolean autoSwitch){
+		json.put("autoSwitchBrowser", autoSwitch);
+	}
+	
 	public void setUser(String username){
 		try {
 			json.put("user", Base64.encodeBase64String(username.getBytes("UTF-8")));
@@ -50,6 +70,14 @@ public class Config {
 		} catch (Exception e){
 			e.printStackTrace();
 		}
+	}
+	
+	public boolean isAutoSwitchBrowser(){
+		if (json.isNull("autoSwitchBrowser")){
+			return true;
+		}
+		
+		return json.getBoolean("autoSwitchBrowser");
 	}
 	
 	public String getUser(){
