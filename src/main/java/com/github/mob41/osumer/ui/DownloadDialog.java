@@ -1,4 +1,4 @@
-package com.github.mob41.osumer;
+package com.github.mob41.osumer.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Desktop;
@@ -8,6 +8,12 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import com.github.mob41.osumer.Config;
+import com.github.mob41.osumer.exceptions.OsuException;
+import com.github.mob41.osumer.io.Downloader;
+import com.github.mob41.osumer.io.Osu;
+
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JLabel;
