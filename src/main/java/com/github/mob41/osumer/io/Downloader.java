@@ -1,4 +1,4 @@
-package com.github.mob41.osumer;
+package com.github.mob41.osumer.io;
 
 import java.io.File;
 import java.io.IOException;

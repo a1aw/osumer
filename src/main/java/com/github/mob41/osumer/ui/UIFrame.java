@@ -1,4 +1,4 @@
-package com.github.mob41.osumer;
+package com.github.mob41.osumer.ui;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -16,6 +16,8 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.JButton;
 import javax.swing.BoxLayout;
+import java.awt.Component;
+import javax.swing.JPasswordField;
 
 public class UIFrame extends JFrame {
 
@@ -86,13 +88,11 @@ public class UIFrame extends JFrame {
 		);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 		
-		JPanel panel_1 = new JPanel();
-		panel_1.setBorder(new TitledBorder(null, "Using account", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel.add(panel_1);
+		AccountSettingsPanel accPanel = new AccountSettingsPanel();
+		accPanel.setBorder(new TitledBorder(null, "Using account", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel.add(accPanel);
 		
-		JPanel panel_2 = new JPanel();
-		panel_2.setBorder(new TitledBorder(null, "osumer Express settings", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel.add(panel_2);
+		
 		contentPane.setLayout(gl_contentPane);
 	}
 }

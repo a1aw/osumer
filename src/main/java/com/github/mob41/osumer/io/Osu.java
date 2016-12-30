@@ -1,4 +1,4 @@
-package com.github.mob41.osumer;
+package com.github.mob41.osumer.io;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -20,6 +20,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import com.github.mob41.osumer.exceptions.OsuException;
 
 public class Osu {
 	

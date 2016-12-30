@@ -1,4 +1,4 @@
-package com.github.mob41.osumer;
+package com.github.mob41.osumer.exceptions;
 
 public class OsuException extends RuntimeException {
 

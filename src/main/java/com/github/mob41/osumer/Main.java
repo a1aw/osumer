@@ -11,6 +11,8 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import com.github.mob41.osumer.ui.DownloadDialog;
+
 public class Main {
 	
 	public static final String INTRO = 
