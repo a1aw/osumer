@@ -39,7 +39,7 @@ We are here to move the default browser, and replace it with this application (o
 
 5. Enter your osu! account login information, and press ```Save configuration for osumerExpress``` button. Your osu! account login information will be saved in a ```osumer_configuration.json``` file next to the application (```osumer.exe```).
 
-6. Enter the default browser executable's path, with the another file name, which will be used to link the browser that we replaced. (e.g. ```C:\Program Files (x86)\Google\Chrome\Application\chrome_bak.exe```) Don't put the original one, if you don't understand what are you doing, don't continue and sit down and think about it. We are replacing the original one (e.g. ```C:\Program Files (x86)\Google\Chrome\Application\chrome.exe```) with ```osumer.exe```, so we need to specify a different file name, which will be used in step.
+6. Enter the default browser executable's path, with the another file name, which will be used to link the browser that we replaced. (e.g. ```C:\Program Files (x86)\Google\Chrome\Application\chrome_bak.exe```) Don't put the original one, if you don't understand what are you doing, don't continue and sit down and think about it. We are replacing the original one (e.g. ```C:\Program Files (x86)\Google\Chrome\Application\chrome.exe```) with ```osumer.exe```, so we need to specify a different file name, which will be used in step 10.
 
 7. Tick ```Automatically switch to browser for non-beatmaps```. This must be ticked otherwise non-beatmaps URLs (e.g. ```http://www.google.com```) will not be opened.
 
