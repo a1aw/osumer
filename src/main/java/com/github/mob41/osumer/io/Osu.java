@@ -35,6 +35,14 @@ public class Osu {
 	
 	private static final String INDEX_LOCATION_URL = "http://osu.ppy.sh/forum/index.php";
 	
+	public static final String URL_PREFIX = "http://osu.ppy.sh/";
+
+	public static final String URL_PREFIX_SSL = "https://osu.ppy.sh/";
+	
+	public static final String BEATMAP_DIR = "b/";
+	
+	public static final String SONG_DIR = "s/";
+	
 	private final CookieManager cmgr;
 	
 	public Osu() {
@@ -221,6 +229,15 @@ public class Osu {
 		} catch (Exception e) {
 			throw new OsuException("Error occurred when logging in", e);
 		}
+	}
+	
+	public static boolean isVaildBeatMapUrl(String urlstr){
+		return (urlstr.length() > URL_PREFIX.length() + 2 &&
+				(urlstr.substring(0, URL_PREFIX.length() + 2).equals(URL_PREFIX  + BEATMAP_DIR) ||
+						urlstr.substring(0, URL_PREFIX.length() + 2).equals(URL_PREFIX  + SONG_DIR))) ||
+				(urlstr.length() > URL_PREFIX_SSL.length() + 2 &&
+						(urlstr.substring(0, URL_PREFIX_SSL.length() + 2).equals(URL_PREFIX_SSL  + BEATMAP_DIR) ||
+								urlstr.substring(0, URL_PREFIX_SSL.length() + 2).equals(URL_PREFIX_SSL  + SONG_DIR)));
 	}
 	
 	protected CookieManager getCookies(){

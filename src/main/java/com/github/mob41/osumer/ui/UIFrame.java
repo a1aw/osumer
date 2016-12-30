@@ -9,6 +9,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
@@ -16,6 +18,7 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
 import com.github.mob41.osumer.Config;
+import com.github.mob41.osumer.io.Osu;
 
 import javax.swing.JButton;
 import javax.swing.BoxLayout;
@@ -27,13 +30,17 @@ import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class UIFrame extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField textField;
+	private JTextField mapUrlFld;
 
 	/**
 	 * Create the frame.
@@ -57,11 +64,37 @@ public class UIFrame extends JFrame {
 		JLabel lblBeatmapUrl = new JLabel("Beatmap URL:");
 		lblBeatmapUrl.setFont(new Font("PMingLiU", Font.PLAIN, 16));
 		
-		textField = new JTextField();
-		textField.setFont(new Font("PMingLiU", Font.PLAIN, 16));
-		textField.setColumns(10);
+		mapUrlFld = new JTextField();
+		mapUrlFld.setFont(new Font("PMingLiU", Font.PLAIN, 16));
+		mapUrlFld.setColumns(10);
 		
 		JButton btnDownloadImport = new JButton("Download & Import");
+		btnDownloadImport.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String urlstr = mapUrlFld.getText();
+				
+				if (!Osu.isVaildBeatMapUrl(urlstr)){
+					JOptionPane.showMessageDialog(null, "The beatmap URL provided isn't a vaild osu! beatmap URL.", "Error", JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				
+				URL url = null;
+				try {
+					url = new URL(urlstr);
+				} catch (MalformedURLException e1){
+					JOptionPane.showMessageDialog(null, "The beatmap URL provided isn't a vaild osu! beatmap URL.", "Error", JOptionPane.WARNING_MESSAGE);
+					return;
+					
+				}
+				
+				DownloadDialog dialog = new DownloadDialog(config, url, false);
+				dialog.setModal(true);
+				dialog.setUndecorated(false);
+				dialog.setVisible(true);
+				dialog.setAlwaysOnTop(true);
+				dialog.setLocationRelativeTo(UIFrame.this);
+			}
+		});
 		btnDownloadImport.setFont(new Font("PMingLiU", Font.PLAIN, 16));
 		
 		JPanel panel = new JPanel();
@@ -98,7 +131,7 @@ public class UIFrame extends JFrame {
 						.addGroup(gl_contentPane.createSequentialGroup()
 							.addComponent(lblBeatmapUrl)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(textField, GroupLayout.PREFERRED_SIZE, 251, GroupLayout.PREFERRED_SIZE)
+							.addComponent(mapUrlFld, GroupLayout.PREFERRED_SIZE, 251, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(btnDownloadImport, GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE))
 						.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
@@ -115,7 +148,7 @@ public class UIFrame extends JFrame {
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblBeatmapUrl)
-						.addComponent(textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(mapUrlFld, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(btnDownloadImport, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(panel, GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)

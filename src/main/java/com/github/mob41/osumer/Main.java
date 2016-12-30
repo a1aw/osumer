@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import com.github.mob41.osumer.io.Osu;
 import com.github.mob41.osumer.ui.DownloadDialog;
 import com.github.mob41.osumer.ui.UIFrame;
 
@@ -32,14 +33,6 @@ public class Main {
 			"feel uncomfortable with this software, you can simply\n" +
 			"don't use it. Thank you!\n";
 	;
-	
-	public static final String URL_PREFIX = "http://osu.ppy.sh/";
-
-	public static final String URL_PREFIX_SSL = "https://osu.ppy.sh/";
-	
-	public static final String BEATMAP_DIR = "b/";
-	
-	public static final String SONG_DIR = "s/";
 	
 	public static void main(String[] args){
 		System.out.println(INTRO);
@@ -76,14 +69,7 @@ public class Main {
 				String urlstr = args[index];
 				System.out.println("Processing URL: " + urlstr);
 				
-				if (isUrl(urlstr) &&
-					(urlstr.length() > URL_PREFIX.length() + 2 &&
-					(urlstr.substring(0, URL_PREFIX.length() + 2).equals(URL_PREFIX  + BEATMAP_DIR) ||
-							urlstr.substring(0, URL_PREFIX.length() + 2).equals(URL_PREFIX  + SONG_DIR))) ||
-					(urlstr.length() > URL_PREFIX_SSL.length() + 2 &&
-							(urlstr.substring(0, URL_PREFIX_SSL.length() + 2).equals(URL_PREFIX_SSL  + BEATMAP_DIR) ||
-									urlstr.substring(0, URL_PREFIX_SSL.length() + 2).equals(URL_PREFIX_SSL  + SONG_DIR)))
-					){
+				if (isUrl(urlstr) && Osu.isVaildBeatMapUrl(urlstr)){
 					canAccess = true;
 					
 					if (GraphicsEnvironment.isHeadless()){
@@ -110,22 +96,25 @@ public class Main {
 			
 			if (!canAccess){
 				if (config.isSwitchToBrowserIfWithoutUiArg()){
+					System.out.println("Configuration specified that switch to browser if an \"-ui\" arugment wasn't specified.");
 					boolean containUiArg = false;
 					
 					for (int i = 0; i < args.length; i++){
-						System.out.println("args[" + i + "]: [" + args[i] + "]");
 						if (args[i].equals("-ui")){
-							System.out.println("Contain");
 							containUiArg = true;
 							break;
 						}
 					}
 					
 					if (containUiArg){
+						System.out.println("An \"-ui\" argument was specified. Launching UI.");
 						UIFrame frame = new UIFrame(config);
 						frame.setVisible(true);
 						return;
 					}
+					
+
+					System.out.println("An \"-ui\" argument wasn't specified. Opening the default browser instead.");
 				}
 				
 				System.out.println("Non-beatmap URL detected.");
