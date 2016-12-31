@@ -49,6 +49,10 @@ public class Osu {
 		cmgr = new CookieManager();
 	}
 	
+	public static boolean isWindows(){
+		return System.getProperty("os.name").contains("Windows");
+	}
+	
 	public String getBeatmapDownloadLink(String beatmapLink){
 		try {
 			URL url = new URL(beatmapLink);

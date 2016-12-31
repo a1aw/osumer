@@ -168,6 +168,11 @@ public class UIFrame extends JFrame {
 		xpPanel.setBorder(new TitledBorder(null, "osumerExpress settings", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panel.add(xpPanel);
 		
+		if (Osu.isWindows()){
+			xpPanel.setEnabled(false);
+			xpPanel.setToolTipText("osumerExpress does not support installation in non-Windows environment, currently not implemented.");
+		}
+		
 		contentPane.setLayout(gl_contentPane);
 	}
 }
