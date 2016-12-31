@@ -1,6 +1,10 @@
 # OsuMer
 Osu! beatmap download helper
 
+>Please donate to osu!. This software does not aim to lead people not to donate. osu! is a great game, right?
+
+![gif 1](http://mob41.github.io/images/osumer/osumerExpressGif.gif)
+
 ![Capture 1](http://mob41.github.io/images/osumer/cap1.PNG)
 
 ![Capture 2](http://mob41.github.io/images/osumer/cap2.PNG)
@@ -54,6 +58,15 @@ We are here to move the default browser, and replace it with this application (o
 12. That's it! Something might break (e.g. the shortcut icons on the desktop), but fixes are not mentioned here. Please refer to the wiki.
 
 13. You can try it by starting up osu! and go to a multiplayer match with a beatmap you don't have. Do the same thing that you do in usual, click the beatmap icon. A downloading dialog will pop out.
+
+## Development stage
+- [x] Osu web-login
+- [x] Graphical user interface
+- [x] Quick download & import interface (osumerExpress)
+- [ ] Command-line interface
+
+## Issues
+- Currently no issues found. Please post a [new issue](https://github.com/mob41/osumer/issues/new).
 
 ## License
 Based on MIT License.
