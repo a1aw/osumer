@@ -1,7 +1,7 @@
 # OsuMer
-Osu! beatmap download helper
+Osu! beatmap download helper (Now available for SNAPSHOT version testing, please post issues if things go wrong. [[Download]](https://github.com/mob41/osumer/releases))
 
->Please donate to osu!. This software does not aim to lead people not to donate. osu! is a great game, right?
+>[Please donate to osu!. This software does not aim to lead people not to donate. osu! is a great game, right?](https://osu.ppy.sh/p/support)
 
 ![gif 1](http://mob41.github.io/images/osumer/osumerExpressGif.gif)
 
@@ -20,8 +20,10 @@ The application only sends the ```username``` and ```password``` parameter to ``
 
 By using this software, I take no responsibility here. Use in your own risk.
 
-## Tricks (osumerExpress)
+## Installation / Tricks (osumerExpress)
 >:warning: WARNING: This will break your browser, system defaults on internet browsing if you DID NOT FOLLOW THE INSTRUCTIONS STRICTLY.
+
+>:warning: NEW VERSION COMING: A new version is coming that will write registry directly to act as a "web browser" instead of replacing web browser. Don't do this unless you want to test about it.
 
 >This only applies on Windows Vista, 7, 8, 8.1, 10
 
