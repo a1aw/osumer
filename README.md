@@ -1,4 +1,4 @@
-# OsuMer
+# ![osumerIcon64px](http://mob41.github.io/images/osumer/osumerIcon_64px.png) OsuMer
 Osu! beatmap download helper (Now available for SNAPSHOT version testing, please post issues if things go wrong. [[Download]](https://github.com/mob41/osumer/releases))
 
 >[Please donate to osu!. This software does not aim to lead people not to donate. osu! is a great game, right?](https://osu.ppy.sh/p/support)
