@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONException;
@@ -21,8 +23,11 @@ public class Config {
 	
 	private final String dataFilePath;
 	
-	public Config(String dataFilePath) {
+	private final String dataFileName;
+	
+	public Config(String dataFilePath, String dataFileName) {
 		this.dataFilePath = dataFilePath;
+		this.dataFileName = dataFileName;
 	}
 	
 	public String getDefaultBrowserPath(){
@@ -121,7 +126,8 @@ public class Config {
 	}
 
 	public void load() throws IOException{
-		File file = new File(dataFilePath);
+		
+		File file = new File(dataFilePath + "/" + dataFileName);
 		if (!file.exists()){
 			write();
 			return;
@@ -136,6 +142,17 @@ public class Config {
 		}
 		reader.close();
 		
+		/*
+		Preferences prefs = Preferences.userRoot();
+		
+		String data = prefs.get("com.github.mob41.osumer.configuration", null);
+		
+		if (data == null){
+			write();
+			return;
+		}
+		*/
+		
 		try {
 			json = new JSONObject(data);
 		} catch (JSONException e){
@@ -144,7 +161,13 @@ public class Config {
 	}
 	
 	public void write() throws IOException{
-		File file = new File(dataFilePath);
+		
+		File folder = new File(dataFilePath);
+		if (!folder.exists()){
+			folder.mkdirs();
+		}
+		
+		File file = new File(dataFilePath + "/" + dataFileName);
 		if (!file.exists()){
 			file.createNewFile();
 			json = new JSONObject();
@@ -155,6 +178,22 @@ public class Config {
 		writer.close();
 		out.flush();
 		out.close();
+		
+		/*
+		Preferences prefs = Preferences.userRoot();
+		
+		if (json == null){
+			json = new JSONObject();
+		}
+		
+		prefs.put("com.github.mob41.osumer.configuration", json.toString());
+		
+		try {
+			prefs.flush();
+		} catch (BackingStoreException e) {
+			throw new IOException("Error occurred", e);
+		}
+		*/
 	}
 
 }

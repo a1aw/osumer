@@ -44,7 +44,9 @@ public class Main {
 			} 
 		}
 		
-		Config config = new Config(Config.DEFAULT_DATA_FILE_NAME);
+		String configPath = Osu.isWindows() ? System.getenv("localappdata") + "\\osumerExpress" : "";
+		
+		Config config = new Config(configPath, Config.DEFAULT_DATA_FILE_NAME);
 		
 		try {
 			config.load();

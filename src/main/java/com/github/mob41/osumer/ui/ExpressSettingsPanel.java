@@ -9,6 +9,7 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
 import com.github.mob41.osumer.Config;
+import com.github.mob41.osumer.io.Osu;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -18,9 +19,13 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.awt.event.ActionEvent;
+import java.awt.CardLayout;
+import javax.swing.JComboBox;
+import javax.swing.SwingConstants;
+import java.awt.Font;
+import java.awt.Color;
 
 public class ExpressSettingsPanel extends JPanel {
-	private JTextField pathFld;
 	private Config config;
 	private JCheckBox chckbxAutomaticallySwitchTo;
 	private JCheckBox chckbxSwitchToBrowser;
@@ -29,44 +34,16 @@ public class ExpressSettingsPanel extends JPanel {
 	 * Create the panel.
 	 */
 	public ExpressSettingsPanel(Config conf) {
+		JPanel settingspanel = new JPanel();
+		
 		this.config = conf;
 		
-		JLabel lblDefaultBrowserApplication = new JLabel("Default browser application path:");
-		
-		pathFld = new JTextField();
-		pathFld.setColumns(10);
-		
 		if (config.getDefaultBrowserPath() != null){
-			pathFld.setText(config.getDefaultBrowserPath());
+			//pathFld.setText(config.getDefaultBrowserPath());
 		}
 		
-		JButton btnSelect = new JButton("Select");
-		btnSelect.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JFileChooser chooser = new JFileChooser();
-				int option = chooser.showOpenDialog(null);
-				
-				if (option == JFileChooser.CANCEL_OPTION){
-					return;
-				}
-				
-				File file = chooser.getSelectedFile();
-				if (!file.exists()){
-					JOptionPane.showMessageDialog(null, "The file chosen does not exist.", "Error", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				
-				pathFld.setText(file.getAbsolutePath());
-			}
-		});
-		
-		JButton btnInstallOsumerNext = new JButton("Install osumer next to browser");
-		btnInstallOsumerNext.setToolTipText("Not implemented");
-		btnInstallOsumerNext.setEnabled(false);
-		
-		JButton btnUninstallOsumer = new JButton("Uninstall osumer");
+		JButton btnUninstallOsumer = new JButton("(*Admin) Uninstall osumerExpress");
 		btnUninstallOsumer.setToolTipText("Not implemented");
-		btnUninstallOsumer.setEnabled(false);
 		
 		chckbxAutomaticallySwitchTo = new JCheckBox("Automatically switch to browser for non-beatmaps");
 		chckbxAutomaticallySwitchTo.setSelected(config.isAutoSwitchBrowser());
@@ -74,7 +51,7 @@ public class ExpressSettingsPanel extends JPanel {
 		JButton btnRemoveConfiguration = new JButton("Remove configuration / Reset");
 		btnRemoveConfiguration.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				pathFld.setText("");
+				//pathFld.setText("");
 				chckbxAutomaticallySwitchTo.setSelected(false);
 				config.removeDefaultBrowserPath();
 				config.setAutoSwitchBrowser(true);
@@ -91,7 +68,7 @@ public class ExpressSettingsPanel extends JPanel {
 		JButton btnSaveConfiguration = new JButton("Save configuration");
 		btnSaveConfiguration.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				config.setDefaultBrowserPath(pathFld.getText());
+				//config.setDefaultBrowserPath(pathFld.getText());
 				config.setAutoSwitchBrowser(chckbxAutomaticallySwitchTo.isSelected());
 				config.setSwitchToBrowserIfWithoutUiArg(chckbxSwitchToBrowser.isSelected());
 				try {
@@ -102,53 +79,130 @@ public class ExpressSettingsPanel extends JPanel {
 				}
 			}
 		});
+		setLayout(new CardLayout(0, 0));
+		
+		JPanel notinstalledpanel = new JPanel();
+		add(notinstalledpanel, "name_169500745516563");
+		
+		JLabel lblOsumerexpressIsNot = new JLabel("osumerExpress is not installed.");
+		lblOsumerexpressIsNot.setFont(new Font("PMingLiU", Font.PLAIN, 17));
+		lblOsumerexpressIsNot.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		JButton btnInstall = new JButton("(*Admin) Install osumerExpress");
+		
+		JLabel lblNoadmin = new JLabel("Please restart osumer with administrative priviledges.");
+		lblNoadmin.setForeground(Color.RED);
+		lblNoadmin.setHorizontalAlignment(SwingConstants.CENTER);
+		GroupLayout gl_notinstalledpanel = new GroupLayout(notinstalledpanel);
+		gl_notinstalledpanel.setHorizontalGroup(
+			gl_notinstalledpanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_notinstalledpanel.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_notinstalledpanel.createParallelGroup(Alignment.LEADING)
+						.addComponent(btnInstall, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
+						.addComponent(lblOsumerexpressIsNot, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
+						.addComponent(lblNoadmin, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE))
+					.addContainerGap())
+		);
+		gl_notinstalledpanel.setVerticalGroup(
+			gl_notinstalledpanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_notinstalledpanel.createSequentialGroup()
+					.addGap(78)
+					.addComponent(lblOsumerexpressIsNot)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(btnInstall)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblNoadmin)
+					.addContainerGap(109, Short.MAX_VALUE))
+		);
+		notinstalledpanel.setLayout(gl_notinstalledpanel);
 		
 		chckbxSwitchToBrowser = new JCheckBox("Switch to browser if no \"-ui\" argument specified");
 		chckbxSwitchToBrowser.setSelected(config.isSwitchToBrowserIfWithoutUiArg());
 		
-		GroupLayout groupLayout = new GroupLayout(this);
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
+		JLabel lblSelectDefaultBrowser = new JLabel("Select default browser:");
+		
+		JComboBox comboBox = new JComboBox();
+		
+		JLabel lblPleaseRestartOsumer = new JLabel("Please restart osumer with administrative priviledges.");
+		lblPleaseRestartOsumer.setForeground(Color.RED);
+		lblPleaseRestartOsumer.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		GroupLayout gl_settingspanel = new GroupLayout(settingspanel);
+		gl_settingspanel.setHorizontalGroup(
+			gl_settingspanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_settingspanel.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(lblDefaultBrowserApplication, GroupLayout.PREFERRED_SIZE, 165, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(btnSelect, GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE))
-						.addComponent(pathFld, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
-						.addComponent(btnInstallOsumerNext, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
-						.addComponent(btnUninstallOsumer, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
+					.addGroup(gl_settingspanel.createParallelGroup(Alignment.LEADING)
+						.addComponent(chckbxSwitchToBrowser, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
 						.addComponent(chckbxAutomaticallySwitchTo, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
+						.addComponent(comboBox, 0, 269, Short.MAX_VALUE)
 						.addComponent(btnRemoveConfiguration, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
 						.addComponent(btnSaveConfiguration, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
-						.addComponent(chckbxSwitchToBrowser, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE))
+						.addComponent(btnUninstallOsumer, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
+						.addComponent(lblSelectDefaultBrowser, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
+						.addComponent(lblPleaseRestartOsumer, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE))
 					.addContainerGap())
 		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
+		gl_settingspanel.setVerticalGroup(
+			gl_settingspanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_settingspanel.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblDefaultBrowserApplication)
-						.addComponent(btnSelect))
+					.addComponent(lblSelectDefaultBrowser)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(pathFld, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(btnInstallOsumerNext)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(btnUninstallOsumer)
+					.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(chckbxAutomaticallySwitchTo)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(chckbxSwitchToBrowser)
-					.addPreferredGap(ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
+					.addComponent(lblPleaseRestartOsumer)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(btnUninstallOsumer)
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(btnSaveConfiguration)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(btnRemoveConfiguration)
 					.addContainerGap())
 		);
-		setLayout(groupLayout);
+		settingspanel.setLayout(gl_settingspanel);
+		
+		add(settingspanel, "name_169364947730057");
+		
+		JPanel notsupportedpanel = new JPanel();
+		add(notsupportedpanel, "name_169799450579777");
+		
+		JLabel lblOsumerexpressDoesNot = new JLabel("Incompatible operating system");
+		lblOsumerexpressDoesNot.setHorizontalAlignment(SwingConstants.CENTER);
+		lblOsumerexpressDoesNot.setFont(new Font("PMingLiU", Font.PLAIN, 18));
+		
+		JLabel lblOsumerexpressCanOnly = new JLabel("osumerExpress can only be installed on Windows");
+		lblOsumerexpressCanOnly.setHorizontalAlignment(SwingConstants.CENTER);
+		GroupLayout gl_notsupportedpanel = new GroupLayout(notsupportedpanel);
+		gl_notsupportedpanel.setHorizontalGroup(
+			gl_notsupportedpanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(Alignment.TRAILING, gl_notsupportedpanel.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_notsupportedpanel.createParallelGroup(Alignment.TRAILING)
+						.addComponent(lblOsumerexpressCanOnly, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
+						.addComponent(lblOsumerexpressDoesNot, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE))
+					.addContainerGap())
+		);
+		gl_notsupportedpanel.setVerticalGroup(
+			gl_notsupportedpanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_notsupportedpanel.createSequentialGroup()
+					.addGap(85)
+					.addComponent(lblOsumerexpressDoesNot)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblOsumerexpressCanOnly)
+					.addContainerGap(130, Short.MAX_VALUE))
+		);
+		notsupportedpanel.setLayout(gl_notsupportedpanel);
 
+		if (Osu.isWindows()){
+			notsupportedpanel.setVisible(true);
+			settingspanel.setVisible(false);
+			notinstalledpanel.setVisible(false);
+		}
 	}
 }
