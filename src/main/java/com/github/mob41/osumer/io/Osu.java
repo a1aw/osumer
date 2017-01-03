@@ -2,6 +2,8 @@ package com.github.mob41.osumer.io;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -51,6 +53,35 @@ public class Osu {
 	
 	public static boolean isWindows(){
 		return System.getProperty("os.name").contains("Windows");
+	}
+	
+	public static boolean isWindowsElevated(){
+		if (!isWindows()){
+			return false;
+		}
+		
+		final String programfiles = System.getenv("PROGRAMFILES");
+		
+		if (programfiles == null || programfiles.length() < 1) {
+			throw new IllegalStateException("OS mismatch. Program Files directory not detected");
+		}
+		
+		File testPriv = new File(programfiles);
+		if (!testPriv.canWrite()) {
+			return false;
+		}
+		File fileTest = null;
+		
+		try {
+			fileTest = File.createTempFile("testsu", ".dll", testPriv);
+		} catch (IOException e) {
+			return false;
+		} finally {
+			if (fileTest != null) {
+				fileTest.delete();
+			}
+		}
+		return true;
 	}
 	
 	public String getBeatmapDownloadLink(String beatmapLink){
@@ -103,6 +134,11 @@ public class Osu {
 			
 			Document doc = Jsoup.parse(data);
 			Elements elements = doc.getElementsByClass("beatmap_download_link");
+			
+			if (elements.size() == 0){
+				throw new OsuException("No download link available. Invalid beatmap url?");
+			}
+			
 			Element alnk = elements.get(0);
 			
 			String href = alnk.attr("href");
