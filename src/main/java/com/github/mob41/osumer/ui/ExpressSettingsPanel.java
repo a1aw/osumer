@@ -36,6 +36,7 @@ public class ExpressSettingsPanel extends JPanel {
 	private JPanel settingspanel;
 	private JPanel notsupportedpanel;
 	private JLabel lblPleaseRestartOsumer;
+	private JComboBox browserBox;
 
 	/**
 	 * Create the panel.
@@ -45,10 +46,6 @@ public class ExpressSettingsPanel extends JPanel {
 		
 		this.config = conf;
 		this.installer = new Installer();
-		
-		if (config.getDefaultBrowserPath() != null){
-			//pathFld.setText(config.getDefaultBrowserPath());
-		}
 		
 		JButton btnUninstallOsumer = new JButton("(*Admin) Uninstall osumerExpress");
 		btnUninstallOsumer.addActionListener(new ActionListener() {
@@ -77,7 +74,7 @@ public class ExpressSettingsPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				//pathFld.setText("");
 				chckbxAutomaticallySwitchTo.setSelected(false);
-				config.removeDefaultBrowserPath();
+				config.removeDefaultBrowser();
 				config.setAutoSwitchBrowser(true);
 				config.setSwitchToBrowserIfWithoutUiArg(false);
 				try {
@@ -92,7 +89,10 @@ public class ExpressSettingsPanel extends JPanel {
 		JButton btnSaveConfiguration = new JButton("Save configuration");
 		btnSaveConfiguration.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//config.setDefaultBrowserPath(pathFld.getText());
+				String defBrowser = (String) browserBox.getSelectedItem();
+				if (!defBrowser.equals("--- Select ---")){
+					config.setDefaultBrowser(defBrowser);
+				}
 				config.setAutoSwitchBrowser(chckbxAutomaticallySwitchTo.isSelected());
 				config.setSwitchToBrowserIfWithoutUiArg(chckbxSwitchToBrowser.isSelected());
 				try {
@@ -162,7 +162,7 @@ public class ExpressSettingsPanel extends JPanel {
 		
 		JLabel lblSelectDefaultBrowser = new JLabel("Select default browser:");
 		
-		JComboBox comboBox = new JComboBox();
+		browserBox = new JComboBox();
 		
 		lblPleaseRestartOsumer = new JLabel("Please restart osumer with administrative priviledges.");
 		lblPleaseRestartOsumer.setForeground(Color.RED);
@@ -176,7 +176,7 @@ public class ExpressSettingsPanel extends JPanel {
 					.addGroup(gl_settingspanel.createParallelGroup(Alignment.LEADING)
 						.addComponent(chckbxSwitchToBrowser, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
 						.addComponent(chckbxAutomaticallySwitchTo, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
-						.addComponent(comboBox, 0, 269, Short.MAX_VALUE)
+						.addComponent(browserBox, 0, 269, Short.MAX_VALUE)
 						.addComponent(btnRemoveConfiguration, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
 						.addComponent(btnSaveConfiguration, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
 						.addComponent(btnUninstallOsumer, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
@@ -190,7 +190,7 @@ public class ExpressSettingsPanel extends JPanel {
 					.addContainerGap()
 					.addComponent(lblSelectDefaultBrowser)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addComponent(browserBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(chckbxAutomaticallySwitchTo)
 					.addPreferredGap(ComponentPlacement.RELATED)
@@ -241,12 +241,14 @@ public class ExpressSettingsPanel extends JPanel {
 
 		if (!Osu.isWindows()){
 			panelNotSupported();
-		}
-		
-		if (installer.isInstalled()){
-			panelSettings();
 		} else {
-			panelNotInstalled();
+			refreshBrowsers();
+			
+			if (installer.isInstalled()){
+				panelSettings();
+			} else {
+				panelNotInstalled();
+			}
 		}
 		
 		boolean elevated = Osu.isWindowsElevated();
@@ -257,6 +259,35 @@ public class ExpressSettingsPanel extends JPanel {
 		btnInstall.setEnabled(elevated);
 	}
 	
+	private void refreshBrowsers(){
+		String[] browsers = null;
+		try {
+			browsers = installer.getAvailableBrowsers();
+		} catch (OsuException e){
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Could not relieve registry data about available browsers!\n" + e, "Critical Error", JOptionPane.ERROR_MESSAGE);
+		}
+		
+		browserBox.removeAllItems();
+		browserBox.addItem("--- Select ---");
+		for (int i = 0; i < browsers.length; i++){
+			browserBox.addItem(browsers[i]);
+		}
+		
+		if (config.getDefaultBrowser() != null){
+			int index = -1;
+			for (int i = 0; i < browsers.length; i++){
+				if (browsers[i].equals(config.getDefaultBrowser())){
+					index = i;
+				}
+			}
+			
+			if (index != -1){
+				browserBox.setSelectedIndex(index + 1);
+			}
+		}
+	}
+	
 	private void panelNotSupported(){
 		notsupportedpanel.setVisible(true);
 		settingspanel.setVisible(false);
@@ -264,6 +295,7 @@ public class ExpressSettingsPanel extends JPanel {
 	}
 	
 	private void panelSettings(){
+		refreshBrowsers();
 		notsupportedpanel.setVisible(false);
 		settingspanel.setVisible(true);
 		notinstalledpanel.setVisible(false);

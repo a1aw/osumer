@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import com.github.mob41.osumer.io.Installer;
 import com.github.mob41.osumer.io.Osu;
 import com.github.mob41.osumer.ui.DownloadDialog;
 import com.github.mob41.osumer.ui.UIFrame;
@@ -42,6 +43,26 @@ public class Main {
 			} catch (Exception e){
 				e.printStackTrace();
 			} 
+		}
+		
+		if (args.length == 1){
+			Installer installer = new Installer();
+			if (args[0].equals("-hideicons")){
+				installer.hideIcons();
+				
+				System.exit(0);
+				return;
+			} else if (args[0].equals("-showicons")){
+				installer.showIcons();
+
+				System.exit(0);
+				return;
+			} else if (args[0].equals("-reinstall")){
+				installer.reinstall();
+
+				System.exit(0);
+				return;
+			}
 		}
 		
 		String configPath = Osu.isWindows() ? System.getenv("localappdata") + "\\osumerExpress" : "";
@@ -149,14 +170,25 @@ public class Main {
 	private static void runBrowser(Config config, String[] args){
 		String argstr = buildArgStr(args);
 		//Run the default browser application
-		if (!GraphicsEnvironment.isHeadless()){
-			if (config.getDefaultBrowserPath() == null || config.getDefaultBrowserPath().isEmpty()){
+		if (!GraphicsEnvironment.isHeadless() && Osu.isWindows()){
+
+			System.out.println(config.getDefaultBrowser());
+			if (config.getDefaultBrowser() == null || config.getDefaultBrowser().isEmpty()){
+				System.out.println(config.getDefaultBrowser());
 				JOptionPane.showMessageDialog(null, "No default browser path is specified. Please maunally launch the browser the following arguments:\n" + argstr, "osumer - Automatic browser switching", JOptionPane.INFORMATION_MESSAGE);
 				System.exit(-1);
 				return;
 			}
 			
-			File file = new File(config.getDefaultBrowserPath());
+			String browserPath = Installer.getBrowserExePath(config.getDefaultBrowser());
+			System.out.println(browserPath);
+			if (browserPath == null){
+				JOptionPane.showMessageDialog(null, "Cannot read browser executable path in registry.\nCannot start default browser application for:\n" + argstr, "Configuration Error", JOptionPane.ERROR_MESSAGE);
+				System.exit(-1);
+				return;
+			}
+			
+			File file = new File(browserPath.replaceAll("\"", ""));
 			if (!file.exists()){
 				JOptionPane.showMessageDialog(null, "The specified browser application does not exist.\nCannot start default browser application for:\n" + argstr, "Configuration Error", JOptionPane.ERROR_MESSAGE);
 				System.exit(-1);
@@ -164,7 +196,7 @@ public class Main {
 			}
 			
 			try {
-				Runtime.getRuntime().exec(config.getDefaultBrowserPath() + " " + argstr);
+				Runtime.getRuntime().exec(browserPath + " " + argstr);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

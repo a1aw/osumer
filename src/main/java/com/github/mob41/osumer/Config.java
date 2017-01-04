@@ -30,19 +30,19 @@ public class Config {
 		this.dataFileName = dataFileName;
 	}
 	
-	public String getDefaultBrowserPath(){
-		if (json.isNull("defaultBrowserPath")){
+	public String getDefaultBrowser(){
+		if (json.isNull("defaultBrowser")){
 			return null;
 		}
-		return json.getString("defaultBrowserPath");
+		return json.getString("defaultBrowser");
 	}
 	
 	public JSONObject getJson(){
 		return json;
 	}
 	
-	public void removeDefaultBrowserPath(){
-		json.remove("defaultBrowserPath");
+	public void removeDefaultBrowser(){
+		json.remove("defaultBrowser");
 	}
 	
 	public void removeUser(){
@@ -57,8 +57,8 @@ public class Config {
 		json.put("switchToBrowserIfWithoutUiArg", switchTo);
 	}
 	
-	public void setDefaultBrowserPath(String path){
-		json.put("defaultBrowserPath", path);
+	public void setDefaultBrowser(String path){
+		json.put("defaultBrowser", path);
 	}
 	
 	public void setAutoSwitchBrowser(boolean autoSwitch){

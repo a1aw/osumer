@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.github.mob41.osumer.exceptions.OsuException;
 import com.sun.jna.platform.win32.Advapi32Util;
@@ -140,28 +142,73 @@ public class Installer {
 		
 	}
 	
+	public void showIcons(){
+		//TODO Show icons command https://msdn.microsoft.com/en-us/library/windows/desktop/cc144109(v=vs.85).aspx#show_icons_command
+	}
+	
+	public void hideIcons(){
+		//TODO Hide icons command https://msdn.microsoft.com/en-us/library/windows/desktop/cc144109(v=vs.85).aspx#hide_icons_command
+	}
+	
+	public void reinstall(){
+		//TODO Reinstall command https://msdn.microsoft.com/en-us/library/windows/desktop/cc144109(v=vs.85).aspx#reinstall_command
+	}
+	
+	public static String[] getAvailableBrowsers() throws OsuException{
+		try {
+			String[] keys = Advapi32Util.registryGetKeys(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_CLIENTS_PATH);
+			
+			List<String> filteredList = new ArrayList<String>(50);
+			for (int i = 0; i < keys.length; i++){
+				if (!keys[i].equals(WIN_REG_INTERNET_CLIENT_KEY)){
+					filteredList.add(keys[i]);
+				}
+			}
+			
+			String[] out = new String[filteredList.size()];
+			for (int i = 0; i < out.length; i++){
+				out[i] = filteredList.get(i);
+			}
+			
+			return out;
+		} catch (Win32Exception e){
+			throw new OsuException("Error reading registry", e);
+		}
+	}
+	
+	public static String getBrowserExePath(String browserName){
+		String value = null;
+		try {
+			value = Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE,
+					WIN_REG_CLIENTS_PATH + "\\" + browserName + "\\shell\\open\\command", "");
+		} catch (Win32Exception e){
+			return null;
+		}
+		return value;
+	}
+	
 	public boolean isInstalled(){
 		File file = new File(winPath + "\\" + winFile);
 		return file.exists();
 	}
 	
-	public boolean isValidInstallation(){
+	public boolean isInstallationValid(){
+		//TODO Do verification
 		return false;
 	}
 	
-	//TODO Complete installation
 	public void install() throws OsuException{
 		if (!Osu.isWindows()){
-			throw new OsuException("Installer does not support non-Windows");
+			throw new OsuException("Installer does not support non-Windows environment");
 		}
 		
 		if (!Osu.isWindowsElevated()){
-			throw new OsuException("osumer is not in elevated mode");
+			throw new OsuException("osumer is not elevated. Restart osumer with administrative priviledges.");
 		}
 		
 		File file = new File("osumer.exe");
 		if (!file.exists()){
-			throw new OsuException("An Windows Executable version of osumer is required for installation.");
+			throw new OsuException("A Windows executable (.exe) version of osumer is required for installation. It can be downloaded from the releases. If you have it, rename it to \"osumer.exe\" to continue.");
 		}
 		
 		File destFolder = new File(winPath);
