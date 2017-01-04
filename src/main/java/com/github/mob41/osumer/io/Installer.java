@@ -203,7 +203,7 @@ public class Installer {
 		}
 		
 		if (!Osu.isWindowsElevated()){
-			throw new OsuException("osumer is not elevated. Restart osumer with administrative priviledges.");
+			throw new OsuException("osumer is not elevated. Restart osumer with administrative privileges.");
 		}
 		
 		File file = new File("osumer.exe");

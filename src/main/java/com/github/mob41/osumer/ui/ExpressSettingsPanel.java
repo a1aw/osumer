@@ -129,7 +129,7 @@ public class ExpressSettingsPanel extends JPanel {
 			}
 		});
 		
-		JLabel lblNoadmin = new JLabel("Please restart osumer with administrative priviledges.");
+		JLabel lblNoadmin = new JLabel("Please restart osumer with administrative privileges.");
 		lblNoadmin.setForeground(Color.RED);
 		lblNoadmin.setHorizontalAlignment(SwingConstants.CENTER);
 		GroupLayout gl_notinstalledpanel = new GroupLayout(notinstalledpanel);
@@ -163,7 +163,7 @@ public class ExpressSettingsPanel extends JPanel {
 		
 		browserBox = new JComboBox();
 		
-		lblPleaseRestartOsumer = new JLabel("Please restart osumer with administrative priviledges.");
+		lblPleaseRestartOsumer = new JLabel("Please restart osumer with administrative privileges.");
 		lblPleaseRestartOsumer.setForeground(Color.RED);
 		lblPleaseRestartOsumer.setHorizontalAlignment(SwingConstants.CENTER);
 		
