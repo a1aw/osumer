@@ -89,16 +89,16 @@ public class Installer {
 	private static final int WIN_REG_INSTALLINFO_ICONSVISIBLE_VALUE = 1;
 	
 	// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/InstallInfo/@HideIconsCommand
-	private static final String WIN_REG_INSTALLINFO_HIDEICON_PARA = "HideIconsComamnd";
-	private static final String WIN_REG_INSTALLINFO_HIDEICON_VALUE = winPath + "\\" + winFile + " -hideicons";
+	private static final String WIN_REG_INSTALLINFO_HIDEICON_PARA = "HideIconsCommand";
+	private static final String WIN_REG_INSTALLINFO_HIDEICON_VALUE = "\"" + winPath + "\\" + winFile + "\" -hideicons";
 	
 	// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/InstallInfo/@ShowIconsCommand
-	private static final String WIN_REG_INSTALLINFO_SHOWICON_PARA = "ShowIconsComamnd";
-	private static final String WIN_REG_INSTALLINFO_SHOWICON_VALUE = winPath + "\\" + winFile + " -showicons";
+	private static final String WIN_REG_INSTALLINFO_SHOWICON_PARA = "ShowIconsCommand";
+	private static final String WIN_REG_INSTALLINFO_SHOWICON_VALUE = "\"" + winPath + "\\" + winFile + "\" -showicons";
 	
 	// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/InstallInfo/@ReinstallCommand
-	private static final String WIN_REG_INSTALLINFO_REINSTALL_PARA = "ReinstallComamnd";
-	private static final String WIN_REG_INSTALLINFO_REINSTALL_VALUE = winPath + "\\" + winFile + " -reinstall";
+	private static final String WIN_REG_INSTALLINFO_REINSTALL_PARA = "ReinstallCommand";
+	private static final String WIN_REG_INSTALLINFO_REINSTALL_VALUE = "\"" + winPath + "\\" + winFile + "\" -reinstall";
 	
 //Shell open command
 	
@@ -112,7 +112,7 @@ public class Installer {
 	private static final String WIN_REG_SHELL_OPEN_COMMAND_KEY = "command";
 	
 	// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/shell/open/command/@
-	private static final String WIN_REG_SHELL_OPEN_COMMAND_DEFAULT_VALUE = winPath + "\\" + winFile;
+	private static final String WIN_REG_SHELL_OPEN_COMMAND_DEFAULT_VALUE = "\"" + winPath + "\\" + winFile + "\"";
 	
 //Registered applications
 	
@@ -128,6 +128,10 @@ public class Installer {
 	
 	// HKLM/SOFTWARE/Classes/osumer
 	private static final String WIN_REG_CLASSES_OSUMER_KEY = "osumer"; //Refer upstairs
+	
+	// HKLM/SOFTWARE/Classes/osumer/@FriendlyTypeName
+	private static final String WIN_REG_CLASSES_OSUMER_FRIENDLYTYPENAME_PARA = "FriendlyTypeName";
+	private static final String WIN_REG_CLASSES_OSUMER_FRIENDLYTYPENAME_VALUE = "osumerExpress"; //Refer upstairs
 	
 	// HKLM/SOFTWARE/Classes/osumer/@
 	private static final String WIN_REG_CLASSES_OSUMER_DEFAULT_VALUE = "osumerExpress"; //Refer upstairs
@@ -308,8 +312,18 @@ public class Installer {
 
 			System.out.println(success);
 			
+			final String osumerClassRegPath = WIN_REG_CLASSES_PATH + "\\" + WIN_REG_CLASSES_OSUMER_KEY;
+			
 			// HKLM/SOFTWARE/Classes/osumer/@
-			Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_CLASSES_PATH, WIN_REG_CLASSES_OSUMER_KEY, WIN_REG_CLASSES_OSUMER_DEFAULT_VALUE);
+			Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, osumerClassRegPath, "", WIN_REG_CLASSES_OSUMER_DEFAULT_VALUE);
+			
+			// HKLM/SOFTWARE/Classes/osumer/@FriendlyTypeName
+			Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, osumerClassRegPath, WIN_REG_CLASSES_OSUMER_FRIENDLYTYPENAME_PARA, WIN_REG_CLASSES_OSUMER_FRIENDLYTYPENAME_VALUE);
+		
+			Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, osumerClassRegPath, "shell");
+			Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, osumerClassRegPath + "\\shell", "open");
+			Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, osumerClassRegPath + "\\shell\\open", "command");
+			Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, osumerClassRegPath + "\\shell\\open\\command", "", WIN_REG_SHELL_OPEN_COMMAND_DEFAULT_VALUE + " \"%1\"");
 		} catch (Win32Exception e){
 			throw new OsuException("Error writing registry", e);
 		}
@@ -349,6 +363,10 @@ public class Installer {
 			
 			//Classes and Registered applications
 			Advapi32Util.registryDeleteValue(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_REGISTEREDAPPS_PATH, WIN_REG_REGISTEREDAPPS_OSUMEREXPRESS_PARA);
+			
+			Advapi32Util.registryDeleteKey(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_CLASSES_PATH + "\\" + WIN_REG_CLASSES_OSUMER_KEY + "\\shell\\open", "command");
+			Advapi32Util.registryDeleteKey(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_CLASSES_PATH + "\\" + WIN_REG_CLASSES_OSUMER_KEY + "\\shell", "open");
+			Advapi32Util.registryDeleteKey(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_CLASSES_PATH + "\\" + WIN_REG_CLASSES_OSUMER_KEY, "shell");
 			Advapi32Util.registryDeleteKey(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_CLASSES_PATH, WIN_REG_CLASSES_OSUMER_KEY);
 		} catch (Win32Exception e){
 			throw new OsuException("Error writing registry", e);
