@@ -128,18 +128,39 @@ public class DownloadDialog extends JDialog {
 				lblStatus.setText("Status: Getting account information from configuration...");
 				
 				if (usr == null || pwd == null || usr.isEmpty() || pwd.isEmpty()){
+					/*
 					JOptionPane.showMessageDialog(DownloadDialog.this,
 							"No osu! username or password is\n" + 
 							"specified in the configuration\n" +
 							"Download cannot be started without\n" +
 							"osu! user account.", "Error", JOptionPane.ERROR_MESSAGE);
-					if (systemExit){
-						System.exit(-1);
-						return;
-					} else {
-						dispose();
-						return;
+					*/
+					
+					LoginPanel loginPanel = new LoginPanel();
+					int option = JOptionPane.showOptionDialog(
+							DownloadDialog.this, loginPanel, "Login to osu!",
+							JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
+							null, null, 0);
+					
+					String paneluser = loginPanel.getUsername();
+					String panelpwd = loginPanel.getPassword();
+					
+					if (option == JOptionPane.OK_OPTION && (paneluser.isEmpty() || panelpwd.isEmpty())){
+						JOptionPane.showMessageDialog(DownloadDialog.this, "Username or password cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
 					}
+					
+					if (option == JOptionPane.CLOSED_OPTION || option == JOptionPane.CANCEL_OPTION || paneluser.isEmpty() || panelpwd.isEmpty()){
+						if (systemExit){
+							System.exit(-1);
+							return;
+						} else {
+							dispose();
+							return;
+						}
+					}
+					
+					usr = paneluser;
+					pwd = panelpwd;
 				}
 				
 				lblStatus.setText("Status: Logging in with account \"" + usr + "\"...");
