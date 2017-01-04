@@ -153,18 +153,30 @@ public class Installer {
 		// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress
 		boolean success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_CLIENTS_PATH, WIN_REG_INTERNET_CLIENT_KEY);
 		
-		String regPath = WIN_REG_CLIENTS_PATH + "\\" + WIN_REG_INTERNET_CLIENT_KEY;
+		final String clientRegPath = WIN_REG_CLIENTS_PATH + "\\" + WIN_REG_INTERNET_CLIENT_KEY;
 		
 		// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/@
-		Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, regPath,
+		Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, clientRegPath,
 				WIN_REG_INTERNET_CLIENT_KEY, WIN_REG_INTERNET_CLIENT_DEFAULT_VALUE);
 		
 		// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/Capabilities
-		success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, regPath, WIN_REG_CAP_KEY);
+		success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, clientRegPath, WIN_REG_CAP_KEY);
 		
-		regPath = regPath + WIN_REG_CAP_KEY;
+		final String capRegPath = clientRegPath + "\\" + WIN_REG_CAP_KEY;
 		
+		// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/Capabilities/@ApplicationName,@ApplicationDescription,@ApplicationIcon
+		Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, capRegPath, WIN_REG_CAP_APPNAME_PARA, WIN_REG_CAP_APPNAME_VALUE);
+		Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, capRegPath, WIN_REG_CAP_APPDESC_PARA, WIN_REG_CAP_APPDESC_VALUE);
+		Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, capRegPath, WIN_REG_CAP_APPICON_PARA, WIN_REG_CAP_APPICON_VALUE);
 		
+		// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/Capabilities/FileAssociations
+		success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, capRegPath, WIN_REG_CAP_FILEASSOC_KEY);
+		// No file associations currently
+		
+		// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/Capabilities/URLAssociations
+		success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, capRegPath, WIN_REG_CAP_URLASSOC_KEY);
+		
+		final String urlAssocRegPath = capRegPath + "\\" + WIN_REG_CAP_URLASSOC_KEY;
 	}
 	
 	public void uninstall() throws OsuException{
