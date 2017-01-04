@@ -20,46 +20,31 @@ The application only sends the ```username``` and ```password``` parameter to ``
 
 By using this software, I take no responsibility here. Use in your own risk.
 
-## Installation / Tricks (osumerExpress)
->:warning: WARNING: This will break your browser, system defaults on internet browsing if you DID NOT FOLLOW THE INSTRUCTIONS STRICTLY.
+## Installation of osumerExpress
+> :warning: This only applies on Windows Vista or newer. Non-Windows environment are currently not supported, portable version instead (.jar)
 
->:warning: NEW VERSION COMING: A new version is coming that will write registry directly to act as a "web browser" instead of replacing web browser. Don't do this unless you want to test about it.
+Now here goes to the most exciting part. One-click to activate downloads multiplayer in-game.
 
->This only applies on Windows Vista, 7, 8, 8.1, 10
+1. Download the [latest release of osumer](https://github.com/mob41/osumer/releases/latest), the Windows executable (```osumer.exe```) (newer or equal to ```0.0.2-SNAPSHOT```)
 
-Someone must wonder how this helps. Well, integration to web browsers are needed. As mentioned above, this application will download beatmaps automatically when an arugment of the beatmap URL is passed to the application.
+2. Start up ```osumer.exe``` with administrative privileges.
 
-In fact, once you press the download link of beatmap in multiplayer in osu!, osu! will find the default browser and starts the browser with the URL in the arguments.
+3. If you haven't installed ```osumerExpress```, press ```Install osumerExpress```.
 
-This application also includes a function to start the browser instead of the UI if a ```-ui``` argument is not specified.
+4. Enter your osu! account login information, and press ```Save configuration for osumerExpress``` button.
 
-We are here to move the default browser, and replace it with this application (osumer).
+5. Select your default browser to be redirected.
 
-1. First, find your default web browser. There're so many tutorials [on the web](https://www.google.com.hk/webhp?sourceid=chrome-instant&ion=1&espv=2&ie=UTF-8#q=how%20to%20find%20your%20default%20web%20browser) about this.
+6. Tick Automatically switch to browser for non-beatmaps. This must be ticked otherwise non-beatmaps URLs (e.g. http://www.google.com) will not be opened.
 
-2. Get to your web browser's working directory. You can also right-click your default web browser's shortcut, and click ```Open file location``` to achieve this. If you set ```Google Chrome``` as your default web browser, the directory would be ```C:\Program Files (x86)\Google\Chrome\Application``` or ```C:\Program Files\Google\Chrome\Application```.
+7. Tick Switch to browser if no "-ui" argument specified. This must be ticked otherwise the all shortcuts will be broken. It will just open the osumer UI instead of the browser. But, becareful, from now on you have to start ```osumer.exe``` with the ```-ui``` argument. (e.g. ```C:\Program Files\osumer\osumer.exe -ui``` to have a user interface popped out)
 
-3. Download the latest ```osumer.exe``` from the [releases](https://github.com/mob41/osumer/releases). Don't download a ```.jar``` file. We need a ```.exe``` executable here, in order to replace the original browser's executable.
+8. Once you have set up the osumerExpress settings (e.g. default browser, optimizations). Press ```Save configuration```
 
-4. Start the ```osumer.exe```.
-
-5. Enter your osu! account login information, and press ```Save configuration for osumerExpress``` button. Your osu! account login information will be saved in a ```osumer_configuration.json``` file next to the application (```osumer.exe```).
-
-6. Enter the default browser executable's path, with the another file name, which will be used to link the browser that we replaced. (e.g. ```C:\Program Files (x86)\Google\Chrome\Application\chrome_bak.exe```) Don't put the original one, if you don't understand what are you doing, don't continue and sit down and think about it. We are replacing the original one (e.g. ```C:\Program Files (x86)\Google\Chrome\Application\chrome.exe```) with ```osumer.exe```, so we need to specify a different file name, which will be used in step 10.
-
-7. Tick ```Automatically switch to browser for non-beatmaps```. This must be ticked otherwise non-beatmaps URLs (e.g. ```http://www.google.com```) will not be opened.
-
-8. Tick ```Switch to browser if no "-ui" argument specified```. This must be ticked otherwise the all shortcuts will be broken. It will just open the osumer UI instead of the browser.
-
-9. Once you setup all the osumer settings (e.g. osu! user account, default browser .exe path, optimizations), place the ```osumer.exe``` (Must, .jar won't work) and ```osumer_configuration.json``` to the directory.
-
-10. Rename the original browser executable to the file name that specified in the osumer configuration. (e.g. ```chrome.exe``` to ```chrome_bak.exe```).
-
-11. Rename ```osumer.exe``` to the the original browser file name (e.g. ```chrome.exe```)
-
-12. That's it! Something might break (e.g. the shortcut icons on the desktop), but fixes are not mentioned here. Please refer to the wiki.
-
-13. You can try it by starting up osu! and go to a multiplayer match with a beatmap you don't have. Do the same thing that you do in usual, click the beatmap icon. A downloading dialog will pop out.
+9. Let's move to the ```Control Panel```. Search for ```default programs```. Click ```Default Programs```. Then, click ```Set program access and computer defaults```. Pull-down (click the arrow at the right hand side) the ```Custom``` configuration. Press ```osumerExpress``` in the ```Choose a default web browser:``` part. Click ```OK``` and you're done! This sets ```osumerExpress``` as the default web browser to receive beatmaps links from osu!
+    ![Capture 3](http://mob41.github.io/images/osumer/osumer_defprgs_instruct.gif)
+    
+10. You can try it by starting up osu! and go to a multiplayer match with a beatmap you don't have. Do the same thing that you do in usual, click the beatmap icon. A downloading dialog will pop out.
 
 ## Development stage
 - [x] Osu web-login
