@@ -64,7 +64,6 @@ public class ExpressSettingsPanel extends JPanel {
 				}
 			}
 		});
-		btnUninstallOsumer.setToolTipText("Not implemented");
 		
 		chckbxAutomaticallySwitchTo = new JCheckBox("Automatically switch to browser for non-beatmaps");
 		chckbxAutomaticallySwitchTo.setSelected(config.isAutoSwitchBrowser());
@@ -90,7 +89,7 @@ public class ExpressSettingsPanel extends JPanel {
 		btnSaveConfiguration.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String defBrowser = (String) browserBox.getSelectedItem();
-				if (!defBrowser.equals("--- Select ---")){
+				if (!defBrowser.equals("--- Select ---") && !defBrowser.equals("--- Not elevated ---")){
 					config.setDefaultBrowser(defBrowser);
 				}
 				config.setAutoSwitchBrowser(chckbxAutomaticallySwitchTo.isSelected());
@@ -253,6 +252,7 @@ public class ExpressSettingsPanel extends JPanel {
 		
 		boolean elevated = Osu.isWindowsElevated();
 		
+		browserBox.setEnabled(elevated);
 		lblNoadmin.setVisible(!elevated);
 		lblPleaseRestartOsumer.setVisible(!elevated);
 		btnUninstallOsumer.setEnabled(elevated);
@@ -261,15 +261,20 @@ public class ExpressSettingsPanel extends JPanel {
 	
 	private void refreshBrowsers(){
 		String[] browsers = null;
-		try {
-			browsers = installer.getAvailableBrowsers();
-		} catch (OsuException e){
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Could not relieve registry data about available browsers!\n" + e, "Critical Error", JOptionPane.ERROR_MESSAGE);
+		if (Osu.isWindowsElevated()){
+			try {
+				browsers = Installer.getAvailableBrowsers();
+			} catch (OsuException e){
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(null, "Could not relieve registry data about available browsers!\n" + e, "Critical Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+		} else {
+			browsers = new String[]{};
 		}
 		
 		browserBox.removeAllItems();
-		browserBox.addItem("--- Select ---");
+		browserBox.addItem(Osu.isWindowsElevated() ? "--- Select ---" : "-!- Not elevated -!-");
 		for (int i = 0; i < browsers.length; i++){
 			browserBox.addItem(browsers[i]);
 		}
