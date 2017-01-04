@@ -1,7 +1,14 @@
 package com.github.mob41.osumer.io;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+
 import com.github.mob41.osumer.exceptions.OsuException;
 import com.sun.jna.platform.win32.Advapi32Util;
+import com.sun.jna.platform.win32.Win32Exception;
 import com.sun.jna.platform.win32.WinReg;
 import com.sun.jna.platform.win32.WinReg.HKEY;
 
@@ -109,10 +116,7 @@ public class Installer {
 	
 //Registered applications
 	
-	private static final String WIN_REG_REGISTEREDAPPS_PATH = "SOFTWARE\\Clients";
-	
-	// HKLM/SOFTWARE/RegisteredApplications
-	private static final String WIN_REG_REGISTEREDAPPS_KEY = "RegisteredApplications";
+	private static final String WIN_REG_REGISTEREDAPPS_PATH = "SOFTWARE\\RegisteredApplications";
 	
 	// HKLM/SOFTWARE/RegisteredApplications/@osumerExpress
 	private static final String WIN_REG_REGISTEREDAPPS_OSUMEREXPRESS_PARA = "osumerExpress";
@@ -133,7 +137,8 @@ public class Installer {
 	}
 	
 	public boolean isInstalled(){
-		return false;
+		File file = new File(winPath + "\\" + winFile);
+		return file.exists();
 	}
 	
 	public boolean isValidInstallation(){
@@ -150,104 +155,204 @@ public class Installer {
 			throw new OsuException("osumer is not in elevated mode");
 		}
 		
-//Create root key
+		File file = new File("osumer.exe");
+		if (!file.exists()){
+			throw new OsuException("An Windows Executable version of osumer is required for installation.");
+		}
 		
-		// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress
-		boolean success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_CLIENTS_PATH, WIN_REG_INTERNET_CLIENT_KEY);
+		File destFolder = new File(winPath);
+		if (!destFolder.exists()){
+			destFolder.mkdirs();
+		}
 		
-		final String clientRegPath = WIN_REG_CLIENTS_PATH + "\\" + WIN_REG_INTERNET_CLIENT_KEY;
+		File dest = new File(winPath + "\\" + winFile);
 		
-		// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/@
-		Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_CLIENTS_PATH,
-				WIN_REG_INTERNET_CLIENT_KEY, WIN_REG_INTERNET_CLIENT_DEFAULT_VALUE);
+		try {
+			if (dest.exists()){
+				dest.delete();
+			}
+			
+			dest.createNewFile();
+			
+			FileOutputStream out = new FileOutputStream(dest);
+			Files.copy(file.toPath(), out);
+			out.flush();
+			out.close();
+		} catch (IOException e) {
+			throw new OsuException("Error copying osumer.exe", e);
+		}
 		
-//Capabilities
-		
-		// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/Capabilities
-		success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, clientRegPath, WIN_REG_CAP_KEY);
-		
-		final String capRegPath = clientRegPath + "\\" + WIN_REG_CAP_KEY;
-		
-		// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/Capabilities/@ApplicationName,@ApplicationDescription,@ApplicationIcon
-		Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, capRegPath, WIN_REG_CAP_APPNAME_PARA, WIN_REG_CAP_APPNAME_VALUE);
-		Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, capRegPath, WIN_REG_CAP_APPDESC_PARA, WIN_REG_CAP_APPDESC_VALUE);
-		Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, capRegPath, WIN_REG_CAP_APPICON_PARA, WIN_REG_CAP_APPICON_VALUE);
+		try {
+			//Create root key
+			
+			// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress
+			boolean success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_CLIENTS_PATH, WIN_REG_INTERNET_CLIENT_KEY);
+			
+			System.out.println(success);
+			
+			final String clientRegPath = WIN_REG_CLIENTS_PATH + "\\" + WIN_REG_INTERNET_CLIENT_KEY;
+			
+			// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/@
+			Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, clientRegPath, "", WIN_REG_INTERNET_CLIENT_DEFAULT_VALUE);
+			
+	//Capabilities
+			
+			// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/Capabilities
+			success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, clientRegPath, WIN_REG_CAP_KEY);
 
-//Capabilities: Startmenu
-		
-		// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/Capabilities/Startmenu
-		success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, capRegPath, WIN_REG_CAP_STARTMENU_KEY);
-		// Legacy use
-		
-		final String capStartMenuRegPath = capRegPath + "\\" + WIN_REG_CAP_STARTMENU_KEY;
-		
-		// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/Capabilities/Startmenu/@StartMenuInternet
-		Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, capStartMenuRegPath, WIN_REG_CAP_STARTMENU_STARTMENUINTERNET_PARA, WIN_REG_CAP_STARTMENU_STARTMENUINTERNET_VALUE);
-		
-//Capabilities: File associations
-		
-		// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/Capabilities/FileAssociations
-		success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, capRegPath, WIN_REG_CAP_FILEASSOC_KEY);
-		// No file associations currently
-		
-//Capabilities: URL Associations
-		
-		// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/Capabilities/URLAssociations
-		success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, capRegPath, WIN_REG_CAP_URLASSOC_KEY);
-		
-		final String urlAssocRegPath = capRegPath + "\\" + WIN_REG_CAP_URLASSOC_KEY;
-		
-		// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/Capabilities/URLAssociations/@http,@https
-		Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, urlAssocRegPath, WIN_REG_CAP_URLASSOC_HTTP_PARA, WIN_REG_CAP_URLASSOC_HTTP_VALUE);
-		Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, urlAssocRegPath, WIN_REG_CAP_URLASSOC_HTTPS_PARA, WIN_REG_CAP_URLASSOC_HTTPS_VALUE);
-		
-//Default icon
-		
-		// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/DefaultIcon
-		success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, clientRegPath, WIN_REG_DEFAULTICON_KEY);
-		
-		final String defaultIconRegPath = clientRegPath + "\\" + WIN_REG_DEFAULTICON_KEY;
-		
-		// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/DefaultIcon/@
-		Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, defaultIconRegPath, WIN_REG_DEFAULTICON_KEY, WIN_REG_DEFAULTICON_DEFAULT_VALUE);
-		
-//Install info
-		
-		// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/InstallInfo
-		success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, clientRegPath, WIN_REG_INSTALLINFO_KEY);
-		
-		final String installInfoRegPath = clientRegPath + "\\" + WIN_REG_INSTALLINFO_KEY;
-		
-		// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/InstallInfo/@HideIconsCommand
-		Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, installInfoRegPath, WIN_REG_INSTALLINFO_HIDEICON_PARA, WIN_REG_INSTALLINFO_HIDEICON_VALUE);
-		// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/InstallInfo/@ShowIconsCommand
-		Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, installInfoRegPath, WIN_REG_INSTALLINFO_SHOWICON_PARA, WIN_REG_INSTALLINFO_SHOWICON_VALUE);
-		// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/InstallInfo/@ReinstallCommand
-		Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, installInfoRegPath, WIN_REG_INSTALLINFO_REINSTALL_PARA, WIN_REG_INSTALLINFO_REINSTALL_VALUE);
-		// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/InstallInfo/@IconsVisible
-		Advapi32Util.registrySetIntValue(WinReg.HKEY_LOCAL_MACHINE, installInfoRegPath, WIN_REG_INSTALLINFO_ICONSVISIBLE_PARA, WIN_REG_INSTALLINFO_ICONSVISIBLE_VALUE);
+			System.out.println(success);
+			
+			final String capRegPath = clientRegPath + "\\" + WIN_REG_CAP_KEY;
+			
+			// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/Capabilities/@ApplicationName,@ApplicationDescription,@ApplicationIcon
+			Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, capRegPath, WIN_REG_CAP_APPNAME_PARA, WIN_REG_CAP_APPNAME_VALUE);
+			Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, capRegPath, WIN_REG_CAP_APPDESC_PARA, WIN_REG_CAP_APPDESC_VALUE);
+			Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, capRegPath, WIN_REG_CAP_APPICON_PARA, WIN_REG_CAP_APPICON_VALUE);
 
-//Shell: Open: Command
+	//Capabilities: Startmenu
+			
+			// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/Capabilities/Startmenu
+			success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, capRegPath, WIN_REG_CAP_STARTMENU_KEY);
+			// Legacy use
+			System.out.println(success);
+			
+			final String capStartMenuRegPath = capRegPath + "\\" + WIN_REG_CAP_STARTMENU_KEY;
+			
+			// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/Capabilities/Startmenu/@StartMenuInternet
+			Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, capStartMenuRegPath, WIN_REG_CAP_STARTMENU_STARTMENUINTERNET_PARA, WIN_REG_CAP_STARTMENU_STARTMENUINTERNET_VALUE);
+			
+	//Capabilities: File associations
+			
+			// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/Capabilities/FileAssociations
+			success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, capRegPath, WIN_REG_CAP_FILEASSOC_KEY);
+			// No file associations currently
+			System.out.println(success);
+			
+	//Capabilities: URL Associations
+			
+			// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/Capabilities/URLAssociations
+			success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, capRegPath, WIN_REG_CAP_URLASSOC_KEY);
+
+			System.out.println(success);
+			
+			final String urlAssocRegPath = capRegPath + "\\" + WIN_REG_CAP_URLASSOC_KEY;
+			
+			// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/Capabilities/URLAssociations/@http,@https
+			Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, urlAssocRegPath, WIN_REG_CAP_URLASSOC_HTTP_PARA, WIN_REG_CAP_URLASSOC_HTTP_VALUE);
+			Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, urlAssocRegPath, WIN_REG_CAP_URLASSOC_HTTPS_PARA, WIN_REG_CAP_URLASSOC_HTTPS_VALUE);
+			
+	//Default icon
+			
+			// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/DefaultIcon
+			success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, clientRegPath, WIN_REG_DEFAULTICON_KEY);
+
+			System.out.println(success);
+			
+			final String defaultIconRegPath = clientRegPath + "\\" + WIN_REG_DEFAULTICON_KEY;
+			
+			// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/DefaultIcon/@
+			Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, defaultIconRegPath, "", WIN_REG_DEFAULTICON_DEFAULT_VALUE);
+			
+	//Install info
+			
+			// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/InstallInfo
+			success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, clientRegPath, WIN_REG_INSTALLINFO_KEY);
+
+			System.out.println(success);
+			
+			final String installInfoRegPath = clientRegPath + "\\" + WIN_REG_INSTALLINFO_KEY;
+			
+			// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/InstallInfo/@HideIconsCommand
+			Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, installInfoRegPath, WIN_REG_INSTALLINFO_HIDEICON_PARA, WIN_REG_INSTALLINFO_HIDEICON_VALUE);
+			// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/InstallInfo/@ShowIconsCommand
+			Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, installInfoRegPath, WIN_REG_INSTALLINFO_SHOWICON_PARA, WIN_REG_INSTALLINFO_SHOWICON_VALUE);
+			// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/InstallInfo/@ReinstallCommand
+			Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, installInfoRegPath, WIN_REG_INSTALLINFO_REINSTALL_PARA, WIN_REG_INSTALLINFO_REINSTALL_VALUE);
+			// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/InstallInfo/@IconsVisible
+			Advapi32Util.registrySetIntValue(WinReg.HKEY_LOCAL_MACHINE, installInfoRegPath, WIN_REG_INSTALLINFO_ICONSVISIBLE_PARA, WIN_REG_INSTALLINFO_ICONSVISIBLE_VALUE);
+
+	//Shell: Open: Command
+			
+			// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/shell
+			success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, clientRegPath, WIN_REG_SHELL_KEY);
+
+			System.out.println(success);
+			
+			final String shellRegPath = clientRegPath + "\\" + WIN_REG_SHELL_KEY;
+			
+			// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/shell/open
+			success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, shellRegPath, WIN_REG_SHELL_OPEN_KEY);
+
+			System.out.println(success);
+			
+			final String shellOpenRegPath = shellRegPath + "\\" + WIN_REG_SHELL_OPEN_KEY;
+			
+			// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/shell/open/command
+			success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, shellOpenRegPath, WIN_REG_SHELL_OPEN_COMMAND_KEY);
+
+			System.out.println(success);
+			
+			final String shellOpenCmdRegPath = shellOpenRegPath + "\\" + WIN_REG_SHELL_OPEN_COMMAND_KEY;
+			
+			// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/shell/open/command/@
+			Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, shellOpenCmdRegPath, "", WIN_REG_SHELL_OPEN_COMMAND_DEFAULT_VALUE);
+			
+	//Registered Applications
+			
+			Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_REGISTEREDAPPS_PATH, WIN_REG_REGISTEREDAPPS_OSUMEREXPRESS_PARA, WIN_REG_REGISTEREDAPPS_OSUMEREXPRESS_VALUE);
 		
-		// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/shell
-		success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, clientRegPath, WIN_REG_SHELL_KEY);
-		
-		final String shellRegPath = clientRegPath + "\\" + WIN_REG_SHELL_KEY;
-		
-		// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/shell/open
-		success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, shellRegPath, WIN_REG_SHELL_OPEN_KEY);
-		
-		final String shellOpenRegPath = shellRegPath + "\\" + WIN_REG_SHELL_OPEN_KEY;
-		
-		// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/shell/open/command
-		success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, shellOpenRegPath, WIN_REG_SHELL_OPEN_COMMAND_KEY);
-		
-		// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/shell/open/command/@
-		Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, shellOpenRegPath, WIN_REG_SHELL_OPEN_COMMAND_KEY, WIN_REG_SHELL_OPEN_COMMAND_DEFAULT_VALUE);
+	//Classes
+			
+			// HKLM/SOFTWARE/Classes/osumer
+			success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_CLASSES_PATH, WIN_REG_CLASSES_OSUMER_KEY);
+
+			System.out.println(success);
+			
+			// HKLM/SOFTWARE/Classes/osumer/@
+			Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_CLASSES_PATH, WIN_REG_CLASSES_OSUMER_KEY, WIN_REG_CLASSES_OSUMER_DEFAULT_VALUE);
+		} catch (Win32Exception e){
+			throw new OsuException("Error writing registry", e);
+		}
 	}
 	
 	public void uninstall() throws OsuException{
+		File file = new File(winPath + "\\" + winFile);
+		if (file.exists()){
+			System.out.println("Exist, deleting");
+			boolean delete = file.delete();
+			System.out.println(delete);
+		}
 		
+		try {
+			final String clientRegPath = WIN_REG_CLIENTS_PATH + "\\" + WIN_REG_INTERNET_CLIENT_KEY;
+			final String capRegPath = clientRegPath + "\\" + WIN_REG_CAP_KEY;
+			final String shellRegPath = clientRegPath + "\\" + WIN_REG_SHELL_KEY;
+			final String shellOpenRegPath = shellRegPath + "\\" + WIN_REG_SHELL_OPEN_KEY;
+			
+			//Capabilities
+			Advapi32Util.registryDeleteKey(WinReg.HKEY_LOCAL_MACHINE, capRegPath, WIN_REG_CAP_FILEASSOC_KEY);
+			Advapi32Util.registryDeleteKey(WinReg.HKEY_LOCAL_MACHINE, capRegPath, WIN_REG_CAP_URLASSOC_KEY);
+			Advapi32Util.registryDeleteKey(WinReg.HKEY_LOCAL_MACHINE, capRegPath, WIN_REG_CAP_STARTMENU_KEY);
+			
+			Advapi32Util.registryDeleteKey(WinReg.HKEY_LOCAL_MACHINE, clientRegPath, WIN_REG_CAP_KEY);
+			
+			//Shell open command
+
+			Advapi32Util.registryDeleteKey(WinReg.HKEY_LOCAL_MACHINE, shellOpenRegPath, WIN_REG_SHELL_OPEN_COMMAND_KEY);
+			Advapi32Util.registryDeleteKey(WinReg.HKEY_LOCAL_MACHINE, shellRegPath, WIN_REG_SHELL_OPEN_KEY);
+			Advapi32Util.registryDeleteKey(WinReg.HKEY_LOCAL_MACHINE, clientRegPath, WIN_REG_SHELL_KEY);
+			
+			Advapi32Util.registryDeleteKey(WinReg.HKEY_LOCAL_MACHINE, clientRegPath, WIN_REG_DEFAULTICON_KEY);
+			Advapi32Util.registryDeleteKey(WinReg.HKEY_LOCAL_MACHINE, clientRegPath, WIN_REG_INSTALLINFO_KEY);
+			
+			Advapi32Util.registryDeleteKey(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_CLIENTS_PATH, WIN_REG_INTERNET_CLIENT_KEY);
+			
+			//Classes and Registered applications
+			Advapi32Util.registryDeleteValue(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_REGISTEREDAPPS_PATH, WIN_REG_REGISTEREDAPPS_OSUMEREXPRESS_PARA);
+			Advapi32Util.registryDeleteKey(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_CLASSES_PATH, WIN_REG_CLASSES_OSUMER_KEY);
+		} catch (Win32Exception e){
+			throw new OsuException("Error writing registry", e);
+		}
 	}
 
 }
