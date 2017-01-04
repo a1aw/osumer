@@ -9,6 +9,8 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
 import com.github.mob41.osumer.Config;
+import com.github.mob41.osumer.exceptions.OsuException;
+import com.github.mob41.osumer.io.Installer;
 import com.github.mob41.osumer.io.Osu;
 
 import javax.swing.JButton;
@@ -27,22 +29,44 @@ import java.awt.Color;
 
 public class ExpressSettingsPanel extends JPanel {
 	private Config config;
+	private Installer installer;
 	private JCheckBox chckbxAutomaticallySwitchTo;
 	private JCheckBox chckbxSwitchToBrowser;
+	private JPanel notinstalledpanel;
+	private JPanel settingspanel;
+	private JPanel notsupportedpanel;
+	private JLabel lblPleaseRestartOsumer;
 
 	/**
 	 * Create the panel.
 	 */
 	public ExpressSettingsPanel(Config conf) {
-		JPanel settingspanel = new JPanel();
+		settingspanel = new JPanel();
 		
 		this.config = conf;
+		this.installer = new Installer();
 		
 		if (config.getDefaultBrowserPath() != null){
 			//pathFld.setText(config.getDefaultBrowserPath());
 		}
 		
 		JButton btnUninstallOsumer = new JButton("(*Admin) Uninstall osumerExpress");
+		btnUninstallOsumer.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					installer.uninstall();
+				} catch (OsuException e){
+					JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+					e.printStackTrace();
+				}
+				
+				if (installer.isInstalled()){
+					panelSettings();
+				} else {
+					panelNotInstalled();
+				}
+			}
+		});
 		btnUninstallOsumer.setToolTipText("Not implemented");
 		
 		chckbxAutomaticallySwitchTo = new JCheckBox("Automatically switch to browser for non-beatmaps");
@@ -81,7 +105,7 @@ public class ExpressSettingsPanel extends JPanel {
 		});
 		setLayout(new CardLayout(0, 0));
 		
-		JPanel notinstalledpanel = new JPanel();
+		notinstalledpanel = new JPanel();
 		add(notinstalledpanel, "name_169500745516563");
 		
 		JLabel lblOsumerexpressIsNot = new JLabel("osumerExpress is not installed.");
@@ -89,6 +113,22 @@ public class ExpressSettingsPanel extends JPanel {
 		lblOsumerexpressIsNot.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		JButton btnInstall = new JButton("(*Admin) Install osumerExpress");
+		btnInstall.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					installer.install();
+				} catch (OsuException e){
+					JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+					e.printStackTrace();
+				}
+				
+				if (installer.isInstalled()){
+					panelSettings();
+				} else {
+					panelNotInstalled();
+				}
+			}
+		});
 		
 		JLabel lblNoadmin = new JLabel("Please restart osumer with administrative priviledges.");
 		lblNoadmin.setForeground(Color.RED);
@@ -124,7 +164,7 @@ public class ExpressSettingsPanel extends JPanel {
 		
 		JComboBox comboBox = new JComboBox();
 		
-		JLabel lblPleaseRestartOsumer = new JLabel("Please restart osumer with administrative priviledges.");
+		lblPleaseRestartOsumer = new JLabel("Please restart osumer with administrative priviledges.");
 		lblPleaseRestartOsumer.setForeground(Color.RED);
 		lblPleaseRestartOsumer.setHorizontalAlignment(SwingConstants.CENTER);
 		
@@ -169,7 +209,7 @@ public class ExpressSettingsPanel extends JPanel {
 		
 		add(settingspanel, "name_169364947730057");
 		
-		JPanel notsupportedpanel = new JPanel();
+		notsupportedpanel = new JPanel();
 		add(notsupportedpanel, "name_169799450579777");
 		
 		JLabel lblOsumerexpressDoesNot = new JLabel("Incompatible operating system");
@@ -200,9 +240,38 @@ public class ExpressSettingsPanel extends JPanel {
 		notsupportedpanel.setLayout(gl_notsupportedpanel);
 
 		if (!Osu.isWindows()){
-			notsupportedpanel.setVisible(true);
-			settingspanel.setVisible(false);
-			notinstalledpanel.setVisible(false);
+			panelNotSupported();
 		}
+		
+		if (installer.isInstalled()){
+			panelSettings();
+		} else {
+			panelNotInstalled();
+		}
+		
+		boolean elevated = Osu.isWindowsElevated();
+		
+		lblNoadmin.setVisible(!elevated);
+		lblPleaseRestartOsumer.setVisible(!elevated);
+		btnUninstallOsumer.setEnabled(elevated);
+		btnInstall.setEnabled(elevated);
+	}
+	
+	private void panelNotSupported(){
+		notsupportedpanel.setVisible(true);
+		settingspanel.setVisible(false);
+		notinstalledpanel.setVisible(false);
+	}
+	
+	private void panelSettings(){
+		notsupportedpanel.setVisible(false);
+		settingspanel.setVisible(true);
+		notinstalledpanel.setVisible(false);
+	}
+	
+	private void panelNotInstalled(){
+		notsupportedpanel.setVisible(false);
+		settingspanel.setVisible(false);
+		notinstalledpanel.setVisible(true);
 	}
 }
