@@ -199,7 +199,7 @@ public class ExpressSettingsPanel extends JPanel {
 		);
 		notsupportedpanel.setLayout(gl_notsupportedpanel);
 
-		if (Osu.isWindows()){
+		if (!Osu.isWindows()){
 			notsupportedpanel.setVisible(true);
 			settingspanel.setVisible(false);
 			notinstalledpanel.setVisible(false);
