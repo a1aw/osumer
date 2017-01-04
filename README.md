@@ -53,7 +53,8 @@ Now here goes to the most exciting part. One-click to activate downloads multipl
 - [ ] Command-line interface
 
 ## Issues
-- Currently no issues found. Please post a [new issue](https://github.com/mob41/osumer/issues/new).
+- Currently no issues found. If you encounter some, please post a [new issue](https://github.com/mob41/osumer/issues/new).
+- Questions are also welcome.
 
 ## License
 Based on MIT License.
