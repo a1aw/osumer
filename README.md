@@ -37,14 +37,12 @@ Now here goes to the most exciting part. One-click to activate downloads multipl
 
 6. Tick Automatically switch to browser for non-beatmaps. This must be ticked otherwise non-beatmaps URLs (e.g. http://www.google.com) will not be opened.
 
-7. Tick Switch to browser if no "-ui" argument specified. This must be ticked otherwise the all shortcuts will be broken. It will just open the osumer UI instead of the browser. But, becareful, from now on you have to start ```osumer.exe``` with the ```-ui``` argument. (e.g. ```C:\Program Files\osumer\osumer.exe -ui``` to have a user interface popped out)
+7. Once you have set up the osumerExpress settings (e.g. default browser, optimizations). Press ```Save configuration```
 
-8. Once you have set up the osumerExpress settings (e.g. default browser, optimizations). Press ```Save configuration```
-
-9. Let's move to the ```Control Panel```. Search for ```default programs```. Click ```Default Programs```. Then, click ```Set program access and computer defaults```. Pull-down (click the arrow at the right hand side) the ```Custom``` configuration. Press ```osumerExpress``` in the ```Choose a default web browser:``` part. Click ```OK``` and you're done! This sets ```osumerExpress``` as the default web browser to receive beatmaps links from osu!
+8. Let's move to the ```Control Panel```. Search for ```default programs```. Click ```Default Programs```. Then, click ```Set program access and computer defaults```. Pull-down (click the arrow at the right hand side) the ```Custom``` configuration. Press ```osumerExpress``` in the ```Choose a default web browser:``` part. Click ```OK``` and you're done! This sets ```osumerExpress``` as the default web browser to receive beatmaps links from osu!
     ![Capture 3](http://mob41.github.io/images/osumer/osumer_defprgs_instruct.gif)
     
-10. You can try it by starting up osu! and go to a multiplayer match with a beatmap you don't have. Do the same thing that you do in usual, click the beatmap icon. A downloading dialog will pop out.
+9. You can try it by starting up osu! and go to a multiplayer match with a beatmap you don't have. Do the same thing that you do in usual, click the beatmap icon. A downloading dialog will pop out.
 
 ## Development stage
 - [x] Osu web-login
