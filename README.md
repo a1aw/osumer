@@ -25,13 +25,16 @@ By using this software, I take no responsibility here. Use in your own risk.
 ## Screenshoots
 
 - osumerExpress - One-click activate download in-game (Requires installation [[click here]](https://github.com/mob41/osumer#installation-of-osumerexpress))
-![gif 1](http://mob41.github.io/images/osumer/osumerExpressGif.gif)
+
+	![gif 1](http://mob41.github.io/images/osumer/osumerExpressGif.gif)
 
 - Download beat-maps manually using a URL
-![Cap1](http://mob41.github.io/images/osumer/cap1.PNG)
+
+	![Cap1](http://mob41.github.io/images/osumer/cap1.PNG)
 
 - Downloading dialog
-![Cap2](http://mob41.github.io/images/osumer/cap2.PNG)
+
+	![Cap2](http://mob41.github.io/images/osumer/cap2.PNG)
 
 ## Installation of osumerExpress
 > :warning: This only applies on Windows Vista or newer. Non-Windows environment are currently not supported.
@@ -74,6 +77,10 @@ Put a star if you like this software! I would be happy to continue developing th
 ## Issues
 - Currently no issues found. If you encounter some, please post a [new issue](https://github.com/mob41/osumer/issues/new).
 - Questions are also welcome.
+
+## My osu! account
+
+[![osu!account](http://osusig.ppy.sh/image1.png?uid=9125315&m=0)](https://osu.ppy.sh/u/9125315)
 
 ## License
 [tl;dl](https://tldrlegal.com/license/mit-license) Based on MIT License. 
