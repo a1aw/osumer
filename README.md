@@ -1,27 +1,37 @@
-# ![osumerIcon64px](http://mob41.github.io/images/osumer/osumerIcon_64px.png) OsuMer
-Osu! beatmap download helper (Now available for SNAPSHOT version testing, please post issues if things go wrong. [[Download]](https://github.com/mob41/osumer/releases))
+# ![osumerIcon64px](http://mob41.github.io/images/osumer/osumerIcon_64px.png) osumer
+Osu! beatmap download helper
 
->[Please donate to osu!. This software does not aim to lead people not to donate. osu! is a great game, right?](https://osu.ppy.sh/p/support)
+>[Please donate to osu!. It is a great game, right?](https://osu.ppy.sh/p/support)
 
-![gif 1](http://mob41.github.io/images/osumer/osumerExpressGif.gif)
-
-![Cap1](http://mob41.github.io/images/osumer/cap1.PNG)
-
-![Cap2](http://mob41.github.io/images/osumer/cap2.PNG)
-
-Requires osu! user account to work. This application will download beatmaps automatically when an arugment of the beatmap URL is passed to the application.
-
-In the user interface, users can download beatmaps directly by pasting a beatmap URL, and press the ```Download & Import``` button.
+Put a star if you like this software! I would be happy to continue developing this software!
 
 ## Disclaimer
 This software does not contain malicious code that will send username and password to another server other than osu!'s login server. You can feel free to look through the code. If you still feel uncomfortable with this software, you can simply stop using it. Thank you!
 
-The application only sends the ```username``` and ```password``` parameter to ```http://osu.ppy.sh/forum/ucp.php?mode=login``` in [Osu.java#L112](https://github.com/mob41/osumer/blob/master/src/main/java/com/github/mob41/osumer/io/Osu.java#L112). And saves the username and password specified in the user interface to local configuration in [Config.java](https://github.com/mob41/osumer/blob/master/src/main/java/com/github/mob41/osumer/Config.java). Unless the data are sniffed by a hacker or your friends want to play tricks on you, the data is not sent to anywhere other than osu! login server. (alright also sent to, proxies, firewalls, routers, switches, DNS servers, etc.)
+The application only sends the ```username``` and ```password``` parameters to ```https://osu.ppy.sh/forum/ucp.php?mode=login``` in [Osu.java](https://github.com/mob41/osumer/blob/master/src/main/java/com/github/mob41/osumer/io/Osu.java) for logging in to osu! forum. And saves the username and password specified in the user interface to local configuration in [Config.java](https://github.com/mob41/osumer/blob/master/src/main/java/com/github/mob41/osumer/Config.java). Unless the data are sniffed by a hacker or your friends want to play tricks on you, the data is not sent to anywhere other than osu! login server. (alright also sent to, proxies, firewalls, routers, switches, DNS servers, etc.)
 
 By using this software, I take no responsibility here. Use in your own risk.
 
+## Features
+
+-This software can work **without specifying beatmap's URL manually**, and **activate downloads automatically in-game**. More details, check **downstairs** or [[click here for quick scroll]](https://github.com/mob41/osumer#installation-of-osumerexpress) and [[screenshoots here]](https://github.com/mob41/osumer#screenshoots).
+-**Requires osu! user account to work.** The software will **download beatmaps from the osu! forum officially without mirroring.** If you are still uncomfortable with specifying your account to the software, you can simply stop using it. See [disclaimer](https://github.com/mob41/osumer#disclaimer).
+-It will start beatmaps download automatically when an arugment of the beatmap URL is passed to the application.
+-In the user interface, users can download beatmaps manually by pasting a beatmap URL, and press the ```Download & Import``` button.
+
+## Screenshoots
+
+- osumerExpress - One-click activate download in-game (Requires installation [[click here]](https://github.com/mob41/osumer#installation-of-osumerexpress))
+![gif 1](http://mob41.github.io/images/osumer/osumerExpressGif.gif)
+
+- Download beat-maps manually using a URL
+![Cap1](http://mob41.github.io/images/osumer/cap1.PNG)
+
+- Downloading dialog
+![Cap2](http://mob41.github.io/images/osumer/cap2.PNG)
+
 ## Installation of osumerExpress
-> :warning: This only applies on Windows Vista or newer. Non-Windows environment are currently not supported, portable version instead (.jar)
+> :warning: This only applies on Windows Vista or newer. Non-Windows environment are currently not supported.
 
 Now here goes to the most exciting part. One-click to activate downloads multiplayer in-game.
 
@@ -44,18 +54,26 @@ Now here goes to the most exciting part. One-click to activate downloads multipl
     
 9. You can try it by starting up osu! and go to a multiplayer match with a beatmap you don't have. Do the same thing that you do in usual, click the beatmap icon. A downloading dialog will pop out.
 
+
 ## Development stage
 - [x] Osu web-login
 - [x] Graphical user interface
 - [x] Quick download & import interface (osumerExpress)
 - [ ] Command-line interface
 
+These functions will include in next v2 version if download counts and stars interested me to continue to develop:
+
+- [ ] Multi-downloading / Job Queuing
+- [ ] Search beatmaps
+
+Put a star if you like this software! I would be happy to continue developing this software!
+
 ## Issues
 - Currently no issues found. If you encounter some, please post a [new issue](https://github.com/mob41/osumer/issues/new).
 - Questions are also welcome.
 
 ## License
-Based on MIT License.
+[tl;dl](https://tldrlegal.com/license/mit-license) Based on MIT License. 
 
 ```
 MIT License
