@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import com.github.mob41.osumer.exceptions.DebuggableException;
 import com.github.mob41.osumer.io.Installer;
 import com.github.mob41.osumer.io.Osu;
 import com.github.mob41.osumer.ui.DownloadDialog;

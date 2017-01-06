@@ -1,5 +1,6 @@
 package com.github.mob41.osumer.ui;
 
+import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
@@ -12,6 +13,10 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
@@ -23,6 +28,7 @@ import com.github.mob41.osumer.io.Osu;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import java.awt.Component;
 import java.awt.Desktop;
@@ -31,6 +37,7 @@ import javax.swing.JPasswordField;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -49,28 +56,121 @@ import java.awt.Button;
 import javax.swing.JMenuItem;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import javax.swing.JTextPane;
+import java.awt.SystemColor;
+import javax.swing.JMenuBar;
+import javax.swing.JSeparator;
+import javax.swing.JRadioButtonMenuItem;
 
 public class UIFrame extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField mapUrlFld;
 	private JFileChooser chooser;
+	
+	private static Image icon256px = null;
 
 	/**
 	 * Create the frame.
 	 */
 	public UIFrame(Config config) {
+		if (icon256px == null){
+			icon256px = Toolkit.getDefaultToolkit().getImage(UIFrame.class.getResource("/com/github/mob41/osumer/ui/osumerIcon_256px.png"));
+		}
 		setIconImage(Toolkit.getDefaultToolkit().getImage(UIFrame.class.getResource("/com/github/mob41/osumer/ui/osumerIcon_32px.png")));
 		setResizable(false);
 		setTitle("osumer UI");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 655, 462);
+		setBounds(100, 100, 655, 493);
 		
 		chooser = new JFileChooser();
+		//Limit file format to .osz
+		chooser.setFileFilter(new FileFilter(){
+
+			@Override
+			public boolean accept(File arg0) {
+				if (arg0 == null){
+					return false;
+				}
+
+				if (arg0.isDirectory()){
+					return true;
+				}
+				
+				String str = arg0.getName();
+				final String ext = ".osz";
+				
+				if (str.length() < ext.length()){
+					return false;
+				}
+				
+				return str.endsWith(ext);
+			}
+
+			@Override
+			public String getDescription() {
+				return "osu! beatmap";
+			}
+			
+		});
 		
-		contentPane = new JPanel();
+		JMenuBar menuBar = new JMenuBar();
+		setJMenuBar(menuBar);
+		
+		JMenu mnDebug = new JMenu("Debug");
+		menuBar.add(mnDebug);
+		
+		JMenuItem mntmOpenConfigurationLocation = new JMenuItem("Open configuration location");
+		mntmOpenConfigurationLocation.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Desktop.getDesktop().open(new File(System.getenv("localappdata") + "\\osumerExpress"));
+				} catch (IOException e1) {
+					e1.printStackTrace();
+					JOptionPane.showMessageDialog(UIFrame.this, "Surprisely, failed to open folder. :(\n\n" + e1, "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+		mnDebug.add(mntmOpenConfigurationLocation);
+		
+		JMenuItem mntmGenerateEventsDump = new JMenuItem("Generate events dump");
+		mnDebug.add(mntmGenerateEventsDump);
+		
+		JMenu mnUpdate = new JMenu("Update");
+		menuBar.add(mnUpdate);
+		
+		JMenuItem mntmRunUpdater = new JMenuItem("Run updater");
+		mnUpdate.add(mntmRunUpdater);
+		
+		JSeparator separator = new JSeparator();
+		mnUpdate.add(separator);
+		
+		JLabel lblUpdateBranch = new JLabel("Update branch");
+		mnUpdate.add(lblUpdateBranch);
+		
+		JRadioButtonMenuItem rdbtnmntmSnapshot = new JRadioButtonMenuItem("Snapshot");
+		mnUpdate.add(rdbtnmntmSnapshot);
+		
+		JRadioButtonMenuItem rdbtnmntmBeta = new JRadioButtonMenuItem("Beta");
+		mnUpdate.add(rdbtnmntmBeta);
+		
+		JRadioButtonMenuItem rdbtnmntmStable = new JRadioButtonMenuItem("Stable");
+		mnUpdate.add(rdbtnmntmStable);
+		
+		contentPane = new JPanel(){
+			@Override
+			public void paintComponent(Graphics g){
+				super.paintComponent(g);
+				Graphics2D g2 = (Graphics2D) g;
+				int width = getWidth();
+				g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.5f));
+				g2.drawImage(icon256px, width / 3, 20, contentPane);
+				g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+			}
+		};
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
+		contentPane.repaint();
 		
 		JLabel lblOsumer = new JLabel("osumer");
 		lblOsumer.setHorizontalAlignment(SwingConstants.LEFT);
@@ -178,35 +278,6 @@ public class UIFrame extends JFrame {
 					
 				}
 				
-				//Limit file format to .osz
-				chooser.setFileFilter(new FileFilter(){
-
-					@Override
-					public boolean accept(File arg0) {
-						if (arg0 == null){
-							return false;
-						}
-
-						if (arg0.isDirectory()){
-							return true;
-						}
-						
-						String str = arg0.getName();
-						final String ext = ".osz";
-						
-						if (str.length() < ext.length()){
-							return false;
-						}
-						
-						return str.endsWith(ext);
-					}
-
-					@Override
-					public String getDescription() {
-						return "osu! beatmap";
-					}
-					
-				});
 				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				
 				int option = chooser.showSaveDialog(UIFrame.this);
@@ -281,35 +352,6 @@ public class UIFrame extends JFrame {
 					
 				}
 				
-				//Limit file format to .osz
-				chooser.setFileFilter(new FileFilter(){
-
-					@Override
-					public boolean accept(File arg0) {
-						if (arg0 == null){
-							return false;
-						}
-
-						if (arg0.isDirectory()){
-							return true;
-						}
-						
-						String str = arg0.getName();
-						final String ext = ".osz";
-						
-						if (str.length() < ext.length()){
-							return false;
-						}
-						
-						return str.endsWith(ext);
-					}
-
-					@Override
-					public String getDescription() {
-						return "osu! beatmap";
-					}
-					
-				});
 				chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 				
 				int option = chooser.showSaveDialog(UIFrame.this);
@@ -367,39 +409,51 @@ public class UIFrame extends JFrame {
 		});
 		popupMenu.add(mntmDwnAs);
 		
+		JTextPane txtPnVer = new JTextPane();
+		txtPnVer.setEditable(false);
+		txtPnVer.setBackground(SystemColor.control);
+		txtPnVer.setText(
+				"Ver.:" + Osu.OSUMER_VERSION + "\n" +
+				"Update branch: snapshot \n" +
+				"Last checked: unknown");
+		
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_contentPane.createSequentialGroup()
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblCopyrightc, GroupLayout.DEFAULT_SIZE, 563, Short.MAX_VALUE)
-						.addComponent(panel, GroupLayout.PREFERRED_SIZE, 563, Short.MAX_VALUE)
-						.addGroup(gl_contentPane.createSequentialGroup()
-							.addComponent(label, GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE)
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
+						.addComponent(lblCopyrightc, GroupLayout.DEFAULT_SIZE, 629, Short.MAX_VALUE)
+						.addComponent(panel, GroupLayout.PREFERRED_SIZE, 629, Short.MAX_VALUE)
+						.addGroup(Alignment.LEADING, gl_contentPane.createSequentialGroup()
+							.addComponent(label)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(lblOsumer, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)
+							.addComponent(lblOsumer)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(lblNewLabel, GroupLayout.PREFERRED_SIZE, 383, GroupLayout.PREFERRED_SIZE))
+							.addComponent(lblNewLabel, GroupLayout.PREFERRED_SIZE, 337, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(txtPnVer, GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE))
 						.addGroup(gl_contentPane.createSequentialGroup()
 							.addComponent(lblBeatmapUrl)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(mapUrlFld, GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
+							.addComponent(mapUrlFld, GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(btnDownloadImport)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(btnDownload))
 						.addGroup(gl_contentPane.createSequentialGroup()
 							.addContainerGap()
-							.addComponent(lblHttpsgithubcommobosumer, GroupLayout.DEFAULT_SIZE, 553, Short.MAX_VALUE)))
+							.addComponent(lblHttpsgithubcommobosumer, GroupLayout.DEFAULT_SIZE, 619, Short.MAX_VALUE)))
 					.addContainerGap())
 		);
 		gl_contentPane.setVerticalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_contentPane.createSequentialGroup()
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblNewLabel, GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
-						.addComponent(label, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
-						.addComponent(lblOsumer, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE))
+						.addComponent(txtPnVer)
+						.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+							.addComponent(lblOsumer, GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
+							.addComponent(lblNewLabel, GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE))
+						.addComponent(label, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_contentPane.createSequentialGroup()
@@ -412,11 +466,11 @@ public class UIFrame extends JFrame {
 						.addGroup(gl_contentPane.createSequentialGroup()
 							.addComponent(mapUrlFld, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.RELATED)))
-					.addComponent(panel, GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
+					.addComponent(panel, GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(lblCopyrightc)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(lblHttpsgithubcommobosumer, GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
+					.addComponent(lblHttpsgithubcommobosumer, GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
 					.addGap(3))
 		);
 		
