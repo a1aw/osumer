@@ -72,6 +72,23 @@ public class ExpressSettingsPanel extends JPanel {
 		});
 		
 		chckbxAutomaticallySwitchTo = new JCheckBox("Automatically switch to browser for non-beatmaps");
+		chckbxAutomaticallySwitchTo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (!chckbxAutomaticallySwitchTo.isSelected()){
+					int option = JOptionPane.showOptionDialog(null, 
+							"Are you sure?\n"
+							+ "Non-beatmap URLs won't be redirected\n"
+							+ "to the browser selected in the settings.\n\n"
+							+ "It will show a dialog with the URL instead,\n"
+							+ "which will lead to inconvenient."
+							, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, null, 0);
+					
+					if (option == JOptionPane.NO_OPTION || option == JOptionPane.CLOSED_OPTION){
+						chckbxAutomaticallySwitchTo.setSelected(true);
+					}
+				}
+			}
+		});
 		chckbxAutomaticallySwitchTo.setSelected(config.isAutoSwitchBrowser());
 		
 		JButton btnRemoveConfiguration = new JButton("Remove configuration / Reset");
@@ -138,6 +155,9 @@ public class ExpressSettingsPanel extends JPanel {
 		JLabel lblNoadmin = new JLabel("Please restart osumer with administrative privileges.");
 		lblNoadmin.setForeground(Color.RED);
 		lblNoadmin.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		JLabel lblInstallingCanEnable = new JLabel("Installing can enable one-click download!");
+		lblInstallingCanEnable.setHorizontalAlignment(SwingConstants.CENTER);
 		GroupLayout gl_notinstalledpanel = new GroupLayout(notinstalledpanel);
 		gl_notinstalledpanel.setHorizontalGroup(
 			gl_notinstalledpanel.createParallelGroup(Alignment.LEADING)
@@ -145,15 +165,18 @@ public class ExpressSettingsPanel extends JPanel {
 					.addContainerGap()
 					.addGroup(gl_notinstalledpanel.createParallelGroup(Alignment.LEADING)
 						.addComponent(btnInstall, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
+						.addComponent(lblNoadmin, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
 						.addComponent(lblOsumerexpressIsNot, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
-						.addComponent(lblNoadmin, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE))
+						.addComponent(lblInstallingCanEnable, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE))
 					.addContainerGap())
 		);
 		gl_notinstalledpanel.setVerticalGroup(
 			gl_notinstalledpanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_notinstalledpanel.createSequentialGroup()
-					.addGap(78)
+					.addGap(58)
 					.addComponent(lblOsumerexpressIsNot)
+					.addGap(5)
+					.addComponent(lblInstallingCanEnable)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(btnInstall)
 					.addPreferredGap(ComponentPlacement.RELATED)
@@ -163,6 +186,22 @@ public class ExpressSettingsPanel extends JPanel {
 		notinstalledpanel.setLayout(gl_notinstalledpanel);
 		
 		chckbxSwitchToBrowser = new JCheckBox("Switch to browser if no \"-ui\" argument specified");
+		chckbxSwitchToBrowser.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (chckbxSwitchToBrowser.isSelected()){
+					int option = JOptionPane.showOptionDialog(null, 
+							"Are you sure?\n"
+							+ "You won't be able to access this UI unless you\n"
+							+ "run this with the following command:\n\n.exe version:\n"
+							+ "[osumer.exe -ui]\n\n.jar version:\n[java -jar osumer.jar -ui]"
+							, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, null, 0);
+					
+					if (option == JOptionPane.NO_OPTION || option == JOptionPane.CLOSED_OPTION){
+						chckbxSwitchToBrowser.setSelected(false);
+					}
+				}
+			}
+		});
 		chckbxSwitchToBrowser.setSelected(config.isSwitchToBrowserIfWithoutUiArg());
 		
 		JLabel lblSelectDefaultBrowser = new JLabel("Select default browser:");
@@ -173,20 +212,23 @@ public class ExpressSettingsPanel extends JPanel {
 		lblPleaseRestartOsumer.setForeground(Color.RED);
 		lblPleaseRestartOsumer.setHorizontalAlignment(SwingConstants.CENTER);
 		
+		JLabel lblPleaseSetosumerexpress = new JLabel("Please set \"osumerExpress\" as default browser in Control Panel");
+		
 		GroupLayout gl_settingspanel = new GroupLayout(settingspanel);
 		gl_settingspanel.setHorizontalGroup(
 			gl_settingspanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_settingspanel.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(gl_settingspanel.createParallelGroup(Alignment.LEADING)
-						.addComponent(chckbxSwitchToBrowser, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
-						.addComponent(chckbxAutomaticallySwitchTo, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
-						.addComponent(browserBox, 0, 269, Short.MAX_VALUE)
-						.addComponent(btnRemoveConfiguration, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
-						.addComponent(btnSaveConfiguration, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
-						.addComponent(btnUninstallOsumer, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
-						.addComponent(lblSelectDefaultBrowser, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
-						.addComponent(lblPleaseRestartOsumer, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE))
+						.addComponent(chckbxSwitchToBrowser, GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
+						.addComponent(chckbxAutomaticallySwitchTo, GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
+						.addComponent(browserBox, 0, 292, Short.MAX_VALUE)
+						.addComponent(btnRemoveConfiguration, GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
+						.addComponent(btnSaveConfiguration, GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
+						.addComponent(btnUninstallOsumer, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
+						.addComponent(lblSelectDefaultBrowser, GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
+						.addComponent(lblPleaseRestartOsumer, GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
+						.addComponent(lblPleaseSetosumerexpress, GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE))
 					.addContainerGap())
 		);
 		gl_settingspanel.setVerticalGroup(
@@ -200,7 +242,9 @@ public class ExpressSettingsPanel extends JPanel {
 					.addComponent(chckbxAutomaticallySwitchTo)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(chckbxSwitchToBrowser)
-					.addPreferredGap(ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+					.addComponent(lblPleaseSetosumerexpress)
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(lblPleaseRestartOsumer)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(btnUninstallOsumer)

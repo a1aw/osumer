@@ -45,17 +45,25 @@ public class DownloadDialog extends JDialog {
 	private JProgressBar progressBar;
 	private JButton cancelButton;
 	private Downloader dwn;
+	private String loc = null;
 	
 	public DownloadDialog(Config config, URL url){
 		this(config, url, true);
+	}
+	
+	public DownloadDialog(Config config, URL url, boolean systemExit){
+		this(config, url, systemExit, true);
+	}
+	
+	public String getFilePath(){
+		return loc;
 	}
 
 	/**
 	 * Create the dialog.
 	 */
-	public DownloadDialog(Config config, URL url, boolean systemExit) {
+	public DownloadDialog(Config config, URL url, boolean systemExit, boolean openFile) {
 		osu = new Osu();
-		
 		setTitle("Downloading beatmap...");
 		setUndecorated(true);
 		setBounds(100, 100, 471, 167);
@@ -255,18 +263,24 @@ public class DownloadDialog extends JDialog {
 					cancelButton.setEnabled(true);
 					System.out.println("Download failed.");
 				} else if (dwn.getStatus() == Downloader.COMPLETED){
-					lblStatus.setText("Status: Download completed. Opening...");
-					System.out.println("Download completed. Importing...");
+					loc = folder + "\\" + maplink.substring(3) + ".osz";
 					
-					try {
-						Desktop.getDesktop().open(new File(folder + "\\" + maplink.substring(3) + ".osz"));
-					} catch (IOException e1) {
-						e1.printStackTrace();
+					if (openFile){
+						lblStatus.setText("Status: Download completed. Opening...");
+						System.out.println("Download completed. Importing...");
+						
+						try {
+							Desktop.getDesktop().open(new File(loc));
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+						try {
+							Thread.sleep(2000);
+						} catch (InterruptedException e) {}
+					} else {
+						lblStatus.setText("Status: Download completed.");
+						System.out.println("Download completed.");
 					}
-					
-					try {
-						Thread.sleep(2000);
-					} catch (InterruptedException e) {}
 					
 					if (systemExit){
 						System.exit(0);
@@ -275,6 +289,8 @@ public class DownloadDialog extends JDialog {
 						dispose();
 						return;
 					}
+					
+					
 				}
 				
 				
