@@ -13,13 +13,17 @@ import com.github.mob41.osumer.Config;
 import com.github.mob41.osumer.exceptions.OsuException;
 import com.github.mob41.osumer.io.Downloader;
 import com.github.mob41.osumer.io.Osu;
+import com.github.mob41.osumer.io.OsuBeatmap;
 
+import javax.imageio.ImageIO;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
+import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -28,7 +32,16 @@ import java.net.URL;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JProgressBar;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.awt.event.ActionEvent;
+import javax.swing.JTextPane;
+import java.awt.SystemColor;
+import javax.swing.SwingConstants;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class DownloadDialog extends JDialog {
 
@@ -46,6 +59,7 @@ public class DownloadDialog extends JDialog {
 	private JButton cancelButton;
 	private Downloader dwn;
 	private String loc = null;
+	private JLabel lblThumbImg;
 	
 	public DownloadDialog(Config config, URL url){
 		this(config, url, true);
@@ -61,12 +75,20 @@ public class DownloadDialog extends JDialog {
 
 	/**
 	 * Create the dialog.
+	 * @wbp.parser.constructor
 	 */
 	public DownloadDialog(Config config, URL url, boolean systemExit, boolean openFile) {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				askCancel(systemExit);
+			}
+		});
 		osu = new Osu();
 		setTitle("Downloading beatmap...");
+		setModal(true);
 		setUndecorated(true);
-		setBounds(100, 100, 471, 167);
+		setBounds(100, 100, 476, 279);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -79,14 +101,30 @@ public class DownloadDialog extends JDialog {
 		
 		progressBar = new JProgressBar();
 		progressBar.setIndeterminate(true);
+		
+		lblThumbImg = new JLabel("...");
+		lblThumbImg.setHorizontalAlignment(SwingConstants.CENTER);
+		lblThumbImg.setFont(new Font("Tahoma", Font.PLAIN, 27));
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		GroupLayout gl_contentPanel = new GroupLayout(contentPanel);
 		gl_contentPanel.setHorizontalGroup(
 			gl_contentPanel.createParallelGroup(Alignment.LEADING)
-				.addComponent(lblOsumer, GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)
-				.addComponent(lblStatus, GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)
+				.addComponent(lblOsumer, GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE)
 				.addGroup(gl_contentPanel.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(progressBar, GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE)
+					.addComponent(lblThumbImg, GroupLayout.PREFERRED_SIZE, 161, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE)
+					.addContainerGap())
+				.addGroup(gl_contentPanel.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(progressBar, GroupLayout.DEFAULT_SIZE, 441, Short.MAX_VALUE)
+					.addContainerGap())
+				.addGroup(gl_contentPanel.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(lblStatus, GroupLayout.DEFAULT_SIZE, 441, Short.MAX_VALUE)
 					.addContainerGap())
 		);
 		gl_contentPanel.setVerticalGroup(
@@ -94,10 +132,27 @@ public class DownloadDialog extends JDialog {
 				.addGroup(gl_contentPanel.createSequentialGroup()
 					.addComponent(lblOsumer)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(lblStatus)
+					.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
+						.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+						.addComponent(lblThumbImg, GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(progressBar, GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE))
+					.addComponent(lblStatus, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(progressBar, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap())
 		);
+		
+		JTextArea txtrThankYouFor = new JTextArea();
+		txtrThankYouFor.setText(
+				"Your download is starting!\n" + 
+				"Thank you for using osumer!" +
+				" If you like this software, please put a star on my GitHub project.");
+		txtrThankYouFor.setTabSize(3);
+		txtrThankYouFor.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		txtrThankYouFor.setLineWrap(true);
+		txtrThankYouFor.setBackground(SystemColor.control);
+		txtrThankYouFor.setEditable(false);
+		scrollPane.setViewportView(txtrThankYouFor);
 		contentPanel.setLayout(gl_contentPanel);
 		{
 			JPanel buttonPane = new JPanel();
@@ -108,17 +163,7 @@ public class DownloadDialog extends JDialog {
 				cancelButton.setEnabled(false);
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
-						int option = JOptionPane.showOptionDialog(DownloadDialog.this, "Are you sure?", "Cancelling", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 1);
-						if (option == JOptionPane.YES_OPTION){
-							dwn.cancel();
-							if (systemExit){
-								System.exit(0);
-								return;
-							} else {
-								dispose();
-								return;
-							}
-						}
+						askCancel(systemExit);
 					}
 				});
 				cancelButton.setActionCommand("Cancel");
@@ -193,14 +238,14 @@ public class DownloadDialog extends JDialog {
 				
 				lblStatus.setText("Status: Obtaining beatmap download link...");
 				
-				String maplink = null;
+				OsuBeatmap info = null;
 				
 				try {
-					maplink = osu.getBeatmapDownloadLink(url.toString());
+					info = osu.getBeatmapInfo(url.toString());
 				} catch (OsuException e){
 					e.printStackTrace();
 					JOptionPane.showMessageDialog(DownloadDialog.this,
-							"Could not obtain beatmap download link.\n" +
+							"Could not obtain beatmap information.\n" +
 							"Please check whether the beatmap URL link\n" +
 							"is valid. or thet network connection.\n" + 
 							"\nException: \n" + e, "Error", JOptionPane.ERROR_MESSAGE);
@@ -212,6 +257,63 @@ public class DownloadDialog extends JDialog {
 						return;
 					}
 				}
+				
+				System.out.println(info.getThumbUrl());
+				
+				URL thumbUrl = null;
+				
+				try {
+					thumbUrl = new URL("http:" + info.getThumbUrl());
+					System.out.println(thumbUrl.toString());
+				} catch (MalformedURLException e){
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(DownloadDialog.this,
+							"Invalid thumb image URL received.\n" +
+							"Please check whether the beatmap URL link\n" +
+							"is valid. or thet network connection.\n" + 
+							"\nException: \n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+					if (systemExit){
+						System.exit(-1);
+						return;
+					} else {
+						dispose();
+						return;
+					}
+				}
+				
+				try {
+					BufferedImage image = ImageIO.read(thumbUrl);
+					lblThumbImg.setText("");
+					lblThumbImg.setIcon(new ImageIcon(image.getScaledInstance(100, 75, Image.SCALE_DEFAULT)));
+				} catch (IOException e2) {
+					e2.printStackTrace();
+					JOptionPane.showMessageDialog(DownloadDialog.this,
+							"Unable to download thumb image.\n" +
+							"Please check whether the beatmap URL link\n" +
+							"is valid. or thet network connection.\n" + 
+							"\nException: \n" + e2, "Error", JOptionPane.ERROR_MESSAGE);
+					if (systemExit){
+						System.exit(-1);
+						return;
+					} else {
+						dispose();
+						return;
+					}
+				}
+				
+				txtrThankYouFor.setText(
+						"Name: " + info.getName() + "\n" +
+						"Title: " + info.getTitle() + "\n" +
+						"Artist: " + info.getArtist() + "\n" +
+						"Creator: " + info.getCreator() + "\n" +
+						"Genre: " + info.getGenre() + "\n" +
+						"BPM: " + info.getBpm() + "\n" +
+						"Bad rating: " + info.getBadRating() + "\n" +
+						"Good rating: " + info.getGoodRating() + "\n" +
+						"Success rate: " + info.getSuccessRate() + "\n"
+						);
+				
+				String maplink = info.getDwnUrl();
 				
 				URL url = null;
 				
@@ -298,5 +400,19 @@ public class DownloadDialog extends JDialog {
 			
 		});
 		thread.start();
+	}
+	
+	private void askCancel(boolean systemExit){
+		int option = JOptionPane.showOptionDialog(DownloadDialog.this, "Are you sure?", "Cancelling", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 1);
+		if (option == JOptionPane.YES_OPTION){
+			dwn.cancel();
+			if (systemExit){
+				System.exit(0);
+				return;
+			} else {
+				dispose();
+				return;
+			}
+		}
 	}
 }

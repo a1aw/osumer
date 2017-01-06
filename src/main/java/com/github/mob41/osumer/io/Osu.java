@@ -27,6 +27,19 @@ import com.github.mob41.osumer.exceptions.OsuException;
 
 public class Osu {
 	
+//TODO: Hard-code version?
+	
+	public static final int UPDATE_SOURCE_STABLE = 0;
+	
+	public static final int UPDATE_SOURCE_BETA = 1;
+	
+	public static final int UPDATE_SOURCE_SNAPSHOT = 2;
+	
+	public static final int DEFAULT_UPDATE_SOURCE = UPDATE_SOURCE_SNAPSHOT; //Only applies on snapshot branch
+	
+	public static final String OSUMER_VERSION = "0.0.1";
+	
+	
 	public static final int SUCCESS = 0;
 	
 	public static final int INVALID_USERNAME_PASSWORD = 1;
@@ -84,7 +97,7 @@ public class Osu {
 		return true;
 	}
 	
-	public String getBeatmapDownloadLink(String beatmapLink){
+	public OsuBeatmap getBeatmapInfo(String beatmapLink) throws OsuException{
 		try {
 			URL url = new URL(beatmapLink);
 			
@@ -133,6 +146,8 @@ public class Osu {
 			}
 			
 			Document doc = Jsoup.parse(data);
+			return OsuBeatmap.createInstance(doc);
+			/*
 			Elements elements = doc.getElementsByClass("beatmap_download_link");
 			
 			if (elements.size() == 0){
@@ -144,8 +159,9 @@ public class Osu {
 			String href = alnk.attr("href");
 			
 			return href;
+			*/
 		} catch (Exception e) {
-			throw new OsuException("Error occurred when getting download link", e);
+			throw new OsuException("Error occurred when getting beatmap info", e);
 		}
 	}
 	
