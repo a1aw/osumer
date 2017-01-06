@@ -14,10 +14,13 @@ By using this software, I take no responsibility here. Use in your own risk.
 
 ## Features
 
--This software can work **without specifying beatmap's URL manually**, and **activate downloads automatically in-game**. More details, check **downstairs** or [[click here for quick scroll]](https://github.com/mob41/osumer#installation-of-osumerexpress) and [[screenshoots here]](https://github.com/mob41/osumer#screenshoots).
--**Requires osu! user account to work.** The software will **download beatmaps from the osu! forum officially without mirroring.** If you are still uncomfortable with specifying your account to the software, you can simply stop using it. See [disclaimer](https://github.com/mob41/osumer#disclaimer).
--It will start beatmaps download automatically when an arugment of the beatmap URL is passed to the application.
--In the user interface, users can download beatmaps manually by pasting a beatmap URL, and press the ```Download & Import``` button.
+- This software can work **without specifying beatmap's URL manually**, and **activate downloads automatically in-game**. More details, check **downstairs** or [[click here for quick scroll]](https://github.com/mob41/osumer#installation-of-osumerexpress) and [[screenshoots here]](https://github.com/mob41/osumer#screenshoots).
+
+- **Requires osu! user account to work.** The software will **download beatmaps from the osu! forum officially without mirroring.** If you are still uncomfortable with specifying your account to the software, you can simply stop using it. See [disclaimer](https://github.com/mob41/osumer#disclaimer).
+
+- It will start beatmaps download automatically when an arugment of the beatmap URL is passed to the application.
+
+- In the user interface, users can download beatmaps manually by pasting a beatmap URL, and press the ```Download & Import``` button.
 
 ## Screenshoots
 
