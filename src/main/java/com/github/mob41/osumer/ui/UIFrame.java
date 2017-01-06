@@ -47,11 +47,14 @@ import javax.swing.JPopupMenu;
 import javax.swing.JMenu;
 import java.awt.Button;
 import javax.swing.JMenuItem;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class UIFrame extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField mapUrlFld;
+	private JFileChooser chooser;
 
 	/**
 	 * Create the frame.
@@ -62,6 +65,9 @@ public class UIFrame extends JFrame {
 		setTitle("osumer UI");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 655, 462);
+		
+		chooser = new JFileChooser();
+		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -74,6 +80,13 @@ public class UIFrame extends JFrame {
 		lblBeatmapUrl.setFont(new Font("PMingLiU", Font.PLAIN, 16));
 		
 		mapUrlFld = new JTextField();
+		mapUrlFld.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				mapUrlFld.setBackground(Osu.isVaildBeatMapUrl(mapUrlFld.getText()) ? Color.WHITE : Color.PINK);
+				mapUrlFld.setForeground(Osu.isVaildBeatMapUrl(mapUrlFld.getText()) ? Color.BLACK : Color.WHITE);
+			}
+		});
 		mapUrlFld.setFont(new Font("PMingLiU", Font.PLAIN, 16));
 		mapUrlFld.setColumns(10);
 		
@@ -148,18 +161,6 @@ public class UIFrame extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
-				
-			}
-			
-		});
-		popupMenu.add(mntmDwnFolder);
-		
-		JMenuItem mntmDwnAs = new JMenuItem("Download as...");
-		mntmDwnAs.addActionListener(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
 				//Validate URL
 				String urlstr = mapUrlFld.getText();
 				
@@ -177,15 +178,17 @@ public class UIFrame extends JFrame {
 					
 				}
 				
-				//Allow user to choose folder
-				JFileChooser chooser = new JFileChooser();
-				
-				chooser.addChoosableFileFilter(new FileFilter(){
+				//Limit file format to .osz
+				chooser.setFileFilter(new FileFilter(){
 
 					@Override
 					public boolean accept(File arg0) {
 						if (arg0 == null){
 							return false;
+						}
+
+						if (arg0.isDirectory()){
+							return true;
 						}
 						
 						String str = arg0.getName();
@@ -237,6 +240,114 @@ public class UIFrame extends JFrame {
 				}
 				
 				File moveFile = new File(folder.getAbsolutePath() + "\\" + dwnFile.getName());
+				System.out.println(moveFile.getAbsolutePath());
+				
+				try {
+					FileOutputStream out = new FileOutputStream(moveFile);
+					Files.copy(dwnFile.toPath(), out);
+					out.flush();
+					out.close();
+				} catch (IOException e1){
+					e1.printStackTrace();
+				}
+				
+				dwnFile.delete();
+				
+				JOptionPane.showMessageDialog(UIFrame.this, "Download completed at location:\n" + moveFile.getAbsolutePath(), "Info", JOptionPane.INFORMATION_MESSAGE);
+			}
+			
+		});
+		popupMenu.add(mntmDwnFolder);
+		
+		JMenuItem mntmDwnAs = new JMenuItem("Download as...");
+		mntmDwnAs.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//Validate URL
+				String urlstr = mapUrlFld.getText();
+				
+				if (!Osu.isVaildBeatMapUrl(urlstr)){
+					JOptionPane.showMessageDialog(null, "The beatmap URL provided isn't a vaild osu! beatmap URL.", "Error", JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				
+				URL url = null;
+				try {
+					url = new URL(urlstr);
+				} catch (MalformedURLException e1){
+					JOptionPane.showMessageDialog(null, "The beatmap URL provided isn't a vaild osu! beatmap URL.", "Error", JOptionPane.WARNING_MESSAGE);
+					return;
+					
+				}
+				
+				//Limit file format to .osz
+				chooser.setFileFilter(new FileFilter(){
+
+					@Override
+					public boolean accept(File arg0) {
+						if (arg0 == null){
+							return false;
+						}
+
+						if (arg0.isDirectory()){
+							return true;
+						}
+						
+						String str = arg0.getName();
+						final String ext = ".osz";
+						
+						if (str.length() < ext.length()){
+							return false;
+						}
+						
+						return str.endsWith(ext);
+					}
+
+					@Override
+					public String getDescription() {
+						return "osu! beatmap";
+					}
+					
+				});
+				chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+				
+				int option = chooser.showSaveDialog(UIFrame.this);
+				
+				if (option == JFileChooser.CANCEL_OPTION){
+					return;
+				}
+				
+				File targetFile = chooser.getSelectedFile();
+				
+				//Download
+				DownloadDialog dialog = new DownloadDialog(config, url, false, false);
+				dialog.setModal(true);
+				dialog.setUndecorated(false);
+				dialog.setVisible(true);
+				dialog.setAlwaysOnTop(true);
+				dialog.setLocationRelativeTo(UIFrame.this);
+				
+				//Move file
+				String filePath = dialog.getFilePath();
+				System.out.println(filePath);
+				
+				if (filePath == null){
+					return;
+				}
+				
+				File dwnFile = new File(filePath);
+				
+				if (!dwnFile.exists()){
+					return;
+				}
+				
+				String path = targetFile.getAbsolutePath();
+				if (!path.endsWith(".osz")){
+					path += ".osz";
+				}
+				
+				File moveFile = new File(path);
 				System.out.println(moveFile.getAbsolutePath());
 				
 				try {
