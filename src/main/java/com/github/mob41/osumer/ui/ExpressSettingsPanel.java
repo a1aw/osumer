@@ -50,6 +50,12 @@ public class ExpressSettingsPanel extends JPanel {
 		JButton btnUninstallOsumer = new JButton("(*Admin) Uninstall osumerExpress");
 		btnUninstallOsumer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				int option = JOptionPane.showOptionDialog(null, "Are you sure to uninstall? Program defaults in Windows will be reset.", "Uninstall osumerExpress", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 1);
+				
+				if (option == JOptionPane.CLOSED_OPTION || option == JOptionPane.CANCEL_OPTION){
+					return;
+				}
+				
 				try {
 					installer.uninstall();
 				} catch (OsuException e){
