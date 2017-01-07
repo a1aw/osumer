@@ -16,31 +16,31 @@ public class OsuBeatmap implements Serializable{
 	 */
 	private static final long serialVersionUID = 5568409538053247272L;
 
-	public final String name;
+	private final String name;
 	
-	public final String[] difficulties;
+	private final String[] difficulties;
 	
-	public final String title;
+	private final String title;
 	
-	public final String artist;
+	private final String artist;
 	
-	public final String creator;
+	private final String creator;
 	
-	public final String source;
+	private final String source;
 	
-	public final String genre;
+	private final String genre;
 	
-	public final String dwnUrl;
+	private final String dwnUrl;
 	
-	public final String thumbUrl;
+	private final String thumbUrl;
 	
-	public final int bad_rating;
+	private final int bad_rating;
 	
-	public final int good_rating;
+	private final int good_rating;
 	
-	public final int bpm;
+	private final int bpm;
 	
-	public final float success_rate;
+	private final float success_rate;
 
 	private OsuBeatmap(String name, String[] difficulties, String title,
 			String artist, String creator, String source, String genre,
@@ -103,6 +103,10 @@ public class OsuBeatmap implements Serializable{
 
 	public int getGoodRating() {
 		return good_rating;
+	}
+	
+	public float getRating(){
+		return (float) good_rating / (bad_rating + good_rating) * 100;
 	}
 
 	public int getBpm() {
@@ -329,6 +333,12 @@ public class OsuBeatmap implements Serializable{
 					case 4:
 						break;
 					case 5: //Integer BPM
+						el_a = el.select("td").first();
+						if (el_a != null && el_a.html().contains("Not yet played!")){
+							success_rate = -1;
+							break;
+						}
+						
 						el_a = el.select("td b").first();
 						if (el_a == null){
 							throw new OsuException("No success rate related data. Page broke?");

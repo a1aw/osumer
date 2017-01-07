@@ -1,5 +1,6 @@
 package com.github.mob41.osumer.ui;
 
+import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Desktop;
 import java.awt.FlowLayout;
@@ -23,11 +24,16 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JProgressBar;
@@ -36,6 +42,8 @@ import java.awt.image.BufferedImage;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextPane;
 import java.awt.SystemColor;
+import java.awt.Toolkit;
+
 import javax.swing.SwingConstants;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -49,7 +57,21 @@ public class DownloadDialog extends JDialog {
 	 * 
 	 */
 	private static final long serialVersionUID = 2096061865175333592L;
-	private final JPanel contentPanel = new JPanel();
+	
+	private Image icon256px = Toolkit.getDefaultToolkit().getImage(UIFrame.class.getResource("/com/github/mob41/osumer/ui/osumerIcon_256px.png"));
+	
+	private final JPanel contentPanel = new JPanel(){
+		@Override
+		public void paintComponent(Graphics g){
+			super.paintComponent(g);
+			Graphics2D g2 = (Graphics2D) g;
+			int width = getWidth();
+			int height = getHeight();
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.5f));
+			g2.drawImage(icon256px, 0, height / 2, contentPanel);
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+		}
+	};
 	
 	private Osu osu;
 	private Thread thread;
@@ -142,17 +164,17 @@ public class DownloadDialog extends JDialog {
 					.addContainerGap())
 		);
 		
-		JTextArea txtrThankYouFor = new JTextArea();
-		txtrThankYouFor.setText(
+		JTextArea txtPn = new JTextArea();
+		txtPn.setText(
 				"Your download is starting!\n" + 
 				"Thank you for using osumer!" +
 				" If you like this software, please put a star on my GitHub project.");
-		txtrThankYouFor.setTabSize(3);
-		txtrThankYouFor.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		txtrThankYouFor.setLineWrap(true);
-		txtrThankYouFor.setBackground(SystemColor.control);
-		txtrThankYouFor.setEditable(false);
-		scrollPane.setViewportView(txtrThankYouFor);
+		txtPn.setTabSize(3);
+		txtPn.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		txtPn.setLineWrap(true);
+		txtPn.setBackground(SystemColor.control);
+		txtPn.setEditable(false);
+		scrollPane.setViewportView(txtPn);
 		contentPanel.setLayout(gl_contentPanel);
 		{
 			JPanel buttonPane = new JPanel();
@@ -236,7 +258,7 @@ public class DownloadDialog extends JDialog {
 					}
 				}
 				
-				lblStatus.setText("Status: Obtaining beatmap download link...");
+				lblStatus.setText("Status: Obtaining beatmap information...");
 				
 				OsuBeatmap info = null;
 				
@@ -281,33 +303,35 @@ public class DownloadDialog extends JDialog {
 					}
 				}
 				
+				if (thread.isInterrupted()){
+					return;
+				}
+				
+				lblStatus.setText("Status: Fetching beatmap thumb image...");
 				try {
-					BufferedImage image = ImageIO.read(thumbUrl);
+					URLConnection conn = thumbUrl.openConnection();
+					conn.setConnectTimeout(5000);
+					conn.setReadTimeout(5000);
+					BufferedImage image = ImageIO.read(conn.getInputStream());
 					lblThumbImg.setText("");
 					lblThumbImg.setIcon(new ImageIcon(image.getScaledInstance(100, 75, Image.SCALE_DEFAULT)));
 				} catch (IOException e2) {
 					e2.printStackTrace();
-					JOptionPane.showMessageDialog(DownloadDialog.this,
-							"Unable to download thumb image.\n" +
-							"Please check whether the beatmap URL link\n" +
-							"is valid. or thet network connection.\n" + 
-							"\nException: \n" + e2, "Error", JOptionPane.ERROR_MESSAGE);
-					if (systemExit){
-						System.exit(-1);
-						return;
-					} else {
-						dispose();
-						return;
-					}
+					lblThumbImg.setText("Fetch failed");
 				}
 				
-				txtrThankYouFor.setText(
+				if (thread.isInterrupted()){
+					return;
+				}
+				
+				txtPn.setText(
 						"Name: " + info.getName() + "\n" +
 						"Title: " + info.getTitle() + "\n" +
 						"Artist: " + info.getArtist() + "\n" +
 						"Creator: " + info.getCreator() + "\n" +
 						"Genre: " + info.getGenre() + "\n" +
 						"BPM: " + info.getBpm() + "\n" +
+						"Rating (%): " + info.getRating() + "%\n" +
 						"Bad rating: " + info.getBadRating() + "\n" +
 						"Good rating: " + info.getGoodRating() + "\n" +
 						"Success rate: " + info.getSuccessRate() + "\n"
@@ -339,7 +363,7 @@ public class DownloadDialog extends JDialog {
 				progressBar.setStringPainted(true);
 				
 				lblOsumer.setText("osuming...");
-				lblStatus.setText("Status: Downloading beatmap " + maplink.substring(3));
+				lblStatus.setText("Status: Downloading \"" + info.getName() + "\"...");
 				
 				String folder = System.getProperty("java.io.tmpdir");
 				dwn = new Downloader(folder, osu, url);
@@ -348,6 +372,10 @@ public class DownloadDialog extends JDialog {
 				
 				System.out.println("Download started.");
 				while (dwn.getStatus() == Downloader.DOWNLOADING){
+					if (thread.isInterrupted()){
+						return;
+					}
+					
 					int progress = (int) dwn.getProgress();
 					
 					System.out.print(""); //If not doing this, problems will happen in .exe version :(
@@ -405,7 +433,10 @@ public class DownloadDialog extends JDialog {
 	private void askCancel(boolean systemExit){
 		int option = JOptionPane.showOptionDialog(DownloadDialog.this, "Are you sure?", "Cancelling", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 1);
 		if (option == JOptionPane.YES_OPTION){
-			dwn.cancel();
+			if (dwn != null){
+				dwn.cancel();
+			}
+			thread.interrupt();
 			if (systemExit){
 				System.exit(0);
 				return;

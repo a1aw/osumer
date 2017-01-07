@@ -83,7 +83,7 @@ Put a star if you like this software! I would be happy to continue developing th
 [![osu!account](http://osusig.ppy.sh/image1.png?uid=9125315&m=0)](https://osu.ppy.sh/u/9125315)
 
 ## License
-[tl;dl](https://tldrlegal.com/license/mit-license) Based on MIT License. 
+[tl;dr](https://tldrlegal.com/license/mit-license) Based on MIT License. 
 
 ```
 MIT License
