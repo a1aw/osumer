@@ -6,6 +6,8 @@ import java.util.Calendar;
 
 import org.json.JSONObject;
 
+import com.github.mob41.osumer.io.Osu;
+
 public class DebugDump {
 	
 	private final String os;
@@ -38,7 +40,7 @@ public class DebugDump {
 	
 	public DebugDump(String specified_data, String last_op, String this_op, String next_op, String message, boolean containsPrivateData, Exception e) {
 		os = System.getProperty("os.name");
-		osumerVersion = "unknown";
+		osumerVersion = Osu.OSUMER_VERSION;
 		debuggerVersion = "unknown";
 		
 		Calendar cal = Calendar.getInstance();
