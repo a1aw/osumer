@@ -7,6 +7,7 @@ import java.util.Calendar;
 import org.json.JSONObject;
 
 import com.github.mob41.osumer.io.Osu;
+import com.github.mob41.osumer.ui.ErrorDumpDialog;
 
 public class DebugDump {
 	
@@ -68,12 +69,18 @@ public class DebugDump {
 		this.nextoperation = next_op;
 	}
 	
+	public long getGenerated(){
+		return generated;
+	}
+	
 	@Override
 	public String toString(){
 		return 	"===!===!===!===!-osumer-debugger-dump-!===!===!===!===\n" +
 				"Debug information generated on " + generated_human + " (" + generated + " ms)\n" +
 				"osumerDebugger v." + debuggerVersion + "\n" +
 				"osumer v." + osumerVersion + "\n" +
+				"\n" +
+				"O/S Name: " + os + "\n" +
 				"\n" +
 				"Current operation: " + thisoperation + "\n" +
 				"Returned message: " + message + "\n" +
@@ -87,8 +94,9 @@ public class DebugDump {
 				"===!===!===!===!-dump-end-!===!===!===!===\n";
 	}
 	
-	public static void showDebugDialog(DebugDump dump){
-		
+	public static void showDebugDialog(DebuggableException e){
+		ErrorDumpDialog dialog = new ErrorDumpDialog(e);
+		dialog.setVisible(true);
 	}
 
 }

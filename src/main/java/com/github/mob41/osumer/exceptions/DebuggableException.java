@@ -1,5 +1,7 @@
 package com.github.mob41.osumer.exceptions;
 
+import java.awt.GraphicsEnvironment;
+
 public class DebuggableException extends OsuException {
 	
 	private final DebugDump dump;

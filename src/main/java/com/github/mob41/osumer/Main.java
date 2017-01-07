@@ -34,6 +34,10 @@ public class Main {
 	;
 	
 	public static void main(String[] args){
+		if (args.length == 1 && args[0].equals("-version")){
+			System.out.println(Osu.OSUMER_VERSION + "-" + Osu.OSUMER_BRANCH + "-" + Osu.OSUMER_BUILD_NUM);
+			return;
+		}
 		System.out.println(INTRO);
 		if (!GraphicsEnvironment.isHeadless()){
 			try {
