@@ -4,9 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
+import java.util.Calendar;
 import java.util.Iterator;
 
 import org.json.JSONArray;
@@ -15,6 +16,11 @@ import org.json.JSONObject;
 
 import com.github.mob41.osumer.Config;
 import com.github.mob41.osumer.exceptions.DebuggableException;
+import com.github.mob41.osumer.exceptions.InvalidSourceIntegerException;
+import com.github.mob41.osumer.exceptions.NoBuildsForVersionException;
+import com.github.mob41.osumer.exceptions.NoSuchBuildNumberException;
+import com.github.mob41.osumer.exceptions.NoSuchSourceException;
+import com.github.mob41.osumer.exceptions.NoSuchVersionException;
 import com.github.mob41.osumer.io.Downloader;
 import com.github.mob41.osumer.io.Osu;
 
@@ -32,9 +38,9 @@ public class Updater {
 	//executable is changed, the updater won't run.
 	private static final String LEGACY_UPDATER_MD5_CHECKSUM = "";
 	
-	private static final String VERSION_LIST = "https://github.com/mob41/osumer-updater/releases/download/legacy/versions.json";
+	private static final String VERSION_LIST = "https://mob41.github.io/osumer-updater/versions.json";
 	
-	private static final String UPDATER_JAR = "https://github.com/mob41/osumer-updater/releases/download/legacy/updater.jar";
+	private static final String UPDATER_JAR = "https://mob41.github.io/osumer-updater/updater.jar";
 	
 	private static final String SOURCE_SNAPSHOT = "snapshot";
 	
@@ -75,7 +81,7 @@ public class Updater {
 		URL url = null;
 		
 		try {
-			url = new URL(VERSION_LIST);
+			url = new URL(VERSION_LIST + "?update=" + Calendar.getInstance().getTimeInMillis());
 		} catch (MalformedURLException e){
 			throw new DebuggableException(
 					VERSION_LIST,
@@ -88,7 +94,11 @@ public class Updater {
 		
 		String data = "";
 		try {
-			URLConnection conn = url.openConnection();
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			
+			conn.setRequestMethod("GET");
+			conn.setRequestProperty("Connection", "close");
+			conn.setUseCaches(false);
 			conn.setConnectTimeout(10000);
 			conn.setReadTimeout(10000);
 			
@@ -137,7 +147,7 @@ public class Updater {
 					VERSION_LIST,
 					"Create JSONObject",
 					"JSONObject validating \"sources\" parameter",
-					"Get latest version from JSON",
+					"Convert source integer to string",
 					"Structure invalid, missing \"sources\" parameter",
 					false);
 		}
@@ -158,56 +168,107 @@ public class Updater {
 			sourceKey = SOURCE_STABLE;
 			break;
 		default:
-			return null;
+			System.out.println("Nulldefauylt source key");
+			throw new InvalidSourceIntegerException(
+					json.toString(5),
+					"JSONObject validating \"sources\" parameter",
+					"Convert source integer to string",
+					"Validate sources' JSONObject and set variable",
+					updateSource);
 		}
+		
+		System.out.println(sourcesJson.toString(5));
 		
 		if (sourcesJson.isNull(sourceKey)){
-			return null;
+			System.out.println("Null source key");
+			throw new NoSuchSourceException(
+					json.toString(5),
+					"Convert source integer to string",
+					"Validate sources' JSONObject and set variable",
+					"Validate versions' JSONObject and set variable",
+					sourceKey);
 		}
 		
-		if (sourcesJson.isNull(thisVersion)){
-			return null;
+		JSONObject versionsJson = sourcesJson.getJSONObject(sourceKey);
+		
+		if (versionsJson.isNull(thisVersion)){
+			System.out.println("Null version");
+			throw new NoSuchVersionException(
+					json.toString(5),
+					"Validate sources' JSONObject and set variable",
+					"Validate versions' JSONObject and set variable",
+					"Validate builds JSONArray and set variable",
+					sourceKey,
+					thisVersion);
 		}
 		
-		buildsArr = sourcesJson.getJSONArray(thisVersion);
+		buildsArr = versionsJson.getJSONArray(thisVersion);
 		
+		System.out.println(buildsArr.length() + "/" + buildNum);
 		if (buildsArr.length() < buildNum){
-			return null;
+			System.out.println("Smaller return null");;
+			throw new NoSuchBuildNumberException(
+					json.toString(5),
+					"Validate versions' JSONObject and set variable",
+					"Validate builds JSONArray and set variable",
+					"Get latest build number from JSONArray",
+					buildNum);
 		}
 		
 		int latest = buildsArr.length();
 		
 		JSONObject verJson = buildsArr.getJSONObject(latest - 1);
 		
-		if ((verJson.isNull("last") || !verJson.getBoolean("last")) &&
+		if ((verJson.isNull("ended") || !verJson.getBoolean("ended")) &&
 				(!buildBranch.equals(sourceKey) || latest != buildNum)){
-			return new VersionInfo(thisVersion, updateSource, buildNum, false, false);
+			return new VersionInfo(thisVersion, updateSource, latest, false, false);
 		}
 		
+		System.out.println("Version ended");
+		
 		//As the version is ended, we are finding a new version here
-		Iterator<String> it = sourcesJson.keys();
+		Iterator<String> it = versionsJson.keys();
 		String key;
 		String upgradeNode = null;
 		while (it.hasNext()){
 			key = it.next();
+			System.out.println("Compare: " + key + " and " + thisVersion);
 			switch (compareVersion(thisVersion, key)){
 			case -2:
+				System.out.println("Not a ver node");
 				break;
 			case -1:
-				upgradeNode = key;
+				System.out.println("Newer than this version");
+				if ((upgradeNode != null && compareVersion(upgradeNode, key) == -1) ||
+						upgradeNode == null){
+					upgradeNode = key;
+				}
 				break;
 			case 0:
+				System.out.println("Equal to this version");
 				break;
 			case 1:
+				System.out.println("Older than this version");
 				break;
 			}
 		}
 		
-		int upgradedBuildNum = upgradeNode != null ?
-				sourcesJson.getJSONArray(upgradeNode).length() : -1;
+		System.out.println("Upgradeto: " + upgradeNode);
 		
+		int upgradedBuildNum = upgradeNode != null ?
+				versionsJson.getJSONArray(upgradeNode).length() : -1;
+		
+		if (upgradedBuildNum == 0){
+			System.out.println("No builds");
+			throw new NoBuildsForVersionException(
+					json.toString(5),
+					"Get Upgrade Node",
+					"Validate build info JSON",
+					"Return VersionInfo");
+		}
+				
 		return upgradeNode != null && upgradedBuildNum != -1 ?
-				new VersionInfo(upgradeNode, updateSource, buildNum, false, true) :
+				new VersionInfo(upgradeNode, updateSource, upgradedBuildNum, false, true) :
 				new VersionInfo(thisVersion, updateSource, buildNum, true, false);
 	}
 	
@@ -238,24 +299,41 @@ public class Updater {
 		return compareVersion(ver0sub[0], ver0sub[1], ver0sub[2], ver1sub[0], ver1sub[1], ver1sub[2]);
 	}
 	
+	public static String getBranchStr(int updateSource){
+		switch (updateSource){
+		case UPDATE_SOURCE_SNAPSHOT:
+			return SOURCE_SNAPSHOT;
+		case UPDATE_SOURCE_BETA:
+			return SOURCE_BETA;
+		case UPDATE_SOURCE_STABLE:
+			return SOURCE_STABLE;
+		default:
+			return null;
+		}
+	}
+	
 	/**
 	 *  Returns 1 if ver0 newer than ver1<br>
 		Returns -1 if ver0 older than ver1<br>
 		Returns 0 if they are the same<br>
 	 */
 	public static int compareVersion(int ver0sub0, int ver0sub1, int ver0sub2, int ver1sub0, int ver1sub1, int ver1sub2){
+
+		System.out.println(ver0sub0 + " : "+ ver1sub0);
 		if (ver0sub0 > ver1sub0){
 			return 1;
 		} else if (ver0sub0 < ver1sub0){
 			return -1;
 		}
-		
+
+		System.out.println(ver0sub1 + " : " +ver1sub1);
 		if (ver0sub1 > ver1sub1){
 			return 1;
 		} else if (ver0sub1 < ver1sub1){
 			return -1;
 		}
-		
+
+		System.out.println(ver0sub2 + " : "+ ver1sub2);
 		if (ver0sub2 > ver1sub2){
 			return 1;
 		} else if (ver0sub2 < ver1sub2){
@@ -268,31 +346,27 @@ public class Updater {
 	public static int[] separateVersion(String versionNode){
 		int[] out = new int[3];
 		
-		String str = versionNode;
+		String str;
 		int outIndex = 0;
 		int tmp = 0;
-		int dotIndex = -1;
-		for (int i = 0; i < versionNode.length(); i++){
-			dotIndex = str.indexOf('.');
-			
-			if (dotIndex == -1){
-				if (outIndex != 2){
-					return null;
-				}
-			} else if (outIndex >= 3){
-				return out;
-			}
-			
-			str = str.substring(tmp, dotIndex);
-			
-			try {
-				out[outIndex] = Integer.parseInt(str);
-			} catch (NumberFormatException e){
+		for (int i = 0; i <= versionNode.length(); i++){
+			if (outIndex >= 3){
 				return null;
 			}
-			outIndex++;
+			
+			if (versionNode.length() == i || versionNode.charAt(i) == '.'){
+				str = versionNode.substring(tmp, i);
+				tmp = i + 1;
+				
+				try {
+					out[outIndex] = Integer.parseInt(str);
+				} catch (NumberFormatException e){
+					return null;
+				}
+				
+				outIndex++;
+			}
 		}
-		
 		return out;
 	}
 
