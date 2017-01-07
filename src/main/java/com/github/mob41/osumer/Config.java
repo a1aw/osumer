@@ -15,6 +15,9 @@ import org.apache.commons.codec.binary.Base64;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.github.mob41.osumer.io.Osu;
+import com.github.mob41.osumer.updater.Updater;
+
 public class Config {
 
 	public static final String DEFAULT_DATA_FILE_NAME = "osumer_configuration.json";
@@ -51,6 +54,10 @@ public class Config {
 	
 	public void removePass(){
 		json.remove("pass");
+	}
+	
+	public void setUpdateSource(int updateSource){
+		json.put("updateSource", updateSource);
 	}
 	
 	public void setSwitchToBrowserIfWithoutUiArg(boolean switchTo){
@@ -123,6 +130,14 @@ public class Config {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	public int getUpdateSource(){
+		if (json.isNull("updateSource")){
+			return Updater.DEFAULT_UPDATE_SOURCE;
+		}
+		
+		return json.getInt("updateSource");
 	}
 
 	public void load() throws IOException{

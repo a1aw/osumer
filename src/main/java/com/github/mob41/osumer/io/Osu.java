@@ -29,16 +29,11 @@ public class Osu {
 	
 //TODO: Hard-code version?
 	
-	public static final int UPDATE_SOURCE_STABLE = 0;
+	public static final String OSUMER_VERSION = "0.0.3";
 	
-	public static final int UPDATE_SOURCE_BETA = 1;
+	public static final String OSUMER_BRANCH = "snapshot";
 	
-	public static final int UPDATE_SOURCE_SNAPSHOT = 2;
-	
-	public static final int DEFAULT_UPDATE_SOURCE = UPDATE_SOURCE_SNAPSHOT; //Only applies on snapshot branch
-	
-	public static final String OSUMER_VERSION = "0.0.1";
-	
+	public static final int OSUMER_BUILD_NUM = 1;
 	
 	public static final int SUCCESS = 0;
 	
