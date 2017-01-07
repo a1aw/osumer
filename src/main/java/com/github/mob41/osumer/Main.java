@@ -18,7 +18,7 @@ public class Main {
 	
 	public static final String INTRO = 
 			"osumer (osu! beatMap downloadEr) by mob41\n" +
-			"Licenced under MIT Licence\n" +
+			"Licenced under MIT License\n" +
 			"\n" +
 			"https://github.com/mob41/osumer\n" +
 			"\n" +
