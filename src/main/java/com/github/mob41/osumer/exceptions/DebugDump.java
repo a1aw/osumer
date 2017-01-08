@@ -108,8 +108,8 @@ public class DebugDump {
 				"===!===!===!===!-dump-end-!===!===!===!===\n";
 	}
 	
-	public static void showDebugDialog(DebuggableException e){
-		ErrorDumpDialog dialog = new ErrorDumpDialog(e);
+	public static void showDebugDialog(DebugDump debugDump){
+		ErrorDumpDialog dialog = new ErrorDumpDialog(debugDump);
 		dialog.setVisible(true);
 	}
 
