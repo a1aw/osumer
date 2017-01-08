@@ -23,7 +23,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.github.mob41.osumer.exceptions.OsuException;
+import com.github.mob41.osumer.exceptions.DebuggableException;
 
 public class Osu {
 	
@@ -92,7 +92,7 @@ public class Osu {
 		return true;
 	}
 	
-	public OsuBeatmap getBeatmapInfo(String beatmapLink) throws OsuException{
+	public OsuBeatmap getBeatmapInfo(String beatmapLink) throws DebuggableException{
 		try {
 			URL url = new URL(beatmapLink);
 			
@@ -146,7 +146,7 @@ public class Osu {
 			Elements elements = doc.getElementsByClass("beatmap_download_link");
 			
 			if (elements.size() == 0){
-				throw new OsuException("No download link available. Invalid beatmap url?");
+				throw new DebuggableException("No download link available. Invalid beatmap url?");
 			}
 			
 			Element alnk = elements.get(0);
@@ -156,11 +156,17 @@ public class Osu {
 			return href;
 			*/
 		} catch (Exception e) {
-			throw new OsuException("Error occurred when getting beatmap info", e);
+			throw new DebuggableException(
+					beatmapLink,
+					"(Try&catch try) getting beatmap info",
+					"Throw debuggable exception on catch",
+					"(End of function)",
+					"Error occurred when getting beatmap info",
+					false, e);
 		}
 	}
 	
-	public int login(String username, String password) throws OsuException{
+	public int login(String username, String password) throws DebuggableException{
 		try {
 			String urlPara = 
 					"login=Login&" +
@@ -221,7 +227,13 @@ public class Osu {
 			List<String> locationHeader = headerFields.get("Location");
 			
 			if (locationHeader == null || locationHeader.size() != 1 || !locationHeader.get(0).equals(INDEX_LOCATION_URL)){
-				throw new OsuException("Login failed, redirected to a non-index page");
+				throw new DebuggableException(
+						"",
+						"Get \"Location\" from headerFields and assign to locationHeader",
+						"Validate locationHeader is not null or locationHeader.size() is 1 or locationHeader.get(0) is equal to INDEX_LOCATION_URL",
+						"Get \"Set-Cookie\" from headerFields and assign to cookiesHeader",
+						"Login failed. Redirected to a non-index page.",
+						true);
 			}
 			
 			List<String> cookiesHeader = headerFields.get("Set-Cookie");
@@ -234,11 +246,17 @@ public class Osu {
 			
 			return SUCCESS;
 		} catch (Exception e) {
-			throw new OsuException("Error occurred when logging in", e);
+			throw new DebuggableException(
+					"",
+					"(Try&catch try) Logging in",
+					"Throw debuggable exception on catch",
+					"(End of function)",
+					"Error occurred when logging in",
+					true, e);
 		}
 	}
 	
-	public int logout(String sid) throws OsuException{
+	public int logout(String sid) throws DebuggableException{
 		try {
 			String urlPara =
 					"sid=" + sid; //Session ID
@@ -278,7 +296,13 @@ public class Osu {
 			System.out.println(data);
 			return SUCCESS;
 		} catch (Exception e) {
-			throw new OsuException("Error occurred when logging in", e);
+			throw new DebuggableException(
+					"",
+					"(Try&catch try) Logging out",
+					"Throw debuggable exception on catch",
+					"(End of function)",
+					"Error occurred when logging out",
+					true, e);
 		}
 	}
 	

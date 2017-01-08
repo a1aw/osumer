@@ -274,7 +274,7 @@ public class UIFrame extends JFrame {
 					
 				}
 				
-				DownloadDialog dialog = new DownloadDialog(config, url, false);
+				DownloadDialog dialog = new DownloadDialog(config, url, false, false, true);
 				dialog.setModal(true);
 				dialog.setUndecorated(false);
 				dialog.setVisible(true);
