@@ -1,12 +1,19 @@
 package com.github.mob41.osumer.io;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.codec.binary.Base64;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.github.mob41.osumer.exceptions.DebuggableException;
 import com.sun.jna.platform.win32.Advapi32Util;
@@ -19,6 +26,8 @@ public class Installer {
 	public static final String winPath = "C:\\Program Files\\osumer";
 	
 	public static final String winFile = "osumer.exe";
+	
+	public static final String verInfoFile = "version.osumer";
 	
 	private static final String WIN_REG_CLIENTS_PATH = "SOFTWARE\\Clients\\StartMenuInternet";
 	
@@ -193,12 +202,59 @@ public class Installer {
 		return value;
 	}
 	
+	public boolean isSameVersionInstalled(){
+		if (!Osu.isWindows()){
+			return false;
+		}
+		
+		if (!isInstalled()){
+			return false;
+		}
+		
+		File file = new File(winPath + "\\" + verInfoFile);
+		try {
+			FileInputStream in = new FileInputStream(file);
+			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+			int read;
+			
+			byte[] data = new byte[1024];
+			while ((read = in.read(data, 0, data.length)) != -1) {
+			  buffer.write(data, 0, read);
+			}
+
+			buffer.flush();
+
+			String str = new String(Base64.decodeBase64(data), StandardCharsets.UTF_8);
+			System.out.println(str);
+			
+			JSONObject json = null;
+			try {
+				json = new JSONObject(str);
+			} catch (JSONException e){
+				return false;
+			}
+			
+			String ver = json.isNull("version") ? null : json.getString("version");
+			String branch = json.isNull("branch") ? null : json.getString("branch");
+			int build = json.isNull("build") ? -1 : json.getInt("build");
+			
+			if (ver == null || branch == null || build == -1){
+				return false;
+			}
+			
+			return ver.equals(Osu.OSUMER_VERSION) && branch.equals(Osu.OSUMER_BRANCH) && build == Osu.OSUMER_BUILD_NUM;
+		} catch (IOException e){
+			return false;
+		}
+	}
+	
 	public boolean isInstalled(){
 		File file = new File(winPath + "\\" + winFile);
 		return file.exists();
 	}
 	
-	public boolean isInstallationValid(){
+	public boolean isInstallValid(){
 		//TODO Do verification
 		return false;
 	}
@@ -240,6 +296,34 @@ public class Installer {
 			destFolder.mkdirs();
 		}
 		
+		File verInfo = new File(winPath + "\\" + verInfoFile);
+		
+		try {
+			if (verInfo.exists()){
+				verInfo.delete();
+			}
+			
+			JSONObject verInfoJson = new JSONObject();
+			verInfoJson.put("version", Osu.OSUMER_VERSION);
+			verInfoJson.put("branch", Osu.OSUMER_BRANCH);
+			verInfoJson.put("build", Osu.OSUMER_BUILD_NUM);
+			
+			verInfo.createNewFile();
+			
+			FileOutputStream out = new FileOutputStream(verInfo);
+			out.write(Base64.encodeBase64(verInfoJson.toString().getBytes(StandardCharsets.UTF_8)));
+			out.flush();
+			out.close();
+		} catch (IOException e) {
+			throw new DebuggableException(
+					null,
+					"Create new File instance with \"" + winPath + "\\" + verInfoFile + "\"",
+					"Create application version info",
+					"Create new File instance with \"" + winPath + "\\" + winFile + "\"",
+					"Error creating version info",
+					false, e);
+		}
+		
 		File dest = new File(winPath + "\\" + winFile);
 		
 		try {
@@ -256,9 +340,9 @@ public class Installer {
 		} catch (IOException e) {
 			throw new DebuggableException(
 					null,
-					"(Try&catch try)",
-					"Throw debuggable exception",
-					"(Try&catch try) Writing to registry",
+					"Create new File instance with \"" + winPath + "\\" + winFile + "\"",
+					"(Try scope) Copying file",
+					"(Next Try scope) Writing to registry",
 					"Error copying file",
 					false, e);
 		}

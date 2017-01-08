@@ -28,6 +28,8 @@ import javax.swing.JComboBox;
 import javax.swing.SwingConstants;
 import java.awt.Font;
 import java.awt.Color;
+import javax.swing.JTextPane;
+import java.awt.SystemColor;
 
 public class ExpressSettingsPanel extends JPanel {
 	private Config config;
@@ -39,6 +41,9 @@ public class ExpressSettingsPanel extends JPanel {
 	private JPanel notsupportedpanel;
 	private JLabel lblPleaseRestartOsumer;
 	private JComboBox browserBox;
+	private JLabel lblPleaseRestartOsumer_1;
+	private JButton btnReinstall;
+	private JPanel vermispanel;
 
 	/**
 	 * Create the panel.
@@ -310,6 +315,83 @@ public class ExpressSettingsPanel extends JPanel {
 					.addContainerGap(130, Short.MAX_VALUE))
 		);
 		notsupportedpanel.setLayout(gl_notsupportedpanel);
+		
+		vermispanel = new JPanel();
+		add(vermispanel, "name_83607154979029");
+		
+		JLabel lblVersionMismatch = new JLabel("Installed Version Mismatch");
+		lblVersionMismatch.setHorizontalAlignment(SwingConstants.CENTER);
+		lblVersionMismatch.setForeground(Color.RED);
+		lblVersionMismatch.setFont(new Font("PMingLiU", Font.BOLD, 20));
+		
+		JTextPane txtpnTheVersionOf = new JTextPane();
+		txtpnTheVersionOf.setText("The version of osumer installed does not match to the one you are running. This will affect the ability of osumerExpress. Please press \"Reinstall\" to reinstall to this one's version of osumer.");
+		txtpnTheVersionOf.setBackground(SystemColor.control);
+		txtpnTheVersionOf.setEditable(false);
+		
+		btnReinstall = new JButton("(*Admin) Reinstall osumerExpress");
+		btnReinstall.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int option = JOptionPane.showOptionDialog(null, "Are you sure to reinstall?", "Reinstall osumerExpress", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 1);
+				
+				if (option == JOptionPane.CLOSED_OPTION || option == JOptionPane.NO_OPTION){
+					return;
+				}
+				
+				try {
+					installer.uninstall();
+				} catch (OsuException e){
+					JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+				}
+				
+				if (!installer.isInstalled()){
+					try {
+						installer.install();
+					} catch (OsuException e){
+						JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+					}
+					
+					if (installer.isSameVersionInstalled()){
+						panelSettings();
+					} else {
+						JOptionPane.showMessageDialog(null, "Version still mismatch", "Error", JOptionPane.ERROR_MESSAGE);
+						panelMismatch();
+					}
+				} else {
+					JOptionPane.showMessageDialog(null, "Uninstallation was not successful.", "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+		
+		lblPleaseRestartOsumer_1 = new JLabel("Please restart osumer with administrative privilege");
+		lblPleaseRestartOsumer_1.setForeground(Color.RED);
+		lblPleaseRestartOsumer_1.setHorizontalAlignment(SwingConstants.CENTER);
+		GroupLayout gl_vermispanel = new GroupLayout(vermispanel);
+		gl_vermispanel.setHorizontalGroup(
+			gl_vermispanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_vermispanel.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_vermispanel.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblVersionMismatch, GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
+						.addComponent(txtpnTheVersionOf, GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
+						.addComponent(btnReinstall, GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
+						.addComponent(lblPleaseRestartOsumer_1, GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE))
+					.addContainerGap())
+		);
+		gl_vermispanel.setVerticalGroup(
+			gl_vermispanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_vermispanel.createSequentialGroup()
+					.addGap(64)
+					.addComponent(lblVersionMismatch)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(txtpnTheVersionOf, GroupLayout.PREFERRED_SIZE, 77, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(btnReinstall)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblPleaseRestartOsumer_1)
+					.addContainerGap(38, Short.MAX_VALUE))
+		);
+		vermispanel.setLayout(gl_vermispanel);
 
 		if (!Osu.isWindows()){
 			panelNotSupported();
@@ -317,7 +399,11 @@ public class ExpressSettingsPanel extends JPanel {
 			refreshBrowsers();
 			
 			if (installer.isInstalled()){
-				panelSettings();
+				if (installer.isSameVersionInstalled()){
+					panelSettings();
+				} else {
+					panelMismatch();
+				}
 			} else {
 				panelNotInstalled();
 			}
@@ -328,8 +414,10 @@ public class ExpressSettingsPanel extends JPanel {
 		browserBox.setEnabled(elevated);
 		lblNoadmin.setVisible(!elevated);
 		lblPleaseRestartOsumer.setVisible(!elevated);
+		lblPleaseRestartOsumer_1.setVisible(!elevated);
 		btnUninstallOsumer.setEnabled(elevated);
 		btnInstall.setEnabled(elevated);
+		btnReinstall.setEnabled(elevated);
 	}
 	
 	private void refreshBrowsers(){
@@ -366,7 +454,15 @@ public class ExpressSettingsPanel extends JPanel {
 		}
 	}
 	
+	private void panelMismatch(){
+		vermispanel.setVisible(true);
+		notsupportedpanel.setVisible(false);
+		settingspanel.setVisible(false);
+		notinstalledpanel.setVisible(false);
+	}
+	
 	private void panelNotSupported(){
+		vermispanel.setVisible(false);
 		notsupportedpanel.setVisible(true);
 		settingspanel.setVisible(false);
 		notinstalledpanel.setVisible(false);
@@ -374,12 +470,14 @@ public class ExpressSettingsPanel extends JPanel {
 	
 	private void panelSettings(){
 		refreshBrowsers();
+		vermispanel.setVisible(false);
 		notsupportedpanel.setVisible(false);
 		settingspanel.setVisible(true);
 		notinstalledpanel.setVisible(false);
 	}
 	
 	private void panelNotInstalled(){
+		vermispanel.setVisible(false);
 		notsupportedpanel.setVisible(false);
 		settingspanel.setVisible(false);
 		notinstalledpanel.setVisible(true);
