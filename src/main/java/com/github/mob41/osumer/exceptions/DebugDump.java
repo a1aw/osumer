@@ -39,11 +39,11 @@ public class DebugDump {
 	
 	private final String nextoperation;
 	
-	protected DebugDump(String specified_data, String last_op, String this_op, String next_op, boolean containsPrivateData, String message){
+	public DebugDump(String specified_data, String last_op, String this_op, String next_op, boolean containsPrivateData, String message){
 		this(specified_data, last_op, this_op, next_op, message, containsPrivateData, null);
 	}
 	
-	protected DebugDump(String specified_data, String last_op, String this_op, String next_op, String message, boolean containsPrivateData, Exception e) {
+	public DebugDump(String specified_data, String last_op, String this_op, String next_op, String message, boolean containsPrivateData, Exception e) {
 		os = System.getProperty("os.name");
 		osumerVersion = Osu.OSUMER_VERSION;
 		debuggerVersion = "unknown";
