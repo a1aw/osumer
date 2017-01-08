@@ -8,7 +8,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.mob41.osumer.exceptions.OsuException;
+import com.github.mob41.osumer.exceptions.DebuggableException;
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.Win32Exception;
 import com.sun.jna.platform.win32.WinReg;
@@ -154,7 +154,7 @@ public class Installer {
 		//TODO Reinstall command https://msdn.microsoft.com/en-us/library/windows/desktop/cc144109(v=vs.85).aspx#reinstall_command
 	}
 	
-	public static String[] getAvailableBrowsers() throws OsuException{
+	public static String[] getAvailableBrowsers() throws DebuggableException{
 		try {
 			String[] keys = Advapi32Util.registryGetKeys(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_CLIENTS_PATH);
 			
@@ -172,7 +172,13 @@ public class Installer {
 			
 			return out;
 		} catch (Win32Exception e){
-			throw new OsuException("Error reading registry", e);
+			throw new DebuggableException(
+					null,
+					"(Try&catch try)",
+					"Throw debuggable exception",
+					"(End of function)",
+					"Error reading registry",
+					false, e);
 		}
 	}
 	
@@ -197,18 +203,36 @@ public class Installer {
 		return false;
 	}
 	
-	public void install() throws OsuException{
+	public void install() throws DebuggableException{
 		if (!Osu.isWindows()){
-			throw new OsuException("Installer does not support non-Windows environment");
+			throw new DebuggableException(
+					null,
+					"Validate OS is Windows",
+					"Throw debuggable exception",
+					"Validate is osumer elevated",
+					"Installer does not support non-Windows environment",
+					false);
 		}
 		
 		if (!Osu.isWindowsElevated()){
-			throw new OsuException("osumer is not elevated. Restart osumer with administrative privileges.");
+			throw new DebuggableException(
+					null,
+					"Validate OS is Windows",
+					"Validate is osumer elevated",
+					"Create File instance of \"osumer.exe\"",
+					"osumer is not elevated. Restart osumer with administrative privileges.",
+					false);
 		}
 		
 		File file = new File("osumer.exe");
 		if (!file.exists()){
-			throw new OsuException("A Windows executable (.exe) version of osumer is required for installation. It can be downloaded from the releases. If you have it, rename it to \"osumer.exe\" to continue.");
+			throw new DebuggableException(
+					null,
+					"Validate is osumer elevated",
+					"Create File instance of \"osumer.exe\"",
+					"Create File instance of constant field winPath",
+					"A Windows executable (.exe) version of osumer is required for installation. It can be downloaded from the releases. If you have it, rename it to \"osumer.exe\" to continue.",
+					false);
 		}
 		
 		File destFolder = new File(winPath);
@@ -230,7 +254,13 @@ public class Installer {
 			out.flush();
 			out.close();
 		} catch (IOException e) {
-			throw new OsuException("Error copying osumer.exe", e);
+			throw new DebuggableException(
+					null,
+					"(Try&catch try)",
+					"Throw debuggable exception",
+					"(Try&catch try) Writing to registry",
+					"Error copying file",
+					false, e);
 		}
 		
 		try {
@@ -238,8 +268,6 @@ public class Installer {
 			
 			// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress
 			boolean success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_CLIENTS_PATH, WIN_REG_INTERNET_CLIENT_KEY);
-			
-			System.out.println(success);
 			
 			final String clientRegPath = WIN_REG_CLIENTS_PATH + "\\" + WIN_REG_INTERNET_CLIENT_KEY;
 			
@@ -250,8 +278,6 @@ public class Installer {
 			
 			// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/Capabilities
 			success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, clientRegPath, WIN_REG_CAP_KEY);
-
-			System.out.println(success);
 			
 			final String capRegPath = clientRegPath + "\\" + WIN_REG_CAP_KEY;
 			
@@ -265,7 +291,6 @@ public class Installer {
 			// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/Capabilities/Startmenu
 			success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, capRegPath, WIN_REG_CAP_STARTMENU_KEY);
 			// Legacy use
-			System.out.println(success);
 			
 			final String capStartMenuRegPath = capRegPath + "\\" + WIN_REG_CAP_STARTMENU_KEY;
 			
@@ -277,14 +302,11 @@ public class Installer {
 			// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/Capabilities/FileAssociations
 			success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, capRegPath, WIN_REG_CAP_FILEASSOC_KEY);
 			// No file associations currently
-			System.out.println(success);
 			
 	//Capabilities: URL Associations
 			
 			// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/Capabilities/URLAssociations
 			success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, capRegPath, WIN_REG_CAP_URLASSOC_KEY);
-
-			System.out.println(success);
 			
 			final String urlAssocRegPath = capRegPath + "\\" + WIN_REG_CAP_URLASSOC_KEY;
 			
@@ -296,8 +318,6 @@ public class Installer {
 			
 			// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/DefaultIcon
 			success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, clientRegPath, WIN_REG_DEFAULTICON_KEY);
-
-			System.out.println(success);
 			
 			final String defaultIconRegPath = clientRegPath + "\\" + WIN_REG_DEFAULTICON_KEY;
 			
@@ -308,8 +328,6 @@ public class Installer {
 			
 			// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/InstallInfo
 			success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, clientRegPath, WIN_REG_INSTALLINFO_KEY);
-
-			System.out.println(success);
 			
 			final String installInfoRegPath = clientRegPath + "\\" + WIN_REG_INSTALLINFO_KEY;
 			
@@ -326,22 +344,16 @@ public class Installer {
 			
 			// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/shell
 			success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, clientRegPath, WIN_REG_SHELL_KEY);
-
-			System.out.println(success);
 			
 			final String shellRegPath = clientRegPath + "\\" + WIN_REG_SHELL_KEY;
 			
 			// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/shell/open
 			success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, shellRegPath, WIN_REG_SHELL_OPEN_KEY);
-
-			System.out.println(success);
 			
 			final String shellOpenRegPath = shellRegPath + "\\" + WIN_REG_SHELL_OPEN_KEY;
 			
 			// HKLM/SOFTWARE/Clients/StartMenuInternet/osumerExpress/shell/open/command
 			success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, shellOpenRegPath, WIN_REG_SHELL_OPEN_COMMAND_KEY);
-
-			System.out.println(success);
 			
 			final String shellOpenCmdRegPath = shellOpenRegPath + "\\" + WIN_REG_SHELL_OPEN_COMMAND_KEY;
 			
@@ -356,8 +368,6 @@ public class Installer {
 			
 			// HKLM/SOFTWARE/Classes/osumer
 			success = Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_CLASSES_PATH, WIN_REG_CLASSES_OSUMER_KEY);
-
-			System.out.println(success);
 			
 			final String osumerClassRegPath = WIN_REG_CLASSES_PATH + "\\" + WIN_REG_CLASSES_OSUMER_KEY;
 			
@@ -372,16 +382,20 @@ public class Installer {
 			Advapi32Util.registryCreateKey(WinReg.HKEY_LOCAL_MACHINE, osumerClassRegPath + "\\shell\\open", "command");
 			Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, osumerClassRegPath + "\\shell\\open\\command", "", WIN_REG_SHELL_OPEN_COMMAND_DEFAULT_VALUE + " \"%1\"");
 		} catch (Win32Exception e){
-			throw new OsuException("Error writing registry", e);
+			throw new DebuggableException(
+					null,
+					"(Try&catch try) Writing to registry",
+					"Throw debuggable exception",
+					"(End of function)",
+					"Error writing registry",
+					false, e);
 		}
 	}
 	
-	public void uninstall() throws OsuException{
+	public void uninstall() throws DebuggableException{
 		File file = new File(winPath + "\\" + winFile);
 		if (file.exists()){
-			System.out.println("Exist, deleting");
-			boolean delete = file.delete();
-			System.out.println(delete);
+			file.delete();
 		}
 		
 		try {
@@ -416,7 +430,13 @@ public class Installer {
 			Advapi32Util.registryDeleteKey(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_CLASSES_PATH + "\\" + WIN_REG_CLASSES_OSUMER_KEY, "shell");
 			Advapi32Util.registryDeleteKey(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_CLASSES_PATH, WIN_REG_CLASSES_OSUMER_KEY);
 		} catch (Win32Exception e){
-			throw new OsuException("Error writing registry", e);
+			throw new DebuggableException(
+					null,
+					"(Try&catch try) Writing to registry",
+					"Throw debuggable exception",
+					"(End of function)",
+					"Error writing registry",
+					false, e);
 		}
 	}
 
