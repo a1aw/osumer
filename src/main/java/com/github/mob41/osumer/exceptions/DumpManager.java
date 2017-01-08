@@ -18,7 +18,7 @@ public class DumpManager {
 		dumps = new ArrayList<DebugDump>();
 	}
 	
-	protected void addDump(DebugDump dump){
+	public void addDump(DebugDump dump){
 		dumps.add(dump);
 	}
 	
