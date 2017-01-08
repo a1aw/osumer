@@ -20,5 +20,14 @@ If you are going to ask a question or suggest a new feature to be added, then yo
 <!-- Enter your Java version here. See here: https://java.com/en/download/help/version_manual.xml -->
 - My Java Version: *Java version here*
 
-### Description
+### About my issue
 <!-- Type your description here -->
+
+### Dump files
+<!--
+For errors, you should upload at least one dump file, which is the combined dump file.
+Combined dump file can be exported via the menu bar "Debug" -> "View Dumps" -> "Combine dumps and export"
+
+For unexpected errors, you should upload 2 dump files, which are the file from "Unexpected Error" dialog and the combined dump file.
+
+Attach (drag) your dump files under this line -->
