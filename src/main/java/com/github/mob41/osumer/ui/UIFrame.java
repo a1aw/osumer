@@ -158,8 +158,19 @@ public class UIFrame extends JFrame {
 		});
 		mnDebug.add(mntmOpenConfigurationLocation);
 		
-		JMenuItem mntmGenerateEventsDump = new JMenuItem("Generate events dump");
-		mnDebug.add(mntmGenerateEventsDump);
+		JMenuItem mntmViewDumps = new JMenuItem("View dumps");
+		mntmViewDumps.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				ViewDumpDialog dialog = new ViewDumpDialog();
+				dialog.setVisible(true);
+				dialog.setLocationRelativeTo(UIFrame.this);
+			}
+		});
+		mnDebug.add(mntmViewDumps);
+		
+		JMenuItem mntmGenerateAllEvents = new JMenuItem("Generate all events dump");
+		mntmGenerateAllEvents.setEnabled(false);
+		mnDebug.add(mntmGenerateAllEvents);
 		
 		JMenu mnUpdate = new JMenu("Update");
 		menuBar.add(mnUpdate);
@@ -348,7 +359,7 @@ public class UIFrame extends JFrame {
 				File folder = chooser.getSelectedFile();
 				
 				//Download
-				DownloadDialog dialog = new DownloadDialog(config, url, false, false);
+				DownloadDialog dialog = new DownloadDialog(config, url, false, false, false);
 				dialog.setModal(true);
 				dialog.setUndecorated(false);
 				dialog.setVisible(true);
@@ -422,7 +433,7 @@ public class UIFrame extends JFrame {
 				File targetFile = chooser.getSelectedFile();
 				
 				//Download
-				DownloadDialog dialog = new DownloadDialog(config, url, false, false);
+				DownloadDialog dialog = new DownloadDialog(config, url, false, false, false);
 				dialog.setModal(true);
 				dialog.setUndecorated(false);
 				dialog.setVisible(true);
@@ -625,7 +636,7 @@ public class UIFrame extends JFrame {
 						
 						if (option == JOptionPane.YES_OPTION){
 							try {
-								Desktop.getDesktop().browse(new URI("https://github.com/mob41/osumer/releases/latest"));
+								Desktop.getDesktop().browse(new URI(verInfo.getWebLink()));
 							} catch (IOException e) {
 								e.printStackTrace();
 							} catch (URISyntaxException e) {

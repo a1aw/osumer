@@ -2,8 +2,10 @@ package com.github.mob41.osumer.exceptions;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.security.SecureRandom;
 import java.util.Calendar;
 
+import org.apache.commons.codec.binary.Hex;
 import org.json.JSONObject;
 
 import com.github.mob41.osumer.io.Osu;
@@ -18,6 +20,8 @@ public class DebugDump {
 	private final String debuggerVersion;
 	
 	private final String message;
+	
+	private final String uid;
 	
 	private final long generated;
 	
@@ -35,16 +39,20 @@ public class DebugDump {
 	
 	private final String nextoperation;
 	
-	public DebugDump(String specified_data, String last_op, String this_op, String next_op, boolean containsPrivateData, String message){
+	protected DebugDump(String specified_data, String last_op, String this_op, String next_op, boolean containsPrivateData, String message){
 		this(specified_data, last_op, this_op, next_op, message, containsPrivateData, null);
 	}
 	
-	public DebugDump(String specified_data, String last_op, String this_op, String next_op, String message, boolean containsPrivateData, Exception e) {
+	protected DebugDump(String specified_data, String last_op, String this_op, String next_op, String message, boolean containsPrivateData, Exception e) {
 		os = System.getProperty("os.name");
 		osumerVersion = Osu.OSUMER_VERSION;
 		debuggerVersion = "unknown";
 		
 		Calendar cal = Calendar.getInstance();
+		
+		byte[] randuid = new byte[128/8];
+		new SecureRandom().nextBytes(randuid);
+		uid = Hex.encodeHexString(randuid);
 		
 		generated = cal.getTimeInMillis();
 		generated_human = cal.getTime().toString();
@@ -67,6 +75,12 @@ public class DebugDump {
 		this.lastoperation = last_op;
 		this.thisoperation = this_op;
 		this.nextoperation = next_op;
+		
+		DumpManager.getInstance().addDump(this);
+	}
+	
+	public String getOs(){
+		return os;
 	}
 	
 	public long getGenerated(){
@@ -97,6 +111,50 @@ public class DebugDump {
 	public static void showDebugDialog(DebuggableException e){
 		ErrorDumpDialog dialog = new ErrorDumpDialog(e);
 		dialog.setVisible(true);
+	}
+
+	public String getOsumerVersion() {
+		return osumerVersion;
+	}
+
+	public String getDebuggerVersion() {
+		return debuggerVersion;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public String getUid() {
+		return uid;
+	}
+
+	public boolean isContainsPrivateData() {
+		return containsPrivateData;
+	}
+
+	public String getGeneratedHuman() {
+		return generated_human;
+	}
+
+	public String getStacktrace() {
+		return stacktrace;
+	}
+
+	public String getSpecifiedData() {
+		return specified_data;
+	}
+
+	public String getLastOperation() {
+		return lastoperation;
+	}
+
+	public String getThisOperation() {
+		return thisoperation;
+	}
+
+	public String getNextOperation() {
+		return nextoperation;
 	}
 
 }

@@ -50,9 +50,9 @@ public class ExpressSettingsPanel extends JPanel {
 		JButton btnUninstallOsumer = new JButton("(*Admin) Uninstall osumerExpress");
 		btnUninstallOsumer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				int option = JOptionPane.showOptionDialog(null, "Are you sure to uninstall? Program defaults in Windows will be reset.", "Uninstall osumerExpress", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 1);
+				int option = JOptionPane.showOptionDialog(null, "Are you sure to uninstall? osumerExpress will no longer act as a browser.", "Uninstall osumerExpress", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 1);
 				
-				if (option == JOptionPane.CLOSED_OPTION || option == JOptionPane.CANCEL_OPTION){
+				if (option == JOptionPane.CLOSED_OPTION || option == JOptionPane.NO_OPTION){
 					return;
 				}
 				
@@ -112,7 +112,7 @@ public class ExpressSettingsPanel extends JPanel {
 		btnSaveConfiguration.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String defBrowser = (String) browserBox.getSelectedItem();
-				if (!defBrowser.equals("--- Select ---") && !defBrowser.equals("--- Not elevated ---")){
+				if (!defBrowser.equals("--- Select ---") && !defBrowser.equals("-!- Not elevated -!-")){
 					config.setDefaultBrowser(defBrowser);
 				}
 				config.setAutoSwitchBrowser(chckbxAutomaticallySwitchTo.isSelected());
@@ -137,6 +137,12 @@ public class ExpressSettingsPanel extends JPanel {
 		JButton btnInstall = new JButton("(*Admin) Install osumerExpress");
 		btnInstall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				int option = JOptionPane.showOptionDialog(null, "Are you sure to install?", "Install osumerExpress", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 1);
+				
+				if (option == JOptionPane.CLOSED_OPTION || option == JOptionPane.NO_OPTION){
+					return;
+				}
+				
 				try {
 					installer.install();
 				} catch (OsuException e){

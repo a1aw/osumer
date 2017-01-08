@@ -221,7 +221,10 @@ public class Updater {
 		
 		if ((verJson.isNull("ended") || !verJson.getBoolean("ended")) &&
 				(!buildBranch.equals(sourceKey) || latest != buildNum)){
-			return new VersionInfo(thisVersion, updateSource, latest, false, false);
+			String webLink = verJson.isNull("web_link") ? null : verJson.getString("web_link");
+			String exeLink = verJson.isNull("exe_link") ? null : verJson.getString("exe_link");
+			String jarLink = verJson.isNull("jar_link") ? null : verJson.getString("jar_link");
+			return new VersionInfo(thisVersion, updateSource, latest, webLink, exeLink, jarLink, false, false);
 		}
 		
 		System.out.println("Version ended");
@@ -255,21 +258,37 @@ public class Updater {
 		
 		System.out.println("Upgradeto: " + upgradeNode);
 		
-		int upgradedBuildNum = upgradeNode != null ?
-				versionsJson.getJSONArray(upgradeNode).length() : -1;
+		JSONArray upgradeNodeArr = null;
+		int upgradedBuildNum = -1;
+		
+		if (upgradeNode != null){
+			upgradeNodeArr = versionsJson.getJSONArray(upgradeNode);
+			upgradedBuildNum = upgradeNodeArr.length();
+		}
 		
 		if (upgradedBuildNum == 0){
-			System.out.println("No builds");
 			throw new NoBuildsForVersionException(
 					json.toString(5),
 					"Get Upgrade Node",
 					"Validate build info JSON",
 					"Return VersionInfo");
 		}
-				
-		return upgradeNode != null && upgradedBuildNum != -1 ?
-				new VersionInfo(upgradeNode, updateSource, upgradedBuildNum, false, true) :
-				new VersionInfo(thisVersion, updateSource, buildNum, true, false);
+		
+		if (upgradeNode != null && upgradedBuildNum != -1){
+			JSONObject upgradedVerJson = upgradeNodeArr.getJSONObject(upgradedBuildNum - 1);
+			
+			String webLink = upgradedVerJson.isNull("web_link") ? null : upgradedVerJson.getString("web_link");
+			String exeLink = upgradedVerJson.isNull("exe_link") ? null : upgradedVerJson.getString("exe_link");
+			String jarLink = upgradedVerJson.isNull("jar_link") ? null : upgradedVerJson.getString("jar_link");
+			
+			return new VersionInfo(upgradeNode, updateSource, upgradedBuildNum, webLink, exeLink, jarLink, false, true);
+		} else {
+			String webLink = verJson.isNull("web_link") ? null : verJson.getString("web_link");
+			String exeLink = verJson.isNull("exe_link") ? null : verJson.getString("exe_link");
+			String jarLink = verJson.isNull("jar_link") ? null : verJson.getString("jar_link");
+			
+			return new VersionInfo(thisVersion, updateSource, buildNum, webLink, exeLink, jarLink, true, false);
+		}
 	}
 	
 	public boolean isUpdateAvailable() throws DebuggableException{
