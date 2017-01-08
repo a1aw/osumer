@@ -134,8 +134,8 @@ public class ViewDumpDialog extends JDialog {
 							return;
 						}
 						
-						final String fileName = "osumer-debugDump-" + debugDump.getGenerated() + ".osumerdump";
-						final String fileExt = ".osumerdump";
+						final String fileName = "osumer-debugDump-" + debugDump.getGenerated() + ".txt";
+						final String fileExt = ".txt";
 						final String fileExtDesc = "osumer dump files";
 						
 						saveStrToFile(fileName, fileExt, fileExtDesc, debugDump.toString());
@@ -153,8 +153,8 @@ public class ViewDumpDialog extends JDialog {
 							}
 							
 							String str = DumpManager.combineDumps(dumpsArr);
-							final String fileName = "osumer-combinedDumps-" + Calendar.getInstance().getTimeInMillis() + ".osumercombineddumps";
-							final String fileExt = ".osumercombineddumps";
+							final String fileName = "osumer-combinedDumps-" + Calendar.getInstance().getTimeInMillis() + ".txt";
+							final String fileExt = ".txt";
 							final String fileExtDesc = "osumer combined dump files";
 							
 							saveStrToFile(fileName, fileExt, fileExtDesc, str);
