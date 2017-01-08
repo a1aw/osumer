@@ -238,7 +238,7 @@ public class Osu {
 		}
 	}
 	
-	public int logout(String sid){
+	public int logout(String sid) throws OsuException{
 		try {
 			String urlPara =
 					"sid=" + sid; //Session ID

@@ -38,14 +38,14 @@ public class OsuBeatmap implements Serializable{
 	
 	private final int good_rating;
 	
-	private final int bpm;
+	private final float bpm;
 	
 	private final float success_rate;
 
 	private OsuBeatmap(String name, String[] difficulties, String title,
 			String artist, String creator, String source, String genre,
 			String dwnUrl, String thumbUrl, int badRating, int goodRating,
-			int bpm, float successRate) {
+			float bpm, float successRate) {
 		this.name = name;
 		this.difficulties = difficulties;
 		this.title = title;
@@ -109,7 +109,7 @@ public class OsuBeatmap implements Serializable{
 		return (float) good_rating / (bad_rating + good_rating) * 100;
 	}
 
-	public int getBpm() {
+	public float getBpm() {
 		return bpm;
 	}
 
@@ -121,7 +121,13 @@ public class OsuBeatmap implements Serializable{
 		Elements dwnLinks = doc.getElementsByClass("beatmap_download_link");
 		
 		if (dwnLinks.size() == 0){
-			throw new OsuException("No download link available. Invalid beatmap url?");
+			throw new DebuggableException(
+					"",
+					"Get elements by class \"beatmap_download_link\"",
+					"Validate download link element. Throw exception if size() equal to 0",
+					"Get the first element of the download links elements",
+					"No element with class \"beatmap_download_link\", which should be at least one in a beatmap info page. Invalid beatmap URL?",
+					true);
 		}
 		
 		Element alnk = dwnLinks.get(0);
@@ -131,7 +137,13 @@ public class OsuBeatmap implements Serializable{
 		Element contentWithBgEl = doc.select("div.content-with-bg").first();
 		
 		if (contentWithBgEl == null){
-			throw new OsuException("No content-with-bg in the content. Page broke?");
+			throw new DebuggableException(
+					"",
+					"Select \"div.content-with-bg\" and get the first element, assign to contentWithBgEl",
+					"Validate contentWithBgEl is null or not",
+					"Select \"div#tablist ul\" and get the first element, assign to tabList",
+					"No div element with class \"content-with-bg\"",
+					true);
 		}
 		
 		//Element header1 = contentWithBgEl.select("h1").first();
@@ -139,7 +151,13 @@ public class OsuBeatmap implements Serializable{
 		Element tabList = contentWithBgEl.select("div#tablist ul").first();
 		
 		if (tabList == null){
-			throw new OsuException("No list in the content. Page broke?");
+			throw new DebuggableException(
+					"",
+					"Select \"div#tablist ul\" and get the first element, assign to tabList",
+					"Validate tabList is null or not",
+					"Get tabList children and assign to tabListLi",
+					"No div element with class \"tablist\" with ul",
+					true);
 		}
 		
 		Elements tabListLi = tabList.children();
@@ -150,7 +168,13 @@ public class OsuBeatmap implements Serializable{
 			Element el = tabListLi.get(i).select(".beatmapTab span").first();
 			
 			if (el == null){
-				throw new OsuException("No <a>/<span> tag in the difficulties tab index " + i + ". Page broke?");
+				throw new DebuggableException(
+						tabListLi.get(i).html(),
+						"(Loop of element tabList children) Select \".beatmapTab span\" from children and get the first element, assign to el",
+						"Validate el is null or not",
+						"Get the inner HTML of <span>",
+						"No <a>/<span> tag in the difficulties tab index " + i + ". Page broke?",
+						false);
 			}
 			
 			tabStr[i] = el.html();
@@ -159,13 +183,25 @@ public class OsuBeatmap implements Serializable{
 		Element songInfo = contentWithBgEl.select("div table#songinfo tbody").first();
 		
 		if (songInfo == null){
-			throw new OsuException("No song info in the content. Page broke?");
+			throw new DebuggableException(
+					"",
+					"Select \"div table#songinfo tbody# in contentWithBgEl and get the first element, assign to songInfo",
+					"Validate songInfo is null or not",
+					"Get songInfo children",
+					"No songinfo element in contentWithBgEl. Page broke?",
+					true);
 		}
 		
 		Elements songInfoTrs = songInfo.children();
 		
 		if (songInfoTrs.size() < 7){
-			throw new OsuException("No song info table <tr> / not enough <tr>. Only " + songInfoTrs.size() + "/7 Page broke?");
+			throw new DebuggableException(
+					songInfoTrs.html(),
+					"Get songInfo children",
+					"Validate songInfo is enough <tr> elements (more than 7)",
+					"(Lots of code) Get song info data from table",
+					"No song info table <tr> / not enough <tr>. Only " + songInfoTrs.size() + "/7 Page broke?",
+					false);
 		}
 		
 		//TODO: Rewrite here. Seems stupid these code XD
@@ -175,7 +211,7 @@ public class OsuBeatmap implements Serializable{
 		String creator = null;
 		String artist = null;
 		String title = null;
-		int bpm = -1;
+		float bpm = -1;
 		int good_rating = -1;
 		int bad_rating = -1;
 		float success_rate = -1;
@@ -193,7 +229,13 @@ public class OsuBeatmap implements Serializable{
 					case 1:
 						el_a = el.select("a[href]").first();
 						if (el_a == null){
-							throw new OsuException("No artist related data. Page broke?");
+							throw new DebuggableException(
+									el.html(),
+									"Select \"a[href]\" from el and assign to el_a",
+									"Validate el_a is null or not",
+									"Get inner HTML from <a> and assign to artist",
+									"No artist related data. Page broke?",
+									false);
 						}
 						artist = el_a.html();
 						break;
@@ -217,7 +259,13 @@ public class OsuBeatmap implements Serializable{
 					case 1:
 						el_a = el.select("a[href]").first();
 						if (el_a == null){
-							throw new OsuException("No title related data. Page broke?");
+							throw new DebuggableException(
+									el.html(),
+									"Select \"a[href]\" from el and assign to el_a",
+									"Validate el_a is null or not",
+									"Get inner HTML from <a> and assign to title",
+									"No title related data. Page broke?",
+									false);
 						}
 						title = el_a.html();
 						break;
@@ -241,7 +289,13 @@ public class OsuBeatmap implements Serializable{
 					case 1:
 						el_a = el.select("a[href]").first();
 						if (el_a == null){
-							throw new OsuException("No creator related data. Page broke?");
+							throw new DebuggableException(
+									el.html(),
+									"Select \"a[href]\" from el and assign to el_a",
+									"Validate el_a is null or not",
+									"Get inner HTML from <a> and assign to creator",
+									"No creator related data. Page broke?",
+									false);
 						}
 						creator = el_a.html();
 						break;
@@ -265,7 +319,13 @@ public class OsuBeatmap implements Serializable{
 					case 1:
 						el_a = el.select("a[href]").first();
 						if (el_a == null){
-							throw new OsuException("No source related data. Page broke?");
+							throw new DebuggableException(
+									el.html(),
+									"Select \"a[href]\" from el and assign to el_a",
+									"Validate el_a is null or not",
+									"Get inner HTML from <a> and assign to source",
+									"No source related data. Page broke?",
+									false);
 						}
 						source = el_a.html();
 						break;
@@ -274,20 +334,38 @@ public class OsuBeatmap implements Serializable{
 					case 3: //Format: xx (xx), however we are not getting (xx)
 						el_a = el.select("a[href]").first();
 						if (el_a == null){
-							throw new OsuException("No genre related data. Page broke?");
+							throw new DebuggableException(
+									el.html(),
+									"Select \"a[href]\" from el and assign to el_a",
+									"Validate el_a is null or not",
+									"Get inner HTML from <a> and assign to genre",
+									"No genre related data. Page broke?",
+									false);
 						}
 						genre = el_a.html();
 						break;
 					case 4:
 						break;
-					case 5: //Integer BPM
+					case 5: //Floating BPM
 						if (el == null){
-							throw new OsuException("No BPM related data. Page broke?");
+							throw new DebuggableException(
+									null,
+									"(Loop, switch)",
+									"Validate el is null or not",
+									"Parse float from el inner HTML",
+									"No bpm related data. Page broke?",
+									false);
 						}
 						try {
-							bpm = Integer.parseInt(el.html().replaceAll(",", ""));
+							bpm = Float.parseFloat(el.html().replaceAll(",", ""));
 						} catch (NumberFormatException e){
-							throw new OsuException("BPM is not integer", e);
+							throw new DebuggableException(
+									el.html(),
+									"Validate el is null or not",
+									"Parse float from el inner HTML",
+									"(Break switch, Loop)",
+									"Cannot parse float. BPM is not a floating number",
+									false, e);
 						}
 						break;
 					}
@@ -302,7 +380,13 @@ public class OsuBeatmap implements Serializable{
 					case 1:
 						Elements tagsEls = el.select("a[href]");
 						if (tagsEls.size() == 0){
-							throw new OsuException("No tags related data. Page broke?");
+							throw new DebuggableException(
+									el.html(),
+									"Select \"a[href]\" from el and assign to el_a",
+									"Validate el_a is null or not",
+									"Get inner HTML from <a> and assign to tags",
+									"No tags related data. Page broke?",
+									false);
 						}
 
 						tags = new String[tagsEls.size()];
@@ -315,24 +399,42 @@ public class OsuBeatmap implements Serializable{
 					case 3: //Well this is tricky, a bad rating in the first <td>, and the good one in the second <td>
 						Elements ratingEls = el.select("table tbody tr td");
 						if (ratingEls.size() < 2){
-							throw new OsuException("Not enough " + ratingEls.size() + "/2 / no rating related data. Page broke?");
+							throw new DebuggableException(
+									el.html(),
+									"Select \"table tbody tr td\" from el and assign to ratingEls",
+									"Validate ratingEls elements is enough (more than 2)",
+									"Get the first element in ratingEls and assign to el_a",
+									"Not enough " + ratingEls.size() + "/2 / no rating related data. Page broke?",
+									false);
 						}
 						el_a = ratingEls.get(0);
 						try {
 							bad_rating = Integer.parseInt(el_a.html().replaceAll(",", ""));
 						} catch (NumberFormatException e){
-							throw new OsuException("Bad rating is not integer", e);
+							throw new DebuggableException(
+									el_a.html(),
+									"Get the first element in ratingEls and assign to el_a",
+									"Parse integer from el_a inner HTML",
+									"Get the second element in ratingEls and assign to el_a",
+									"Cannot parse integer. Bad rating is not an integer",
+									false, e);
 						}
 						el_a = ratingEls.get(1);
 						try {
 							good_rating = Integer.parseInt(el_a.html().replaceAll(",", ""));
 						} catch (NumberFormatException e){
-							throw new OsuException("Good rating is not integer", e);
+							throw new DebuggableException(
+									el_a.html(),
+									"Get the second element in ratingEls and assign to el_a",
+									"Parse integer from el_a inner HTML",
+									"(Break switch, Loop)",
+									"Cannot parse integer. Good rating is not an integer",
+									false, e);
 						}
 						break;
 					case 4:
 						break;
-					case 5: //Integer BPM
+					case 5: //Floating success rate
 						el_a = el.select("td").first();
 						if (el_a != null && el_a.html().contains("Not yet played!")){
 							success_rate = -1;
@@ -341,14 +443,26 @@ public class OsuBeatmap implements Serializable{
 						
 						el_a = el.select("td b").first();
 						if (el_a == null){
-							throw new OsuException("No success rate related data. Page broke?");
+							throw new DebuggableException(
+									el.html(),
+									"Select \"td b\" from el and assign to el_a",
+									"Validate el_a is null or not",
+									"(Try&catch scope) Get inner HTML from <a> and assign to str",
+									"No success rate related data. Page broke?",
+									false);
 						}
 						try {
 							String str = el_a.html();
 							int index = str.indexOf("%");
 							success_rate = Float.parseFloat(str.substring(0, index));
 						} catch (NumberFormatException e){
-							throw new OsuException("Success rate is not a floating number", e);
+							throw new DebuggableException(
+									el_a.html(),
+									"Validate el_a is null or not",
+									"Parse float from el_a inner HTML",
+									"(Break switch, Loop)",
+									"Cannot parse float. Success rate is not a floating number",
+									false, e);
 						}
 						break;
 					}
@@ -364,7 +478,13 @@ public class OsuBeatmap implements Serializable{
 		Element thumbEl = contentWithBgEl.select("div.paddingboth div.posttext a[href] img[src].bmt").first();
 		
 		if (thumbEl == null){
-			throw new OsuException("No thumb image related data. Page broke?");
+			throw new DebuggableException(
+					"",
+					"Select \"div.paddingboth div.posttext a[href] img[src].bmt\" from contentWithBgEl and assign to thumbEl",
+					"Validate thumbEl is null or not",
+					"Get attribute \"src\" from thumbEl",
+					"No thumb image related data. Page broke?",
+					true);
 		}
 		System.out.println("[" + thumbEl.attr("src") + "]THuB");
 		
