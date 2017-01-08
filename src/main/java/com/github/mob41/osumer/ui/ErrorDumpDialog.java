@@ -44,8 +44,7 @@ public class ErrorDumpDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public ErrorDumpDialog(DebuggableException e) {
-		DebugDump debugDump = e.getDump();
+	public ErrorDumpDialog(DebugDump debugDump) {
 		setTitle("Unexpected Error");
 		setModal(true);
 		setResizable(false);
