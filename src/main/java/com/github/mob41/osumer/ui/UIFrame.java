@@ -26,6 +26,7 @@ import javax.swing.filechooser.FileFilter;
 import com.github.mob41.osumer.Config;
 import com.github.mob41.osumer.exceptions.DebugDump;
 import com.github.mob41.osumer.exceptions.DebuggableException;
+import com.github.mob41.osumer.exceptions.DumpManager;
 import com.github.mob41.osumer.exceptions.NoBuildsForVersionException;
 import com.github.mob41.osumer.exceptions.NoSuchBuildNumberException;
 import com.github.mob41.osumer.exceptions.NoSuchVersionException;
@@ -151,8 +152,16 @@ public class UIFrame extends JFrame {
 				try {
 					Desktop.getDesktop().open(new File(System.getenv("localappdata") + "\\osumerExpress"));
 				} catch (IOException e1) {
-					e1.printStackTrace();
-					JOptionPane.showMessageDialog(UIFrame.this, "Surprisely, failed to open folder. :(\n\n" + e1, "Error", JOptionPane.ERROR_MESSAGE);
+					DebugDump dump = new DebugDump(
+							null,
+							"(Function call)",
+							"(Try scope) Open %localappdata%\\osumerExpress folder using Desktop.getDesktop().open()",
+							"(End of function)",
+							"Error when opening the folder",
+							false,
+							e1);
+					DumpManager.getInstance().addDump(dump);
+					DebugDump.showDebugDialog(dump);
 				}
 			}
 		});
@@ -271,7 +280,6 @@ public class UIFrame extends JFrame {
 				} catch (MalformedURLException e1){
 					JOptionPane.showMessageDialog(null, "The beatmap URL provided isn't a vaild osu! beatmap URL.", "Error", JOptionPane.WARNING_MESSAGE);
 					return;
-					
 				}
 				
 				DownloadDialog dialog = new DownloadDialog(config, url, false, false, true);
@@ -295,9 +303,17 @@ public class UIFrame extends JFrame {
 			public void mousePressed(MouseEvent arg0) {
 				try {
 					Desktop.getDesktop().browse(new URI("https://github.com/mob41/osumer"));
-				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (URISyntaxException e) {
+				} catch (IOException | URISyntaxException e) {
+					DebugDump dump = new DebugDump(
+							null,
+							"(Function call)",
+							"(Try scope) Opening GitHub osumer project page using Desktop.getDesktop().browse()",
+							"(End of function)",
+							"Error when opening the web page",
+							false,
+							e);
+					DumpManager.getInstance().addDump(dump);
+					DebugDump.showDebugDialog(dump);
 					e.printStackTrace();
 				}
 			}
@@ -389,11 +405,20 @@ public class UIFrame extends JFrame {
 					out.flush();
 					out.close();
 				} catch (IOException e1){
-					e1.printStackTrace();
+					DumpManager.getInstance().addDump(new DebugDump(
+							null,
+							"Create new File instance with \"" + folder.getAbsolutePath() + "\\" + dwnFile.getName() + "\" and assign to moveFile",
+							"(Try scope) Copy file from dwnFile to moveFile using Files.copy()",
+							"(Catch scope) Show error dialog",
+							"Error when copying/moving the downloaded file",
+							false,
+							e1));
+					JOptionPane.showMessageDialog(UIFrame.this, "Could not move the file to \"" + moveFile.getAbsolutePath() + "\"!\n\nException:\n" + e1 + "\nSee dump from \"View Dumps\" for more details.", "Error", JOptionPane.ERROR_MESSAGE);
+					dwnFile.delete();
+					return;
 				}
 				
 				dwnFile.delete();
-				
 				JOptionPane.showMessageDialog(UIFrame.this, "Download completed at location:\n" + moveFile.getAbsolutePath(), "Info", JOptionPane.INFORMATION_MESSAGE);
 			}
 			
@@ -468,11 +493,20 @@ public class UIFrame extends JFrame {
 					out.flush();
 					out.close();
 				} catch (IOException e1){
-					e1.printStackTrace();
+					DumpManager.getInstance().addDump(new DebugDump(
+							null,
+							"Create new File instance with \"" + path + "\" and assign to moveFile",
+							"(Try scope) Copy file from dwnFile to moveFile using Files.copy()",
+							"(Catch scope) Show error dialog",
+							"Error when copying/moving the downloaded file",
+							false,
+							e1));
+					JOptionPane.showMessageDialog(UIFrame.this, "Could not move the file to \"" + moveFile.getAbsolutePath() + "\"!\n\nException:\n" + e1 + "\nSee dump from \"View Dumps\" for more details.", "Error", JOptionPane.ERROR_MESSAGE);
+					dwnFile.delete();
+					return;
 				}
 				
 				dwnFile.delete();
-				
 				JOptionPane.showMessageDialog(UIFrame.this, "Download completed at location:\n" + moveFile.getAbsolutePath(), "Info", JOptionPane.INFORMATION_MESSAGE);
 			}
 			
@@ -637,10 +671,17 @@ public class UIFrame extends JFrame {
 						if (option == JOptionPane.YES_OPTION){
 							try {
 								Desktop.getDesktop().browse(new URI(verInfo.getWebLink()));
-							} catch (IOException e) {
-								e.printStackTrace();
-							} catch (URISyntaxException e) {
-								e.printStackTrace();
+							} catch (IOException | URISyntaxException e) {
+								DebugDump dump = new DebugDump(
+										verInfo.getWebLink(),
+										"Show option dialog of updating osumer or not",
+										"Set checkingUpdate to false",
+										"(End of function / thread)",
+										"Error when opening the web page",
+										false,
+										e);
+								DumpManager.getInstance().addDump(dump);
+								DebugDump.showDebugDialog(dump);
 							}
 						}
 					} else {
