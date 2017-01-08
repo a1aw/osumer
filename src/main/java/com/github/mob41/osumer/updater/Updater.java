@@ -168,7 +168,6 @@ public class Updater {
 			sourceKey = SOURCE_STABLE;
 			break;
 		default:
-			System.out.println("Nulldefauylt source key");
 			throw new InvalidSourceIntegerException(
 					json.toString(5),
 					"JSONObject validating \"sources\" parameter",
@@ -177,10 +176,7 @@ public class Updater {
 					updateSource);
 		}
 		
-		System.out.println(sourcesJson.toString(5));
-		
 		if (sourcesJson.isNull(sourceKey)){
-			System.out.println("Null source key");
 			throw new NoSuchSourceException(
 					json.toString(5),
 					"Convert source integer to string",
@@ -192,7 +188,6 @@ public class Updater {
 		JSONObject versionsJson = sourcesJson.getJSONObject(sourceKey);
 		
 		if (versionsJson.isNull(thisVersion)){
-			System.out.println("Null version");
 			throw new NoSuchVersionException(
 					json.toString(5),
 					"Validate sources' JSONObject and set variable",
@@ -204,9 +199,7 @@ public class Updater {
 		
 		buildsArr = versionsJson.getJSONArray(thisVersion);
 		
-		System.out.println(buildsArr.length() + "/" + buildNum);
 		if (buildsArr.length() < buildNum){
-			System.out.println("Smaller return null");;
 			throw new NoSuchBuildNumberException(
 					json.toString(5),
 					"Validate versions' JSONObject and set variable",
@@ -227,36 +220,27 @@ public class Updater {
 			return new VersionInfo(thisVersion, updateSource, latest, webLink, exeLink, jarLink, false, false);
 		}
 		
-		System.out.println("Version ended");
-		
 		//As the version is ended, we are finding a new version here
 		Iterator<String> it = versionsJson.keys();
 		String key;
 		String upgradeNode = null;
 		while (it.hasNext()){
 			key = it.next();
-			System.out.println("Compare: " + key + " and " + thisVersion);
 			switch (compareVersion(thisVersion, key)){
 			case -2:
-				System.out.println("Not a ver node");
 				break;
 			case -1:
-				System.out.println("Newer than this version");
 				if ((upgradeNode != null && compareVersion(upgradeNode, key) == -1) ||
 						upgradeNode == null){
 					upgradeNode = key;
 				}
 				break;
 			case 0:
-				System.out.println("Equal to this version");
 				break;
 			case 1:
-				System.out.println("Older than this version");
 				break;
 			}
 		}
-		
-		System.out.println("Upgradeto: " + upgradeNode);
 		
 		JSONArray upgradeNodeArr = null;
 		int upgradedBuildNum = -1;
@@ -337,22 +321,18 @@ public class Updater {
 		Returns 0 if they are the same<br>
 	 */
 	public static int compareVersion(int ver0sub0, int ver0sub1, int ver0sub2, int ver1sub0, int ver1sub1, int ver1sub2){
-
-		System.out.println(ver0sub0 + " : "+ ver1sub0);
 		if (ver0sub0 > ver1sub0){
 			return 1;
 		} else if (ver0sub0 < ver1sub0){
 			return -1;
 		}
-
-		System.out.println(ver0sub1 + " : " +ver1sub1);
+		
 		if (ver0sub1 > ver1sub1){
 			return 1;
 		} else if (ver0sub1 < ver1sub1){
 			return -1;
 		}
-
-		System.out.println(ver0sub2 + " : "+ ver1sub2);
+		
 		if (ver0sub2 > ver1sub2){
 			return 1;
 		} else if (ver0sub2 < ver1sub2){

@@ -226,7 +226,6 @@ public class Installer {
 			buffer.flush();
 
 			String str = new String(Base64.decodeBase64(data), StandardCharsets.UTF_8);
-			System.out.println(str);
 			
 			JSONObject json = null;
 			try {
