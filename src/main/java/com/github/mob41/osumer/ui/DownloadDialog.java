@@ -12,7 +12,9 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import com.github.mob41.osumer.Config;
+import com.github.mob41.osumer.exceptions.DebugDump;
 import com.github.mob41.osumer.exceptions.DebuggableException;
+import com.github.mob41.osumer.exceptions.DumpManager;
 import com.github.mob41.osumer.exceptions.NoBuildsForVersionException;
 import com.github.mob41.osumer.exceptions.NoSuchBuildNumberException;
 import com.github.mob41.osumer.exceptions.NoSuchVersionException;
@@ -301,7 +303,15 @@ public class DownloadDialog extends JDialog {
 					thumbUrl = new URL("http:" + info.getThumbUrl());
 					System.out.println(thumbUrl.toString());
 				} catch (MalformedURLException e){
-					e.printStackTrace();
+					DumpManager.getInstance()
+						.addDump(new DebugDump(
+								info.getThumbUrl(),
+								"Assign thumbUrl with null",
+								"(Try scope) Create new URL instance with \"http:" + info.getThumbUrl() + "\"",
+								"(Try scope) Show Error Dialog",
+								"Invalid thumb image URL received. Cannot create URL instance",
+								false,
+								e));
 					JOptionPane.showMessageDialog(DownloadDialog.this,
 							"Invalid thumb image URL received.\n" +
 							"Please check whether the beatmap URL link\n" +
@@ -329,7 +339,15 @@ public class DownloadDialog extends JDialog {
 					lblThumbImg.setText("");
 					lblThumbImg.setIcon(new ImageIcon(image.getScaledInstance(100, 75, Image.SCALE_DEFAULT)));
 				} catch (IOException e2) {
-					e2.printStackTrace();
+					DumpManager.getInstance()
+					.addDump(new DebugDump(
+							url.toString(),
+							"(UI) Set status to lblStatus",
+							"(Try scope) (Code that throws IOException)",
+							"(Catch scope) (UI) Set thumb img to \"Fetch failed\"",
+							"Cannot fetch beatmap thumb image",
+							false,
+							e2));
 					lblThumbImg.setText("Fetch failed");
 				}
 				
@@ -357,7 +375,15 @@ public class DownloadDialog extends JDialog {
 				try {
 					url = new URL("http://osu.ppy.sh" + maplink);
 				} catch (MalformedURLException e){
-					e.printStackTrace();
+					DumpManager.getInstance()
+					.addDump(new DebugDump(
+							maplink,
+							"Assign url with null",
+							"(Try scope) Create new URL instance with \"http:" + maplink + "\"",
+							"(Try scope) Show Error Dialog",
+							"Invalid download link received. Cannot create URL instance",
+							false,
+							e));
 					JOptionPane.showMessageDialog(DownloadDialog.this,
 							"Invalid beatmap URL download link received.\n" +
 							"Please check whether the beatmap URL link\n" +
@@ -415,8 +441,17 @@ public class DownloadDialog extends JDialog {
 						try {
 							Desktop.getDesktop().open(new File(loc));
 						} catch (IOException e1) {
-							e1.printStackTrace();
+							DumpManager.getInstance()
+							.addDump(new DebugDump(
+									null,
+									"(If[openFile] scope) (UI) Set status to lblStatus",
+									"(Try scope) Open file loc using Desktop.getDesktop.open()",
+									"(Try scope) Sleep 2000 ms (2 sec)",
+									"Unable to open file",
+									false,
+									e1));
 						}
+						
 						try {
 							Thread.sleep(2000);
 						} catch (InterruptedException e) {}
