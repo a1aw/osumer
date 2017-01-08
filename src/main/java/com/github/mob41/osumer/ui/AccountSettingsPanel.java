@@ -9,6 +9,9 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
 import com.github.mob41.osumer.Config;
+import com.github.mob41.osumer.exceptions.DebugDump;
+import com.github.mob41.osumer.exceptions.DebuggableException;
+import com.github.mob41.osumer.exceptions.DumpManager;
 
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
@@ -56,7 +59,15 @@ public class AccountSettingsPanel extends JPanel {
 				try {
 					config.write();
 				} catch (IOException e) {
-					e.printStackTrace();
+					DumpManager.getInstance()
+						.addDump(new DebugDump(
+							null,
+							"Set password via setPass() in configuration",
+							"Writing configuration to file",
+							"Show Error Dialog",
+							"Error occurred on writing configuration",
+							false,
+							e));
 					JOptionPane.showMessageDialog(null, "Error occurred on writing configuration:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
@@ -69,6 +80,20 @@ public class AccountSettingsPanel extends JPanel {
 				pwdFld.setText("");
 				config.removeUser();
 				config.removePass();
+				try {
+					config.write();
+				} catch (IOException e1) {
+					DumpManager.getInstance()
+						.addDump(new DebugDump(
+							null,
+							"Reset / Remove password via removePass() in configuration",
+							"Writing configuration to file",
+							"Show Error Dialog",
+							"Error occurred on writing configuration",
+							false,
+							e1));
+					JOptionPane.showMessageDialog(null, "Error occurred on writing configuration:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 		GroupLayout groupLayout = new GroupLayout(this);

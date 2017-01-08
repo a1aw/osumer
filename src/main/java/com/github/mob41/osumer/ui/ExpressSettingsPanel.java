@@ -9,6 +9,8 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
 import com.github.mob41.osumer.Config;
+import com.github.mob41.osumer.exceptions.DebugDump;
+import com.github.mob41.osumer.exceptions.DumpManager;
 import com.github.mob41.osumer.exceptions.OsuException;
 import com.github.mob41.osumer.io.Installer;
 import com.github.mob41.osumer.io.Osu;
@@ -60,7 +62,6 @@ public class ExpressSettingsPanel extends JPanel {
 					installer.uninstall();
 				} catch (OsuException e){
 					JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
-					e.printStackTrace();
 				}
 				
 				if (installer.isInstalled()){
@@ -102,7 +103,15 @@ public class ExpressSettingsPanel extends JPanel {
 				try {
 					config.write();
 				} catch (IOException e1) {
-					e1.printStackTrace();
+					DumpManager.getInstance()
+						.addDump(new DebugDump(
+							null,
+							"Reset configuration",
+							"Writing configuration to file",
+							"Show Error Dialog",
+							"Error occurred on writing configuration",
+							false,
+							e1));
 					JOptionPane.showMessageDialog(null, "Error occurred on writing configuration:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
@@ -120,7 +129,15 @@ public class ExpressSettingsPanel extends JPanel {
 				try {
 					config.write();
 				} catch (IOException e1) {
-					e1.printStackTrace();
+					DumpManager.getInstance()
+						.addDump(new DebugDump(
+						null,
+						"Set via setSwitchToBrowserIfWithoutUiArg() in configuration",
+						"Writing configuration to file",
+						"Show Error Dialog",
+						"Error occurred on writing configuration",
+						false,
+						e1));
 					JOptionPane.showMessageDialog(null, "Error occurred on writing configuration:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
