@@ -154,7 +154,7 @@ public class ErrorDumpDialog extends JDialog {
 								}
 								
 								String str = arg0.getName();
-								final String ext = ".osumerdump";
+								final String ext = ".txt";
 								
 								if (str.length() < ext.length()){
 									return false;
@@ -165,11 +165,11 @@ public class ErrorDumpDialog extends JDialog {
 
 							@Override
 							public String getDescription() {
-								return ".osumerdump (osumer dump files)";
+								return ".txt (osumer dump files)";
 							}
 							
 						});
-						chooser.setSelectedFile(new File("osumer-debugDump-" + debugDump.getGenerated() + ".osumerdump"));
+						chooser.setSelectedFile(new File("osumer-debugDump-" + debugDump.getGenerated() + ".txt"));
 						
 						int option = chooser.showSaveDialog(ErrorDumpDialog.this);
 						

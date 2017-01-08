@@ -181,6 +181,31 @@ public class UIFrame extends JFrame {
 		mntmGenerateAllEvents.setEnabled(false);
 		mnDebug.add(mntmGenerateAllEvents);
 		
+		JSeparator separator_1 = new JSeparator();
+		mnDebug.add(separator_1);
+		
+		JMenuItem mntmPostANew = new JMenuItem("Post a new issue");
+		mntmPostANew.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Desktop.getDesktop().browse(new URI("https://github.com/mob41/osumer/issues/new"));
+				} catch (IOException | URISyntaxException e1) {
+					DebugDump dump = new DebugDump(
+							null,
+							"(Function call)",
+							"(Try scope) Opening GitHub osumer project issue new using Desktop.getDesktop().browse()",
+							"(End of function)",
+							"Error when opening the web page",
+							false,
+							e1);
+					DumpManager.getInstance().addDump(dump);
+					DebugDump.showDebugDialog(dump);
+					e1.printStackTrace();
+				}
+			}
+		});
+		mnDebug.add(mntmPostANew);
+		
 		JMenu mnUpdate = new JMenu("Update");
 		menuBar.add(mnUpdate);
 		
