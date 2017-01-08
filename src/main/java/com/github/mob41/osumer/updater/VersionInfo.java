@@ -4,6 +4,12 @@ public class VersionInfo {
 	
 	private final String version;
 	
+	private final String webLink;
+	
+	private final String exeLink;
+	
+	private final String jarLink;
+	
 	private final int branch;
 	
 	private final int buildNum;
@@ -12,8 +18,11 @@ public class VersionInfo {
 	
 	private final boolean upgradedVersion;
 
-	public VersionInfo(String version, int branch, int buildNum, boolean isThisVersion, boolean upgradedVersion) {
+	public VersionInfo(String version, int branch, int buildNum, String webLink, String exeLink, String jarLink, boolean isThisVersion, boolean upgradedVersion) {
 		this.version = version;
+		this.webLink = webLink;
+		this.exeLink = exeLink;
+		this.jarLink = jarLink;
 		this.branch = branch;
 		this.buildNum = buildNum;
 		this.isThisVersion = isThisVersion;
@@ -38,6 +47,18 @@ public class VersionInfo {
 	
 	public boolean isUpgradedVersion(){
 		return upgradedVersion;
+	}
+
+	public String getExeLink() {
+		return exeLink;
+	}
+
+	public String getJarLink() {
+		return jarLink;
+	}
+
+	public String getWebLink() {
+		return webLink;
 	}
 
 }

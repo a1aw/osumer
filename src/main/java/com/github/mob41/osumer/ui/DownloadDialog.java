@@ -2,6 +2,7 @@ package com.github.mob41.osumer.ui;
 
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.FlowLayout;
 
@@ -11,10 +12,16 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import com.github.mob41.osumer.Config;
+import com.github.mob41.osumer.exceptions.DebuggableException;
+import com.github.mob41.osumer.exceptions.NoBuildsForVersionException;
+import com.github.mob41.osumer.exceptions.NoSuchBuildNumberException;
+import com.github.mob41.osumer.exceptions.NoSuchVersionException;
 import com.github.mob41.osumer.exceptions.OsuException;
 import com.github.mob41.osumer.io.Downloader;
 import com.github.mob41.osumer.io.Osu;
 import com.github.mob41.osumer.io.OsuBeatmap;
+import com.github.mob41.osumer.updater.Updater;
+import com.github.mob41.osumer.updater.VersionInfo;
 
 import javax.imageio.ImageIO;
 import javax.swing.GroupLayout;
@@ -31,6 +38,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -83,12 +92,15 @@ public class DownloadDialog extends JDialog {
 	private String loc = null;
 	private JLabel lblThumbImg;
 	
+	private boolean checkingUpdate = false;
+	private Updater updater;
+	
 	public DownloadDialog(Config config, URL url){
 		this(config, url, true);
 	}
 	
 	public DownloadDialog(Config config, URL url, boolean systemExit){
-		this(config, url, systemExit, true);
+		this(config, url, true, systemExit, true);
 	}
 	
 	public String getFilePath(){
@@ -99,13 +111,14 @@ public class DownloadDialog extends JDialog {
 	 * Create the dialog.
 	 * @wbp.parser.constructor
 	 */
-	public DownloadDialog(Config config, URL url, boolean systemExit, boolean openFile) {
+	public DownloadDialog(Config config, URL url, boolean checkOsumerUpdate, boolean systemExit, boolean openFile) {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent arg0) {
 				askCancel(systemExit);
 			}
 		});
+		updater = new Updater(config);
 		osu = new Osu();
 		setTitle("Downloading beatmap...");
 		setModal(true);
@@ -428,6 +441,68 @@ public class DownloadDialog extends JDialog {
 			
 		});
 		thread.start();
+		
+		if (checkOsumerUpdate){
+			checkUpdate();
+		}
+	}
+	
+	private void checkUpdate(){
+		if (!checkingUpdate){
+			checkingUpdate = true;
+			thread = new Thread(new Runnable(){
+				public void run(){
+					
+					VersionInfo verInfo = null;
+					try {
+						verInfo = updater.getLatestVersion();
+					} catch (NoBuildsForVersionException e){
+						checkingUpdate = false;
+						return;
+					} catch (NoSuchVersionException e){
+						JOptionPane.showMessageDialog(DownloadDialog.this, "We don't have version " + Osu.OSUMER_VERSION + " in the current update branch\n\nPlease try another update branch (snapshot, beta, stable).", "Version not available", JOptionPane.INFORMATION_MESSAGE);
+						checkingUpdate = false;
+						return;
+					} catch (NoSuchBuildNumberException e){
+						JOptionPane.showMessageDialog(DownloadDialog.this, 
+								"We don't have build number greater or equal to " + Osu.OSUMER_BUILD_NUM + " in version " + Osu.OSUMER_VERSION + ".\n" +
+								"If you are using a modified/development osumer,\n"
+								+ " you can just ignore this message.\n" +
+								"If not, this might be the versions.json in GitHub goes wrong,\n"
+								+ " post a new issue about this.", "Build not available", JOptionPane.WARNING_MESSAGE);
+						checkingUpdate = false;
+						return;
+					} catch (DebuggableException e){
+						e.printStackTrace();
+						checkingUpdate = false;
+						return;
+					}
+					
+					if (verInfo != null && !verInfo.isThisVersion()){
+						int option = JOptionPane.showOptionDialog(DownloadDialog.this,
+								"New " +
+								(verInfo.isUpgradedVersion() ? "upgrade" : "update") +
+								" available! New version:\n" + verInfo.getVersion() +
+								"-" + Updater.getBranchStr(verInfo.getBranch()) +
+								"-b" + verInfo.getBuildNum() + "\n\n" +
+								"Do you want to update it now?\n\n" +
+								"(This version's updater is not fully\n implemented. A browser will open\n instead.)", "Update available", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, JOptionPane.NO_OPTION);
+						
+						if (option == JOptionPane.YES_OPTION){
+							try {
+								Desktop.getDesktop().browse(new URI(verInfo.getWebLink()));
+							} catch (IOException e) {
+								e.printStackTrace();
+							} catch (URISyntaxException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+					checkingUpdate = false;
+				}
+			});
+			thread.start();
+		}
 	}
 	
 	private void askCancel(boolean systemExit){

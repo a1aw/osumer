@@ -166,12 +166,17 @@ public class ErrorDumpDialog extends JDialog {
 
 							@Override
 							public String getDescription() {
-								return ".osmerdump (osumer dump files)";
+								return ".osumerdump (osumer dump files)";
 							}
 							
 						});
-						chooser.setSelectedFile(new File("osumer-debugDump-" + debugDump.getGenerated() + ".osmerdump"));
-						chooser.showSaveDialog(ErrorDumpDialog.this);
+						chooser.setSelectedFile(new File("osumer-debugDump-" + debugDump.getGenerated() + ".osumerdump"));
+						
+						int option = chooser.showSaveDialog(ErrorDumpDialog.this);
+						
+						if (option == JFileChooser.CANCEL_OPTION){
+							return;
+						}
 						
 						File file = chooser.getSelectedFile();
 						if (file.exists()){
