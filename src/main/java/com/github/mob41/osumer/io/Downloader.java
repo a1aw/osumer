@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 
+import com.github.mob41.osumer.exceptions.DebugDump;
+import com.github.mob41.osumer.exceptions.DumpManager;
+
 public class Downloader extends Observable implements Runnable{
 	
 	public static final int DOWNLOADING = 0;
@@ -172,7 +175,15 @@ public class Downloader extends Observable implements Runnable{
 				reportState();
 			}
 		} catch (IOException e){
-			e.printStackTrace();
+			DumpManager.getInstance()
+				.addDump(new DebugDump(
+						null,
+						"(Try&catch try)",
+						"Error reporting and debug dump",
+						"(Try&catch finally)",
+						"Error when downloading",
+						false,
+						e));
 			error();
 		} finally {
 			if (file != null){
