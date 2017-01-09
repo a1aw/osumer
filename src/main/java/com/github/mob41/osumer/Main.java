@@ -87,6 +87,13 @@ public class Main {
 		}
 		
 		if (args != null && args.length > 0){
+			if (!config.isOEEnabled()){
+				System.out.println("osumerExpress is disabled.");
+				runBrowser(config, args);
+				
+				System.exit(0);
+				return;
+			}
 			boolean canAccess = false;
 			
 			int index = 0;
