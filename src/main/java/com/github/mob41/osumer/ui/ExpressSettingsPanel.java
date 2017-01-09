@@ -44,6 +44,7 @@ public class ExpressSettingsPanel extends JPanel {
 	private JLabel lblPleaseRestartOsumer_1;
 	private JButton btnReinstall;
 	private JPanel vermispanel;
+	private JCheckBox chckbxDisableOsumerexpressdirect;
 
 	/**
 	 * Create the panel.
@@ -242,21 +243,37 @@ public class ExpressSettingsPanel extends JPanel {
 		
 		JLabel lblPleaseSetosumerexpress = new JLabel("Please set \"osumerExpress\" as default browser in Control Panel");
 		
+		chckbxDisableOsumerexpressdirect = new JCheckBox("Disable osumerExpress (Direct all URLs to browser)");
+		chckbxDisableOsumerexpressdirect.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				chckbxAutomaticallySwitchTo.setEnabled(!chckbxDisableOsumerexpressdirect.isSelected());
+				chckbxSwitchToBrowser.setEnabled(!chckbxDisableOsumerexpressdirect.isSelected());
+				chckbxSwitchToBrowser.setSelected(false);
+			}
+		});
+		chckbxDisableOsumerexpressdirect.setSelected(!config.isOEEnabled());
+		if (!config.isOEEnabled()){
+			chckbxAutomaticallySwitchTo.setEnabled(false);
+			chckbxSwitchToBrowser.setEnabled(false);
+			chckbxSwitchToBrowser.setSelected(false);
+		}
+		
 		GroupLayout gl_settingspanel = new GroupLayout(settingspanel);
 		gl_settingspanel.setHorizontalGroup(
 			gl_settingspanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_settingspanel.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(gl_settingspanel.createParallelGroup(Alignment.LEADING)
-						.addComponent(chckbxSwitchToBrowser, GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
-						.addComponent(chckbxAutomaticallySwitchTo, GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
-						.addComponent(browserBox, 0, 292, Short.MAX_VALUE)
-						.addComponent(btnRemoveConfiguration, GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
-						.addComponent(btnSaveConfiguration, GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
-						.addComponent(btnUninstallOsumer, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
-						.addComponent(lblSelectDefaultBrowser, GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
-						.addComponent(lblPleaseRestartOsumer, GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
-						.addComponent(lblPleaseSetosumerexpress, GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE))
+						.addComponent(chckbxSwitchToBrowser, GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
+						.addComponent(chckbxAutomaticallySwitchTo, GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
+						.addComponent(browserBox, 0, 296, Short.MAX_VALUE)
+						.addComponent(btnRemoveConfiguration, GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
+						.addComponent(btnSaveConfiguration, GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
+						.addComponent(btnUninstallOsumer, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
+						.addComponent(lblSelectDefaultBrowser, GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
+						.addComponent(lblPleaseRestartOsumer, GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
+						.addComponent(lblPleaseSetosumerexpress, GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
+						.addComponent(chckbxDisableOsumerexpressdirect, GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE))
 					.addContainerGap())
 		);
 		gl_settingspanel.setVerticalGroup(
@@ -270,7 +287,9 @@ public class ExpressSettingsPanel extends JPanel {
 					.addComponent(chckbxAutomaticallySwitchTo)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(chckbxSwitchToBrowser)
-					.addPreferredGap(ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(chckbxDisableOsumerexpressdirect)
+					.addPreferredGap(ComponentPlacement.RELATED, 3, Short.MAX_VALUE)
 					.addComponent(lblPleaseSetosumerexpress)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(lblPleaseRestartOsumer)

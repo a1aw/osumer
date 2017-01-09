@@ -72,6 +72,10 @@ public class Config {
 		json.put("autoSwitchBrowser", autoSwitch);
 	}
 	
+	public void setOEEnabled(boolean enabled){
+		json.put("oeenabled", enabled);
+	}
+	
 	public void setUser(String username){
 		try {
 			json.put("user", Base64.encodeBase64String(username.getBytes("UTF-8")));
@@ -102,6 +106,14 @@ public class Config {
 		}
 		
 		return json.getBoolean("autoSwitchBrowser");
+	}
+	
+	public boolean isOEEnabled(){
+		if (json.isNull("oeenabled")){
+			return true;
+		}
+		
+		return json.getBoolean("oeenabled");
 	}
 	
 	public String getUser(){
