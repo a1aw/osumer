@@ -103,9 +103,16 @@ public class ExpressSettingsPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				//pathFld.setText("");
 				chckbxAutomaticallySwitchTo.setSelected(false);
+				chckbxSwitchToBrowser.setSelected(false);
+				chckbxDisableOsumerexpressdirect.setSelected(false);
+				
 				config.removeDefaultBrowser();
 				config.setAutoSwitchBrowser(true);
 				config.setSwitchToBrowserIfWithoutUiArg(false);
+				config.setOEEnabled(true);
+				
+				chckbxAutomaticallySwitchTo.setEnabled(true);
+				chckbxSwitchToBrowser.setEnabled(true);
 				try {
 					config.write();
 				} catch (IOException e1) {
@@ -132,6 +139,7 @@ public class ExpressSettingsPanel extends JPanel {
 				}
 				config.setAutoSwitchBrowser(chckbxAutomaticallySwitchTo.isSelected());
 				config.setSwitchToBrowserIfWithoutUiArg(chckbxSwitchToBrowser.isSelected());
+				config.setOEEnabled(!chckbxDisableOsumerexpressdirect.isSelected());
 				try {
 					config.write();
 				} catch (IOException e1) {
