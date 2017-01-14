@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.mob41.osumer</groupId>
   <artifactId>OsuMer</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.1.2-SNAPSHOT</version>
   <name>OsuMer</name>
   <description>Osu! beatmap downloader</description>
   <dependencies>

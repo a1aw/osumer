@@ -23,7 +23,7 @@ import com.github.mob41.osumer.io.Downloader;
 import com.github.mob41.osumer.io.Osu;
 import com.github.mob41.osumer.io.OsuBeatmap;
 import com.github.mob41.osumer.updater.Updater;
-import com.github.mob41.osumer.updater.VersionInfo;
+import com.github.mob41.osumer.updater.UpdateInfo;
 
 import javax.imageio.ImageIO;
 import javax.swing.GroupLayout;
@@ -405,7 +405,7 @@ public class DownloadDialog extends JDialog {
 				lblStatus.setText("Status: Downloading \"" + info.getName() + "\"...");
 				
 				String folder = System.getProperty("java.io.tmpdir");
-				dwn = new Downloader(folder, osu, url);
+				dwn = new Downloader(folder, toFilename(url) + " - " + info.getName(), osu, url);
 				
 				cancelButton.setEnabled(true);
 				
@@ -488,7 +488,7 @@ public class DownloadDialog extends JDialog {
 			thread = new Thread(new Runnable(){
 				public void run(){
 					
-					VersionInfo verInfo = null;
+					UpdateInfo verInfo = null;
 					try {
 						verInfo = updater.getLatestVersion();
 					} catch (NoBuildsForVersionException e){
@@ -538,6 +538,11 @@ public class DownloadDialog extends JDialog {
 			});
 			thread.start();
 		}
+	}
+	
+	private static String toFilename(URL url){
+		String str = url.getFile();
+		return str.substring(str.lastIndexOf('/') + 1);
 	}
 	
 	private void askCancel(boolean systemExit){
