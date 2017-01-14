@@ -32,7 +32,7 @@ import com.github.mob41.osumer.exceptions.NoSuchBuildNumberException;
 import com.github.mob41.osumer.exceptions.NoSuchVersionException;
 import com.github.mob41.osumer.io.Osu;
 import com.github.mob41.osumer.updater.Updater;
-import com.github.mob41.osumer.updater.VersionInfo;
+import com.github.mob41.osumer.updater.UpdateInfo;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -640,7 +640,7 @@ public class UIFrame extends JFrame {
 					updateTxtPn.setForeground(Color.BLACK);
 					updateTxtPn.setText("Checking update...");
 					
-					VersionInfo verInfo = null;
+					UpdateInfo verInfo = null;
 					try {
 						verInfo = updater.getLatestVersion();
 					} catch (NoBuildsForVersionException e){

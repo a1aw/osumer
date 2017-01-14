@@ -72,7 +72,7 @@ public class Updater {
 		return Osu.OSUMER_VERSION;
 	}
 	
-	public VersionInfo getLatestVersion() throws DebuggableException{
+	public UpdateInfo getLatestVersion() throws DebuggableException{
 		final String thisVersion = Osu.OSUMER_VERSION;
 		final String buildBranch = Osu.OSUMER_BRANCH;
 		final int buildNum = Osu.OSUMER_BUILD_NUM;
@@ -217,7 +217,7 @@ public class Updater {
 			String webLink = verJson.isNull("web_link") ? null : verJson.getString("web_link");
 			String exeLink = verJson.isNull("exe_link") ? null : verJson.getString("exe_link");
 			String jarLink = verJson.isNull("jar_link") ? null : verJson.getString("jar_link");
-			return new VersionInfo(thisVersion, updateSource, latest, webLink, exeLink, jarLink, false, false);
+			return new UpdateInfo(thisVersion, updateSource, latest, webLink, exeLink, jarLink, false, false);
 		}
 		
 		//As the version is ended, we are finding a new version here
@@ -265,23 +265,23 @@ public class Updater {
 			String exeLink = upgradedVerJson.isNull("exe_link") ? null : upgradedVerJson.getString("exe_link");
 			String jarLink = upgradedVerJson.isNull("jar_link") ? null : upgradedVerJson.getString("jar_link");
 			
-			return new VersionInfo(upgradeNode, updateSource, upgradedBuildNum, webLink, exeLink, jarLink, false, true);
+			return new UpdateInfo(upgradeNode, updateSource, upgradedBuildNum, webLink, exeLink, jarLink, false, true);
 		} else {
 			String webLink = verJson.isNull("web_link") ? null : verJson.getString("web_link");
 			String exeLink = verJson.isNull("exe_link") ? null : verJson.getString("exe_link");
 			String jarLink = verJson.isNull("jar_link") ? null : verJson.getString("jar_link");
 			
-			return new VersionInfo(thisVersion, updateSource, buildNum, webLink, exeLink, jarLink, true, false);
+			return new UpdateInfo(thisVersion, updateSource, buildNum, webLink, exeLink, jarLink, true, false);
 		}
 	}
 	
 	public boolean isUpdateAvailable() throws DebuggableException{
-		VersionInfo latestVer = getLatestVersion();
+		UpdateInfo latestVer = getLatestVersion();
 		return latestVer != null && !latestVer.isThisVersion();
 	}
 	
 	//TODO: Implement updater
-	public int getUpdate(VersionInfo verInfo){
+	public int getUpdate(UpdateInfo verInfo){
 		return NO_DATA;
 	}
 	

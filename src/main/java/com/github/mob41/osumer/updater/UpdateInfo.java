@@ -1,6 +1,6 @@
 package com.github.mob41.osumer.updater;
 
-public class VersionInfo {
+public class UpdateInfo {
 	
 	private final String version;
 	
@@ -18,7 +18,7 @@ public class VersionInfo {
 	
 	private final boolean upgradedVersion;
 
-	public VersionInfo(String version, int branch, int buildNum, String webLink, String exeLink, String jarLink, boolean isThisVersion, boolean upgradedVersion) {
+	public UpdateInfo(String version, int branch, int buildNum, String webLink, String exeLink, String jarLink, boolean isThisVersion, boolean upgradedVersion) {
 		this.version = version;
 		this.webLink = webLink;
 		this.exeLink = exeLink;

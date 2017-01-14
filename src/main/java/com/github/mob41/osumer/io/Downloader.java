@@ -35,16 +35,19 @@ public class Downloader extends Observable implements Runnable{
 	
 	private final String folder;
 	
+	private final String fileName;
+	
 	private int size = -1;
 	
 	private int downloaded = 0;
 	
 	private int status;
 
-	public Downloader(String downloadFolder, Osu osu, URL downloadUrl) {
+	public Downloader(String downloadFolder, String fileName, Osu osu, URL downloadUrl) {
 		this.url = downloadUrl;
 		this.osu = osu;
 		this.folder = downloadFolder;
+		this.fileName = fileName;
 		
 		status = DOWNLOADING;
 		
@@ -82,7 +85,7 @@ public class Downloader extends Observable implements Runnable{
 		status = CANCELLED;
 		reportState();
 		
-		File file = new File(folder + "\\" + toFilename(url) + ".osz");
+		File file = new File(folder + "\\" + fileName + ".osz");
 		file.delete();
 		
 		downloaded = 0;
@@ -96,11 +99,6 @@ public class Downloader extends Observable implements Runnable{
 	private void download(){
 		Thread thread = new Thread(this);
 		thread.start();
-	}
-	
-	private static String toFilename(URL url){
-		String str = url.getFile();
-		return str.substring(str.lastIndexOf('/') + 1);
 	}
 	
 	private static void printAllHeaders(Map<String, List<String>> headers){
@@ -151,7 +149,7 @@ public class Downloader extends Observable implements Runnable{
 				reportState();
 			}
 			
-			file = new RandomAccessFile(folder + "\\" + toFilename(url) + ".osz", "rw");
+			file = new RandomAccessFile(folder + "\\" + fileName + ".osz", "rw");
 			file.seek(downloaded);
 			
 			in = conn.getInputStream();

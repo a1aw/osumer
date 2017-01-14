@@ -203,12 +203,24 @@ public class Installer {
 	}
 	
 	public boolean isSameVersionInstalled(){
-		if (!Osu.isWindows()){
+		VersionInfo verInfo = getInstalledVersion();
+		
+		if (verInfo == null){
 			return false;
 		}
 		
+		return verInfo.getVersion().equals(Osu.OSUMER_VERSION) &&
+				verInfo.getBranch().equals(Osu.OSUMER_BRANCH) &&
+				verInfo.getBuildNum() == Osu.OSUMER_BUILD_NUM;
+	}
+	
+	public VersionInfo getInstalledVersion(){
+		if (!Osu.isWindows()){
+			return null;
+		}
+		
 		if (!isInstalled()){
-			return false;
+			return null;
 		}
 		
 		File file = new File(winPath + "\\" + verInfoFile);
@@ -225,13 +237,15 @@ public class Installer {
 
 			buffer.flush();
 
+			in.close();
+			
 			String str = new String(Base64.decodeBase64(data), StandardCharsets.UTF_8);
 			
 			JSONObject json = null;
 			try {
 				json = new JSONObject(str);
 			} catch (JSONException e){
-				return false;
+				return null;
 			}
 			
 			String ver = json.isNull("version") ? null : json.getString("version");
@@ -239,12 +253,12 @@ public class Installer {
 			int build = json.isNull("build") ? -1 : json.getInt("build");
 			
 			if (ver == null || branch == null || build == -1){
-				return false;
+				return null;
 			}
 			
-			return ver.equals(Osu.OSUMER_VERSION) && branch.equals(Osu.OSUMER_BRANCH) && build == Osu.OSUMER_BUILD_NUM;
+			return new VersionInfo(ver, branch, build);
 		} catch (IOException e){
-			return false;
+			return null;
 		}
 	}
 	
