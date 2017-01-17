@@ -1,5 +1,7 @@
 package com.github.mob41.osumer.io;
 
+import com.github.mob41.osumer.updater.Updater;
+
 public class VersionInfo {
 	
 	private final String version;
@@ -24,5 +26,16 @@ public class VersionInfo {
 
 	public int getBuildNum() {
 		return buildNum;
+	}
+	
+	public boolean isEqualToRunning(){
+		return Updater.compareVersion(Osu.OSUMER_VERSION, version) == 0 &&
+				Osu.OSUMER_BRANCH.equals(branch) &&
+				Osu.OSUMER_BUILD_NUM == buildNum;
+	}
+	
+	public boolean isNewerThanRunning(){
+		return Updater.compareVersion(Osu.OSUMER_VERSION, version) == -1 &&
+				Osu.OSUMER_BUILD_NUM < buildNum;
 	}
 }
