@@ -295,7 +295,7 @@ public class UIFrame extends JFrame {
 				String urlstr = mapUrlFld.getText();
 				
 				if (!Osu.isVaildBeatMapUrl(urlstr)){
-					JOptionPane.showMessageDialog(null, "The beatmap URL provided isn't a vaild osu! beatmap URL.", "Error", JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(null, "The beatmap URL provided isn't a valid osu! beatmap URL.", "Error", JOptionPane.WARNING_MESSAGE);
 					return;
 				}
 				
@@ -303,7 +303,7 @@ public class UIFrame extends JFrame {
 				try {
 					url = new URL(urlstr);
 				} catch (MalformedURLException e1){
-					JOptionPane.showMessageDialog(null, "The beatmap URL provided isn't a vaild osu! beatmap URL.", "Error", JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(null, "The beatmap URL provided isn't a valid osu! beatmap URL.", "Error", JOptionPane.WARNING_MESSAGE);
 					return;
 				}
 				
@@ -376,7 +376,7 @@ public class UIFrame extends JFrame {
 				String urlstr = mapUrlFld.getText();
 				
 				if (!Osu.isVaildBeatMapUrl(urlstr)){
-					JOptionPane.showMessageDialog(null, "The beatmap URL provided isn't a vaild osu! beatmap URL.", "Error", JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(null, "The beatmap URL provided isn't a valid osu! beatmap URL.", "Error", JOptionPane.WARNING_MESSAGE);
 					return;
 				}
 				
@@ -384,7 +384,7 @@ public class UIFrame extends JFrame {
 				try {
 					url = new URL(urlstr);
 				} catch (MalformedURLException e1){
-					JOptionPane.showMessageDialog(null, "The beatmap URL provided isn't a vaild osu! beatmap URL.", "Error", JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(null, "The beatmap URL provided isn't a valid osu! beatmap URL.", "Error", JOptionPane.WARNING_MESSAGE);
 					return;
 					
 				}
