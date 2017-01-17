@@ -98,7 +98,7 @@ public class UIFrame extends JFrame {
 		setResizable(false);
 		setTitle("osumer UI");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 655, 493);
+		setBounds(100, 100, 655, 535);
 		
 		updater = new Updater(config);
 		chooser = new JFileChooser();

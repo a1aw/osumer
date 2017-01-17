@@ -10,10 +10,12 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 
 import com.github.mob41.osumer.Config;
 import com.github.mob41.osumer.exceptions.DebugDump;
+import com.github.mob41.osumer.exceptions.DebuggableException;
 import com.github.mob41.osumer.exceptions.DumpManager;
 import com.github.mob41.osumer.exceptions.OsuException;
 import com.github.mob41.osumer.io.Installer;
 import com.github.mob41.osumer.io.Osu;
+import com.github.mob41.osumer.io.VersionInfo;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -43,8 +45,10 @@ public class ExpressSettingsPanel extends JPanel {
 	private JComboBox browserBox;
 	private JLabel lblPleaseRestartOsumer_1;
 	private JButton btnReinstall;
-	private JPanel vermispanel;
+	private JPanel thisvernewer;
 	private JCheckBox chckbxDisableOsumerexpressdirect;
+	private JTextPane txtpnUpdateInfo;
+	private JPanel thisverold;
 
 	/**
 	 * Create the panel.
@@ -343,20 +347,57 @@ public class ExpressSettingsPanel extends JPanel {
 		);
 		notsupportedpanel.setLayout(gl_notsupportedpanel);
 		
-		vermispanel = new JPanel();
-		add(vermispanel, "name_83607154979029");
+		thisverold = new JPanel();
+		add(thisverold, "name_64628164930953");
 		
-		JLabel lblVersionMismatch = new JLabel("Installed Version Mismatch");
-		lblVersionMismatch.setHorizontalAlignment(SwingConstants.CENTER);
-		lblVersionMismatch.setForeground(Color.RED);
-		lblVersionMismatch.setFont(new Font("PMingLiU", Font.BOLD, 20));
+		JLabel lblThisIsA = new JLabel("This is a old version");
+		lblThisIsA.setHorizontalAlignment(SwingConstants.CENTER);
+		lblThisIsA.setFont(new Font("PMingLiU", Font.PLAIN, 24));
+		lblThisIsA.setForeground(Color.RED);
 		
-		JTextPane txtpnTheVersionOf = new JTextPane();
-		txtpnTheVersionOf.setText("The version of osumer installed does not match to the one you are running. This will affect the ability of osumerExpress. Please press \"Reinstall\" to reinstall to this one's version of osumer.");
-		txtpnTheVersionOf.setBackground(SystemColor.control);
-		txtpnTheVersionOf.setEditable(false);
+		JLabel lblTheInstalledVersion = new JLabel("The installed version is newer than this running version.");
+		lblTheInstalledVersion.setHorizontalAlignment(SwingConstants.CENTER);
 		
-		btnReinstall = new JButton("(*Admin) Reinstall osumerExpress");
+		JLabel lblRunFromCprogram = new JLabel("Run from: C:\\Program Files\\osumer\\osumer.exe");
+		lblRunFromCprogram.setHorizontalAlignment(SwingConstants.CENTER);
+		GroupLayout gl_thisverold = new GroupLayout(thisverold);
+		gl_thisverold.setHorizontalGroup(
+			gl_thisverold.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_thisverold.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_thisverold.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblTheInstalledVersion, GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
+						.addComponent(lblThisIsA, GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
+						.addComponent(lblRunFromCprogram, GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE))
+					.addContainerGap())
+		);
+		gl_thisverold.setVerticalGroup(
+			gl_thisverold.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_thisverold.createSequentialGroup()
+					.addGap(77)
+					.addComponent(lblThisIsA, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblTheInstalledVersion)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblRunFromCprogram)
+					.addContainerGap(96, Short.MAX_VALUE))
+		);
+		thisverold.setLayout(gl_thisverold);
+		
+		thisvernewer = new JPanel();
+		add(thisvernewer, "name_83607154979029");
+		
+		JLabel lblReadyForUpdate = new JLabel("Ready for update");
+		lblReadyForUpdate.setHorizontalAlignment(SwingConstants.CENTER);
+		lblReadyForUpdate.setForeground(new Color(0, 204, 0));
+		lblReadyForUpdate.setFont(new Font("PMingLiU", Font.BOLD, 20));
+		
+		txtpnUpdateInfo = new JTextPane();
+		txtpnUpdateInfo.setText("<dynamic>\r\n");
+		txtpnUpdateInfo.setBackground(SystemColor.control);
+		txtpnUpdateInfo.setEditable(false);
+		
+		btnReinstall = new JButton("(*Admin) Update osumerExpress");
 		btnReinstall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				int option = JOptionPane.showOptionDialog(null, "Are you sure to reinstall?", "Reinstall osumerExpress", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 1);
@@ -381,8 +422,10 @@ public class ExpressSettingsPanel extends JPanel {
 					if (installer.isSameVersionInstalled()){
 						panelSettings();
 					} else {
-						JOptionPane.showMessageDialog(null, "Version still mismatch", "Error", JOptionPane.ERROR_MESSAGE);
-						panelMismatch();
+						JOptionPane.showMessageDialog(null, "Version still mismatch. Error occurred?\nPlease check error dumps.", "Error", JOptionPane.ERROR_MESSAGE);
+						VersionInfo info = installer.getInstalledVersion();
+						panelReadyUpdate(info == null ? null : info.getVersion() + "-" + info.getBranch() + "-b" + info.getBuildNum(),
+								Osu.OSUMER_VERSION + "-" + Osu.OSUMER_BRANCH + "-b" + Osu.OSUMER_BUILD_NUM);
 					}
 				} else {
 					JOptionPane.showMessageDialog(null, "Uninstallation was not successful.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -393,32 +436,32 @@ public class ExpressSettingsPanel extends JPanel {
 		lblPleaseRestartOsumer_1 = new JLabel("Please restart osumer with administrative privilege");
 		lblPleaseRestartOsumer_1.setForeground(Color.RED);
 		lblPleaseRestartOsumer_1.setHorizontalAlignment(SwingConstants.CENTER);
-		GroupLayout gl_vermispanel = new GroupLayout(vermispanel);
-		gl_vermispanel.setHorizontalGroup(
-			gl_vermispanel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_vermispanel.createSequentialGroup()
+		GroupLayout gl_thisvernewer = new GroupLayout(thisvernewer);
+		gl_thisvernewer.setHorizontalGroup(
+			gl_thisvernewer.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_thisvernewer.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(gl_vermispanel.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblVersionMismatch, GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
-						.addComponent(txtpnTheVersionOf, GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
+					.addGroup(gl_thisvernewer.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblReadyForUpdate, GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
+						.addComponent(txtpnUpdateInfo, GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
 						.addComponent(btnReinstall, GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
 						.addComponent(lblPleaseRestartOsumer_1, GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE))
 					.addContainerGap())
 		);
-		gl_vermispanel.setVerticalGroup(
-			gl_vermispanel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_vermispanel.createSequentialGroup()
+		gl_thisvernewer.setVerticalGroup(
+			gl_thisvernewer.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_thisvernewer.createSequentialGroup()
 					.addGap(64)
-					.addComponent(lblVersionMismatch)
+					.addComponent(lblReadyForUpdate)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(txtpnTheVersionOf, GroupLayout.PREFERRED_SIZE, 77, GroupLayout.PREFERRED_SIZE)
+					.addComponent(txtpnUpdateInfo, GroupLayout.PREFERRED_SIZE, 77, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(btnReinstall)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(lblPleaseRestartOsumer_1)
 					.addContainerGap(38, Short.MAX_VALUE))
 		);
-		vermispanel.setLayout(gl_vermispanel);
+		thisvernewer.setLayout(gl_thisvernewer);
 
 		if (!Osu.isWindows()){
 			panelNotSupported();
@@ -426,10 +469,19 @@ public class ExpressSettingsPanel extends JPanel {
 			refreshBrowsers();
 			
 			if (installer.isInstalled()){
-				if (installer.isSameVersionInstalled()){
+				VersionInfo info = installer.getInstalledVersion();
+				
+				if (info == null){
+					//Old version don't have a version file
+					panelReadyUpdate(null,
+							Osu.OSUMER_VERSION + "-" + Osu.OSUMER_BRANCH + "-b" + Osu.OSUMER_BUILD_NUM);
+				} else if (info.isEqualToRunning()){
 					panelSettings();
+				} else if (info.isNewerThanRunning()){
+					panelOld();
 				} else {
-					panelMismatch();
+					panelReadyUpdate(info.getVersion() + "-" + info.getBranch() + "-b" + info.getBuildNum(),
+							Osu.OSUMER_VERSION + "-" + Osu.OSUMER_BRANCH + "-b" + Osu.OSUMER_BUILD_NUM);
 				}
 			} else {
 				panelNotInstalled();
@@ -481,15 +533,30 @@ public class ExpressSettingsPanel extends JPanel {
 		}
 	}
 	
-	private void panelMismatch(){
-		vermispanel.setVisible(true);
+	private void panelReadyUpdate(String fromVer, String toVer){
+		if (fromVer == null){
+			txtpnUpdateInfo.setText("Installed version's version file cannot be detected. (Version too old?) You are reinstalling this version \"" + toVer + "\".");
+		} else {
+			txtpnUpdateInfo.setText("This running version is newer than installed verison. You are updating from \"" + fromVer + "\" to \"" + toVer + "\". Press \"Update osumerExpress\" to continue!");
+		}
+		thisverold.setVisible(false);
+		thisvernewer.setVisible(true);
+		notsupportedpanel.setVisible(false);
+		settingspanel.setVisible(false);
+		notinstalledpanel.setVisible(false);
+	}
+	
+	private void panelOld(){
+		thisverold.setVisible(true);
+		thisvernewer.setVisible(false);
 		notsupportedpanel.setVisible(false);
 		settingspanel.setVisible(false);
 		notinstalledpanel.setVisible(false);
 	}
 	
 	private void panelNotSupported(){
-		vermispanel.setVisible(false);
+		thisverold.setVisible(false);
+		thisvernewer.setVisible(false);
 		notsupportedpanel.setVisible(true);
 		settingspanel.setVisible(false);
 		notinstalledpanel.setVisible(false);
@@ -497,14 +564,16 @@ public class ExpressSettingsPanel extends JPanel {
 	
 	private void panelSettings(){
 		refreshBrowsers();
-		vermispanel.setVisible(false);
+		thisverold.setVisible(false);
+		thisvernewer.setVisible(false);
 		notsupportedpanel.setVisible(false);
 		settingspanel.setVisible(true);
 		notinstalledpanel.setVisible(false);
 	}
 	
 	private void panelNotInstalled(){
-		vermispanel.setVisible(false);
+		thisverold.setVisible(false);
+		thisvernewer.setVisible(false);
 		notsupportedpanel.setVisible(false);
 		settingspanel.setVisible(false);
 		notinstalledpanel.setVisible(true);
