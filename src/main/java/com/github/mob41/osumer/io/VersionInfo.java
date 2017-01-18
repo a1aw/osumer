@@ -35,7 +35,8 @@ public class VersionInfo {
 	}
 	
 	public boolean isNewerThanRunning(){
-		return Updater.compareVersion(Osu.OSUMER_VERSION, version) == -1 &&
-				Osu.OSUMER_BUILD_NUM < buildNum;
+		int result = Updater.compareVersion(Osu.OSUMER_VERSION, version);
+		return result == -1 ||
+				(result == 0 && Osu.OSUMER_BUILD_NUM < buildNum);
 	}
 }
