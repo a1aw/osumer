@@ -293,14 +293,26 @@ public class Installer {
 					false);
 		}
 		
-		File file = new File("osumer.exe");
+		String runningFilePath = Installer.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+		
+		if (!runningFilePath.endsWith(".exe")){
+			throw new DebuggableException(
+					runningFilePath,
+					"Validate is osumer elevated",
+					"Validate is running file name is ending with .exe",
+					"Create File instance of \"osumer.exe\"",
+					"A Windows executable (.exe) version of osumer is required for installation. It can be downloaded from the releases. If you have it, rename it to \"osumer.exe\" to continue.",
+					false);
+		}
+		
+		File file = new File(runningFilePath);
 		if (!file.exists()){
 			throw new DebuggableException(
-					null,
-					"Validate is osumer elevated",
+					runningFilePath,
+					"Validate is running file name is ending with .exe",
 					"Create File instance of \"osumer.exe\"",
 					"Create File instance of constant field winPath",
-					"A Windows executable (.exe) version of osumer is required for installation. It can be downloaded from the releases. If you have it, rename it to \"osumer.exe\" to continue.",
+					"Unexpected? The running file-name does not exist!",
 					false);
 		}
 		
