@@ -29,7 +29,7 @@ public class Osu {
 	
 //TODO: Hard-code version?
 	
-	public static final String OSUMER_VERSION = "0.1.2";
+	public static final String OSUMER_VERSION = "0.1.3";
 	
 	public static final String OSUMER_BRANCH = "snapshot";
 	
