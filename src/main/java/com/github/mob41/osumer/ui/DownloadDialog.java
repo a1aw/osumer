@@ -404,8 +404,10 @@ public class DownloadDialog extends JDialog {
 				lblOsumer.setText("osuming...");
 				lblStatus.setText("Status: Downloading \"" + info.getName() + "\"...");
 				
-				String folder = System.getProperty("java.io.tmpdir");
-				dwn = new Downloader(folder, toFilename(url) + " - " + info.getName(), osu, url);
+				final String folder = System.getProperty("java.io.tmpdir");
+				final String fileName = toFilename(url) + " " + info.getName();
+				
+				dwn = new Downloader(folder, fileName, osu, url);
 				
 				cancelButton.setEnabled(true);
 				
@@ -432,7 +434,7 @@ public class DownloadDialog extends JDialog {
 					cancelButton.setEnabled(true);
 					System.out.println("Download failed.");
 				} else if (dwn.getStatus() == Downloader.COMPLETED){
-					loc = folder + "\\" + maplink.substring(3) + ".osz";
+					loc = folder + "\\" + fileName + ".osz";
 					
 					if (openFile){
 						lblStatus.setText("Status: Download completed. Opening...");
