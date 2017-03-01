@@ -19,7 +19,7 @@ import com.github.mob41.osumer.exceptions.NoBuildsForVersionException;
 import com.github.mob41.osumer.exceptions.NoSuchBuildNumberException;
 import com.github.mob41.osumer.exceptions.NoSuchVersionException;
 import com.github.mob41.osumer.exceptions.OsuException;
-import com.github.mob41.osumer.io.Downloader;
+import com.github.mob41.osumer.io.OsuDownloader;
 import com.github.mob41.osumer.io.Osu;
 import com.github.mob41.osumer.io.OsuBeatmap;
 import com.github.mob41.osumer.updater.Updater;
@@ -90,7 +90,7 @@ public class DownloadDialog extends JDialog {
 	private JLabel lblOsumer;
 	private JProgressBar progressBar;
 	private JButton cancelButton;
-	private Downloader dwn;
+	private OsuDownloader dwn;
 	private String loc = null;
 	private JLabel lblThumbImg;
 	
@@ -407,12 +407,12 @@ public class DownloadDialog extends JDialog {
 				final String folder = System.getProperty("java.io.tmpdir");
 				final String fileName = toFilename(url) + " " + info.getName();
 				
-				dwn = new Downloader(folder, fileName, osu, url);
+				dwn = new OsuDownloader(folder, fileName, osu, url);
 				
 				cancelButton.setEnabled(true);
 				
 				System.out.println("Download started.");
-				while (dwn.getStatus() == Downloader.DOWNLOADING){
+				while (dwn.getStatus() == OsuDownloader.DOWNLOADING){
 					if (thread.isInterrupted()){
 						return;
 					}
@@ -429,11 +429,11 @@ public class DownloadDialog extends JDialog {
 				progressBar.setIndeterminate(true);
 				progressBar.setStringPainted(true);
 				
-				if (dwn.getStatus() == Downloader.ERROR){
+				if (dwn.getStatus() == OsuDownloader.ERROR){
 					lblStatus.setText("Status: Error occurred downloading");
 					cancelButton.setEnabled(true);
 					System.out.println("Download failed.");
-				} else if (dwn.getStatus() == Downloader.COMPLETED){
+				} else if (dwn.getStatus() == OsuDownloader.COMPLETED){
 					loc = folder + "\\" + fileName + ".osz";
 					
 					if (openFile){

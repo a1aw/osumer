@@ -272,6 +272,8 @@ public class Installer {
 		return false;
 	}
 	
+	//This is not suppose to be here anymore.
+	/*
 	public void install() throws DebuggableException{
 		if (!Osu.isWindows()){
 			throw new DebuggableException(
@@ -500,9 +502,14 @@ public class Installer {
 					false, e);
 		}
 	}
+	*/
 	
 	public void uninstall() throws DebuggableException{
 		File file = new File(winPath + "\\" + winFile);
+		if (file.exists()){
+			file.delete();
+		}
+		file = new File(winPath + "\\" + verInfoFile);
 		if (file.exists()){
 			file.delete();
 		}
@@ -539,6 +546,7 @@ public class Installer {
 			Advapi32Util.registryDeleteKey(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_CLASSES_PATH + "\\" + WIN_REG_CLASSES_OSUMER_KEY, "shell");
 			Advapi32Util.registryDeleteKey(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_CLASSES_PATH, WIN_REG_CLASSES_OSUMER_KEY);
 		} catch (Win32Exception e){
+			e.printStackTrace();
 			throw new DebuggableException(
 					null,
 					"(Try&catch try) Writing to registry",

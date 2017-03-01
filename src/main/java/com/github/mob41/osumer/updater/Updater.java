@@ -21,7 +21,7 @@ import com.github.mob41.osumer.exceptions.NoBuildsForVersionException;
 import com.github.mob41.osumer.exceptions.NoSuchBuildNumberException;
 import com.github.mob41.osumer.exceptions.NoSuchSourceException;
 import com.github.mob41.osumer.exceptions.NoSuchVersionException;
-import com.github.mob41.osumer.io.Downloader;
+import com.github.mob41.osumer.io.OsuDownloader;
 import com.github.mob41.osumer.io.Osu;
 
 public class Updater {
@@ -40,7 +40,7 @@ public class Updater {
 	
 	private static final String VERSION_LIST = "https://mob41.github.io/osumer-updater/versions.json";
 	
-	private static final String UPDATER_JAR = "https://mob41.github.io/osumer-updater/updater.jar";
+	public static final String LEGACY_UPDATER_JAR = "https://github.com/mob41/osumer-updater/releases/download/legacy/osumer-updater.exe";
 	
 	private static final String SOURCE_SNAPSHOT = "snapshot";
 	
@@ -60,7 +60,7 @@ public class Updater {
 	
 	public static final int TOO_OLD = 2;
 	
-	private Downloader dwn = null;
+	private OsuDownloader dwn = null;
 
 	private Config config;
 	
@@ -278,6 +278,74 @@ public class Updater {
 	public boolean isUpdateAvailable() throws DebuggableException{
 		UpdateInfo latestVer = getLatestVersion();
 		return latestVer != null && !latestVer.isThisVersion();
+	}
+	
+	public static String getUpdaterLink() throws DebuggableException{
+		URL url = null;
+		
+		try {
+			url = new URL(VERSION_LIST + "?update=" + Calendar.getInstance().getTimeInMillis());
+		} catch (MalformedURLException e){
+			throw new DebuggableException(
+					VERSION_LIST,
+					"URL url = null;",
+					"new URL(VERSION_LIST);",
+					"URLConnection conn = url.openConnection();",
+					"",
+					false, e);
+		}
+		
+		String data = "";
+		try {
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			
+			conn.setRequestMethod("GET");
+			conn.setRequestProperty("Connection", "close");
+			conn.setUseCaches(false);
+			conn.setConnectTimeout(10000);
+			conn.setReadTimeout(10000);
+			
+			InputStream in = conn.getInputStream();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+			
+			String line;
+			while ((line = reader.readLine()) != null){
+				data += line;
+			}
+		} catch (IOException e) {
+			throw new DebuggableException(
+					VERSION_LIST,
+					"URL url = new URL(VERSION_LIST);",
+					"(lots of code) -- Connecting and fetch data",
+					"Data validating (isEmpty / null)",
+					"",
+					false, e);
+		}
+		
+		if (data == null || data.isEmpty()){
+			throw new DebuggableException(
+					VERSION_LIST,
+					"(lots of code) -- Connecting and fetch data",
+					"Data validating (isEmpty / null)",
+					"Create JSONObject",
+					"No data fetched. \"data\" is null/isEmpty",
+					false);
+		}
+		
+		JSONObject json = null;
+		try {
+			json = new JSONObject(data);
+		} catch (JSONException e){
+			throw new DebuggableException(
+					VERSION_LIST,
+					"Data validating (isEmpty / null)",
+					"Create JSONObject",
+					"JSON stuff",
+					"Structure invalid",
+					false, e);
+		}
+		
+		return json.isNull("updater_exe_link") ? null : json.getString("updater_exe_link");
 	}
 	
 	//TODO: Implement updater

@@ -16,6 +16,7 @@ import com.github.mob41.osumer.exceptions.OsuException;
 import com.github.mob41.osumer.io.Installer;
 import com.github.mob41.osumer.io.Osu;
 import com.github.mob41.osumer.io.VersionInfo;
+import com.github.mob41.osumer.updater.Updater;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -24,6 +25,8 @@ import javax.swing.JFileChooser;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.awt.event.ActionEvent;
 import java.awt.CardLayout;
 import javax.swing.JComboBox;
@@ -179,10 +182,28 @@ public class ExpressSettingsPanel extends JPanel {
 				}
 				
 				try {
-					installer.install();
+					String updaterLink = Updater.getUpdaterLink();
+					
+					if (updaterLink == null){
+						System.out.println("No latest updater .exe defined! Falling back to legacy updater!");
+						updaterLink = Updater.LEGACY_UPDATER_JAR;
+					}
+					
+					URL url;
+					try {
+						url = new URL(updaterLink);
+					} catch (MalformedURLException e) {
+						e.printStackTrace();
+						JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					
+					UpdaterDownloadDialog dialog = new UpdaterDownloadDialog(url);
+					dialog.setVisible(true);
+					dialog.setModal(true);
 				} catch (OsuException e){
-					JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
 					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
 				}
 				
 				if (installer.isInstalled()){
@@ -414,8 +435,27 @@ public class ExpressSettingsPanel extends JPanel {
 				
 				if (!installer.isInstalled()){
 					try {
-						installer.install();
+						String updaterLink = Updater.getUpdaterLink();
+						
+						if (updaterLink == null){
+							System.out.println("No latest updater .exe defined! Falling back to legacy updater!");
+							updaterLink = Updater.LEGACY_UPDATER_JAR;
+						}
+						
+						URL url;
+						try {
+							url = new URL(updaterLink);
+						} catch (MalformedURLException e) {
+							e.printStackTrace();
+							JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						
+						UpdaterDownloadDialog dialog = new UpdaterDownloadDialog(url);
+						dialog.setVisible(true);
+						dialog.setModal(true);
 					} catch (OsuException e){
+						e.printStackTrace();
 						JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
 					}
 					
