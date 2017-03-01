@@ -4,14 +4,18 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 
 import com.github.mob41.osumer.exceptions.DebugDump;
 import com.github.mob41.osumer.exceptions.DumpManager;
 
-public class Downloader extends Observable implements Runnable{
+public class OsuDownloader extends Observable implements Runnable{
 	
 	public static final int DOWNLOADING = 0;
 	
@@ -27,6 +31,8 @@ public class Downloader extends Observable implements Runnable{
 	
 	private final URL url;
 	
+	private final Osu osu;
+	
 	private final String folder;
 	
 	private final String fileName;
@@ -37,8 +43,9 @@ public class Downloader extends Observable implements Runnable{
 	
 	private int status;
 
-	public Downloader(String downloadFolder, String fileName, URL downloadUrl) {
+	public OsuDownloader(String downloadFolder, String fileName, Osu osu, URL downloadUrl) {
 		this.url = downloadUrl;
+		this.osu = osu;
 		this.folder = downloadFolder;
 		this.fileName = fileName;
 		
@@ -94,6 +101,21 @@ public class Downloader extends Observable implements Runnable{
 		thread.start();
 	}
 	
+	private static void printAllHeaders(Map<String, List<String>> headers){
+		Iterator<String> it = headers.keySet().iterator();
+		List<String> strs;
+		String key;
+		while (it.hasNext()){
+			key = it.next();
+			strs = headers.get(key);
+			
+			for (int i = 0; i < strs.size(); i++){
+				System.out.println(key + " (" + i + "):" + strs.get(i));
+			}
+		}
+		
+	}
+
 	@Override
 	public void run() {
 		RandomAccessFile file = null;
@@ -104,6 +126,11 @@ public class Downloader extends Observable implements Runnable{
 			
 			conn.setRequestProperty("Range", "bytes=" + downloaded + "-");
 			
+			if (osu.getCookies().getCookieStore().getCookies().size() > 0) {
+			    // While joining the Cookies, use ',' or ';' as needed. Most of the servers are using ';'
+			    conn.setRequestProperty("Cookie",
+			    join(";", osu.getCookies().getCookieStore().getCookies()));    
+			}
 			
 			conn.connect();
 			
@@ -122,7 +149,7 @@ public class Downloader extends Observable implements Runnable{
 				reportState();
 			}
 			
-			file = new RandomAccessFile(folder + "\\" + fileName, "rw");
+			file = new RandomAccessFile(folder + "\\" + fileName + ".osz", "rw");
 			file.seek(downloaded);
 			
 			in = conn.getInputStream();
@@ -178,6 +205,23 @@ public class Downloader extends Observable implements Runnable{
 	private void reportState(){
 		setChanged();
 		notifyObservers();
+	}
+	
+	private static String join(String separator, List<HttpCookie> objs){
+		String out = "";
+		
+		String str;
+		for (int i = 0; i < objs.size(); i++){
+			str = objs.get(i).toString();
+			
+			out += str + separator;
+			
+			if (i != objs.size() - 1){
+				out += " ";
+			}
+		}
+		
+		return out;
 	}
 
 }
