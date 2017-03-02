@@ -199,18 +199,20 @@ public class ExpressSettingsPanel extends JPanel {
 					}
 					
 					UpdaterDownloadDialog dialog = new UpdaterDownloadDialog(url);
-					dialog.setVisible(true);
 					dialog.setModal(true);
+					dialog.setVisible(true);
 				} catch (OsuException e){
 					e.printStackTrace();
 					JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
 				}
 				
+				/*
 				if (installer.isInstalled()){
 					panelSettings();
 				} else {
 					panelNotInstalled();
 				}
+				*/
 			}
 		});
 		
@@ -427,49 +429,54 @@ public class ExpressSettingsPanel extends JPanel {
 					return;
 				}
 				
+				/*
 				try {
 					installer.uninstall();
 				} catch (OsuException e){
 					JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
 				}
-				
+				*/
+				/*
 				if (!installer.isInstalled()){
-					try {
-						String updaterLink = Updater.getUpdaterLink();
-						
-						if (updaterLink == null){
-							System.out.println("No latest updater .exe defined! Falling back to legacy updater!");
-							updaterLink = Updater.LEGACY_UPDATER_JAR;
-						}
-						
-						URL url;
-						try {
-							url = new URL(updaterLink);
-						} catch (MalformedURLException e) {
-							e.printStackTrace();
-							JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
-							return;
-						}
-						
-						UpdaterDownloadDialog dialog = new UpdaterDownloadDialog(url);
-						dialog.setVisible(true);
-						dialog.setModal(true);
-					} catch (OsuException e){
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
-					}
 					
-					if (installer.isSameVersionInstalled()){
-						panelSettings();
-					} else {
-						JOptionPane.showMessageDialog(null, "Version still mismatch. Error occurred?\nPlease check error dumps.", "Error", JOptionPane.ERROR_MESSAGE);
-						VersionInfo info = installer.getInstalledVersion();
-						panelReadyUpdate(info == null ? null : info.getVersion() + "-" + info.getBranch() + "-b" + info.getBuildNum(),
-								Osu.OSUMER_VERSION + "-" + Osu.OSUMER_BRANCH + "-b" + Osu.OSUMER_BUILD_NUM);
-					}
 				} else {
 					JOptionPane.showMessageDialog(null, "Uninstallation was not successful.", "Error", JOptionPane.ERROR_MESSAGE);
 				}
+				*/
+				try {
+					String updaterLink = Updater.getUpdaterLink();
+					
+					if (updaterLink == null){
+						System.out.println("No latest updater .exe defined! Falling back to legacy updater!");
+						updaterLink = Updater.LEGACY_UPDATER_JAR;
+					}
+					
+					URL url;
+					try {
+						url = new URL(updaterLink);
+					} catch (MalformedURLException e) {
+						e.printStackTrace();
+						JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					
+					UpdaterDownloadDialog dialog = new UpdaterDownloadDialog(url);
+					dialog.setModal(true);
+					dialog.setVisible(true);
+				} catch (OsuException e){
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+				}
+				/*
+				if (installer.isSameVersionInstalled()){
+					panelSettings();
+				} else {
+					JOptionPane.showMessageDialog(null, "Version still mismatch. Error occurred?\nPlease check error dumps.", "Error", JOptionPane.ERROR_MESSAGE);
+					VersionInfo info = installer.getInstalledVersion();
+					panelReadyUpdate(info == null ? null : info.getVersion() + "-" + info.getBranch() + "-b" + info.getBuildNum(),
+							Osu.OSUMER_VERSION + "-" + Osu.OSUMER_BRANCH + "-b" + Osu.OSUMER_BUILD_NUM);
+				}
+				*/
 			}
 		});
 		
@@ -535,8 +542,8 @@ public class ExpressSettingsPanel extends JPanel {
 		lblPleaseRestartOsumer.setVisible(!elevated);
 		lblPleaseRestartOsumer_1.setVisible(!elevated);
 		btnUninstallOsumer.setEnabled(elevated);
-		btnInstall.setEnabled(elevated);
-		btnReinstall.setEnabled(elevated);
+		//btnInstall.setEnabled(elevated);
+		//btnReinstall.setEnabled(elevated);
 	}
 	
 	private void refreshBrowsers(){
