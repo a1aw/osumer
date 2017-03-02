@@ -516,22 +516,70 @@ public class DownloadDialog extends JDialog {
 					}
 					
 					if (verInfo != null && !verInfo.isThisVersion()){
-						int option = JOptionPane.showOptionDialog(DownloadDialog.this,
-								"New " +
-								(verInfo.isUpgradedVersion() ? "upgrade" : "update") +
-								" available! New version:\n" + verInfo.getVersion() +
-								"-" + Updater.getBranchStr(verInfo.getBranch()) +
-								"-b" + verInfo.getBuildNum() + "\n\n" +
-								"Do you want to update it now?\n\n" +
-								"(This version's updater is not fully\n implemented. A browser will open\n instead.)", "Update available", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, JOptionPane.NO_OPTION);
+						int option;
+						String desc = verInfo.getDescription();
+						if (desc == null){
+							option = JOptionPane.showOptionDialog(DownloadDialog.this,
+									"New " +
+									(verInfo.isUpgradedVersion() ? "upgrade" : "update") +
+									" available! New version:\n" + verInfo.getVersion() +
+									"-" + Updater.getBranchStr(verInfo.getBranch()) +
+									"-b" + verInfo.getBuildNum() + "\n\n" +
+									"Do you want to update it now?", "Update available", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, JOptionPane.NO_OPTION);
+						} else {
+							option = JOptionPane.showOptionDialog(DownloadDialog.this,
+									"New " +
+									(verInfo.isUpgradedVersion() ? "upgrade" : "update") +
+									" available! New version:\n" + verInfo.getVersion() +
+									"-" + Updater.getBranchStr(verInfo.getBranch()) +
+									"-b" + verInfo.getBuildNum() + "\n\n" +
+									"Do you want to update it now?", "Update available", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Yes", "No", "Description/Changelog"}, JOptionPane.NO_OPTION);
+							
+							if (option == 2){
+								option = JOptionPane.showOptionDialog(DownloadDialog.this, new TextPanel(desc), "Update description/change-log", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, 0);
+							}
+						}
 						
 						if (option == JOptionPane.YES_OPTION){
+							/*
 							try {
 								Desktop.getDesktop().browse(new URI(verInfo.getWebLink()));
-							} catch (IOException e) {
+							} catch (IOException | URISyntaxException e) {
+								DebugDump dump = new DebugDump(
+										verInfo.getWebLink(),
+										"Show option dialog of updating osumer or not",
+										"Set checkingUpdate to false",
+										"(End of function / thread)",
+										"Error when opening the web page",
+										false,
+										e);
+								DumpManager.getInstance().addDump(dump);
+								DebugDump.showDebugDialog(dump);
+							}
+							*/
+							try {
+								String updaterLink = Updater.getUpdaterLink();
+								
+								if (updaterLink == null){
+									System.out.println("No latest updater .exe defined! Falling back to legacy updater!");
+									updaterLink = Updater.LEGACY_UPDATER_JAR;
+								}
+								
+								URL url;
+								try {
+									url = new URL(updaterLink);
+								} catch (MalformedURLException e) {
+									e.printStackTrace();
+									JOptionPane.showMessageDialog(DownloadDialog.this, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+									return;
+								}
+								
+								UpdaterDownloadDialog dialog = new UpdaterDownloadDialog(url);
+								dialog.setModal(true);
+								dialog.setVisible(true);
+							} catch (OsuException e){
 								e.printStackTrace();
-							} catch (URISyntaxException e) {
-								e.printStackTrace();
+								JOptionPane.showMessageDialog(DownloadDialog.this, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
 							}
 						}
 					}
