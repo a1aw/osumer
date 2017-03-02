@@ -685,13 +685,29 @@ public class UIFrame extends JFrame {
 								"-" + Updater.getBranchStr(verInfo.getBranch()) +
 								"-b" + verInfo.getBuildNum());
 						
-						int option = JOptionPane.showOptionDialog(UIFrame.this,
-								"New " +
-								(verInfo.isUpgradedVersion() ? "upgrade" : "update") +
-								" available! New version:\n" + verInfo.getVersion() +
-								"-" + Updater.getBranchStr(verInfo.getBranch()) +
-								"-b" + verInfo.getBuildNum() + "\n\n" +
-								"Do you want to update it now?", "Update available", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, JOptionPane.NO_OPTION);
+						int option;
+						String desc = verInfo.getDescription();
+						if (desc == null){
+							option = JOptionPane.showOptionDialog(UIFrame.this,
+									"New " +
+									(verInfo.isUpgradedVersion() ? "upgrade" : "update") +
+									" available! New version:\n" + verInfo.getVersion() +
+									"-" + Updater.getBranchStr(verInfo.getBranch()) +
+									"-b" + verInfo.getBuildNum() + "\n\n" +
+									"Do you want to update it now?", "Update available", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, JOptionPane.NO_OPTION);
+						} else {
+							option = JOptionPane.showOptionDialog(UIFrame.this,
+									"New " +
+									(verInfo.isUpgradedVersion() ? "upgrade" : "update") +
+									" available! New version:\n" + verInfo.getVersion() +
+									"-" + Updater.getBranchStr(verInfo.getBranch()) +
+									"-b" + verInfo.getBuildNum() + "\n\n" +
+									"Do you want to update it now?", "Update available", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Yes", "No", "Description/Changelog"}, JOptionPane.NO_OPTION);
+							
+							if (option == 2){
+								option = JOptionPane.showOptionDialog(UIFrame.this, new TextPanel(desc), "Update description/change-log", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, 0);
+							}
+						}
 						
 						if (option == JOptionPane.YES_OPTION){
 							/*

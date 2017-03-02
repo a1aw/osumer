@@ -217,7 +217,8 @@ public class Updater {
 			String webLink = verJson.isNull("web_link") ? null : verJson.getString("web_link");
 			String exeLink = verJson.isNull("exe_link") ? null : verJson.getString("exe_link");
 			String jarLink = verJson.isNull("jar_link") ? null : verJson.getString("jar_link");
-			return new UpdateInfo(thisVersion, updateSource, latest, webLink, exeLink, jarLink, false, false);
+			String desc = verJson.isNull("desc") ? null : verJson.getString("desc");
+			return new UpdateInfo(desc, thisVersion, updateSource, latest, webLink, exeLink, jarLink, false, false);
 		}
 		
 		//As the version is ended, we are finding a new version here
@@ -264,14 +265,16 @@ public class Updater {
 			String webLink = upgradedVerJson.isNull("web_link") ? null : upgradedVerJson.getString("web_link");
 			String exeLink = upgradedVerJson.isNull("exe_link") ? null : upgradedVerJson.getString("exe_link");
 			String jarLink = upgradedVerJson.isNull("jar_link") ? null : upgradedVerJson.getString("jar_link");
-			
-			return new UpdateInfo(upgradeNode, updateSource, upgradedBuildNum, webLink, exeLink, jarLink, false, true);
+
+			String desc = verJson.isNull("desc") ? null : verJson.getString("desc");
+			return new UpdateInfo(desc, upgradeNode, updateSource, upgradedBuildNum, webLink, exeLink, jarLink, false, true);
 		} else {
 			String webLink = verJson.isNull("web_link") ? null : verJson.getString("web_link");
 			String exeLink = verJson.isNull("exe_link") ? null : verJson.getString("exe_link");
 			String jarLink = verJson.isNull("jar_link") ? null : verJson.getString("jar_link");
-			
-			return new UpdateInfo(thisVersion, updateSource, buildNum, webLink, exeLink, jarLink, true, false);
+
+			String desc = verJson.isNull("desc") ? null : verJson.getString("desc");
+			return new UpdateInfo(desc, thisVersion, updateSource, buildNum, webLink, exeLink, jarLink, true, false);
 		}
 	}
 	
