@@ -10,6 +10,8 @@ public class UpdateInfo {
 	
 	private final String jarLink;
 	
+	private final String description;
+	
 	private final int branch;
 	
 	private final int buildNum;
@@ -18,7 +20,8 @@ public class UpdateInfo {
 	
 	private final boolean upgradedVersion;
 
-	public UpdateInfo(String version, int branch, int buildNum, String webLink, String exeLink, String jarLink, boolean isThisVersion, boolean upgradedVersion) {
+	public UpdateInfo(String description, String version, int branch, int buildNum, String webLink, String exeLink, String jarLink, boolean isThisVersion, boolean upgradedVersion) {
+		this.description = description;
 		this.version = version;
 		this.webLink = webLink;
 		this.exeLink = exeLink;
@@ -39,6 +42,10 @@ public class UpdateInfo {
 
 	public int getBuildNum() {
 		return buildNum;
+	}
+	
+	public String getDescription(){
+		return description;
 	}
 	
 	public boolean isThisVersion(){
