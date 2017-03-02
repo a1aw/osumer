@@ -30,6 +30,7 @@ import com.github.mob41.osumer.exceptions.DumpManager;
 import com.github.mob41.osumer.exceptions.NoBuildsForVersionException;
 import com.github.mob41.osumer.exceptions.NoSuchBuildNumberException;
 import com.github.mob41.osumer.exceptions.NoSuchVersionException;
+import com.github.mob41.osumer.exceptions.OsuException;
 import com.github.mob41.osumer.io.Osu;
 import com.github.mob41.osumer.updater.Updater;
 import com.github.mob41.osumer.updater.UpdateInfo;
@@ -690,10 +691,10 @@ public class UIFrame extends JFrame {
 								" available! New version:\n" + verInfo.getVersion() +
 								"-" + Updater.getBranchStr(verInfo.getBranch()) +
 								"-b" + verInfo.getBuildNum() + "\n\n" +
-								"Do you want to update it now?\n\n" +
-								"(This version's updater is not fully\n implemented. A browser will open\n instead.)", "Update available", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, JOptionPane.NO_OPTION);
+								"Do you want to update it now?", "Update available", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, JOptionPane.NO_OPTION);
 						
 						if (option == JOptionPane.YES_OPTION){
+							/*
 							try {
 								Desktop.getDesktop().browse(new URI(verInfo.getWebLink()));
 							} catch (IOException | URISyntaxException e) {
@@ -708,11 +709,35 @@ public class UIFrame extends JFrame {
 								DumpManager.getInstance().addDump(dump);
 								DebugDump.showDebugDialog(dump);
 							}
+							*/
+							try {
+								String updaterLink = Updater.getUpdaterLink();
+								
+								if (updaterLink == null){
+									System.out.println("No latest updater .exe defined! Falling back to legacy updater!");
+									updaterLink = Updater.LEGACY_UPDATER_JAR;
+								}
+								
+								URL url;
+								try {
+									url = new URL(updaterLink);
+								} catch (MalformedURLException e) {
+									e.printStackTrace();
+									JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+									return;
+								}
+								
+								UpdaterDownloadDialog dialog = new UpdaterDownloadDialog(url);
+								dialog.setModal(true);
+								dialog.setVisible(true);
+							} catch (OsuException e){
+								e.printStackTrace();
+								JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+							}
 						}
 					} else {
 						updateTxtPn.setText("You are running the latest version of osumer!");
 					}
-					
 					checkingUpdate = false;
 				}
 			});

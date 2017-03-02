@@ -2,7 +2,9 @@ package com.github.mob41.osumer.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.FlowLayout;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Calendar;
@@ -125,14 +127,14 @@ public class UpdaterDownloadDialog extends JDialog {
 					System.out.println("Download failed.");
 				} else if (dwn.getStatus() == OsuDownloader.COMPLETED){
 					String loc = folder + "\\" + fileName;
-					
 
 					lblStatus.setText("Status: Download completed. Opening...");
 					System.out.println("Download completed. Importing...");
 					
 					try {
-						Runtime.getRuntime().exec(loc);
+						Runtime.getRuntime().exec("cmd /c " + loc + " -install");
 					} catch (IOException e1) {
+						e1.printStackTrace();
 						DumpManager.getInstance()
 						.addDump(new DebugDump(
 								null,

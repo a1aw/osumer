@@ -272,8 +272,6 @@ public class Installer {
 		return false;
 	}
 	
-	//This is not suppose to be here anymore.
-	/*
 	public void install() throws DebuggableException{
 		if (!Osu.isWindows()){
 			throw new DebuggableException(
@@ -502,7 +500,6 @@ public class Installer {
 					false, e);
 		}
 	}
-	*/
 	
 	public void uninstall() throws DebuggableException{
 		File file = new File(winPath + "\\" + winFile);
