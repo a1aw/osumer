@@ -618,7 +618,7 @@ public class UIFrame extends JFrame {
 		accPanel.setBorder(new TitledBorder(null, "Using account", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panel.add(accPanel);
 		
-		ExpressSettingsPanel xpPanel = new ExpressSettingsPanel(config);
+		ExpressSettingsPanel xpPanel = new ExpressSettingsPanel(config, updater);
 		xpPanel.setBorder(new TitledBorder(null, "osumerExpress settings", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panel.add(xpPanel);
 		
