@@ -266,7 +266,7 @@ public class Updater {
 			String exeLink = upgradedVerJson.isNull("exe_link") ? null : upgradedVerJson.getString("exe_link");
 			String jarLink = upgradedVerJson.isNull("jar_link") ? null : upgradedVerJson.getString("jar_link");
 
-			String desc = verJson.isNull("desc") ? null : verJson.getString("desc");
+			String desc = upgradedVerJson.isNull("desc") ? null : upgradedVerJson.getString("desc");
 			return new UpdateInfo(desc, upgradeNode, updateSource, upgradedBuildNum, webLink, exeLink, jarLink, false, true);
 		} else {
 			String webLink = verJson.isNull("web_link") ? null : verJson.getString("web_link");
