@@ -29,7 +29,7 @@ public class Osu {
 	
 //TODO: Hard-code version?
 	
-	public static final String OSUMER_VERSION = "1.0.0";
+	public static final String OSUMER_VERSION = "1.0.1";
 	
 	public static final String OSUMER_BRANCH = "snapshot";
 	
@@ -115,7 +115,7 @@ public class Osu {
 			conn.setRequestProperty("Cache-Control", "max-age=0");
 			conn.setRequestProperty("Origin", "https://osu.ppy.sh");
 			conn.setRequestProperty("Upgrade-Insecure-Requests", "0");
-			conn.setRequestProperty("User-Agent", "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36");
+			conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36");
 			conn.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
 			conn.setRequestProperty("DNT", "1");
 			//conn.setRequestProperty("Accept-Encoding", "gzip, deflate, br");
