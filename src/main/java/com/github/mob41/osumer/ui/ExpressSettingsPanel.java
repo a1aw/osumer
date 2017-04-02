@@ -401,7 +401,7 @@ public class ExpressSettingsPanel extends JPanel {
 		thisverold = new JPanel();
 		add(thisverold, "name_64628164930953");
 		
-		JLabel lblThisIsA = new JLabel("This is a old version");
+		JLabel lblThisIsA = new JLabel("This is an old version");
 		lblThisIsA.setHorizontalAlignment(SwingConstants.CENTER);
 		lblThisIsA.setFont(new Font("PMingLiU", Font.PLAIN, 24));
 		lblThisIsA.setForeground(Color.RED);
