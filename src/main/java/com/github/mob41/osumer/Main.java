@@ -9,9 +9,12 @@ import java.net.URL;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
+import com.github.mob41.osumer.exceptions.DebugDump;
+import com.github.mob41.osumer.exceptions.DebuggableException;
 import com.github.mob41.osumer.io.Installer;
 import com.github.mob41.osumer.io.Osu;
 import com.github.mob41.osumer.ui.DownloadDialog;
+import com.github.mob41.osumer.ui.ErrorDumpDialog;
 import com.github.mob41.osumer.ui.UIFrame;
 
 public class Main {
@@ -34,11 +37,13 @@ public class Main {
 	;
 	
 	public static void main(String[] args){
-		if (args.length == 1 && args[0].equals("-version")){
+		ArgParser ap = new ArgParser(args);
+		
+		if (ap.isVersionFlag()){
 			System.out.println(Osu.OSUMER_VERSION + "-" + Osu.OSUMER_BRANCH + "-" + Osu.OSUMER_BUILD_NUM);
 			return;
 		}
-		System.out.println(INTRO);
+		
 		if (!GraphicsEnvironment.isHeadless()){
 			try {
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -47,24 +52,102 @@ public class Main {
 			} 
 		}
 		
-		if (args.length == 1){
-			Installer installer = new Installer();
-			if (args[0].equals("-hideicons")){
-				installer.hideIcons();
+		if (System.console() != null){
+			System.out.println(INTRO);
+		}
+		
+		Installer installer = new Installer();
+		
+		//These are called by Windows when setting Default Programs
+		if (ap.isHideIconsFlag()){
+			installer.hideIcons();
+			
+			System.exit(0);
+			return;
+		} else if (ap.isShowIconsFlag()){
+			installer.showIcons();
+
+			System.exit(0);
+			return;
+		} else if (ap.isReinstallFlag()){
+			installer.reinstall();
+
+			System.exit(0);
+			return;
+		}
+		
+		if (ap.isInstallFlag()){
+			if (!ap.isQuietFlag() && !ap.isForceFlag()){
+				int option = JOptionPane.showOptionDialog(null, 
+						"You are installing osumer " + Osu.OSUMER_VERSION + "-" + Osu.OSUMER_BRANCH + "-" + Osu.OSUMER_BUILD_NUM + ".\n" +
+						"Are you sure?",
+						"Installing osumer",
+						JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE,
+						null, null, JOptionPane.NO_OPTION);
 				
-				System.exit(0);
-				return;
-			} else if (args[0].equals("-showicons")){
-				installer.showIcons();
-
-				System.exit(0);
-				return;
-			} else if (args[0].equals("-reinstall")){
-				installer.reinstall();
-
-				System.exit(0);
-				return;
+				if (option != JOptionPane.YES_OPTION){
+					return;
+				}
 			}
+			
+			try {
+				long startTime = System.currentTimeMillis();
+				installer.install();
+				
+				if (!(ap.isQuietFlag() && ap.isForceFlag())){
+					System.out.println("Info@U$\nInstallation success within " + (System.currentTimeMillis() - startTime) + " ms\nInfo@D$");
+				}
+			} catch (DebuggableException e) {
+				if (!ap.isNoUiFlag() && !GraphicsEnvironment.isHeadless()){
+					ErrorDumpDialog d = DebugDump.showDebugDialog(e.getDump());
+					d.setModal(true);
+					d.setVisible(true);
+				}
+				
+				if (!(ap.isQuietFlag() && ap.isForceFlag())){
+					System.out.println("Error@U$\n" + e.getDump().toString() + "Error@D$");
+				}
+			}
+			
+			System.exit(0);
+			return;
+		} else if (ap.isUninstallFlag()){
+			if (!ap.isQuietFlag() && !ap.isForceFlag()){
+				int option = JOptionPane.showOptionDialog(null, 
+						"You are uninstalling osumer " + Osu.OSUMER_VERSION + "-" + Osu.OSUMER_BRANCH + "-" + Osu.OSUMER_BUILD_NUM + ".\n" +
+						"Are you sure?",
+						"Uninstalling osumer",
+						JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE,
+						null, null, JOptionPane.NO_OPTION);
+				
+				if (option != JOptionPane.YES_OPTION){
+					return;
+				}
+			}
+			
+			try {
+				long startTime = System.currentTimeMillis();
+				installer.uninstall();
+				
+				if (!(ap.isQuietFlag() && ap.isForceFlag())){
+					System.out.println("Info@U$\nUninstallation success within " + (System.currentTimeMillis() - startTime) + " ms\nInfo@D$");
+				}
+			} catch (DebuggableException e) {
+				if (!ap.isNoUiFlag() && !GraphicsEnvironment.isHeadless()){
+					ErrorDumpDialog d = DebugDump.showDebugDialog(e.getDump());
+					d.setModal(true);
+					d.setVisible(true);
+				}
+				
+				if (!(ap.isQuietFlag() && ap.isForceFlag())){
+					System.out.println("Error@U$\n" + e.getDump().toString() + "Error@D$");
+				}
+			}
+			
+			System.exit(0);
+			return;
 		}
 		
 		String configPath = Osu.isWindows() ? System.getenv("localappdata") + "\\osumerExpress" : "";
@@ -129,16 +212,8 @@ public class Main {
 			if (!canAccess){
 				if (config.isSwitchToBrowserIfWithoutUiArg()){
 					System.out.println("Configuration specified that switch to browser if an \"-ui\" arugment wasn't specified.");
-					boolean containUiArg = false;
 					
-					for (int i = 0; i < args.length; i++){
-						if (args[i].equals("-ui")){
-							containUiArg = true;
-							break;
-						}
-					}
-					
-					if (containUiArg){
+					if (ap.isUiFlag() && !ap.isNoUiFlag()){
 						System.out.println("An \"-ui\" argument was specified. Launching UI.");
 						UIFrame frame = new UIFrame(config);
 						frame.setVisible(true);
