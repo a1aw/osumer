@@ -108,9 +108,9 @@ public class DebugDump {
 				"===!===!===!===!-dump-end-!===!===!===!===\n";
 	}
 	
-	public static void showDebugDialog(DebugDump debugDump){
+	public static ErrorDumpDialog showDebugDialog(DebugDump debugDump){
 		ErrorDumpDialog dialog = new ErrorDumpDialog(debugDump);
-		dialog.setVisible(true);
+		return dialog;
 	}
 
 	public String getOsumerVersion() {
