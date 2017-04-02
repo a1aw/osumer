@@ -41,6 +41,7 @@ public class TextPanel extends JPanel {
 		JTextArea textArea = new JTextArea();
 		scrollPane.setViewportView(textArea);
 		setLayout(groupLayout);
+		textArea.setEditable(false);
 		textArea.setText(text);
 
 	}
