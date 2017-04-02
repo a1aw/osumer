@@ -38,6 +38,7 @@ import java.awt.SystemColor;
 
 public class ExpressSettingsPanel extends JPanel {
 	private Config config;
+	private Updater updater;
 	private Installer installer;
 	private JCheckBox chckbxAutomaticallySwitchTo;
 	private JCheckBox chckbxSwitchToBrowser;
@@ -56,9 +57,10 @@ public class ExpressSettingsPanel extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public ExpressSettingsPanel(Config conf) {
+	public ExpressSettingsPanel(Config conf, Updater updater) {
 		settingspanel = new JPanel();
 		
+		this.updater = updater;
 		this.config = conf;
 		this.installer = new Installer();
 		
@@ -73,6 +75,7 @@ public class ExpressSettingsPanel extends JPanel {
 				
 				try {
 					installer.uninstall();
+					JOptionPane.showMessageDialog(null, "Uninstallation success.", "Success", JOptionPane.INFORMATION_MESSAGE);
 				} catch (OsuException e){
 					JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
 				}
@@ -181,38 +184,63 @@ public class ExpressSettingsPanel extends JPanel {
 					return;
 				}
 				
+				boolean useWebUpdater = false;
+				
 				try {
-					String updaterLink = Updater.getUpdaterLink();
-					
-					if (updaterLink == null){
-						System.out.println("No latest updater .exe defined! Falling back to legacy updater!");
-						updaterLink = Updater.LEGACY_UPDATER_JAR;
+					if (updater.isUpdateAvailable()){
+						int option2 = JOptionPane.showOptionDialog(null, "osumer Update available!\nDo you want to launch the web updater\ninstead of installing the current version?", "Update available", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, JOptionPane.YES_OPTION);
+						
+						if (option2 == JOptionPane.YES_OPTION){
+							useWebUpdater = true;
+						}
 					}
+				} catch (DebuggableException e1) {
+					int option2 = JOptionPane.showOptionDialog(null, "osumer cannot check for updates for latest version.\nDo you still want to install the current version?", "Cannot check update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, null, JOptionPane.YES_OPTION);
 					
-					URL url;
-					try {
-						url = new URL(updaterLink);
-					} catch (MalformedURLException e) {
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+					if (option2 != JOptionPane.YES_OPTION){
 						return;
 					}
-					
-					UpdaterDownloadDialog dialog = new UpdaterDownloadDialog(url);
-					dialog.setModal(true);
-					dialog.setVisible(true);
-				} catch (OsuException e){
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
 				}
 				
-				/*
-				if (installer.isInstalled()){
-					panelSettings();
+				if (useWebUpdater){
+					try {
+						String updaterLink = Updater.getUpdaterLink();
+						
+						if (updaterLink == null){
+							System.out.println("No latest updater .exe defined! Falling back to legacy updater!");
+							updaterLink = Updater.LEGACY_UPDATER_JAR;
+						}
+						
+						URL url;
+						try {
+							url = new URL(updaterLink);
+						} catch (MalformedURLException e) {
+							e.printStackTrace();
+							JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						
+						UpdaterDownloadDialog dialog = new UpdaterDownloadDialog(url);
+						dialog.setModal(true);
+						dialog.setVisible(true);
+					} catch (OsuException e){
+						e.printStackTrace();
+						JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+					}
 				} else {
-					panelNotInstalled();
+					try {
+						installer.install();
+						JOptionPane.showMessageDialog(null, "Installation success.", "Success", JOptionPane.INFORMATION_MESSAGE);
+					} catch (OsuException e){
+						JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+					}
+					
+					if (installer.isInstalled()){
+						panelSettings();
+					} else {
+						panelNotInstalled();
+					}
 				}
-				*/
 			}
 		});
 		
@@ -429,54 +457,76 @@ public class ExpressSettingsPanel extends JPanel {
 					return;
 				}
 				
-				/*
+				boolean useWebUpdater = false;
+				
 				try {
-					installer.uninstall();
-				} catch (OsuException e){
-					JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
-				}
-				*/
-				/*
-				if (!installer.isInstalled()){
-					
-				} else {
-					JOptionPane.showMessageDialog(null, "Uninstallation was not successful.", "Error", JOptionPane.ERROR_MESSAGE);
-				}
-				*/
-				try {
-					String updaterLink = Updater.getUpdaterLink();
-					
-					if (updaterLink == null){
-						System.out.println("No latest updater .exe defined! Falling back to legacy updater!");
-						updaterLink = Updater.LEGACY_UPDATER_JAR;
+					if (updater.isUpdateAvailable()){
+						int option2 = JOptionPane.showOptionDialog(null, "osumer Update available!\nDo you want to launch the web updater\ninstead of installing the current version?", "Update available", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, JOptionPane.YES_OPTION);
+						
+						if (option2 == JOptionPane.YES_OPTION){
+							useWebUpdater = true;
+						}
 					}
+				} catch (DebuggableException e1) {
+					int option2 = JOptionPane.showOptionDialog(null, "osumer cannot check for updates for latest version.\nDo you still want to install the current version?", "Cannot check update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, null, JOptionPane.YES_OPTION);
 					
-					URL url;
-					try {
-						url = new URL(updaterLink);
-					} catch (MalformedURLException e) {
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+					if (option2 != JOptionPane.YES_OPTION){
 						return;
 					}
-					
-					UpdaterDownloadDialog dialog = new UpdaterDownloadDialog(url);
-					dialog.setModal(true);
-					dialog.setVisible(true);
-				} catch (OsuException e){
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
 				}
-				/*
-				if (installer.isSameVersionInstalled()){
-					panelSettings();
+				
+				if (useWebUpdater){
+					try {
+						String updaterLink = Updater.getUpdaterLink();
+						
+						if (updaterLink == null){
+							System.out.println("No latest updater .exe defined! Falling back to legacy updater!");
+							updaterLink = Updater.LEGACY_UPDATER_JAR;
+						}
+						
+						URL url;
+						try {
+							url = new URL(updaterLink);
+						} catch (MalformedURLException e) {
+							e.printStackTrace();
+							JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						
+						UpdaterDownloadDialog dialog = new UpdaterDownloadDialog(url);
+						dialog.setModal(true);
+						dialog.setVisible(true);
+					} catch (OsuException e){
+						e.printStackTrace();
+						JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+					}
 				} else {
-					JOptionPane.showMessageDialog(null, "Version still mismatch. Error occurred?\nPlease check error dumps.", "Error", JOptionPane.ERROR_MESSAGE);
-					VersionInfo info = installer.getInstalledVersion();
-					panelReadyUpdate(info == null ? null : info.getVersion() + "-" + info.getBranch() + "-b" + info.getBuildNum(),
-							Osu.OSUMER_VERSION + "-" + Osu.OSUMER_BRANCH + "-b" + Osu.OSUMER_BUILD_NUM);
+					try {
+						installer.uninstall();
+					} catch (OsuException e){
+						JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+					}
+					
+					if (!installer.isInstalled()){
+						try {
+							installer.install();
+							JOptionPane.showMessageDialog(null, "Installation success.", "Success", JOptionPane.INFORMATION_MESSAGE);
+						} catch (OsuException e){
+							JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+						}
+					} else {
+						JOptionPane.showMessageDialog(null, "Uninstallation was not successful.", "Error", JOptionPane.ERROR_MESSAGE);
+					}
+					
+					if (installer.isSameVersionInstalled()){
+						panelSettings();
+					} else {
+						JOptionPane.showMessageDialog(null, "Version still mismatch. Error occurred?\nPlease check error dumps.", "Error", JOptionPane.ERROR_MESSAGE);
+						VersionInfo info = installer.getInstalledVersion();
+						panelReadyUpdate(info == null ? null : info.getVersion() + "-" + info.getBranch() + "-b" + info.getBuildNum(),
+								Osu.OSUMER_VERSION + "-" + Osu.OSUMER_BRANCH + "-b" + Osu.OSUMER_BUILD_NUM);
+					}
 				}
-				*/
 			}
 		});
 		
@@ -542,8 +592,8 @@ public class ExpressSettingsPanel extends JPanel {
 		lblPleaseRestartOsumer.setVisible(!elevated);
 		lblPleaseRestartOsumer_1.setVisible(!elevated);
 		btnUninstallOsumer.setEnabled(elevated);
-		//btnInstall.setEnabled(elevated);
-		//btnReinstall.setEnabled(elevated);
+		btnInstall.setEnabled(elevated);
+		btnReinstall.setEnabled(elevated);
 	}
 	
 	private void refreshBrowsers(){
