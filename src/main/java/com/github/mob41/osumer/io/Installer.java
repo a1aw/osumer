@@ -6,6 +6,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -293,12 +295,24 @@ public class Installer {
 					false);
 		}
 		
-		String runningFilePath = Installer.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+		String runningFilePath = null;
+		try {
+			runningFilePath = URLDecoder.decode(Installer.class.getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+			throw new DebuggableException(
+					null,
+					"Validate is osumer elevated",
+					"Get current running file path",
+					"Validate is running file name is ending with .exe",
+					"Unsupported encoding UTF-8",
+					false, e1);
+		}
 		
 		if (!runningFilePath.endsWith(".exe")){
 			throw new DebuggableException(
 					runningFilePath,
-					"Validate is osumer elevated",
+					"Get current running file path",
 					"Validate is running file name is ending with .exe",
 					"Create File instance of \"osumer.exe\"",
 					"A Windows executable (.exe) version of osumer is required for installation. It can be downloaded from the releases. If you have it, rename it to \"osumer.exe\" to continue.",
