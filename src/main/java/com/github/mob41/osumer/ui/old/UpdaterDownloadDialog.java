@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.github.mob41.osumer.ui;
+package com.github.mob41.osumer.ui.old;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -45,7 +45,7 @@ import javax.swing.border.EmptyBorder;
 
 import com.github.mob41.osumer.exceptions.DebugDump;
 import com.github.mob41.osumer.exceptions.DumpManager;
-import com.github.mob41.osumer.io.Downloader;
+import com.github.mob41.osumer.io.URLDownloader;
 import com.github.mob41.osumer.io.OsuDownloader;
 
 public class UpdaterDownloadDialog extends JDialog {
@@ -59,7 +59,7 @@ public class UpdaterDownloadDialog extends JDialog {
 
 	private final Thread thread;
 	
-	private Downloader dwn;
+	private URLDownloader dwn;
 	private JButton cancelButton;
 	
 	/**
@@ -122,7 +122,7 @@ public class UpdaterDownloadDialog extends JDialog {
 				final String folder = System.getProperty("java.io.tmpdir");
 				final String fileName = "osumer_updater_" + Calendar.getInstance().getTimeInMillis() + ".exe";
 				
-				dwn = new Downloader(folder, fileName, url);
+				dwn = new URLDownloader(folder, fileName, url);
 				
 				cancelButton.setEnabled(true);
 				

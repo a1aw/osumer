@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.github.mob41.osumer.ui;
+package com.github.mob41.osumer.ui.old;
 
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
@@ -82,7 +82,7 @@ public class DownloadDialog extends JDialog {
 	 */
 	private static final long serialVersionUID = 2096061865175333592L;
 	
-	private Image icon256px = Toolkit.getDefaultToolkit().getImage(UIFrame.class.getResource("/com/github/mob41/osumer/ui/osumerIcon_256px.png"));
+	private Image icon256px = Toolkit.getDefaultToolkit().getImage(UIFrame_old.class.getResource("/com/github/mob41/osumer/ui/osumerIcon_256px.png"));
 	
 	private final JPanel contentPanel = new JPanel(){
 		/**
