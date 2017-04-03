@@ -1,14 +1,19 @@
 package com.github.mob41.osumer.io;
 
+import java.awt.image.BufferedImage;
+
 public class Queue {
 
 	private final Downloader downloader;
 	
 	private final String name;
 	
-	public Queue(String name, Downloader downloader) {
+	private final BufferedImage thumb;
+	
+	public Queue(String name, Downloader downloader, BufferedImage thumb) {
 		this.downloader = downloader;
 		this.name = name;
+		this.thumb = thumb;
 	}
 	
 	public Downloader getDownloader(){
@@ -37,6 +42,10 @@ public class Queue {
 	
 	public void cancel(){
 		downloader.cancel();
+	}
+
+	public BufferedImage getThumb() {
+		return thumb;
 	}
 
 }

@@ -6,8 +6,11 @@ import com.github.mob41.osumer.io.Downloader;
 import com.github.mob41.osumer.io.Queue;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
+import javax.swing.table.TableModel;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.Font;
 import java.util.Observable;
@@ -16,7 +19,11 @@ import java.util.concurrent.TimeUnit;
 
 import javax.swing.JProgressBar;
 import javax.swing.JPopupMenu;
+
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JMenuItem;
@@ -31,14 +38,36 @@ public class QueueCell extends JPanel {
 	private JLabel lblStatus;
 	private long startTime = 0;
 	private Queue queue;
+	private QueueCellTableModel tableModel;
+	private Timer timer;
+	private JLabel lblElapsed;
 
 	/**
 	 * Create the panel.
 	 */
-	public QueueCell(Queue queue) {
+	public QueueCell(QueueCellTableModel model, Queue queue, Icon thumbIcon) {
 		this.queue = queue;
+		this.tableModel = model;
+		
+		this.timer = new Timer(100, new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				tableModel.fireTableDataChanged();
+			}
+		});
+		
+		timer.start();
+		
 		lblThumb = new JLabel("Loading thumb...");
 		lblThumb.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		if (thumbIcon != null){
+			lblThumb.setText("");
+			lblThumb.setIcon(thumbIcon);
+		} else {
+			lblThumb.setText("No thumb");
+		}
 		
 		JPanel detailsPanel = new JPanel();
 		
@@ -85,41 +114,81 @@ public class QueueCell extends JPanel {
 		Downloader downloader = queue.getDownloader();
 		downloader.addObserver(new Observer() {
 			
+			private int last = 0;
+			
 			@Override
 			public void update(Observable o, Object arg) {
-				if (downloader.getStatus() == Downloader.DOWNLOADING){
-					pb.setValue((int) downloader.getProgress());
+				switch (downloader.getStatus()){
+				case Downloader.DOWNLOADING:
+					pb.setIndeterminate(false);
+					int progress = (int) downloader.getProgress();
+					pb.setValue(progress);
+					
 					long elapsedTime = System.nanoTime() - startTime;
-					long allTimeForDownloading = (elapsedTime * downloader.getSize() / downloader.getDownloaded());
-					long eta = allTimeForDownloading - elapsedTime;
-					lblEta.setText("ETA: " + TimeUnit.NANOSECONDS.toSeconds(eta) + " sec");
-					lblStatus.setText("Status: Downloading...");
-				} else {
-					lblStatus.setText("Status: Stopped.");
-					pb.setIndeterminate(true);
+					long allTimeForDownloading = downloader.getDownloaded() != 0 ? (elapsedTime * downloader.getSize() / downloader.getDownloaded()) : -1;
+					
+					if (allTimeForDownloading == -1){
+						lblStatus.setText("Status: Starting...");
+					} else {
+						long eta = allTimeForDownloading - elapsedTime;
+						lblElapsed.setText("Elapsed: " + nanoSecToString(elapsedTime));
+						lblEta.setText("ETA: " + nanoSecToString(eta));
+						lblStatus.setText("Status: Downloading...");
+					}
+					break;
+				case Downloader.COMPLETED:
+					lblStatus.setForeground(Color.GREEN);
+					
+					lblEta.setText("ETA: ---");
+					lblStatus.setText("Status: Completed.");
+					break;
+				case Downloader.ERROR:
+					lblEta.setText("ETA: ---");
+					lblStatus.setForeground(Color.RED);
+					lblStatus.setText("Status: Error occurred while downloading.");
+					break;
+				case Downloader.PAUSED:
+					lblEta.setText("ETA: ---");
+					lblStatus.setForeground(Color.BLUE);
+					lblStatus.setText("Status: Paused.");
+					break;
+				case Downloader.CANCELLED:
+					lblEta.setText("ETA: ---");
+					lblStatus.setForeground(Color.BLACK);
+					lblStatus.setText("Status: Cancelled.");
+					break;
+				default:
+					lblEta.setText("ETA: ---");
+					lblStatus.setForeground(Color.RED);
+					lblStatus.setText("Status: Unknown status.");
 				}
 			}
 		});
-		
 		label = new JLabel(queue.getName());
 		label.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		
 		lblFilename = new JLabel("File-name: " + downloader.getFileName());
 		
-		lblEta = new JLabel("ETA:");
+		lblEta = new JLabel("ETA: ---");
 		
 		pb = new JProgressBar();
 		pb.setStringPainted(true);
 		
-		lblStatus = new JLabel("Status:");
+		lblStatus = new JLabel("Status: Initializing...");
+		
+		lblElapsed = new JLabel("Elapsed: ---");
 		GroupLayout gl_detailsPanel = new GroupLayout(detailsPanel);
 		gl_detailsPanel.setHorizontalGroup(
 			gl_detailsPanel.createParallelGroup(Alignment.LEADING)
 				.addComponent(label, GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE)
 				.addComponent(lblFilename, GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE)
-				.addComponent(lblEta, GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE)
 				.addComponent(lblStatus, GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE)
 				.addComponent(pb, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE)
+				.addGroup(gl_detailsPanel.createSequentialGroup()
+					.addComponent(lblEta, GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblElapsed, GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
+					.addContainerGap())
 		);
 		gl_detailsPanel.setVerticalGroup(
 			gl_detailsPanel.createParallelGroup(Alignment.LEADING)
@@ -128,16 +197,36 @@ public class QueueCell extends JPanel {
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(lblFilename)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(lblEta)
+					.addGroup(gl_detailsPanel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblEta)
+						.addComponent(lblElapsed))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(lblStatus)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(pb, GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE))
+					.addComponent(pb, GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE))
 		);
 		detailsPanel.setLayout(gl_detailsPanel);
 		setLayout(groupLayout);
 		
+		start();
+	}
+	
+	private String nanoSecToString(long ns){
+		long sec = TimeUnit.NANOSECONDS.toSeconds(ns);
 		
+		long min = 0;
+		if (sec >= 60){
+			min = (long) ((float) sec / 60);
+			sec -= min * 60;
+		}
+		
+		long hr = 0;
+		if (min >= 60){
+			hr = (long) ((float) min / 60);
+			min -= hr * 60;
+		}
+		
+		return (hr != 0 ? (hr + " hr(s) ") : "") + (min != 0 ? (min + " min(s) ") : "") + sec + " sec(s)";
 	}
 	
 	private void start(){

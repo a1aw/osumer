@@ -7,6 +7,11 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+
+import com.github.mob41.osumer.io.Queue;
+import com.github.mob41.osumer.io.QueueManager;
+import com.github.mob41.osumer.io.URLDownloader;
+
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JMenuBar;
@@ -17,19 +22,33 @@ import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.JTabbedPane;
 import java.awt.Toolkit;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class UIFrame extends JFrame {
 
 	private JPanel contentPane;
-	private DefaultTableModel tableModel;
+	private QueueCellTableModel tableModel;
 	private JTable table;
+	
+	private final QueueManager mgr;
 
 	/**
 	 * Create the frame.
 	 */
-	public UIFrame() {
+	public UIFrame(QueueManager mgr) {
+		this.mgr = mgr;
+		
 		setTitle("osumer");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(UIFrame.class.getResource("/com/github/mob41/osumer/ui/osumerIcon_32px.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -37,6 +56,17 @@ public class UIFrame extends JFrame {
 		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
+		
+		JMenu mnQueue = new JMenu("Queue");
+		menuBar.add(mnQueue);
+		
+		JMenuItem mntmRefreshQueueList = new JMenuItem("Refresh queue list");
+		mntmRefreshQueueList.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				syncUiQueues();
+			}
+		});
+		mnQueue.add(mntmRefreshQueueList);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -99,11 +129,21 @@ public class UIFrame extends JFrame {
 		JScrollPane scrollPane = new JScrollPane();
 		queuePanel.add(scrollPane, BorderLayout.CENTER);
 		
-		tableModel = new DefaultTableModel();
+		tableModel = new QueueCellTableModel();
+		
 		table = new JTable(tableModel);
 		table.setDefaultRenderer(QueueCell.class, new QueueCellRenderer());
+		table.setRowHeight(153);
 		
 		scrollPane.setViewportView(table);
 		contentPane.setLayout(gl_contentPane);
+	}
+	
+	private void syncUiQueues(){
+		tableModel.removeAll();
+		List<Queue> queues = mgr.getList();
+		for (Queue queue : queues){
+			tableModel.addCell(new QueueCell(tableModel, queue, new ImageIcon(queue.getThumb())));
+		}
 	}
 }

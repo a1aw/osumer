@@ -13,6 +13,10 @@ public class QueueManager {
 		queues = new CopyOnWriteArrayList<Queue>();
 	}
 	
+	public List<Queue> getList(){
+		return Collections.unmodifiableList(queues);
+	}
+	
 	public boolean addQueue(Queue queue){
 		if (getQueue(queue.getName()) != null){
 			return false;
