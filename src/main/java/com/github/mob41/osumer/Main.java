@@ -200,8 +200,10 @@ public class Main {
 						
 						DownloadDialog dialog = new DownloadDialog(config, url);
 						dialog.setLocationRelativeTo(null);
-						dialog.setVisible(true);
+						dialog.setModal(true);
+						dialog.setAutoRequestFocus(true);
 						dialog.setAlwaysOnTop(true);
+						dialog.setVisible(true);
 					}
 				} else {
 					canAccess = false;
