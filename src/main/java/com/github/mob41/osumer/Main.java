@@ -36,15 +36,17 @@ import com.github.mob41.osumer.exceptions.DebugDump;
 import com.github.mob41.osumer.exceptions.DebuggableException;
 import com.github.mob41.osumer.io.Installer;
 import com.github.mob41.osumer.io.Osu;
+import com.github.mob41.osumer.io.QueueManager;
+import com.github.mob41.osumer.ui.UIFrame;
 import com.github.mob41.osumer.ui.old.DownloadDialog;
 import com.github.mob41.osumer.ui.old.ErrorDumpDialog;
-import com.github.mob41.osumer.ui.old.UIFrame_old;
+//import com.github.mob41.osumer.ui.old.UIFrame_old;
 
 public class Main {
 	
 	public static final String INTRO = 
-			"osumer (osu! beatMap downloadEr) by mob41\n" +
-			"Licenced under MIT License\n" +
+			"osumer2 (osuMapDownloadEr) by mob41" +
+			"Licensed under MIT License\n" +
 			"\n" +
 			"https://github.com/mob41/osumer\n" +
 			"\n" +
@@ -220,7 +222,7 @@ public class Main {
 						try {
 							url = new URL(urlstr);
 						} catch (MalformedURLException e) {}
-						
+						//TODO We use the QueueManager instead, to run in background
 						DownloadDialog dialog = new DownloadDialog(config, url);
 						dialog.setLocationRelativeTo(null);
 						dialog.setModal(true);
@@ -240,7 +242,7 @@ public class Main {
 					
 					if (ap.isUiFlag() && !ap.isNoUiFlag()){
 						System.out.println("An \"-ui\" argument was specified. Launching UI.");
-						UIFrame_old frame = new UIFrame_old(config);
+						UIFrame frame = new UIFrame(new QueueManager());
 						frame.setVisible(true);
 						return;
 					}
@@ -270,7 +272,7 @@ public class Main {
 			if (config.isSwitchToBrowserIfWithoutUiArg()){
 				runBrowser(config, args);
 			} else {
-				UIFrame_old frame = new UIFrame_old(config);
+				UIFrame frame = new UIFrame(new QueueManager());
 				frame.setVisible(true);
 			}
 		}

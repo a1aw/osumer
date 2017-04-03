@@ -48,7 +48,7 @@ public class URLDownloader extends Downloader{
 	
 	private int downloaded = 0;
 	
-	private int status;
+	private int status = -1;
 
 	public URLDownloader(String downloadFolder, String fileName, URL downloadUrl) {
 		this.url = downloadUrl;

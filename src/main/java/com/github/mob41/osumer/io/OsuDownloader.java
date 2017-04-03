@@ -52,7 +52,7 @@ public class OsuDownloader extends Downloader{
 	
 	private int downloaded = 0;
 	
-	private int status;
+	private int status = -1;
 
 	public OsuDownloader(String downloadFolder, String fileName, Osu osu, URL downloadUrl) {
 		this.url = downloadUrl;
