@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.github.mob41.osumer.ui;
+package com.github.mob41.osumer.ui.old;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

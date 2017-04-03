@@ -36,9 +36,9 @@ import com.github.mob41.osumer.exceptions.DebugDump;
 import com.github.mob41.osumer.exceptions.DebuggableException;
 import com.github.mob41.osumer.io.Installer;
 import com.github.mob41.osumer.io.Osu;
-import com.github.mob41.osumer.ui.DownloadDialog;
-import com.github.mob41.osumer.ui.ErrorDumpDialog;
-import com.github.mob41.osumer.ui.UIFrame;
+import com.github.mob41.osumer.ui.old.DownloadDialog;
+import com.github.mob41.osumer.ui.old.ErrorDumpDialog;
+import com.github.mob41.osumer.ui.old.UIFrame_old;
 
 public class Main {
 	
@@ -240,7 +240,7 @@ public class Main {
 					
 					if (ap.isUiFlag() && !ap.isNoUiFlag()){
 						System.out.println("An \"-ui\" argument was specified. Launching UI.");
-						UIFrame frame = new UIFrame(config);
+						UIFrame_old frame = new UIFrame_old(config);
 						frame.setVisible(true);
 						return;
 					}
@@ -270,7 +270,7 @@ public class Main {
 			if (config.isSwitchToBrowserIfWithoutUiArg()){
 				runBrowser(config, args);
 			} else {
-				UIFrame frame = new UIFrame(config);
+				UIFrame_old frame = new UIFrame_old(config);
 				frame.setVisible(true);
 			}
 		}
