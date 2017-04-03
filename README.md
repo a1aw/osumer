@@ -1,4 +1,4 @@
-# ![osumerIcon64px](http://mob41.github.io/images/osumer/osumerIcon_64px.png) osumer [![Download osumer](http://img.shields.io/github/downloads/mob41/osumer/latest/total.svg)](https://github.com/mob41/osumer/releases/latest)[![Download osumer](http://img.shields.io/github/downloads/mob41/osumer/total.svg)](https://github.com/mob41/osumer/releases/latest)
+# ![osumerIcon64px](http://mob41.github.io/images/osumer/osumerIcon_64px.png) osumer [![Download osumer](http://img.shields.io/github/downloads/mob41/osumer/latest/total.svg)](https://github.com/mob41/osumer/releases/latest) [![Download osumer](http://img.shields.io/github/downloads/mob41/osumer/total.svg)](https://github.com/mob41/osumer/releases/latest)
 Osu! beatmap download helper
 
 >[Please donate to osu!. It is a great game, right?](https://osu.ppy.sh/p/support)
