@@ -11,6 +11,11 @@ import javax.swing.JTextArea;
 public class TextPanel extends JPanel {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7991341001008227901L;
+
+	/**
 	 * Create the panel.
 	 */
 	public TextPanel(String text) {

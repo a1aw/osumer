@@ -21,7 +21,7 @@ import com.github.mob41.osumer.exceptions.NoBuildsForVersionException;
 import com.github.mob41.osumer.exceptions.NoSuchBuildNumberException;
 import com.github.mob41.osumer.exceptions.NoSuchSourceException;
 import com.github.mob41.osumer.exceptions.NoSuchVersionException;
-import com.github.mob41.osumer.io.OsuDownloader;
+//import com.github.mob41.osumer.io.OsuDownloader;
 import com.github.mob41.osumer.io.Osu;
 
 public class Updater {
@@ -36,7 +36,7 @@ public class Updater {
 
 	//This checksum is to prevent if my account is hacked and the updater
 	//executable is changed, the updater won't run.
-	private static final String LEGACY_UPDATER_MD5_CHECKSUM = "";
+	//private static final String LEGACY_UPDATER_MD5_CHECKSUM = "";
 	
 	private static final String VERSION_LIST = "https://mob41.github.io/osumer-updater/versions.json";
 	
@@ -60,7 +60,7 @@ public class Updater {
 	
 	public static final int TOO_OLD = 2;
 	
-	private OsuDownloader dwn = null;
+	//private OsuDownloader dwn = null;
 
 	private Config config;
 	

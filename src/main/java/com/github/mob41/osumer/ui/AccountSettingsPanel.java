@@ -1,25 +1,28 @@
 package com.github.mob41.osumer.ui;
 
-import javax.swing.JPanel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
 import com.github.mob41.osumer.Config;
 import com.github.mob41.osumer.exceptions.DebugDump;
-import com.github.mob41.osumer.exceptions.DebuggableException;
 import com.github.mob41.osumer.exceptions.DumpManager;
 
-import javax.swing.JPasswordField;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.awt.event.ActionEvent;
-
 public class AccountSettingsPanel extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2302862325784117942L;
 	private JTextField usrFld;
 	private JPasswordField pwdFld;
 

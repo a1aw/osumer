@@ -2,13 +2,40 @@ package com.github.mob41.osumer.ui;
 
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.SystemColor;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 
+import javax.imageio.ImageIO;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import com.github.mob41.osumer.Config;
@@ -19,48 +46,11 @@ import com.github.mob41.osumer.exceptions.NoBuildsForVersionException;
 import com.github.mob41.osumer.exceptions.NoSuchBuildNumberException;
 import com.github.mob41.osumer.exceptions.NoSuchVersionException;
 import com.github.mob41.osumer.exceptions.OsuException;
-import com.github.mob41.osumer.io.OsuDownloader;
 import com.github.mob41.osumer.io.Osu;
 import com.github.mob41.osumer.io.OsuBeatmap;
-import com.github.mob41.osumer.updater.Updater;
+import com.github.mob41.osumer.io.OsuDownloader;
 import com.github.mob41.osumer.updater.UpdateInfo;
-
-import javax.imageio.ImageIO;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
-
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.JProgressBar;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.awt.event.ActionEvent;
-import javax.swing.JTextPane;
-import java.awt.SystemColor;
-import java.awt.Toolkit;
-
-import javax.swing.SwingConstants;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.ScrollPaneConstants;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import com.github.mob41.osumer.updater.Updater;
 
 public class DownloadDialog extends JDialog {
 
@@ -72,11 +62,16 @@ public class DownloadDialog extends JDialog {
 	private Image icon256px = Toolkit.getDefaultToolkit().getImage(UIFrame.class.getResource("/com/github/mob41/osumer/ui/osumerIcon_256px.png"));
 	
 	private final JPanel contentPanel = new JPanel(){
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 7191741389460361099L;
+
 		@Override
 		public void paintComponent(Graphics g){
 			super.paintComponent(g);
 			Graphics2D g2 = (Graphics2D) g;
-			int width = getWidth();
+			//int width = getWidth();
 			int height = getHeight();
 			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.5f));
 			g2.drawImage(icon256px, 0, height / 2, contentPanel);

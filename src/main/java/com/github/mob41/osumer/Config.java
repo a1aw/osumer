@@ -8,14 +8,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
 
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.github.mob41.osumer.io.Osu;
 import com.github.mob41.osumer.updater.Updater;
 
 public class Config {

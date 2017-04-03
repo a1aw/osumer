@@ -1,25 +1,50 @@
 package com.github.mob41.osumer.ui;
 
 import java.awt.AlphaComposite;
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
+import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.SystemColor;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
 
+import javax.swing.BoxLayout;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JSeparator;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
-import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 
@@ -32,47 +57,15 @@ import com.github.mob41.osumer.exceptions.NoSuchBuildNumberException;
 import com.github.mob41.osumer.exceptions.NoSuchVersionException;
 import com.github.mob41.osumer.exceptions.OsuException;
 import com.github.mob41.osumer.io.Osu;
-import com.github.mob41.osumer.updater.Updater;
 import com.github.mob41.osumer.updater.UpdateInfo;
-
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.imageio.ImageIO;
-import javax.swing.BoxLayout;
-import java.awt.Component;
-import java.awt.Desktop;
-
-import javax.swing.JPasswordField;
-import java.awt.Color;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.Toolkit;
-import javax.swing.ImageIcon;
-import javax.swing.JPopupMenu;
-import javax.swing.JMenu;
-import java.awt.Button;
-import javax.swing.JMenuItem;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import javax.swing.JTextPane;
-import java.awt.SystemColor;
-import javax.swing.JMenuBar;
-import javax.swing.JSeparator;
-import javax.swing.JRadioButtonMenuItem;
+import com.github.mob41.osumer.updater.Updater;
 
 public class UIFrame extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 785147756273965350L;
 	private JPanel contentPane;
 	private JTextField mapUrlFld;
 	private JFileChooser chooser;
@@ -258,6 +251,11 @@ public class UIFrame extends JFrame {
 		mnUpdate.add(rdbtnmntmStable);
 		
 		contentPane = new JPanel(){
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 3671374871361999683L;
+
 			@Override
 			public void paintComponent(Graphics g){
 				super.paintComponent(g);

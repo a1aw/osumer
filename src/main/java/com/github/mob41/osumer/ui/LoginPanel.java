@@ -12,6 +12,10 @@ import java.awt.Color;
 import java.awt.Font;
 
 public class LoginPanel extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2996646468988190391L;
 	private JTextField usrFld;
 	private JPasswordField pwdFld;
 
