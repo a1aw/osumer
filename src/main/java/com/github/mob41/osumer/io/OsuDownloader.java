@@ -7,9 +7,7 @@ import java.io.RandomAccessFile;
 import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Observable;
 
 import com.github.mob41.osumer.exceptions.DebugDump;
@@ -101,21 +99,6 @@ public class OsuDownloader extends Observable implements Runnable{
 		thread.start();
 	}
 	
-	private static void printAllHeaders(Map<String, List<String>> headers){
-		Iterator<String> it = headers.keySet().iterator();
-		List<String> strs;
-		String key;
-		while (it.hasNext()){
-			key = it.next();
-			strs = headers.get(key);
-			
-			for (int i = 0; i < strs.size(); i++){
-				System.out.println(key + " (" + i + "):" + strs.get(i));
-			}
-		}
-		
-	}
-
 	@Override
 	public void run() {
 		RandomAccessFile file = null;

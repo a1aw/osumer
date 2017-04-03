@@ -1,27 +1,21 @@
 package com.github.mob41.osumer.io;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.CookieManager;
 import java.net.HttpCookie;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import com.github.mob41.osumer.exceptions.DebuggableException;
 
@@ -29,7 +23,7 @@ public class Osu {
 	
 //TODO: Hard-code version?
 	
-	public static final String OSUMER_VERSION = "1.0.3";
+	public static final String OSUMER_VERSION = "1.0.4";
 	
 	public static final String OSUMER_BRANCH = "snapshot";
 	
@@ -214,6 +208,7 @@ public class Osu {
 			wr.write(urlPara);
 			wr.close();
 			
+			/*
 			String data = "";
 			String line;
 			BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -221,6 +216,7 @@ public class Osu {
 			while((line = reader.readLine()) != null){
 				data += line + "\n";
 			}
+			*/
 			
 			Map<String, List<String>> headerFields = conn.getHeaderFields();
 			
@@ -317,21 +313,6 @@ public class Osu {
 	
 	protected CookieManager getCookies(){
 		return cmgr;
-	}
-	
-	private static void printAllHeaders(Map<String, List<String>> headers){
-		Iterator<String> it = headers.keySet().iterator();
-		List<String> strs;
-		String key;
-		while (it.hasNext()){
-			key = it.next();
-			strs = headers.get(key);
-			
-			for (int i = 0; i < strs.size(); i++){
-				System.out.println(key + " (" + i + "):" + strs.get(i));
-			}
-		}
-		
 	}
 	
 	private static String join(String separator, List<HttpCookie> objs){

@@ -7,7 +7,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.github.mob41.osumer.exceptions.DebuggableException;
-import com.github.mob41.osumer.exceptions.OsuException;
 
 public class OsuBeatmap implements Serializable{
 	

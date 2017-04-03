@@ -2,27 +2,8 @@ package com.github.mob41.osumer.ui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.JSplitPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
-
-import com.github.mob41.osumer.exceptions.DebugDump;
-import com.github.mob41.osumer.exceptions.DumpManager;
-
-import java.awt.Font;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -31,8 +12,29 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Calendar;
 
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.table.DefaultTableModel;
+
+import com.github.mob41.osumer.exceptions.DebugDump;
+import com.github.mob41.osumer.exceptions.DumpManager;
+
 public class ViewDumpDialog extends JDialog {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1176048886023608621L;
+
 	private static final String[] col_ident = {"Time", "Time in ms", "Message", "Exception", "UID"};
 
 	private static final String SELECT_DUMP_MSG = "Please select a dump from the table to see the full dump message.";
@@ -71,6 +73,11 @@ public class ViewDumpDialog extends JDialog {
 						dumpsModel = new DefaultTableModel();
 						dumpsModel.setColumnIdentifiers(col_ident);
 						dumps = new JTable(dumpsModel){
+							/**
+							 * 
+							 */
+							private static final long serialVersionUID = 2925652011194875393L;
+
 							@Override
 							public boolean isCellEditable(int row, int column){
 								return false;

@@ -1,12 +1,26 @@
 package com.github.mob41.osumer.ui;
 
-import javax.swing.JPanel;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
+import javax.swing.JPanel;
+import javax.swing.JTextPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SwingConstants;
 
 import com.github.mob41.osumer.Config;
 import com.github.mob41.osumer.exceptions.DebugDump;
@@ -18,27 +32,13 @@ import com.github.mob41.osumer.io.Osu;
 import com.github.mob41.osumer.io.VersionInfo;
 import com.github.mob41.osumer.updater.Updater;
 
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
-
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.awt.event.ActionEvent;
-import java.awt.CardLayout;
-import javax.swing.JComboBox;
-import javax.swing.SwingConstants;
-import java.awt.Font;
-import java.awt.Color;
-import javax.swing.JTextPane;
-import java.awt.SystemColor;
-
 public class ExpressSettingsPanel extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 937433077976147918L;
 	private Config config;
-	private Updater updater;
+	//private Updater updater;
 	private Installer installer;
 	private JCheckBox chckbxAutomaticallySwitchTo;
 	private JCheckBox chckbxSwitchToBrowser;
@@ -60,7 +60,7 @@ public class ExpressSettingsPanel extends JPanel {
 	public ExpressSettingsPanel(Config conf, Updater updater) {
 		settingspanel = new JPanel();
 		
-		this.updater = updater;
+		//this.updater = updater;
 		this.config = conf;
 		this.installer = new Installer();
 		

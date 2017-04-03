@@ -1,44 +1,45 @@
 package com.github.mob41.osumer.ui;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.filechooser.FileFilter;
-
-import com.github.mob41.osumer.exceptions.DebugDump;
-import com.github.mob41.osumer.exceptions.DebuggableException;
-
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import java.awt.Font;
-import javax.swing.SwingConstants;
 import java.awt.Color;
 import java.awt.Desktop;
-
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileFilter;
+
+import com.github.mob41.osumer.exceptions.DebugDump;
 
 public class ErrorDumpDialog extends JDialog {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6751710846617598242L;
 	private final JPanel contentPanel = new JPanel();
 	
 	/**
