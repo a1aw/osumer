@@ -45,7 +45,7 @@ import com.github.mob41.osumer.ui.old.ErrorDumpDialog;
 public class Main {
 	
 	public static final String INTRO = 
-			"osumer2 (osuMapDownloadEr) by mob41" +
+			"osumer2 (osuMapDownloadEr) by mob41\n" +
 			"Licensed under MIT License\n" +
 			"\n" +
 			"https://github.com/mob41/osumer\n" +
@@ -76,10 +76,8 @@ public class Main {
 				e.printStackTrace();
 			} 
 		}
-		
-		if (System.console() != null){
-			System.out.println(INTRO);
-		}
+
+		System.out.println(INTRO);
 		
 		Installer installer = new Installer();
 		
@@ -178,6 +176,7 @@ public class Main {
 		String configPath = Osu.isWindows() ? System.getenv("localappdata") + "\\osumerExpress" : "";
 		
 		Config config = new Config(configPath, Config.DEFAULT_DATA_FILE_NAME);
+		QueueManager mgr = new QueueManager();
 		
 		try {
 			config.load();
@@ -242,7 +241,7 @@ public class Main {
 					
 					if (ap.isUiFlag() && !ap.isNoUiFlag()){
 						System.out.println("An \"-ui\" argument was specified. Launching UI.");
-						UIFrame frame = new UIFrame(new QueueManager());
+						UIFrame frame = new UIFrame(config, mgr);
 						frame.setVisible(true);
 						return;
 					}
@@ -272,7 +271,7 @@ public class Main {
 			if (config.isSwitchToBrowserIfWithoutUiArg()){
 				runBrowser(config, args);
 			} else {
-				UIFrame frame = new UIFrame(new QueueManager());
+				UIFrame frame = new UIFrame(config, mgr);
 				frame.setVisible(true);
 			}
 		}

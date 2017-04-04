@@ -36,8 +36,7 @@ public class QueueManager {
 	}
 	
 	public Queue getQueue(String name){
-		List<Queue> copyList = new ArrayList<Queue>(queues.size());
-		Collections.copy(copyList, queues);
+		List<Queue> copyList = Collections.unmodifiableList(queues);
 		
 		for (Queue queue : copyList){
 			if (queue.getName().equals(name)){
@@ -49,8 +48,7 @@ public class QueueManager {
 	}
 	
 	public void startAll(){
-		List<Queue> copyList = new ArrayList<Queue>(queues.size());
-		Collections.copy(copyList, queues);
+		List<Queue> copyList = Collections.unmodifiableList(queues);
 		
 		for (Queue queue : copyList){
 			queue.start();
@@ -58,8 +56,7 @@ public class QueueManager {
 	}
 	
 	public void cancelAll(){
-		List<Queue> copyList = new ArrayList<Queue>(queues.size());
-		Collections.copy(copyList, queues);
+		List<Queue> copyList = Collections.unmodifiableList(queues);
 		
 		for (Queue queue : copyList){
 			queue.cancel();
@@ -68,8 +65,7 @@ public class QueueManager {
 	}
 	
 	public void pauseAll(){
-		List<Queue> copyList = new ArrayList<Queue>(queues.size());
-		Collections.copy(copyList, queues);
+		List<Queue> copyList = Collections.unmodifiableList(queues);
 		
 		for (Queue queue : copyList){
 			queue.pause();
@@ -77,8 +73,7 @@ public class QueueManager {
 	}
 	
 	public void resumeAll(){
-		List<Queue> copyList = new ArrayList<Queue>(queues.size());
-		Collections.copy(copyList, queues);
+		List<Queue> copyList = Collections.unmodifiableList(queues);
 		
 		for (Queue queue : copyList){
 			queue.resume();

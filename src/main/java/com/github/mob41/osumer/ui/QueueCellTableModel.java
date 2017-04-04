@@ -1,36 +1,20 @@
 package com.github.mob41.osumer.ui;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.table.AbstractTableModel;
+
+import com.github.mob41.osumer.io.Queue;
+import com.github.mob41.osumer.io.QueueManager;
 
 public class QueueCellTableModel extends AbstractTableModel {
 	
-	private List<QueueCell> cells;
+	private QueueManager mgr;
 
-	public QueueCellTableModel() {
-		cells = new ArrayList<QueueCell>(50);
-	}
-	
-	public void addCell(QueueCell cell){
-		cells.add(cell);
-	}
-	
-	public void removeCell(QueueCell cell){
-		cells.remove(cell);
-	}
-	
-	public void removeCell(int i){
-		cells.remove(i);
-	}
-	
-	public void removeAll(){
-		cells.clear();
+	public QueueCellTableModel(QueueManager mgr) {
+		this.mgr = mgr;
 	}
 	
 	public Class getColumnClass(int columnIndex){
-		return QueueCell.class;
+		return Queue.class;
 	}
 	
 	@Override
@@ -45,12 +29,18 @@ public class QueueCellTableModel extends AbstractTableModel {
 
 	@Override
 	public int getRowCount() {
-		return cells.size();
+		if (mgr == null || mgr.getList() == null){
+			return 0;
+		}
+		return mgr.getList().size();
 	}
 
 	@Override
 	public Object getValueAt(int arg0, int arg1) {
-		return cells.get(arg0);
+		if (mgr == null || mgr.getList() == null){
+			return null;
+		}
+		return mgr.getList().get(arg0);
 	}
 
 }

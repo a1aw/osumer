@@ -10,6 +10,8 @@ public class Queue {
 	
 	private final BufferedImage thumb;
 	
+	private long startTime = 0;
+	
 	public Queue(String name, Downloader downloader, BufferedImage thumb) {
 		this.downloader = downloader;
 		this.name = name;
@@ -29,6 +31,7 @@ public class Queue {
 	}
 	
 	public void start(){
+		setStartTime(System.nanoTime());
 		downloader.download();
 	}
 	
@@ -37,6 +40,7 @@ public class Queue {
 	}
 	
 	public void resume(){
+		setStartTime(System.nanoTime());
 		downloader.resume();
 	}
 	
@@ -46,6 +50,14 @@ public class Queue {
 
 	public BufferedImage getThumb() {
 		return thumb;
+	}
+
+	public long getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(long startTime) {
+		this.startTime = startTime;
 	}
 
 }

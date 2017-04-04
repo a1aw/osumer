@@ -152,6 +152,10 @@ public class URLDownloader extends Downloader{
 			in = conn.getInputStream();
 			
 			while (status == DOWNLOADING){
+				if (size == downloaded){
+					break;
+				}
+				
 				byte[] buffer = size - downloaded > MAX_BUFFER_SIZE ?
 						new byte[MAX_BUFFER_SIZE] :
 						new byte[size - downloaded];
