@@ -54,6 +54,8 @@ public class Osu {
 	
 	public static final int SUCCESS = 0;
 	
+	public static final int ALREADY_LOGGED_IN = 2;
+	
 	public static final int INVALID_USERNAME_PASSWORD = 1;
 	
 	private static final String LOGOUT_URL = "http://osu.ppy.sh/forum/ucp.php?mode=logout";
@@ -71,6 +73,8 @@ public class Osu {
 	public static final String SONG_DIR = "s/";
 	
 	private final CookieManager cmgr;
+	
+	private boolean loggedIn = false;
 	
 	public Osu() {
 		cmgr = new CookieManager();
@@ -184,6 +188,9 @@ public class Osu {
 	}
 	
 	public int login(String username, String password) throws DebuggableException{
+		if (loggedIn){
+			return ALREADY_LOGGED_IN;
+		}
 		try {
 			String urlPara = 
 					"login=Login&" +
@@ -262,6 +269,8 @@ public class Osu {
 			        cmgr.getCookieStore().add(null,HttpCookie.parse(cookie).get(0));
 			    }               
 			}
+			
+			loggedIn = true;
 			
 			return SUCCESS;
 		} catch (Exception e) {

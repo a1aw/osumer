@@ -59,10 +59,6 @@ public class OsuDownloader extends Downloader{
 		this.osu = osu;
 		this.folder = downloadFolder;
 		this.fileName = fileName;
-		
-		status = DOWNLOADING;
-		
-		download();
 	}
 	
 	public String getDownloadFolder(){
@@ -120,8 +116,11 @@ public class OsuDownloader extends Downloader{
 	}
 	
 	public void download(){
-		Thread thread = new Thread(this);
-		thread.start();
+		if (status != DOWNLOADING && status != COMPLETED){
+			status = DOWNLOADING;
+			Thread thread = new Thread(this);
+			thread.start();
+		}
 	}
 	
 	@Override
@@ -163,6 +162,7 @@ public class OsuDownloader extends Downloader{
 			in = conn.getInputStream();
 			
 			while (status == DOWNLOADING){
+				
 				byte[] buffer = size - downloaded > MAX_BUFFER_SIZE ?
 						new byte[MAX_BUFFER_SIZE] :
 						new byte[size - downloaded];
