@@ -10,10 +10,12 @@ import javax.swing.table.DefaultTableModel;
 
 import com.github.mob41.osumer.Config;
 import com.github.mob41.osumer.exceptions.DebuggableException;
+import com.github.mob41.osumer.io.BeatmapImportAction;
 import com.github.mob41.osumer.io.Osu;
 import com.github.mob41.osumer.io.OsuBeatmap;
 import com.github.mob41.osumer.io.OsuDownloader;
 import com.github.mob41.osumer.io.Queue;
+import com.github.mob41.osumer.io.QueueAction;
 import com.github.mob41.osumer.io.QueueManager;
 import com.github.mob41.osumer.io.URLDownloader;
 import com.github.mob41.osumer.ui.old.ViewDumpDialog;
@@ -32,6 +34,7 @@ import javax.swing.JTabbedPane;
 import java.awt.Toolkit;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -54,6 +57,7 @@ import javax.swing.JPopupMenu;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
 public class UIFrame extends JFrame {
 	
@@ -76,6 +80,7 @@ public class UIFrame extends JFrame {
 		this.mgr = mgr;
 		this.config = config;
 		this.osu = new Osu();
+		mgr.startQueuing();
 		
 		setTitle("osumer");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(UIFrame.class.getResource("/com/github/mob41/osumer/ui/osumerIcon_32px.png")));
@@ -125,7 +130,7 @@ public class UIFrame extends JFrame {
 					return;
 				}
 				
-				mgr.addQueue(new Queue("Legacy download", new URLDownloader("C:\\Users\\Anthony\\Desktop\\Unknown", "legacy.test", url), null));
+				mgr.addQueue(new Queue("Legacy download", new URLDownloader("C:\\Users\\Anthony\\Desktop\\Unknown", "legacy.test", url), null, null, null));
 				tableModel.fireTableDataChanged();
 			}
 		});
@@ -212,9 +217,11 @@ public class UIFrame extends JFrame {
 		btnAddToQueue.addActionListener(new ActionListener() {
 			
 			private OsuBeatmap map = null;
+			private BufferedImage thumb = null;
+			private ProgressDialog pbd;
 			
 			public void actionPerformed(ActionEvent e) {
-				ProgressDialog pbd = new ProgressDialog();
+				pbd = new ProgressDialog();
 				map = null;
 				
 				new Thread(){
@@ -280,14 +287,57 @@ public class UIFrame extends JFrame {
 				boolean preview = chckbxShowBeatmapPreview.isSelected();
 				
 				boolean stillDwn = true;
-
-				BeatmapPreviewDialog bpd = new BeatmapPreviewDialog(map);
+				
 				if (preview){
+					BeatmapPreviewDialog bpd = new BeatmapPreviewDialog(map);
 					bpd.setLocationRelativeTo(UIFrame.this);
 					bpd.setModal(true);
 					bpd.setVisible(true);
+					
 					stillDwn = bpd.isSelectedYes();
+					thumb = bpd.getDownloadedImage();
 				}
+				
+				pbd = new ProgressDialog();
+				
+				new Thread(){
+					public void run(){
+						pbd.getProgressBar().setIndeterminate(true);
+						pbd.getLabel().setText("Status: Downloading thumb image...");
+						URL url = null;
+						try {
+							url = new URL("http:" + map.getThumbUrl());
+						} catch (MalformedURLException e) {
+							e.printStackTrace();
+							
+							return;
+						}
+						
+						URLConnection conn = null;
+						try {
+							conn = url.openConnection();
+						} catch (IOException e) {
+							e.printStackTrace();
+							return;
+						}
+						
+						conn.setConnectTimeout(5000);
+						conn.setReadTimeout(5000);
+						
+						try {
+							thumb = ImageIO.read(conn.getInputStream());
+						} catch (IOException e) {
+							e.printStackTrace();
+							return;
+						}
+						
+						pbd.dispose();
+					}
+				}.start();
+				
+				pbd.setLocationRelativeTo(UIFrame.this);
+				pbd.setModal(true);
+				pbd.setVisible(true);
 				
 				if (stillDwn){
 					URL downloadUrl = null;
@@ -298,10 +348,10 @@ public class UIFrame extends JFrame {
 						JOptionPane.showMessageDialog(UIFrame.this, "Error validating download URL:\n" + e1, "Error", JOptionPane.ERROR_MESSAGE);
 						return;
 					}
+					String tmpdir = System.getProperty("java.io.tmpdir");
 					
-					OsuDownloader dwn = new OsuDownloader("C:\\Users\\Anthony\\Desktop\\Unknown", map.getDwnUrl().substring(3, map.getDwnUrl().length()) + " " + map.getName(), osu, downloadUrl);
-					mgr.addQueue(new Queue(map.getName(), dwn, bpd.getDownloadedImage()));
-					mgr.startAll();
+					OsuDownloader dwn = new OsuDownloader(tmpdir, map.getDwnUrl().substring(3, map.getDwnUrl().length()) + " " + map.getName(), osu, downloadUrl);
+					mgr.addQueue(new Queue(map.getName(), dwn, thumb, null, new QueueAction[]{new BeatmapImportAction()}));
 					tableModel.fireTableDataChanged();
 					tab.setSelectedIndex(1);
 				}

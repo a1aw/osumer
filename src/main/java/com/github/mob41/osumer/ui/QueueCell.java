@@ -161,6 +161,10 @@ public class QueueCell extends JPanel {
 		lblFilename.setText(dwn.getFileName());
 		lblTitle.setText(queue.getName());
 		
+		lblThumb.setIcon(null);
+		lblThumb.setText("Loading thumb...");
+		lblStatus.setForeground(Color.BLACK);
+		
 		BufferedImage image = queue.getThumb();
 		if (image != null){
 			lblThumb.setText("");
@@ -208,6 +212,11 @@ public class QueueCell extends JPanel {
 			lblEta.setText("ETA: ---");
 			lblStatus.setForeground(Color.BLACK);
 			lblStatus.setText("Status: Cancelled.");
+			break;
+		case -1:
+			lblEta.setText("ETA: ---");
+			lblStatus.setForeground(Color.BLACK);
+			lblStatus.setText("Status: Waiting for queuing...");
 			break;
 		default:
 			lblEta.setText("ETA: ---");
