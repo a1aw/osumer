@@ -1,6 +1,8 @@
 package com.github.mob41.osumer.io;
 
 import java.awt.image.BufferedImage;
+import java.util.Observable;
+import java.util.Observer;
 
 public class Queue {
 
@@ -12,10 +14,32 @@ public class Queue {
 	
 	private long startTime = 0;
 	
-	public Queue(String name, Downloader downloader, BufferedImage thumb) {
+	private final QueueAction[] beforeActions;
+	
+	private final QueueAction[] afterActions;
+	
+	public Queue(String name, Downloader downloader, BufferedImage thumb, QueueAction[] beforeActions, QueueAction[] afterActions) {
 		this.downloader = downloader;
 		this.name = name;
 		this.thumb = thumb;
+		this.beforeActions = beforeActions;
+		this.afterActions = afterActions;
+	}
+	
+	public void runBeforeActions(){
+		if (beforeActions != null){
+			for (QueueAction action : beforeActions){
+				action.run(this);
+			}
+		}
+	}
+	
+	public void runAfterActions(){
+		if (afterActions != null){
+			for (QueueAction action : afterActions){
+				action.run(this);
+			}
+		}
 	}
 	
 	public Downloader getDownloader(){
@@ -31,8 +55,22 @@ public class Queue {
 	}
 	
 	public void start(){
+		runBeforeActions();
+		
 		setStartTime(System.nanoTime());
 		downloader.download();
+		
+		downloader.deleteObservers();
+		downloader.addObserver(new Observer(){
+
+			@Override
+			public void update(Observable arg0, Object arg1) {
+				if (downloader.getStatus() == Downloader.COMPLETED){
+					runAfterActions();
+				}
+			}
+			
+		});
 	}
 	
 	public void pause(){
@@ -46,6 +84,7 @@ public class Queue {
 	
 	public void cancel(){
 		downloader.cancel();
+		downloader.deleteObservers();
 	}
 
 	public BufferedImage getThumb() {
@@ -58,6 +97,14 @@ public class Queue {
 
 	public void setStartTime(long startTime) {
 		this.startTime = startTime;
+	}
+
+	public QueueAction[] getBeforeActions() {
+		return beforeActions;
+	}
+
+	public QueueAction[] getAfterActions() {
+		return afterActions;
 	}
 
 }

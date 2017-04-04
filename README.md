@@ -1,9 +1,16 @@
-# ![osumerIcon64px](http://mob41.github.io/images/osumer/osumerIcon_64px.png) osumer [![Download osumer](http://img.shields.io/github/downloads/mob41/osumer/latest/total.svg)](https://github.com/mob41/osumer/releases/latest) [![Download osumer](http://img.shields.io/github/downloads/mob41/osumer/total.svg)](https://github.com/mob41/osumer/releases/latest)
-Osu! beatmap download helper
+# ![osumerIcon64px](http://mob41.github.io/images/osumer/osumerIcon_64px.png) osumer2 [![Download osumer](http://img.shields.io/github/downloads/mob41/osumer/latest/total.svg)](https://github.com/mob41/osumer/releases/latest) [![Download osumer](http://img.shields.io/github/downloads/mob41/osumer/total.svg)](https://github.com/mob41/osumer/releases/latest)
+The easiest,express osu! beatmap downloader helper!
 
 >[Please donate to osu!. It is a great game, right?](https://osu.ppy.sh/p/support)
 
 Put a star if you like this software! I would be happy to continue developing this software!
+
+## v2-Stage
+
+>:warning: This is the branch of the new version of osumer. osumer2 is still in heavy development stage and not available for production.
+To use v1-branch, please navigate to https://github.com/mob41/osumer/tree/master and v1 releases here https://github.com/mob41/osumer/releases/latest
+
+Version 2 of osumer will be the modern and flexible one. See issue https://github.com/mob41/osumer/issues/4 to see new features of v2!
 
 ## Disclaimer
 This software does not contain malicious code that will send username and password to another server other than osu!'s login server. You can feel free to look through the code. If you still feel uncomfortable with this software, you can simply stop using it. Thank you!
