@@ -1,8 +1,10 @@
-package com.github.mob41.osumer.io;
+package com.github.mob41.osumer.io.queue;
 
 import java.awt.image.BufferedImage;
 import java.util.Observable;
 import java.util.Observer;
+
+import com.github.mob41.osumer.io.Downloader;
 
 public class Queue {
 

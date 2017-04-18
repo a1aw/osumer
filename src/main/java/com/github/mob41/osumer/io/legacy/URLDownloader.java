@@ -21,28 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.github.mob41.osumer.io;
+package com.github.mob41.osumer.io.legacy;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
-import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
 import java.util.Observable;
 
 import com.github.mob41.osumer.exceptions.DebugDump;
 import com.github.mob41.osumer.exceptions.DumpManager;
+import com.github.mob41.osumer.io.Downloader;
 
-public class OsuDownloader extends Downloader{
+public class URLDownloader extends Downloader{
 	
 	private static final int MAX_BUFFER_SIZE = 1024;
 	
 	private final URL url;
-	
-	private final Osu osu;
 	
 	private final String folder;
 	
@@ -54,9 +51,8 @@ public class OsuDownloader extends Downloader{
 	
 	private int status = -1;
 
-	public OsuDownloader(String downloadFolder, String fileName, Osu osu, URL downloadUrl) {
+	public URLDownloader(String downloadFolder, String fileName, URL downloadUrl) {
 		this.url = downloadUrl;
-		this.osu = osu;
 		this.folder = downloadFolder;
 		this.fileName = fileName;
 	}
@@ -133,11 +129,6 @@ public class OsuDownloader extends Downloader{
 			
 			conn.setRequestProperty("Range", "bytes=" + downloaded + "-");
 			
-			if (osu.getCookies().getCookieStore().getCookies().size() > 0) {
-			    // While joining the Cookies, use ',' or ';' as needed. Most of the servers are using ';'
-			    conn.setRequestProperty("Cookie",
-			    join(";", osu.getCookies().getCookieStore().getCookies()));    
-			}
 			
 			conn.connect();
 			
@@ -156,12 +147,15 @@ public class OsuDownloader extends Downloader{
 				reportState();
 			}
 			
-			file = new RandomAccessFile(folder + "\\" + fileName + ".osz", "rw");
+			file = new RandomAccessFile(folder + "\\" + fileName, "rw");
 			file.seek(downloaded);
 			
 			in = conn.getInputStream();
 			
 			while (status == DOWNLOADING){
+				if (size == downloaded){
+					break;
+				}
 				
 				byte[] buffer = size - downloaded > MAX_BUFFER_SIZE ?
 						new byte[MAX_BUFFER_SIZE] :
@@ -213,23 +207,6 @@ public class OsuDownloader extends Downloader{
 	private void reportState(){
 		setChanged();
 		notifyObservers();
-	}
-	
-	private static String join(String separator, List<HttpCookie> objs){
-		String out = "";
-		
-		String str;
-		for (int i = 0; i < objs.size(); i++){
-			str = objs.get(i).toString();
-			
-			out += str + separator;
-			
-			if (i != objs.size() - 1){
-				out += " ";
-			}
-		}
-		
-		return out;
 	}
 
 }

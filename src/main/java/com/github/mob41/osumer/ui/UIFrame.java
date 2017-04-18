@@ -1,66 +1,62 @@
 package com.github.mob41.osumer.ui;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
-
-import com.github.mob41.osumer.Config;
-import com.github.mob41.osumer.exceptions.DebuggableException;
-import com.github.mob41.osumer.io.BeatmapImportAction;
-import com.github.mob41.osumer.io.Osu;
-import com.github.mob41.osumer.io.OsuBeatmap;
-import com.github.mob41.osumer.io.OsuDownloader;
-import com.github.mob41.osumer.io.Queue;
-import com.github.mob41.osumer.io.QueueAction;
-import com.github.mob41.osumer.io.QueueManager;
-import com.github.mob41.osumer.io.URLDownloader;
-import com.github.mob41.osumer.ui.old.ViewDumpDialog;
-
-import javax.imageio.ImageIO;
-import javax.swing.Timer;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.JMenuBar;
-import javax.swing.JLabel;
-import javax.swing.ImageIcon;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import java.awt.Font;
-import javax.swing.SwingConstants;
-import javax.swing.JTabbedPane;
-import java.awt.Toolkit;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.awt.event.ActionEvent;
-import javax.swing.JTextField;
-import javax.swing.JButton;
 import java.awt.Color;
-import javax.swing.JRadioButton;
-import javax.swing.JCheckBox;
-import javax.swing.JPopupMenu;
 import java.awt.Component;
+import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+
+import javax.imageio.ImageIO;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SwingConstants;
+import javax.swing.Timer;
+import javax.swing.border.EmptyBorder;
+
+import com.github.mob41.osumer.Config;
+import com.github.mob41.osumer.exceptions.DebuggableException;
+import com.github.mob41.osumer.io.legacy.URLDownloader;
+import com.github.mob41.osumer.io.officialosu.Osu;
+import com.github.mob41.osumer.io.officialosu.OsuBeatmap;
+import com.github.mob41.osumer.io.officialosu.OsuDownloader;
+import com.github.mob41.osumer.io.queue.BeatmapImportAction;
+import com.github.mob41.osumer.io.queue.Queue;
+import com.github.mob41.osumer.io.queue.QueueAction;
+import com.github.mob41.osumer.io.queue.QueueManager;
+import com.github.mob41.osumer.ui.old.ViewDumpDialog;
 
 public class UIFrame extends JFrame {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4742856302707419966L;
 	private final QueueManager mgr;
 	private final Osu osu;
 	private final Config config;

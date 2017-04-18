@@ -3,7 +3,8 @@ package com.github.mob41.osumer.ui;
 import javax.swing.JPanel;
 
 import com.github.mob41.osumer.io.Downloader;
-import com.github.mob41.osumer.io.Queue;
+import com.github.mob41.osumer.io.queue.Queue;
+
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.Icon;

@@ -1,8 +1,10 @@
-package com.github.mob41.osumer.io;
+package com.github.mob41.osumer.io.queue;
 
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+
+import com.github.mob41.osumer.io.Downloader;
 
 public class BeatmapImportAction implements QueueAction {
 	

@@ -10,8 +10,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-import com.github.mob41.osumer.io.Queue;
-import com.github.mob41.osumer.io.QueueManager;
+import com.github.mob41.osumer.io.queue.Queue;
+import com.github.mob41.osumer.io.queue.QueueManager;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;

@@ -1,4 +1,4 @@
-package com.github.mob41.osumer.io;
+package com.github.mob41.osumer.io.queue;
 
 public interface QueueAction {
 
