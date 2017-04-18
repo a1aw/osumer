@@ -1,9 +1,11 @@
-package com.github.mob41.osumer.io;
+package com.github.mob41.osumer.io.queue;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import com.github.mob41.osumer.io.Downloader;
 
 public class QueueManager {
 	

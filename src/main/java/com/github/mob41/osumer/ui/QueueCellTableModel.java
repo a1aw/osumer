@@ -2,8 +2,8 @@ package com.github.mob41.osumer.ui;
 
 import javax.swing.table.AbstractTableModel;
 
-import com.github.mob41.osumer.io.Queue;
-import com.github.mob41.osumer.io.QueueManager;
+import com.github.mob41.osumer.io.queue.Queue;
+import com.github.mob41.osumer.io.queue.QueueManager;
 
 public class QueueCellTableModel extends AbstractTableModel {
 	

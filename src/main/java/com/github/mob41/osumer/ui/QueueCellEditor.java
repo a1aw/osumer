@@ -10,7 +10,7 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
-import com.github.mob41.osumer.io.Queue;
+import com.github.mob41.osumer.io.queue.Queue;
 
 public class QueueCellEditor extends AbstractCellEditor implements TableCellEditor {
 

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.github.mob41.osumer.io;
+package com.github.mob41.osumer.io.officialosu;
 
 import java.io.BufferedReader;
 import java.io.File;

@@ -51,8 +51,8 @@ import com.github.mob41.osumer.exceptions.DebuggableException;
 import com.github.mob41.osumer.exceptions.DumpManager;
 import com.github.mob41.osumer.exceptions.OsuException;
 import com.github.mob41.osumer.io.Installer;
-import com.github.mob41.osumer.io.Osu;
 import com.github.mob41.osumer.io.VersionInfo;
+import com.github.mob41.osumer.io.officialosu.Osu;
 import com.github.mob41.osumer.updater.Updater;
 
 public class ExpressSettingsPanel extends JPanel {
