@@ -45,8 +45,8 @@ import javax.swing.border.EmptyBorder;
 
 import com.github.mob41.osumer.exceptions.DebugDump;
 import com.github.mob41.osumer.exceptions.DumpManager;
+import com.github.mob41.osumer.io.beatmap.OsuDownloader;
 import com.github.mob41.osumer.io.legacy.URLDownloader;
-import com.github.mob41.osumer.io.officialosu.OsuDownloader;
 
 public class UpdaterDownloadDialog extends JDialog {
 

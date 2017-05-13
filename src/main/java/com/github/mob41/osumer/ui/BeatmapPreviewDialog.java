@@ -9,7 +9,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import com.github.mob41.osumer.io.officialosu.OsuBeatmap;
+import com.github.mob41.osumer.io.beatmap.OsuBeatmap;
 
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;

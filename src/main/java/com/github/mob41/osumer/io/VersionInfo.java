@@ -23,7 +23,7 @@
  *******************************************************************************/
 package com.github.mob41.osumer.io;
 
-import com.github.mob41.osumer.io.officialosu.Osu;
+import com.github.mob41.osumer.io.beatmap.Osu;
 import com.github.mob41.osumer.updater.Updater;
 
 public class VersionInfo {
