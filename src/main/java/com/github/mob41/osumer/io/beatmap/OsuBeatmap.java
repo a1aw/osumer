@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.github.mob41.osumer.io.officialosu;
+package com.github.mob41.osumer.io.beatmap;
 
 import java.io.Serializable;
 

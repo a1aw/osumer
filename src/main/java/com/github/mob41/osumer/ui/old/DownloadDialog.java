@@ -69,9 +69,9 @@ import com.github.mob41.osumer.exceptions.NoBuildsForVersionException;
 import com.github.mob41.osumer.exceptions.NoSuchBuildNumberException;
 import com.github.mob41.osumer.exceptions.NoSuchVersionException;
 import com.github.mob41.osumer.exceptions.OsuException;
-import com.github.mob41.osumer.io.officialosu.Osu;
-import com.github.mob41.osumer.io.officialosu.OsuBeatmap;
-import com.github.mob41.osumer.io.officialosu.OsuDownloader;
+import com.github.mob41.osumer.io.beatmap.Osu;
+import com.github.mob41.osumer.io.beatmap.OsuBeatmap;
+import com.github.mob41.osumer.io.beatmap.OsuDownloader;
 import com.github.mob41.osumer.updater.UpdateInfo;
 import com.github.mob41.osumer.updater.Updater;
 

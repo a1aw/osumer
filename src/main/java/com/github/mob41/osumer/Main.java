@@ -35,7 +35,7 @@ import javax.swing.UIManager;
 import com.github.mob41.osumer.exceptions.DebugDump;
 import com.github.mob41.osumer.exceptions.DebuggableException;
 import com.github.mob41.osumer.io.Installer;
-import com.github.mob41.osumer.io.officialosu.Osu;
+import com.github.mob41.osumer.io.beatmap.Osu;
 import com.github.mob41.osumer.io.queue.QueueManager;
 import com.github.mob41.osumer.ui.UIFrame;
 import com.github.mob41.osumer.ui.old.DownloadDialog;
