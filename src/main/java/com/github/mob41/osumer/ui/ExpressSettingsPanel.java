@@ -29,6 +29,7 @@ import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -103,7 +104,7 @@ public class ExpressSettingsPanel extends JPanel {
 		            return;
 		        }
 		        
-		        if (runningFilePath.startsWith(Installer.winPath + "\\" + Installer.winFile)){
+		        if (runningFilePath != null && new File(runningFilePath).getAbsolutePath().equals(Installer.winPath + "\\" + Installer.winFile)){
 		            JOptionPane.showMessageDialog(null, "osumer cannot be uninstalled if launched from \"Program Files\".\nYou have to use an external osumer downloaded from the releases.\nAnd press \"Uninstall osumerExpress\" there.", "Error", JOptionPane.ERROR_MESSAGE);
 		            return;
 		        }
