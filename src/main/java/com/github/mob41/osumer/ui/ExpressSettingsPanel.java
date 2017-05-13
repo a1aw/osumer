@@ -30,8 +30,10 @@ import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -90,6 +92,22 @@ public class ExpressSettingsPanel extends JPanel {
 		JButton btnUninstallOsumer = new JButton("(*Admin) Uninstall osumerExpress");
 		btnUninstallOsumer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+			    String runningFilePath = null;
+		        try {
+		            runningFilePath = URLDecoder.decode(Installer.class.getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
+		        } catch (UnsupportedEncodingException e1) {
+		            e1.printStackTrace();
+		            DebugDump dump = new DebugDump(runningFilePath, "None", "Decoding running file path in UninstallOsumer", "Ask for option", "Error decoding?", false, e1);
+		            DumpManager.getInstance().addDump(dump);
+		            DebugDump.showDebugDialog(dump);
+		            return;
+		        }
+		        
+		        if (runningFilePath.startsWith(Installer.winPath + "\\" + Installer.winFile)){
+		            JOptionPane.showMessageDialog(null, "osumer cannot be uninstalled if launched from \"Program Files\".\nYou have to use an external osumer downloaded from the releases.\nAnd press \"Uninstall osumerExpress\" there.", "Error", JOptionPane.ERROR_MESSAGE);
+		            return;
+		        }
+		        
 				int option = JOptionPane.showOptionDialog(null, "Are you sure to uninstall? osumerExpress will no longer act as a browser.", "Uninstall osumerExpress", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 1);
 				
 				if (option == JOptionPane.CLOSED_OPTION || option == JOptionPane.NO_OPTION){
@@ -209,21 +227,33 @@ public class ExpressSettingsPanel extends JPanel {
 				
 				boolean useWebUpdater = false;
 				
-				try {
-					if (updater.isUpdateAvailable()){
-						int option2 = JOptionPane.showOptionDialog(null, "osumer Update available!\nDo you want to launch the web updater\ninstead of installing the current version?", "Update available", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, JOptionPane.YES_OPTION);
-						
-						if (option2 == JOptionPane.YES_OPTION){
-							useWebUpdater = true;
-						}
-					}
-				} catch (DebuggableException e1) {
-					int option2 = JOptionPane.showOptionDialog(null, "osumer cannot check for updates for latest version.\nDo you still want to install the current version?", "Cannot check update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, null, JOptionPane.YES_OPTION);
-					
-					if (option2 != JOptionPane.YES_OPTION){
-						return;
-					}
+				if (!Osu.isWindowsElevated()){
+                    int option2 = JOptionPane.showOptionDialog(null, "Installation requires osumer to be elevated.\nosumer will use the web updater instead.\nAre you sure?", "Not elevated", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, JOptionPane.YES_OPTION);
+                    
+                    if (option2 == JOptionPane.NO_OPTION){
+                        return;
+                    }
+                    
+                    useWebUpdater = true;
 				}
+                
+                if (!useWebUpdater){
+                    try {
+                        if (updater.isUpdateAvailable()){
+                            int option2 = JOptionPane.showOptionDialog(null, "osumer Update available!\nDo you want to launch the web updater\ninstead of installing the current version?", "Update available", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, JOptionPane.YES_OPTION);
+                            
+                            if (option2 == JOptionPane.YES_OPTION){
+                                useWebUpdater = true;
+                            }
+                        }
+                    } catch (DebuggableException e1) {
+                        int option2 = JOptionPane.showOptionDialog(null, "osumer cannot check for updates for latest version.\nDo you still want to install the current version?", "Cannot check update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, null, JOptionPane.YES_OPTION);
+                        
+                        if (option2 != JOptionPane.YES_OPTION){
+                            return;
+                        }
+                    }
+                }
 				
 				if (useWebUpdater){
 					try {
@@ -481,21 +511,33 @@ public class ExpressSettingsPanel extends JPanel {
 				}
 				
 				boolean useWebUpdater = false;
+                
+                if (!Osu.isWindowsElevated()){
+                    int option2 = JOptionPane.showOptionDialog(null, "Installation requires osumer to be elevated.\nosumer will use the web updater instead.\nAre you sure?", "Not elevated", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, JOptionPane.YES_OPTION);
+                    
+                    if (option2 == JOptionPane.NO_OPTION){
+                        return;
+                    }
+                    
+                    useWebUpdater = true;
+                }
 				
-				try {
-					if (updater.isUpdateAvailable()){
-						int option2 = JOptionPane.showOptionDialog(null, "osumer Update available!\nDo you want to launch the web updater\ninstead of installing the current version?", "Update available", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, JOptionPane.YES_OPTION);
-						
-						if (option2 == JOptionPane.YES_OPTION){
-							useWebUpdater = true;
-						}
-					}
-				} catch (DebuggableException e1) {
-					int option2 = JOptionPane.showOptionDialog(null, "osumer cannot check for updates for latest version.\nDo you still want to install the current version?", "Cannot check update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, null, JOptionPane.YES_OPTION);
-					
-					if (option2 != JOptionPane.YES_OPTION){
-						return;
-					}
+				if (!useWebUpdater){
+				    try {
+	                    if (updater.isUpdateAvailable()){
+	                        int option2 = JOptionPane.showOptionDialog(null, "osumer Update available!\nDo you want to launch the web updater\ninstead of installing the current version?", "Update available", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, JOptionPane.YES_OPTION);
+	                        
+	                        if (option2 == JOptionPane.YES_OPTION){
+	                            useWebUpdater = true;
+	                        }
+	                    }
+	                } catch (DebuggableException e1) {
+	                    int option2 = JOptionPane.showOptionDialog(null, "osumer cannot check for updates for latest version.\nDo you still want to install the current version?", "Cannot check update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, null, JOptionPane.YES_OPTION);
+	                    
+	                    if (option2 != JOptionPane.YES_OPTION){
+	                        return;
+	                    }
+	                }
 				}
 				
 				if (useWebUpdater){
@@ -615,8 +657,8 @@ public class ExpressSettingsPanel extends JPanel {
 		lblPleaseRestartOsumer.setVisible(!elevated);
 		lblPleaseRestartOsumer_1.setVisible(!elevated);
 		btnUninstallOsumer.setEnabled(elevated);
-		btnInstall.setEnabled(elevated);
-		btnReinstall.setEnabled(elevated);
+		//btnInstall.setEnabled(elevated);
+		//btnReinstall.setEnabled(elevated);
 	}
 	
 	private void refreshBrowsers(){
