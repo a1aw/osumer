@@ -31,9 +31,14 @@ public class DumpManager {
 	
 	private static DumpManager _instance = null;
 	
+	private static long startTime = -1;
+	
 	private List<DebugDump> dumps;
 
 	public static DumpManager getInstance(){
+	    if (startTime == -1){
+	        startTime = System.currentTimeMillis();
+	    }
 		return _instance != null ? _instance : (_instance = new DumpManager());
 	}
 	
