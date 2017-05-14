@@ -179,16 +179,18 @@ public class OsuDownloader extends Observable implements Runnable{
 				reportState();
 			}
 		} catch (IOException e){
+		    DebugDump dump = new DebugDump(
+                    null,
+                    "(Try&catch try)",
+                    "Error reporting and debug dump",
+                    "(Try&catch finally)",
+                    "Error when downloading",
+                    false,
+                    e);
 			DumpManager.getInstance()
-				.addDump(new DebugDump(
-						null,
-						"(Try&catch try)",
-						"Error reporting and debug dump",
-						"(Try&catch finally)",
-						"Error when downloading",
-						false,
-						e));
+				.addDump(dump);
 			error();
+            DebugDump.showDebugDialog(dump);
 		} finally {
 			if (file != null){
 				try {

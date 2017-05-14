@@ -423,7 +423,7 @@ public class DownloadDialog extends JDialog {
 				lblStatus.setText("Status: Downloading \"" + info.getName() + "\"...");
 				
 				final String folder = System.getProperty("java.io.tmpdir");
-				final String fileName = (toFilename(url) + " " + info.getName()).replaceAll("[-+.^:,]","");
+				final String fileName = (toFilename(url) + " " + info.getName()).replaceAll("[\\/:*?\"<>|]", "");
 				
 				dwn = new OsuDownloader(folder, fileName, osu, url);
 				
