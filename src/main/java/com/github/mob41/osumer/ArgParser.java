@@ -46,6 +46,8 @@ public class ArgParser {
 	private boolean noUiFlag = false;
 	
 	private boolean versionFlag = false;
+	
+	private boolean daemonFlag = false;
 
 	public ArgParser(String[] args) {
 		this.args = args;
@@ -75,6 +77,8 @@ public class ArgParser {
 				setNoUiFlag(true);
 			} else if (args[i].equals("-version")){
 				setVersionFlag(true);
+			} else if (args[i].equals("-daemon")){
+			    setDaemonFlag(true);
 			}
 		}
 	}
@@ -162,5 +166,13 @@ public class ArgParser {
 	public void setNoUiFlag(boolean noUiFlag) {
 		this.noUiFlag = noUiFlag;
 	}
+
+    public boolean isDaemonFlag() {
+        return daemonFlag;
+    }
+
+    public void setDaemonFlag(boolean daemonFlag) {
+        this.daemonFlag = daemonFlag;
+    }
 
 }

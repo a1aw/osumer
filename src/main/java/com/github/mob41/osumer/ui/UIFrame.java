@@ -212,146 +212,12 @@ public class UIFrame extends JFrame {
 		JButton btnAddToQueue = new JButton("Add to queue");
 		btnAddToQueue.addActionListener(new ActionListener() {
 			
-			private OsuBeatmap map = null;
-			private BufferedImage thumb = null;
-			private ProgressDialog pbd;
-			
 			public void actionPerformed(ActionEvent e) {
-				pbd = new ProgressDialog();
-				map = null;
-				
-				new Thread(){
-					public void run(){
-						pbd.getProgressBar().setIndeterminate(true);
-						pbd.getLabel().setText("Status: Getting configuration...");
-						String user = config.getUser();
-						String pass = config.getPass();
-						
-						if (user == null || user.isEmpty() || pass == null || pass.isEmpty()){
-							pbd.getLabel().setText("Status: Prompting username and password...");
-							LoginPanel loginPanel = new LoginPanel();
-							int option = JOptionPane.showOptionDialog(UIFrame.this, loginPanel, "Login to osu!", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, JOptionPane.CANCEL_OPTION);
-							
-							if (option == JOptionPane.OK_OPTION){
-								if (loginPanel.getUsername().isEmpty() || loginPanel.getPassword().isEmpty()){
-									JOptionPane.showMessageDialog(UIFrame.this, "Username or password cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
-									pbd.dispose();
-									return;
-								}
-								
-								user = loginPanel.getUsername();
-								pass = loginPanel.getPassword();
-							} else {
-								return;
-							}
-						}
-						
-						pbd.getLabel().setText("Status: Logging in...");
-						try {
-							osu.login(user, pass);
-						} catch (DebuggableException e) {
-							e.printStackTrace();
-							JOptionPane.showMessageDialog(UIFrame.this, "Error logging in:\n" + e.getDump().getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-							pbd.dispose();
-							return;
-						}
-						
-						String beatmapLink = beatmapField.getText();
-						
-						pbd.getLabel().setText("Status: Obtaining beatmap information...");
-						try {
-							map = osu.getBeatmapInfo(beatmapLink);
-						} catch (DebuggableException e) {
-							e.printStackTrace();
-							JOptionPane.showMessageDialog(UIFrame.this, "Error getting beatmap info:\n" + e.getDump().getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-							pbd.dispose();
-							return;
-						}
-						
-						pbd.dispose();
-					}
-				}.start();
-				
-				pbd.setLocationRelativeTo(UIFrame.this);
-				pbd.setModal(true);
-				pbd.setVisible(true);
-				
-				if (map == null){
-					return;
-				}
-				
-				boolean preview = chckbxShowBeatmapPreview.isSelected();
-				
-				boolean stillDwn = true;
-				
-				if (preview){
-					BeatmapPreviewDialog bpd = new BeatmapPreviewDialog(map);
-					bpd.setLocationRelativeTo(UIFrame.this);
-					bpd.setModal(true);
-					bpd.setVisible(true);
-					
-					stillDwn = bpd.isSelectedYes();
-					thumb = bpd.getDownloadedImage();
-				}
-				
-				pbd = new ProgressDialog();
-				
-				new Thread(){
-					public void run(){
-						pbd.getProgressBar().setIndeterminate(true);
-						pbd.getLabel().setText("Status: Downloading thumb image...");
-						URL url = null;
-						try {
-							url = new URL("http:" + map.getThumbUrl());
-						} catch (MalformedURLException e) {
-							e.printStackTrace();
-							
-							return;
-						}
-						
-						URLConnection conn = null;
-						try {
-							conn = url.openConnection();
-						} catch (IOException e) {
-							e.printStackTrace();
-							return;
-						}
-						
-						conn.setConnectTimeout(5000);
-						conn.setReadTimeout(5000);
-						
-						try {
-							thumb = ImageIO.read(conn.getInputStream());
-						} catch (IOException e) {
-							e.printStackTrace();
-							return;
-						}
-						
-						pbd.dispose();
-					}
-				}.start();
-				
-				pbd.setLocationRelativeTo(UIFrame.this);
-				pbd.setModal(true);
-				pbd.setVisible(true);
-				
-				if (stillDwn){
-					URL downloadUrl = null;
-					try {
-						downloadUrl = new URL("http://osu.ppy.sh" + map.getDwnUrl());
-					} catch (MalformedURLException e1) {
-						e1.printStackTrace();
-						JOptionPane.showMessageDialog(UIFrame.this, "Error validating download URL:\n" + e1, "Error", JOptionPane.ERROR_MESSAGE);
-						return;
-					}
-					String tmpdir = System.getProperty("java.io.tmpdir");
-					
-					OsuDownloader dwn = new OsuDownloader(tmpdir, map.getDwnUrl().substring(3, map.getDwnUrl().length()) + " " + map.getName(), osu, downloadUrl);
-					mgr.addQueue(new Queue(map.getName(), dwn, thumb, null, new QueueAction[]{new BeatmapImportAction()}));
-					tableModel.fireTableDataChanged();
-					tab.setSelectedIndex(1);
-				}
+			    if (addBtQueue(beatmapField.getText(), chckbxShowBeatmapPreview.isSelected())){
+			        tab.setSelectedIndex(1);
+			    }
 			}
+			
 		});
 		btnAddToQueue.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		
@@ -500,6 +366,154 @@ public class UIFrame extends JFrame {
 		scrollPane.setViewportView(table);
 		contentPane.setLayout(gl_contentPane);
 	}
+
+    private OsuBeatmap map = null;
+    private BufferedImage thumb = null;
+    private ProgressDialog pbd = null;
+    
+	public boolean addBtQueue(String url, boolean preview){
+	    map = null;
+	    thumb = null;
+        pbd = new ProgressDialog();
+        
+        new Thread(){
+            public void run(){
+                pbd.getProgressBar().setIndeterminate(true);
+                pbd.getLabel().setText("Status: Getting configuration...");
+                String user = config.getUser();
+                String pass = config.getPass();
+                
+                if (user == null || user.isEmpty() || pass == null || pass.isEmpty()){
+                    pbd.getLabel().setText("Status: Prompting username and password...");
+                    LoginPanel loginPanel = new LoginPanel();
+                    int option = JOptionPane.showOptionDialog(UIFrame.this, loginPanel, "Login to osu!", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, JOptionPane.CANCEL_OPTION);
+                    
+                    if (option == JOptionPane.OK_OPTION){
+                        if (loginPanel.getUsername().isEmpty() || loginPanel.getPassword().isEmpty()){
+                            JOptionPane.showMessageDialog(UIFrame.this, "Username or password cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
+                            pbd.dispose();
+                            return;
+                        }
+                        
+                        user = loginPanel.getUsername();
+                        pass = loginPanel.getPassword();
+                    } else {
+                        return;
+                    }
+                }
+                
+                pbd.getLabel().setText("Status: Logging in...");
+                try {
+                    osu.login(user, pass);
+                } catch (DebuggableException e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(UIFrame.this, "Error logging in:\n" + e.getDump().getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    pbd.dispose();
+                    return;
+                }
+                
+                pbd.getLabel().setText("Status: Obtaining beatmap information...");
+                try {
+                    map = osu.getBeatmapInfo(url);
+                } catch (DebuggableException e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(UIFrame.this, "Error getting beatmap info:\n" + e.getDump().getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    pbd.dispose();
+                    return;
+                }
+                
+                pbd.dispose();
+                pbd = null;
+            }
+        }.start();
+        
+        pbd.setLocationRelativeTo(UIFrame.this);
+        pbd.setModal(true);
+        pbd.setVisible(true);
+        
+        if (map == null){
+            return false;
+        }
+        
+        boolean stillDwn = true;
+        
+        if (preview){
+            BeatmapPreviewDialog bpd = new BeatmapPreviewDialog(map);
+            bpd.setLocationRelativeTo(UIFrame.this);
+            bpd.setModal(true);
+            bpd.setVisible(true);
+            
+            stillDwn = bpd.isSelectedYes();
+            thumb = bpd.getDownloadedImage();
+        }
+        
+        if (thumb == null){
+            pbd = new ProgressDialog();
+            
+            new Thread(){
+                public void run(){
+                    pbd.getProgressBar().setIndeterminate(true);
+                    pbd.getLabel().setText("Status: Downloading thumb image...");
+                    URL url = null;
+                    try {
+                        url = new URL("http:" + map.getThumbUrl());
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                        
+                        pbd.dispose();
+                        return;
+                    }
+                    
+                    URLConnection conn = null;
+                    try {
+                        conn = url.openConnection();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        
+                        pbd.dispose();
+                        return;
+                    }
+                    
+                    conn.setConnectTimeout(5000);
+                    conn.setReadTimeout(5000);
+                    
+                    try {
+                        thumb = ImageIO.read(conn.getInputStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        
+                        pbd.dispose();
+                        return;
+                    }
+                    
+                    pbd.dispose();
+                }
+            }.start();
+            
+            pbd.setLocationRelativeTo(UIFrame.this);
+            pbd.setModal(true);
+            pbd.setVisible(true);
+        }
+        
+        if (stillDwn){
+            URL downloadUrl = null;
+            try {
+                downloadUrl = new URL("http://osu.ppy.sh" + map.getDwnUrl());
+            } catch (MalformedURLException e1) {
+                e1.printStackTrace();
+                JOptionPane.showMessageDialog(UIFrame.this, "Error validating download URL:\n" + e1, "Error", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+            String tmpdir = System.getProperty("java.io.tmpdir");
+            
+            OsuDownloader dwn = new OsuDownloader(tmpdir, map.getDwnUrl().substring(3, map.getDwnUrl().length()) + " " + map.getName(), osu, downloadUrl);
+            mgr.addQueue(new Queue(map.getName(), dwn, thumb, null, new QueueAction[]{new BeatmapImportAction()}));
+            tableModel.fireTableDataChanged();
+        }
+        
+        return stillDwn;
+	}
+	
 	private static void addPopup(Component component, final JPopupMenu popup) {
 		component.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {

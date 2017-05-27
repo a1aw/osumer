@@ -508,7 +508,6 @@ public class OsuBeatmap implements Serializable{
 					"No thumb image related data. Page broke?",
 					true);
 		}
-		System.out.println("[" + thumbEl.attr("src") + "]THuB");
 		
 		String thumbUrl = thumbEl.attr("src");
 		
