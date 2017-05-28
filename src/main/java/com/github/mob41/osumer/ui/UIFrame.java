@@ -4,11 +4,16 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
+import java.awt.SystemTray;
 import java.awt.Toolkit;
+import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -49,7 +54,9 @@ import com.github.mob41.osumer.io.queue.BeatmapImportAction;
 import com.github.mob41.osumer.io.queue.Queue;
 import com.github.mob41.osumer.io.queue.QueueAction;
 import com.github.mob41.osumer.io.queue.QueueManager;
+import com.github.mob41.osumer.sock.SockThread;
 import com.github.mob41.osumer.ui.old.ViewDumpDialog;
+import javax.swing.JSeparator;
 
 public class UIFrame extends JFrame {
 	
@@ -57,8 +64,10 @@ public class UIFrame extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = -4742856302707419966L;
+	private boolean daemonMode = false;
 	private final QueueManager mgr;
 	private final Osu osu;
+	private final SockThread sockThread;
 	private final Config config;
 	
 	private final Timer timer;
@@ -72,15 +81,28 @@ public class UIFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public UIFrame(Config config, QueueManager mgr) {
+	public UIFrame(Config config, QueueManager mgr, TrayIcon icon) {
+	    addWindowListener(new WindowAdapter() {
+	        @Override
+	        public void windowClosing(WindowEvent arg0) {
+	            if (daemonMode){
+	                setVisible(false);
+                    icon.displayMessage("osumer2", "osumer2 is now running in background.", TrayIcon.MessageType.INFO);
+	            } else {
+	                dispose();
+	            }
+	        }
+	    });
 		this.mgr = mgr;
 		this.config = config;
 		this.osu = new Osu();
+		
 		mgr.startQueuing();
 		
 		setTitle("osumer");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(UIFrame.class.getResource("/com/github/mob41/osumer/ui/osumerIcon_32px.png")));
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		
 		setBounds(100, 100, 796, 541);
 		
 		JMenuBar menuBar = new JMenuBar();
@@ -101,6 +123,30 @@ public class UIFrame extends JFrame {
 		
 		JMenuItem mntmPreferences = new JMenuItem("Preferences");
 		mnOsumer2.add(mntmPreferences);
+		
+		JSeparator separator = new JSeparator();
+		mnOsumer2.add(separator);
+		
+		JMenuItem mntmExit = new JMenuItem("Exit");
+		mntmExit.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent arg0) {
+		        if (daemonMode){
+		            int option = JOptionPane.showOptionDialog(UIFrame.this, "This application is running in daemon mode.\nExiting might slow down the osumerExpress background download speed.\n\nAre you sure? Or you may prefer running in background.", "Warning", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, new String[]{"Yes", "No", "Run in Background"}, JOptionPane.NO_OPTION);
+		            if (option == JOptionPane.NO_OPTION || option == JOptionPane.CLOSED_OPTION){
+		                return;
+		            } else if (option == 2){
+		                setVisible(false);
+                        icon.displayMessage("osumer2", "osumer2 is now running in background.", TrayIcon.MessageType.INFO);
+                        return;
+		            }
+		        }
+		        
+		        dispose();
+		        System.exit(0);
+		        return;
+		    }
+		});
+		mnOsumer2.add(mntmExit);
 		
 		JMenu mnQueue = new JMenu("Queue");
 		menuBar.add(mnQueue);
@@ -157,7 +203,7 @@ public class UIFrame extends JFrame {
 		lblSubtitle.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		lblSubtitle.setVerticalAlignment(SwingConstants.TOP);
 		
-		JTabbedPane tab = new JTabbedPane(JTabbedPane.TOP);
+		tab = new JTabbedPane(JTabbedPane.TOP);
 		
 		JLabel lblCopyright = new JLabel("Copyright (c) 2016-2017 Anthony Law. Licensed under MIT License.");
 		lblCopyright.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -213,9 +259,7 @@ public class UIFrame extends JFrame {
 		btnAddToQueue.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
-			    if (addBtQueue(beatmapField.getText(), chckbxShowBeatmapPreview.isSelected())){
-			        tab.setSelectedIndex(1);
-			    }
+			    addBtQueue(beatmapField.getText(), chckbxShowBeatmapPreview.isSelected());
 			}
 			
 		});
@@ -365,13 +409,29 @@ public class UIFrame extends JFrame {
 		
 		scrollPane.setViewportView(table);
 		contentPane.setLayout(gl_contentPane);
+
+        this.sockThread = new SockThread(this);
+        sockThread.start();
+	}
+	
+	public Osu getOsu(){
+	    return osu;
+	}
+	
+	public QueueManager getQueueManager(){
+	    return mgr;
 	}
 
     private OsuBeatmap map = null;
     private BufferedImage thumb = null;
     private ProgressDialog pbd = null;
+    private JTabbedPane tab;
     
-	public boolean addBtQueue(String url, boolean preview){
+    public boolean addBtQueue(String url, boolean preview){
+        return addBtQueue(url, preview, true);
+    }
+    
+	public boolean addBtQueue(String url, boolean preview, boolean changeTab){
 	    map = null;
 	    thumb = null;
         pbd = new ProgressDialog();
@@ -509,6 +569,10 @@ public class UIFrame extends JFrame {
             OsuDownloader dwn = new OsuDownloader(tmpdir, map.getDwnUrl().substring(3, map.getDwnUrl().length()) + " " + map.getName(), osu, downloadUrl);
             mgr.addQueue(new Queue(map.getName(), dwn, thumb, null, new QueueAction[]{new BeatmapImportAction()}));
             tableModel.fireTableDataChanged();
+            
+            if (changeTab){
+                tab.setSelectedIndex(1);
+            }
         }
         
         return stillDwn;
@@ -531,4 +595,12 @@ public class UIFrame extends JFrame {
 			}
 		});
 	}
+
+    public boolean isDaemonMode() {
+        return daemonMode;
+    }
+
+    public void setDaemonMode(boolean daemonMode) {
+        this.daemonMode = daemonMode;
+    }
 }

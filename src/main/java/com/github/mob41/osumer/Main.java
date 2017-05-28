@@ -23,7 +23,13 @@
  *******************************************************************************/
 package com.github.mob41.osumer;
 
+import java.awt.AWTException;
 import java.awt.GraphicsEnvironment;
+import java.awt.SystemTray;
+import java.awt.Toolkit;
+import java.awt.TrayIcon;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -35,6 +41,7 @@ import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
@@ -221,7 +228,7 @@ public class Main {
 	private static void runUi(Config config, String[] args, ArgParser ap){
         if (!SockThread.testPortFree(SockThread.PORT)){ //Call background osumer to work
             try {
-                Socket socket = new Socket(InetAddress.getLocalHost().getHostName(), SockThread.PORT);
+                Socket socket = new Socket(InetAddress.getLoopbackAddress().getHostName(), SockThread.PORT);
                 socket.setSoTimeout(5000);
                 
                 PrintWriter writer = new PrintWriter(socket.getOutputStream());
@@ -229,15 +236,17 @@ public class Main {
                 writer.flush();
                 
                 BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                String line;
-                if (!(line = reader.readLine()).equals("OK")){
+                String line = reader.readLine();
+                if (line == null || !line.equals("OK")){
                     reader.close();
                     socket.close();
                     
+                    System.out.println("Not OK: " + line);
                     DebugDump dump = new DebugDump(null, null, "Asking BG osumer to run with args: \"" + buildArgStr(args) + "\"", null, false, "Could not start up BG osumer sucessfully. Destination did not response \"OK\": " + line);
                     DumpManager.getInstance().addDump(dump);
-                    DebugDump.showDebugDialog(dump);
-                    System.exit(-1);
+                    ErrorDumpDialog dialog = DebugDump.showDebugDialog(dump);
+                    dialog.setModal(true);
+                    dialog.setVisible(true);
                     return;
                 }
                 reader.close();
@@ -261,11 +270,9 @@ public class Main {
                     break;
                 }
             }
-
-            
             
             boolean runUi = true;
-            if (args.length > 0 && urlStr == null){
+            if (args.length > 0 && urlStr == null && !ap.isDaemonFlag()){
                 if (config.isSwitchToBrowserIfWithoutUiArg()){
                     System.out.println("Configuration specified that switch to browser if an \"-ui\" arugment wasn't specified.");
                     
@@ -289,16 +296,51 @@ public class Main {
                 }
             }
             
-            UIFrame frame = new UIFrame(config, new QueueManager());
-            frame.setVisible(true);
+            TrayIcon icon = new TrayIcon(Toolkit.getDefaultToolkit().getImage(UIFrame.class.getResource("/com/github/mob41/osumer/ui/osumerIcon_16px.png")));
+            UIFrame frame = new UIFrame(config, new QueueManager(), icon);
             
-            if (urlStr != null){
+            if (ap.isDaemonFlag()){
+                if (!SystemTray.isSupported()){
+                    JOptionPane.showMessageDialog(null, "Your operating system does not support System Tray.\nAs a result, you are not able to start osumer from the tray.", "Warning", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                frame.setDaemonMode(true);
+                
+                SystemTray tray = SystemTray.getSystemTray();
+                
+                icon.addActionListener(new ActionListener(){
+
+                    @Override
+                    public void actionPerformed(ActionEvent arg0) {
+                        frame.setVisible(!frame.isVisible());
+                        
+                        if (!frame.isVisible()){
+                            icon.displayMessage("osumer2", "osumer2 is now running in background.", TrayIcon.MessageType.INFO);
+                        }
+                    }
+                    
+                });
+                icon.setToolTip("osumer2");
+                
+                try {
+                    tray.add(icon);
+                    icon.displayMessage("osumer2", "osumer2 is now running in background.", TrayIcon.MessageType.INFO);
+                } catch (AWTException e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Error when adding tray icon: " + e + "\nAs a result, you are not able to start osumer from the tray.", "Warning", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } else {
+                frame.setVisible(true);
+                
                 new Thread(){
                     public void run(){
-                        JOptionPane.showMessageDialog(frame, "The osumer2 daemon (background process) is not running.\n You can still use osumer to download files,\n but it might slow down overall download speed.", "Warning", JOptionPane.WARNING_MESSAGE);
+                        JOptionPane.showMessageDialog(frame, "The osumer2 daemon (background process) is not running.\nThis might slow down further osumerExpress downloads.\nNow this process is listening for more queues till it is stopped.\n\nPlease check \"Help\" for more details.", "Warning", JOptionPane.WARNING_MESSAGE);
                     }
                 }.start();
-                
+            }
+            
+            if (urlStr != null){
                 frame.addBtQueue(urlStr, false);
             }
         }

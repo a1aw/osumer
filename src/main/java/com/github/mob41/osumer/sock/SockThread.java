@@ -1,11 +1,13 @@
 package com.github.mob41.osumer.sock;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 import com.github.mob41.osumer.exceptions.DebugDump;
 import com.github.mob41.osumer.exceptions.DumpManager;
+import com.github.mob41.osumer.ui.UIFrame;
 
 public class SockThread extends Thread {
     
@@ -15,8 +17,10 @@ public class SockThread extends Thread {
     
     private ServerSocket sock = null;
 
-    public SockThread() {
-        
+    private final UIFrame frame;
+    
+    public SockThread(UIFrame frame) {
+        this.frame = frame;
     }
     
     public static boolean testPortFree(int port){
@@ -34,7 +38,7 @@ public class SockThread extends Thread {
             running = true;
             
             try {
-                sock = new ServerSocket(PORT);
+                sock = new ServerSocket(PORT, 0, InetAddress.getLoopbackAddress());
             } catch (IOException e1) {
                 e1.printStackTrace();
                 DebugDump dump = new DebugDump(null, null, "Opening osumer socket", null, "Could not open socket at 46725 for BG call. Another osumer application running?", false, e1);
@@ -47,11 +51,7 @@ public class SockThread extends Thread {
             try {
                 while(running){
                     Socket cs = sock.accept();
-                    if (cs.getInetAddress().isLoopbackAddress()){
-                        new ConnThread(cs).start();
-                    } else {
-                        cs.close();
-                    }
+                    new ConnThread(this, cs).start();
                 }
                 sock.close();
             } catch (IOException e) {
@@ -64,6 +64,10 @@ public class SockThread extends Thread {
             
             running = false;
         }
+    }
+
+    public UIFrame getFrame() {
+        return frame;
     }
 
 }
