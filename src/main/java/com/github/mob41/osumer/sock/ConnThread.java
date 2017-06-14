@@ -5,6 +5,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Locale;
+
+import javax.annotation.processing.Processor;
+import javax.tools.JavaCompiler;
+
+import com.github.mob41.osumer.ArgParser;
+import com.github.mob41.osumer.io.beatmap.Osu;
 
 public class ConnThread extends Thread{
     
@@ -36,12 +43,29 @@ public class ConnThread extends Thread{
                     sockThread.getFrame().setAlwaysOnTop(false);
                     writer.println("OK");
                 } else if (line.startsWith("RUN")){
+                    String[] args = line.substring(4).split(" ");
+                    
+                    //ArgParser ap = new ArgParser(args);
 
-                    sockThread.getFrame().setVisible(true);
-                    sockThread.getFrame().setLocationRelativeTo(null);
-                    sockThread.getFrame().setAlwaysOnTop(true);
-                    sockThread.getFrame().requestFocus();
-                    sockThread.getFrame().setAlwaysOnTop(false);
+                    String urlStrDy = null;
+                    for (int i = 0; i < args.length; i++){
+                        if (Osu.isVaildBeatMapUrl(args[i])){
+                            urlStrDy = args[i];
+                            break;
+                        }
+                    }
+                    
+                    final String urlStr = urlStrDy;
+                    
+                    if (urlStr != null){
+                        new Thread(){
+                            public void run(){
+                                sockThread.getFrame().addBtQueue(urlStr, false, true);
+                            }
+                        }.start();
+                    }
+                    
+                    writer.println("OK");
                 }
             }
             
