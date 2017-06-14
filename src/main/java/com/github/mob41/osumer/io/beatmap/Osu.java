@@ -363,5 +363,16 @@ public class Osu {
 		
 		return out;
 	}
+	
+	public static int updateSourceStrToInt(String branchStr){
+	    if (branchStr.equals("snapshot")){
+	        return 2;
+	    } else if (branchStr.equals("beta")){
+	        return 1;
+	    } else if (branchStr.equals("stable")){
+	        return 0;
+	    }
+	    return -1;
+	}
 
 }

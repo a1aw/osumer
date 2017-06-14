@@ -39,9 +39,7 @@ import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
-import java.net.UnknownHostException;
 
-import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
@@ -50,14 +48,10 @@ import com.github.mob41.osumer.exceptions.DebuggableException;
 import com.github.mob41.osumer.exceptions.DumpManager;
 import com.github.mob41.osumer.io.Installer;
 import com.github.mob41.osumer.io.beatmap.Osu;
-import com.github.mob41.osumer.io.queue.Queue;
 import com.github.mob41.osumer.io.queue.QueueManager;
 import com.github.mob41.osumer.sock.SockThread;
-import com.github.mob41.osumer.ui.LoginPanel;
+import com.github.mob41.osumer.ui.ErrorDumpDialog;
 import com.github.mob41.osumer.ui.UIFrame;
-import com.github.mob41.osumer.ui.old.DownloadDialog;
-import com.github.mob41.osumer.ui.old.ErrorDumpDialog;
-//import com.github.mob41.osumer.ui.old.UIFrame_old;
 
 public class Main {
 	

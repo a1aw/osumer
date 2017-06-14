@@ -32,7 +32,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.json.JSONObject;
 
 import com.github.mob41.osumer.io.beatmap.Osu;
-import com.github.mob41.osumer.ui.old.ErrorDumpDialog;
+import com.github.mob41.osumer.ui.ErrorDumpDialog;
 
 public class DebugDump {
 	
