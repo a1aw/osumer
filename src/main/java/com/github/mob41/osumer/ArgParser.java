@@ -24,148 +24,148 @@
 package com.github.mob41.osumer;
 
 public class ArgParser {
-	
-	private final String[] args;
-	
-	private boolean showIconsFlag = false;
-	
-	private boolean hideIconsFlag = false;
-	
-	private boolean reinstallFlag = false;
-	
-	private boolean installFlag = false;
-	
-	private boolean uninstallFlag = false;
-	
-	private boolean forceFlag = false;
-	
-	private boolean quietFlag = false;
-	
-	private boolean uiFlag = false;
-	
-	private boolean noUiFlag = false;
-	
-	private boolean versionFlag = false;
-	
-	private boolean daemonFlag = false;
 
-	public ArgParser(String[] args) {
-		this.args = args;
+    private final String[] args;
 
-		if (args == null){
-			return;
-		}
-		
-		for (int i = 0 ; i < args.length; i++){
-			if (args[i].equals("-hideicons")){
-				setHideIconsFlag(true);
-			} else if (args[i].equals("-showicons")){
-				setShowIconsFlag(true);
-			} else if (args[i].equals("-reinstall")){
-				setReinstallFlag(true);
-			} else if (args[i].equals("-install")){
-				setInstallFlag(true);
-			} else if (args[i].equals("-uninstall")){
-				setUninstallFlag(true);
-			} else if (args[i].equals("-force")){
-				setForceFlag(true);
-			} else if (args[i].equals("-quiet")){
-				setQuietFlag(true);
-			} else if (args[i].equals("-ui")){
-				setUiFlag(true);
-			} else if (args[i].equals("-noui")){
-				setNoUiFlag(true);
-			} else if (args[i].equals("-version")){
-				setVersionFlag(true);
-			} else if (args[i].equals("-daemon")){
-			    setDaemonFlag(true);
-			}
-		}
-	}
+    private boolean showIconsFlag = false;
 
-	public boolean isShowIconsFlag() {
-		return showIconsFlag;
-	}
+    private boolean hideIconsFlag = false;
 
-	public void setShowIconsFlag(boolean showIconsFlag) {
-		this.showIconsFlag = showIconsFlag;
-	}
+    private boolean reinstallFlag = false;
 
-	public boolean isHideIconsFlag() {
-		return hideIconsFlag;
-	}
+    private boolean installFlag = false;
 
-	public void setHideIconsFlag(boolean hideIconsFlag) {
-		this.hideIconsFlag = hideIconsFlag;
-	}
+    private boolean uninstallFlag = false;
 
-	public boolean isReinstallFlag() {
-		return reinstallFlag;
-	}
+    private boolean forceFlag = false;
 
-	public void setReinstallFlag(boolean reinstallFlag) {
-		this.reinstallFlag = reinstallFlag;
-	}
+    private boolean quietFlag = false;
 
-	public boolean isInstallFlag() {
-		return installFlag;
-	}
+    private boolean uiFlag = false;
 
-	public void setInstallFlag(boolean installFlag) {
-		this.installFlag = installFlag;
-	}
+    private boolean noUiFlag = false;
 
-	public boolean isUninstallFlag() {
-		return uninstallFlag;
-	}
+    private boolean versionFlag = false;
 
-	public void setUninstallFlag(boolean uninstallFlag) {
-		this.uninstallFlag = uninstallFlag;
-	}
+    private boolean daemonFlag = false;
 
-	public boolean isForceFlag() {
-		return forceFlag;
-	}
+    public ArgParser(String[] args) {
+        this.args = args;
 
-	public void setForceFlag(boolean forceFlag) {
-		this.forceFlag = forceFlag;
-	}
+        if (args == null) {
+            return;
+        }
 
-	public boolean isQuietFlag() {
-		return quietFlag;
-	}
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].equals("-hideicons")) {
+                setHideIconsFlag(true);
+            } else if (args[i].equals("-showicons")) {
+                setShowIconsFlag(true);
+            } else if (args[i].equals("-reinstall")) {
+                setReinstallFlag(true);
+            } else if (args[i].equals("-install")) {
+                setInstallFlag(true);
+            } else if (args[i].equals("-uninstall")) {
+                setUninstallFlag(true);
+            } else if (args[i].equals("-force")) {
+                setForceFlag(true);
+            } else if (args[i].equals("-quiet")) {
+                setQuietFlag(true);
+            } else if (args[i].equals("-ui")) {
+                setUiFlag(true);
+            } else if (args[i].equals("-noui")) {
+                setNoUiFlag(true);
+            } else if (args[i].equals("-version")) {
+                setVersionFlag(true);
+            } else if (args[i].equals("-daemon")) {
+                setDaemonFlag(true);
+            }
+        }
+    }
 
-	public void setQuietFlag(boolean quietFlag) {
-		this.quietFlag = quietFlag;
-	}
+    public boolean isShowIconsFlag() {
+        return showIconsFlag;
+    }
 
-	public boolean isUiFlag() {
-		return uiFlag;
-	}
+    public void setShowIconsFlag(boolean showIconsFlag) {
+        this.showIconsFlag = showIconsFlag;
+    }
 
-	public void setUiFlag(boolean uiFlag) {
-		this.uiFlag = uiFlag;
-	}
+    public boolean isHideIconsFlag() {
+        return hideIconsFlag;
+    }
 
-	public String[] getArgs() {
-		return args;
-	}
+    public void setHideIconsFlag(boolean hideIconsFlag) {
+        this.hideIconsFlag = hideIconsFlag;
+    }
 
-	public boolean isVersionFlag() {
-		return versionFlag;
-	}
+    public boolean isReinstallFlag() {
+        return reinstallFlag;
+    }
 
-	public void setVersionFlag(boolean versionFlag) {
-		this.versionFlag = versionFlag;
-	}
+    public void setReinstallFlag(boolean reinstallFlag) {
+        this.reinstallFlag = reinstallFlag;
+    }
 
-	public boolean isNoUiFlag() {
-		return noUiFlag;
-	}
+    public boolean isInstallFlag() {
+        return installFlag;
+    }
 
-	public void setNoUiFlag(boolean noUiFlag) {
-		this.noUiFlag = noUiFlag;
-	}
+    public void setInstallFlag(boolean installFlag) {
+        this.installFlag = installFlag;
+    }
+
+    public boolean isUninstallFlag() {
+        return uninstallFlag;
+    }
+
+    public void setUninstallFlag(boolean uninstallFlag) {
+        this.uninstallFlag = uninstallFlag;
+    }
+
+    public boolean isForceFlag() {
+        return forceFlag;
+    }
+
+    public void setForceFlag(boolean forceFlag) {
+        this.forceFlag = forceFlag;
+    }
+
+    public boolean isQuietFlag() {
+        return quietFlag;
+    }
+
+    public void setQuietFlag(boolean quietFlag) {
+        this.quietFlag = quietFlag;
+    }
+
+    public boolean isUiFlag() {
+        return uiFlag;
+    }
+
+    public void setUiFlag(boolean uiFlag) {
+        this.uiFlag = uiFlag;
+    }
+
+    public String[] getArgs() {
+        return args;
+    }
+
+    public boolean isVersionFlag() {
+        return versionFlag;
+    }
+
+    public void setVersionFlag(boolean versionFlag) {
+        this.versionFlag = versionFlag;
+    }
+
+    public boolean isNoUiFlag() {
+        return noUiFlag;
+    }
+
+    public void setNoUiFlag(boolean noUiFlag) {
+        this.noUiFlag = noUiFlag;
+    }
 
     public boolean isDaemonFlag() {
         return daemonFlag;

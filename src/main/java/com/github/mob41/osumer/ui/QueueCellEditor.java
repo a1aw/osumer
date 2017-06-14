@@ -14,26 +14,26 @@ import com.github.mob41.osumer.io.queue.Queue;
 
 public class QueueCellEditor extends AbstractCellEditor implements TableCellEditor {
 
-	private QueueCell comp;
-	
-	public QueueCellEditor(QueueCellTableModel model){
-		comp = new QueueCell(model);
-	}
-	
-	@Override
-	public Object getCellEditorValue() {
-		return null;
-	}
+    private QueueCell comp;
 
-	@Override
-	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-		comp.updateData((Queue) value);
-		if (isSelected){
-			comp.setBackground(table.getSelectionBackground());
-		} else {
-			comp.setBackground(table.getBackground());
-		}
-		return comp;
-	}
+    public QueueCellEditor(QueueCellTableModel model) {
+        comp = new QueueCell(model);
+    }
+
+    @Override
+    public Object getCellEditorValue() {
+        return null;
+    }
+
+    @Override
+    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+        comp.updateData((Queue) value);
+        if (isSelected) {
+            comp.setBackground(table.getSelectionBackground());
+        } else {
+            comp.setBackground(table.getBackground());
+        }
+        return comp;
+    }
 
 }
