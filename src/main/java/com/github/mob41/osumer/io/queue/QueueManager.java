@@ -5,20 +5,26 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.github.mob41.osumer.Config;
 import com.github.mob41.osumer.io.Downloader;
 
 public class QueueManager {
 	
-	public final List<Queue> queues;
+	public static final int DEFAULT_MAX_THREADS = 4;
+
+    public final List<Queue> queues;
 
 	private Thread thread;
 	
 	private boolean keepRunning = false;
 	
-	private int maxThread = 4;
+	private final Config config;
 	
-	public QueueManager() {
+	//private int maxThread = 4;
+	
+	public QueueManager(Config config) {
 		queues = new CopyOnWriteArrayList<Queue>();
+		this.config = config;
 		startQueuing();
 	}
 	
@@ -28,6 +34,8 @@ public class QueueManager {
 			thread = new Thread(){
 				public void run(){
 					while(keepRunning){
+					    final int maxThread = config.getMaxThreads();
+					    
 						int running = 0;
 						List<Queue> list = getList();
 						for (Queue queue : list){

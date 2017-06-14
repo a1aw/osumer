@@ -297,7 +297,7 @@ public class Main {
             }
             
             TrayIcon icon = new TrayIcon(Toolkit.getDefaultToolkit().getImage(UIFrame.class.getResource("/com/github/mob41/osumer/ui/osumerIcon_16px.png")));
-            UIFrame frame = new UIFrame(config, new QueueManager(), icon);
+            UIFrame frame = new UIFrame(config, new QueueManager(config), icon);
             
             if (ap.isDaemonFlag()){
                 if (!SystemTray.isSupported()){

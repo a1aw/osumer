@@ -90,6 +90,8 @@ public class UIFrame extends JFrame {
                     icon.displayMessage("osumer2", "osumer2 is now running in background.", TrayIcon.MessageType.INFO);
 	            } else {
 	                dispose();
+	                System.exit(0);
+	                return;
 	            }
 	        }
 	    });
@@ -122,6 +124,13 @@ public class UIFrame extends JFrame {
 		mnOsumer2.add(mntmViewDumps);
 		
 		JMenuItem mntmPreferences = new JMenuItem("Preferences");
+		mntmPreferences.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent arg0) {
+		        PreferenceDialog dialog = new PreferenceDialog();
+		        dialog.setModal(true);
+		        dialog.setVisible(true);
+		    }
+		});
 		mnOsumer2.add(mntmPreferences);
 		
 		JSeparator separator = new JSeparator();
@@ -292,6 +301,13 @@ public class UIFrame extends JFrame {
 		btnSelectFolder.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		
 		JButton btnOsumerPreferences = new JButton("osumer2 Preferences");
+		btnOsumerPreferences.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+                PreferenceDialog dialog = new PreferenceDialog();
+                dialog.setModal(true);
+                dialog.setVisible(true);
+		    }
+		});
 		btnOsumerPreferences.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		
 		chckbxShowBeatmapPreview = new JCheckBox("Show beatmap preview");

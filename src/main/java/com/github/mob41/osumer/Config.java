@@ -36,6 +36,8 @@ import org.apache.commons.codec.binary.Base64;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.github.mob41.osumer.io.beatmap.Osu;
+import com.github.mob41.osumer.io.queue.QueueManager;
 import com.github.mob41.osumer.updater.Updater;
 
 public class Config {
@@ -76,6 +78,10 @@ public class Config {
 		json.remove("pass");
 	}
 	
+	public void setThisVersionGettingStartedOnStartupEnabled(boolean enabled){
+	    json.put("getting_started_startup_" + Osu.OSUMER_VERSION + "-" + Osu.OSUMER_BRANCH + "-" + Osu.OSUMER_BUILD_NUM, enabled);
+	}
+	
 	public void setUpdateSource(int updateSource){
 		json.put("updateSource", updateSource);
 	}
@@ -110,6 +116,14 @@ public class Config {
 		} catch (Exception e){
 			e.printStackTrace();
 		}
+	}
+	
+	public boolean isThisVersionGettingStartedOnStartupEnabled(){
+	    if (json.isNull("getting_started_startup_" + Osu.OSUMER_VERSION + "-" + Osu.OSUMER_BRANCH + "-" + Osu.OSUMER_BUILD_NUM)){
+	        return true;
+	    }
+	    
+	    return false;
 	}
 	
 	public boolean isSwitchToBrowserIfWithoutUiArg(){
@@ -173,7 +187,6 @@ public class Config {
 	}
 
 	public void load() throws IOException{
-		
 		File file = new File(dataFilePath + "/" + dataFileName);
 		if (!file.exists()){
 			write();
@@ -242,5 +255,17 @@ public class Config {
 		}
 		*/
 	}
+
+    public void setMaxThreads(int maxThreads) {
+        json.put("maxThreads", maxThreads);
+    }
+
+    public int getMaxThreads() {
+        if (json.isNull("maxThreads")){
+            return QueueManager.DEFAULT_MAX_THREADS;
+        }
+        
+        return json.getInt("maxThreads");
+    }
 
 }
