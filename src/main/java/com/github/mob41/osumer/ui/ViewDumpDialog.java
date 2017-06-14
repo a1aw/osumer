@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.github.mob41.osumer.ui.old;
+package com.github.mob41.osumer.ui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;

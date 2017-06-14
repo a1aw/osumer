@@ -55,7 +55,7 @@ import com.github.mob41.osumer.io.queue.Queue;
 import com.github.mob41.osumer.io.queue.QueueAction;
 import com.github.mob41.osumer.io.queue.QueueManager;
 import com.github.mob41.osumer.sock.SockThread;
-import com.github.mob41.osumer.ui.old.ViewDumpDialog;
+
 import javax.swing.JSeparator;
 
 public class UIFrame extends JFrame {

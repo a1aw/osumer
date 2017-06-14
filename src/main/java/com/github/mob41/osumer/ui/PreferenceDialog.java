@@ -28,6 +28,8 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.JTextField;
+import javax.swing.JTable;
 
 public class PreferenceDialog extends JDialog {
 
@@ -65,7 +67,7 @@ public class PreferenceDialog extends JDialog {
             infos = UIManager.getInstalledLookAndFeels();
             for (int i = 0; i < infos.length; i++){
                 UIManager.LookAndFeelInfo info = infos[i];
-                uiSkinBox.addItem(info.getName() + " (" + info.getClassName() + ")");
+                uiSkinBox.addItem(info.getName());
             }
             
             JButton btnApply = new JButton("Apply");
@@ -154,7 +156,7 @@ public class PreferenceDialog extends JDialog {
                 tab.addTab("osumerExpress", null, panel, null);
                 
                 JPanel panel_1 = new JPanel();
-                panel_1.setBorder(new TitledBorder(null, "Server Priority", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+                panel_1.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Server Priority (osumsSrv or plugins)", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
                 
                 JPanel panel_2 = new JPanel();
                 panel_2.setBorder(new TitledBorder(null, "osu! Account Credentials", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -363,7 +365,7 @@ public class PreferenceDialog extends JDialog {
             
             JLabel lblThreads = new JLabel("thread(s)");
             
-            JCheckBox chckbxEnableMassiveDownloading = new JCheckBox("Enable massive downloading threads of having more than 16 threads (Requires liability agreement)");
+            JCheckBox chckbxEnableMassiveDownloading = new JCheckBox("Enable massive downloading threads of having more than 8 threads (Requires liability agreement)");
             chckbxEnableMassiveDownloading.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     if (chckbxEnableMassiveDownloading.isSelected()){
@@ -563,17 +565,8 @@ public class PreferenceDialog extends JDialog {
             JRadioButton rdbtnEveryStartup = new JRadioButton("Every startup");
             panel_2.add(rdbtnEveryStartup);
             
-            JRadioButton rdbtnEveryHour = new JRadioButton("Every hour");
-            panel_2.add(rdbtnEveryHour);
-            
-            JRadioButton rdbtnEveryDay = new JRadioButton("Every day");
-            panel_2.add(rdbtnEveryDay);
-            
-            JRadioButton rdbtnEveryWeek = new JRadioButton("Every week");
-            panel_2.add(rdbtnEveryWeek);
-            
-            JRadioButton rdbtnEveryMonth = new JRadioButton("Every month");
-            panel_2.add(rdbtnEveryMonth);
+            JRadioButton rdbtnEveryAct = new JRadioButton("Every download/request/activation");
+            panel_2.add(rdbtnEveryAct);
             
             JRadioButton rdbtnNever = new JRadioButton("Never");
             panel_2.add(rdbtnNever);
@@ -581,10 +574,7 @@ public class PreferenceDialog extends JDialog {
             
             ButtonGroup updateFreqBtnGroup = new ButtonGroup();
             updateFreqBtnGroup.add(rdbtnEveryStartup);
-            updateFreqBtnGroup.add(rdbtnEveryHour);
-            updateFreqBtnGroup.add(rdbtnEveryDay);
-            updateFreqBtnGroup.add(rdbtnEveryWeek);
-            updateFreqBtnGroup.add(rdbtnEveryMonth);
+            updateFreqBtnGroup.add(rdbtnEveryAct);
             updateFreqBtnGroup.add(rdbtnNever);
             
             JPanel panel_6 = new JPanel();
@@ -632,6 +622,102 @@ public class PreferenceDialog extends JDialog {
             );
             panel_7.setLayout(gl_panel_7);
             panel_6.setLayout(gl_panel_6);
+            
+            JPanel panel_9 = new JPanel();
+            tab.addTab("Plugins", null, panel_9, null);
+            
+            JLabel lblWarningOnlyAdd = new JLabel("Warning: Only add plugins that you trust, or officially trusted by the developer.");
+            lblWarningOnlyAdd.setForeground(Color.RED);
+            lblWarningOnlyAdd.setFont(new Font("Tahoma", Font.BOLD, 12));
+            GroupLayout gl_panel_9 = new GroupLayout(panel_9);
+            gl_panel_9.setHorizontalGroup(
+                gl_panel_9.createParallelGroup(Alignment.LEADING)
+                    .addGroup(gl_panel_9.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(lblWarningOnlyAdd, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
+                        .addContainerGap())
+            );
+            gl_panel_9.setVerticalGroup(
+                gl_panel_9.createParallelGroup(Alignment.LEADING)
+                    .addGroup(gl_panel_9.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(lblWarningOnlyAdd)
+                        .addContainerGap(409, Short.MAX_VALUE))
+            );
+            panel_9.setLayout(gl_panel_9);
+            
+            JPanel panel_11 = new JPanel();
+            tab.addTab("Miscellaneous", null, panel_11, null);
+            
+            JPanel panel_12 = new JPanel();
+            panel_12.setBorder(new TitledBorder(null, "Event Handler Profile", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+            GroupLayout gl_panel_11 = new GroupLayout(panel_11);
+            gl_panel_11.setHorizontalGroup(
+                gl_panel_11.createParallelGroup(Alignment.LEADING)
+                    .addGroup(gl_panel_11.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(panel_12, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
+                        .addContainerGap())
+            );
+            gl_panel_11.setVerticalGroup(
+                gl_panel_11.createParallelGroup(Alignment.LEADING)
+                    .addGroup(gl_panel_11.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(panel_12, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(314, Short.MAX_VALUE))
+            );
+            
+            JCheckBox chckbxEnableToneBefore = new JCheckBox("Enable tone before download");
+            
+            JCheckBox chckbxEnableToneOn = new JCheckBox("Enable tone on download started");
+            
+            JCheckBox chckbxEnableToneAfter = new JCheckBox("Enable tone after download");
+            
+            JButton btnSelect = new JButton("Select");
+            
+            JButton btnSelect_1 = new JButton("Select");
+            
+            JButton btnSelect_2 = new JButton("Select");
+            GroupLayout gl_panel_12 = new GroupLayout(panel_12);
+            gl_panel_12.setHorizontalGroup(
+                gl_panel_12.createParallelGroup(Alignment.LEADING)
+                    .addGroup(gl_panel_12.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(gl_panel_12.createParallelGroup(Alignment.LEADING)
+                            .addGroup(gl_panel_12.createSequentialGroup()
+                                .addComponent(chckbxEnableToneBefore)
+                                .addPreferredGap(ComponentPlacement.RELATED)
+                                .addComponent(btnSelect))
+                            .addGroup(gl_panel_12.createParallelGroup(Alignment.TRAILING)
+                                .addGroup(Alignment.LEADING, gl_panel_12.createSequentialGroup()
+                                    .addComponent(chckbxEnableToneAfter)
+                                    .addPreferredGap(ComponentPlacement.RELATED)
+                                    .addComponent(btnSelect_2))
+                                .addGroup(Alignment.LEADING, gl_panel_12.createSequentialGroup()
+                                    .addComponent(chckbxEnableToneOn)
+                                    .addPreferredGap(ComponentPlacement.RELATED)
+                                    .addComponent(btnSelect_1))))
+                        .addGap(476))
+            );
+            gl_panel_12.setVerticalGroup(
+                gl_panel_12.createParallelGroup(Alignment.LEADING)
+                    .addGroup(gl_panel_12.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(gl_panel_12.createParallelGroup(Alignment.BASELINE)
+                            .addComponent(chckbxEnableToneBefore)
+                            .addComponent(btnSelect))
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addGroup(gl_panel_12.createParallelGroup(Alignment.BASELINE)
+                            .addComponent(chckbxEnableToneOn)
+                            .addComponent(btnSelect_1))
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addGroup(gl_panel_12.createParallelGroup(Alignment.BASELINE)
+                            .addComponent(chckbxEnableToneAfter)
+                            .addComponent(btnSelect_2))
+                        .addContainerGap(11, Short.MAX_VALUE))
+            );
+            panel_12.setLayout(gl_panel_12);
+            panel_11.setLayout(gl_panel_11);
         }
         {
             JPanel buttonPane = new JPanel();
