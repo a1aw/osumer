@@ -245,7 +245,7 @@ public class Installer {
                 && verInfo.getBuildNum() == Osu.OSUMER_BUILD_NUM;
     }
 
-    public VersionInfo getInstalledVersion() {
+    public static VersionInfo getInstalledVersion() {
         if (!Osu.isWindows()) {
             return null;
         }
@@ -293,7 +293,7 @@ public class Installer {
         }
     }
 
-    public boolean isInstalled() {
+    public static boolean isInstalled() {
         File file = new File(winPath + "\\" + winFile);
         return file.exists();
     }

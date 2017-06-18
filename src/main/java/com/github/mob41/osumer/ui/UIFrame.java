@@ -97,7 +97,7 @@ public class UIFrame extends JFrame {
     private final Osu osu;
     private final SockThread sockThread;
     private final Config config;
-
+    private final TrayIcon icon;
     private final Timer timer;
 
     private JPanel contentPane;
@@ -110,6 +110,8 @@ public class UIFrame extends JFrame {
      * Create the frame.
      */
     public UIFrame(Config config, QueueManager mgr, TrayIcon icon) {
+        this.icon = icon;
+        
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent arg0) {
@@ -155,7 +157,7 @@ public class UIFrame extends JFrame {
         JMenuItem mntmPreferences = new JMenuItem("Preferences");
         mntmPreferences.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                PreferenceDialog dialog = new PreferenceDialog();
+                PreferenceDialog dialog = new PreferenceDialog(config);
                 dialog.setModal(true);
                 dialog.setVisible(true);
             }
@@ -331,7 +333,7 @@ public class UIFrame extends JFrame {
         JButton btnOsumerPreferences = new JButton("osumer2 Preferences");
         btnOsumerPreferences.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                PreferenceDialog dialog = new PreferenceDialog();
+                PreferenceDialog dialog = new PreferenceDialog(config);
                 dialog.setModal(true);
                 dialog.setVisible(true);
             }
@@ -599,14 +601,34 @@ public class UIFrame extends JFrame {
             }
             String tmpdir = System.getProperty("java.io.tmpdir");
 
+            final String mapName = map.getName();
             OsuDownloader dwn = new OsuDownloader(tmpdir,
                     map.getDwnUrl().substring(3, map.getDwnUrl().length()) + " " + map.getName(), osu, downloadUrl);
-            mgr.addQueue(new Queue(map.getName(), dwn, thumb, null, new QueueAction[] { new BeatmapImportAction() }));
+            boolean added = mgr.addQueue(new Queue(map.getName(), dwn, thumb, null, new QueueAction[] { 
+                    new QueueAction(){
+
+                        @Override
+                        public void run(Queue queue) {
+                            icon.displayMessage("Download completed for \"" + mapName + "\"", "This osumer queue has completed downloading.", TrayIcon.MessageType.INFO);
+                        }
+                        
+                    },
+                    new BeatmapImportAction()
+                    }));
+            
+            if (added){
+                icon.displayMessage("Downloading \"" + mapName + "\"", "osumerExpress is downloading the requested beatmap!", TrayIcon.MessageType.INFO);
+            } else {
+                icon.displayMessage("Could not add \"" + mapName + "\" to queue", "It has already in queue/downloading or completed.", TrayIcon.MessageType.INFO);
+            }
+            
             tableModel.fireTableDataChanged();
 
             if (changeTab) {
                 tab.setSelectedIndex(1);
             }
+        } else {
+            icon.displayMessage("Could not download \"" + url + "\"", "Error occurred when finding beatmap. Start UI to see details.", TrayIcon.MessageType.INFO);
         }
 
         return stillDwn;

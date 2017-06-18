@@ -63,6 +63,7 @@ public class QueueManager {
                 public void run() {
                     while (keepRunning) {
                         final int maxThread = config.getMaxThreads();
+                        final int delay = config.getNextCheckDelay();
 
                         int running = 0;
                         List<Queue> list = getList();
@@ -85,7 +86,7 @@ public class QueueManager {
                             }
                         }
                         try {
-                            sleep(2000);
+                            sleep(delay);
                         } catch (InterruptedException e) {
                             break;
                         }
