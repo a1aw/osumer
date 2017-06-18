@@ -26,75 +26,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.github.mob41.osumer.updater;
+package com.github.mob41.osumer.ui;
 
-public class UpdateInfo {
+import java.awt.Component;
 
-    private final String version;
+import javax.swing.AbstractCellEditor;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 
-    private final String webLink;
+import com.github.mob41.osumer.io.queue.Queue;
 
-    private final String exeLink;
+public class QueueCellEditor extends AbstractCellEditor implements TableCellEditor {
 
-    private final String jarLink;
+    private QueueCell comp;
 
-    private final String description;
-
-    private final int branch;
-
-    private final int buildNum;
-
-    private final boolean isThisVersion;
-
-    private final boolean upgradedVersion;
-
-    public UpdateInfo(String description, String version, int branch, int buildNum, String webLink, String exeLink,
-            String jarLink, boolean isThisVersion, boolean upgradedVersion) {
-        this.description = description;
-        this.version = version;
-        this.webLink = webLink;
-        this.exeLink = exeLink;
-        this.jarLink = jarLink;
-        this.branch = branch;
-        this.buildNum = buildNum;
-        this.isThisVersion = isThisVersion;
-        this.upgradedVersion = upgradedVersion;
+    public QueueCellEditor(QueueCellTableModel model) {
+        comp = new QueueCell(model);
     }
 
-    public String getVersion() {
-        return version;
+    @Override
+    public Object getCellEditorValue() {
+        return null;
     }
 
-    public int getBranch() {
-        return branch;
-    }
-
-    public int getBuildNum() {
-        return buildNum;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public boolean isThisVersion() {
-        return isThisVersion;
-    }
-
-    public boolean isUpgradedVersion() {
-        return upgradedVersion;
-    }
-
-    public String getExeLink() {
-        return exeLink;
-    }
-
-    public String getJarLink() {
-        return jarLink;
-    }
-
-    public String getWebLink() {
-        return webLink;
+    @Override
+    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+        comp.updateData((Queue) value);
+        if (isSelected) {
+            comp.setBackground(table.getSelectionBackground());
+        } else {
+            comp.setBackground(table.getBackground());
+        }
+        return comp;
     }
 
 }

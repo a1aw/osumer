@@ -1,7 +1,12 @@
 /*******************************************************************************
+ * Any modification, copies of sections of this file must be attached with this
+ * license and shown clearly in the developer's project. The code can be used
+ * as long as you state clearly you do not own it. Any violation might result in
+ *  a take-down.
+ *
  * MIT License
  *
- * Copyright (c) 2017 Anthony Law
+ * Copyright (c) 2016, 2017 Anthony Law
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,43 +28,42 @@
  *******************************************************************************/
 package com.github.mob41.osumer.io;
 
+import com.github.mob41.osumer.io.beatmap.Osu;
 import com.github.mob41.osumer.updater.Updater;
 
 public class VersionInfo {
-	
-	private final String version;
-	
-	private final String branch;
-	
-	private final int buildNum;
 
-	public VersionInfo(String version, String branch, int buildNum) {
-		this.version = version;
-		this.branch = branch;
-		this.buildNum = buildNum;
-	}
+    private final String version;
 
-	public String getVersion() {
-		return version;
-	}
+    private final String branch;
 
-	public String getBranch() {
-		return branch;
-	}
+    private final int buildNum;
 
-	public int getBuildNum() {
-		return buildNum;
-	}
-	
-	public boolean isEqualToRunning(){
-		return Updater.compareVersion(Osu.OSUMER_VERSION, version) == 0 &&
-				Osu.OSUMER_BRANCH.equals(branch) &&
-				Osu.OSUMER_BUILD_NUM == buildNum;
-	}
-	
-	public boolean isNewerThanRunning(){
-		int result = Updater.compareVersion(Osu.OSUMER_VERSION, version);
-		return result == -1 ||
-				(result == 0 && Osu.OSUMER_BUILD_NUM < buildNum);
-	}
+    public VersionInfo(String version, String branch, int buildNum) {
+        this.version = version;
+        this.branch = branch;
+        this.buildNum = buildNum;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public String getBranch() {
+        return branch;
+    }
+
+    public int getBuildNum() {
+        return buildNum;
+    }
+
+    public boolean isEqualToRunning() {
+        return Updater.compareVersion(Osu.OSUMER_VERSION, version) == 0 && Osu.OSUMER_BRANCH.equals(branch)
+                && Osu.OSUMER_BUILD_NUM == buildNum;
+    }
+
+    public boolean isNewerThanRunning() {
+        int result = Updater.compareVersion(Osu.OSUMER_VERSION, version);
+        return result == -1 || (result == 0 && Osu.OSUMER_BUILD_NUM < buildNum);
+    }
 }
