@@ -5,12 +5,28 @@ The easiest,express osu! beatmap downloader helper!
 
 Put a star if you like this software! I would be happy to continue developing this software!
 
-## v2-Stage
+## Scheduled distribution of osumer2: Mid June-July, 2017
 
->:warning: This is the branch of the new version of osumer. osumer2 is still in heavy development stage and not available for production.
-To use v1-branch, please navigate to https://github.com/mob41/osumer/tree/master and v1 releases here https://github.com/mob41/osumer/releases/latest
+> :warning: ```1.0.6-snapshot-b1``` will be published to let users of v1 to try out limited features of the uncompleted osumer2.
 
-Version 2 of osumer will be the modern and flexible one. See issue https://github.com/mob41/osumer/issues/4 to see new features of v2!
+<em>Interested in what osumer2 great for?</em>
+
+- Background downloading
+- Pre-started daemon for more, and more faster osumerExpress experience
+- Improved, and more application preferences!
+- In-app down-grade software unlocked
+- Multi-downloading for default 4 threads, at with no modification max 8 threads!
+- Before,Started,After download tones!
+- Estimated Time Arrival (ETA) and elapsed time
+- Listed downloading
+- Allows download queuing
+- Beatmap searching
+- <b>osums</b> beatmap searching
+- <b>osums</b> beatmap management (i.e. exporting, categorizing)
+
+<em>So interested? Join the trial program! Update your osumer to ```1.0.6-snapshot-b1```</em>
+
+The trial program lasts for 1 month till the distribution date.
 
 ## Disclaimer
 This software does not contain malicious code that will send username and password to another server other than osu!'s login server. You can feel free to look through the code. If you still feel uncomfortable with this software, you can simply stop using it. Thank you!
