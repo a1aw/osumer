@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONArray;
@@ -47,6 +48,20 @@ import com.github.mob41.osumer.io.queue.QueueManager;
 import com.github.mob41.osumer.updater.Updater;
 
 public class Config {
+    
+    public static final String CHECK_UPDATE_FREQ_EVERY_STARTUP = "everyStartup";
+    
+    public static final String CHECK_UPDATE_FREQ_EVERY_ACT = "everyAct";
+    
+    public static final String CHECK_UPDATE_FREQ_NEVER = "never";
+    
+    public static final String CHECK_UPDATE_ALGO_PER_VER_PER_BRANCH = "perVerPerBranch";
+            
+    public static final String CHECK_UPDATE_ALGO_LATEST_VER_PER_BRANCH = "latestVerPerBranch";
+    
+    public static final String CHECK_UPDATE_ALGO_LATEST_VER_OVERALL = "latestVerOverall";
+    
+    public static final String CHECK_UPDATE_ALGO_STABLITY = "stablity";
 
     public static final String DEFAULT_DATA_FILE_NAME = "osumer_configuration.json";
 
@@ -159,29 +174,57 @@ public class Config {
         this.dataFilePath = dataFilePath;
         this.dataFileName = dataFileName;
     }
+    
+    public void setUpdateSource(int source){
+        json.put(KEY_UPDATE_SOURCE, source);
+    }
 
     public int getUpdateSource() {
         return json.getInt(KEY_UPDATE_SOURCE);
+    }
+    
+    public void setDefaultBrowser(String browser){
+        json.put(KEY_DEFAULT_BROWSER, browser);
     }
 
     public String getDefaultBrowser() {
         return json.getString(KEY_DEFAULT_BROWSER);
     }
+    
+    public void setOEEnabled(boolean enabled){
+        json.put(KEY_OE_ENABLED, enabled);
+    }
 
     public boolean isOEEnabled() {
         return json.getBoolean(KEY_OE_ENABLED);
+    }
+    
+    public void setSwitchToBrowserIfWithoutUiArg(boolean enabled){
+        json.put(KEY_NO_UI_ARG_SWITCH_BROWSER, enabled);
     }
 
     public boolean isSwitchToBrowserIfWithoutUiArg() {
         return json.getBoolean(KEY_NO_UI_ARG_SWITCH_BROWSER);
     }
+    
+    public void setAutoSwitchBrowser(boolean enabled){
+        json.put(KEY_AUTO_SWITCH_BROWSER, enabled);
+    }
 
     public boolean isAutoSwitchBrowser() {
         return json.getBoolean(KEY_AUTO_SWITCH_BROWSER);
     }
+    
+    public void setShowGettingStartedOnStartup(boolean enabled){
+        json.put(KEY_GETTING_STARTED_STARTUP, enabled);
+    }
 
     public boolean isShowGettingStartedOnStartup() {
         return json.getBoolean(KEY_GETTING_STARTED_STARTUP);
+    }
+    
+    public void setServerPrority(String[] strs){
+        json.put(KEY_SERVER_PRORITY, strs);
     }
 
     public String[] getServerPrority() {
@@ -192,9 +235,21 @@ public class Config {
         }
         return out;
     }
+    
+    public void setEncPassAskOnStartup(boolean enabled){
+        json.put(KEY_ENC_ASK_ON_STARTUP, enabled);
+    }
 
     public boolean isEncPassAskOnStartup() {
         return json.getBoolean(KEY_ENC_ASK_ON_STARTUP);
+    }
+    
+    public void setUser(String user){
+        if (isUserPassEncrypted()){
+            //Do enc stuff
+        } else {
+            json.put(KEY_USER, user);
+        }
     }
 
     public String getUser() {
@@ -203,7 +258,15 @@ public class Config {
             // do enc stuff
             return null;
         } else {
-            return raw;
+            return new String(Base64.decodeBase64(raw), StandardCharsets.UTF_8);
+        }
+    }
+    
+    public void setPass(String pass){
+        if (isUserPassEncrypted()){
+            //Do enc stuff
+        } else {
+            json.put(KEY_PASS, pass);
         }
     }
 
@@ -213,12 +276,146 @@ public class Config {
             // do enc stuff
             return null;
         } else {
-            return raw;
+            return new String(Base64.decodeBase64(raw), StandardCharsets.UTF_8);
         }
+    }
+    
+    public void setUserPassEncrypted(boolean enabled){
+        json.put(KEY_ENC, enabled);
     }
 
     public boolean isUserPassEncrypted() {
         return json.getBoolean(KEY_ENC);
+    }
+    
+    private void setSalt(String salt){
+        json.put(KEY_ENC_SALT, salt);
+    }
+    
+    private String getSalt(){
+        return json.getString(KEY_ENC_SALT);
+    }
+    
+    private void setIv(String iv){
+        json.put(KEY_ENC_IV, iv);
+    }
+    
+    private String getIv(){
+        return json.getString(KEY_ENC_IV);
+    }
+    
+    public void setRunDaemonOnWinStartup(boolean enabled){
+        json.put(KEY_RUN_DAEMON_ON_WIN_STARTUP, enabled);
+    }
+    
+    public boolean isRunDaemonOnWinStartup(){
+        return json.getBoolean(KEY_RUN_DAEMON_ON_WIN_STARTUP);
+    }
+    
+    public void setDaemonDisabled(boolean disabled){
+        json.put(KEY_DAEMON_DISABLED, disabled);
+    }
+    
+    public boolean isDaemonDisabled(){
+        return json.getBoolean(KEY_DAEMON_DISABLED);
+    }
+    
+    public void setMaxThreads(int threads){
+        json.put(KEY_QUEUE_MAX_THREADS, threads);
+    }
+    
+    public int getMaxThreads(){
+        int x = json.getInt(KEY_QUEUE_MAX_THREADS);
+        if (x > 8 && !isMassiveDownloadingThreads()){
+            return 8;
+        } else {
+            return x;
+        }
+    }
+    
+    public void setNextCheckDelay(int ms){
+        json.put(KEY_QUEUE_NEXT_CHECK_DELAY, ms);
+    }
+    
+    public int getNextCheckDelay(){
+        return json.getInt(KEY_QUEUE_NEXT_CHECK_DELAY);
+    }
+    
+    public void setMassiveDownloadingThreads(boolean enabled){
+        json.put(KEY_QUEUE_MASSIVE_DOWNLOADING_THREADS, enabled);
+    }
+    
+    public boolean isMassiveDownloadingThreads(){
+        return json.getBoolean(KEY_QUEUE_MASSIVE_DOWNLOADING_THREADS);
+    }
+    
+    public void setCheckUpdateFreq(String freqStr){
+        json.put(KEY_CHECK_UPDATE_FREQ, freqStr);
+    }
+    
+    public String getCheckUpdateFreq(){
+        return json.getString(KEY_CHECK_UPDATE_FREQ);
+    }
+    
+    public void setCheckUpdateAlgo(String algoStr){
+        json.put(KEY_CHECK_UPDATE_ALGO, algoStr);
+    }
+    
+    public String getCheckUpdateAlgo(){
+        return json.getString(KEY_CHECK_UPDATE_ALGO);
+    }
+    
+    public void setAutoAcceptCriticalUpdates(boolean enabled){
+        json.put(KEY_AUTO_ACCEPT_CRITICAL_UPDATES, enabled);
+    }
+    
+    public boolean isAutoAcceptCriticalUpdates(){
+        return json.getBoolean(KEY_AUTO_ACCEPT_CRITICAL_UPDATES);
+    }
+    
+    public void setAutoDownloadApplyPatches(boolean enabled){
+        json.put(KEY_AUTO_DOWNLOAD_APPLY_PATCHES, enabled);
+    }
+    
+    public boolean isAutoDownloadApplyPatches(){
+        return json.getBoolean(KEY_AUTO_DOWNLOAD_APPLY_PATCHES);
+    }
+    
+    public void setPluginSums(String[] sums){
+        json.put(KEY_PLUGIN_SUMS, sums);
+    }
+    
+    public String[] getPluginSums(){
+        JSONArray arr = json.getJSONArray(KEY_PLUGIN_SUMS);
+        String[] out = new String[arr.length()];
+        for (int i = 0; i < arr.length(); i++) {
+            out[i] = arr.getString(i);
+        }
+        return out;
+    }
+    
+    public void setEnableToneBeforeDownload(boolean enabled){
+        json.put(KEY_ENABLE_TONE_BEFORE_DOWNLOAD, enabled);
+    }
+    
+    public boolean isEnableToneBeforeDownload(){
+        return json.getBoolean(KEY_ENABLE_TONE_BEFORE_DOWNLOAD);
+    }
+    
+    public void setEnableToneDownloadStarted(boolean enabled){
+        json.put(KEY_ENABLE_TONE_DOWNLOAD_STARTED, enabled);
+    }
+    
+    public boolean isEnableToneDownloadStarted(){
+        return json.getBoolean(KEY_ENABLE_TONE_DOWNLOAD_STARTED);
+    }
+    
+    public void setEnableToneAfterDownload(boolean enabled){
+        json.put(KEY_ENABLE_TONE_AFTER_DOWNLOAD, enabled);
+    }
+    
+    public boolean isEnableToneAfterDownload(){
+        return json.getBoolean(KEY_ENABLE_TONE_AFTER_DOWNLOAD);
     }
 
     private static boolean fillJson(JSONObject json) {
@@ -334,18 +531,6 @@ public class Config {
          * try { prefs.flush(); } catch (BackingStoreException e) { throw new
          * IOException("Error occurred", e); }
          */
-    }
-
-    public void setMaxThreads(int maxThreads) {
-        json.put("maxThreads", maxThreads);
-    }
-
-    public int getMaxThreads() {
-        if (json.isNull("maxThreads")) {
-            return QueueManager.DEFAULT_MAX_THREADS;
-        }
-
-        return json.getInt("maxThreads");
     }
 
 }

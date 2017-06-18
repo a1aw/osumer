@@ -34,9 +34,19 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.AbstractListModel;
+import javax.swing.AbstractSpinnerModel;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
@@ -52,26 +62,82 @@ import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import com.github.mob41.osumer.Config;
+import com.github.mob41.osumer.exceptions.DebuggableException;
+import com.github.mob41.osumer.io.Installer;
+import com.github.mob41.osumer.updater.Updater;
+
 import javax.swing.JTextField;
 import javax.swing.JTable;
 
 public class PreferenceDialog extends JDialog {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 3143276952707175093L;
+    
+    private final Config config;
     private final UIManager.LookAndFeelInfo[] infos;
     private final JPanel contentPanel = new JPanel();
+    private final DefaultListModel<String> serverProrityListModel;
+    private final DefaultComboBoxModel<String> browserComboBoxModel;
+    private final DefaultComboBoxModel<String> versionsComboBoxModel;
+    private final SpinnerNumberModel queuingMaxThreadsSpinnerModel;
+    private final SpinnerNumberModel queuingNextQueueCheckSpinnerModel;
+    
     private JComboBox<String> uiSkinBox;
+    private JCheckBox chckbxShowGettingStarted;
+    private JList<String> serverProrityList;
+    private JLabel lblLoggedInAs;
+    private JCheckBox chckbxOeDisabled;
+    private JCheckBox chckbxRunAsDaemon;
+    private JCheckBox chckbxDisabledDaemon;
+    private JComboBox<String> browsersBox;
+    private JSpinner maxDwnThreadsSpinner;
+    private JSpinner nextQueuingCheckDelaySpinner;
+    private JCheckBox chckbxEnableMassiveDownloading;
+    private JRadioButton rdbtnEveryStartup;
+    private JRadioButton rdbtnEveryAct;
+    private JRadioButton rdbtnNever;
+    private JRadioButton rdbtnPerVersion;
+    private JRadioButton rdbtnLatestVersion;
+    private JRadioButton rdbtnLatestVersionoverall;
+    private JRadioButton rdbtnStablity;
+    private JCheckBox chckbxAutoPatches;
+    private JCheckBox chckbxAutoCriticalUpdate;
+    private JComboBox<String> versionsBox;
+    private JCheckBox chckbxEnabledusedAs;
+    private JCheckBox chckbxAskOnStartup;
+    private JCheckBox chckbxToneBeforeDwn;
+    private JCheckBox chckbxToneOnDwn;
+    private JCheckBox chckbxToneAfterDwn;
     private JRadioButton rdbtnStable;
     private JRadioButton rdbtnBeta;
     private JRadioButton rdbtnSnapshot;
+    
+    private final Updater updater;
+    private JButton btnDowngrade;
+    private JButton btnShowChangelog;
+    private JTabbedPane tab;
 
     /**
      * Create the dialog.
      */
-    public PreferenceDialog() {
+    public PreferenceDialog(Config config) {
+        this.config = config;
+        this.updater = new Updater(config);
+        
         setTitle("osumer2 Preferences");
         setBounds(100, 100, 811, 545);
         getContentPane().setLayout(new BorderLayout());
@@ -79,7 +145,7 @@ public class PreferenceDialog extends JDialog {
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(new BorderLayout(0, 0));
         {
-            JTabbedPane tab = new JTabbedPane(JTabbedPane.TOP);
+            tab = new JTabbedPane(JTabbedPane.TOP);
             contentPanel.add(tab, BorderLayout.CENTER);
 
             JPanel mainPanel = new JPanel();
@@ -146,7 +212,7 @@ public class PreferenceDialog extends JDialog {
             lblIfYouAre.setHorizontalAlignment(SwingConstants.CENTER);
             lblIfYouAre.setFont(new Font("Tahoma", Font.PLAIN, 11));
 
-            JCheckBox chckbxShowGettingStarted = new JCheckBox("Show getting started v2.0.0 on startup");
+            chckbxShowGettingStarted = new JCheckBox("Show getting started v2.0.0 on startup");
 
             JButton btnShowGuide_1 = new JButton("Show Guide");
             GroupLayout gl_panel_8 = new GroupLayout(panel_8);
@@ -170,8 +236,8 @@ public class PreferenceDialog extends JDialog {
             panel_8.setLayout(gl_panel_8);
             mainPanel.setLayout(gl_mainPanel);
             {
-                JPanel panel = new JPanel();
-                tab.addTab("osumerExpress", null, panel, null);
+                JPanel oePanel = new JPanel();
+                tab.addTab("osumerExpress", null, oePanel, null);
 
                 JPanel panel_1 = new JPanel();
                 panel_1.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"),
@@ -186,45 +252,58 @@ public class PreferenceDialog extends JDialog {
                 panel_3.setBorder(new TitledBorder(null, "osumerExpress Installation Status (Browser Hooker)",
                         TitledBorder.LEADING, TitledBorder.TOP, null, null));
 
-                JCheckBox chckbxDisabledredirectAll = new JCheckBox("Disabled (Redirect all URLs to browser directly)");
+                chckbxOeDisabled = new JCheckBox("Disabled (Redirect all URLs to browser directly)");
 
-                JCheckBox chckbxRunAsDaemon = new JCheckBox("Run as daemon on Windows startup (-daemon)");
+                chckbxRunAsDaemon = new JCheckBox("Run as daemon on Windows startup (-daemon)");
 
-                JCheckBox chckbxDisabledDaemon = new JCheckBox(
+                chckbxDisabledDaemon = new JCheckBox(
                         "Daemon Disabled (Uses traditional v1 start-on-command instead of daemon socket call, comparatively slower)");
-                GroupLayout gl_panel = new GroupLayout(panel);
-                gl_panel.setHorizontalGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-                        .addGroup(gl_panel.createSequentialGroup().addContainerGap()
-                                .addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-                                        .addComponent(panel_3, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 760,
-                                                Short.MAX_VALUE)
-                                        .addGroup(gl_panel.createSequentialGroup()
-                                                .addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 289,
-                                                        GroupLayout.PREFERRED_SIZE)
-                                                .addGap(18)
-                                                .addComponent(panel_2, GroupLayout.DEFAULT_SIZE, 453, Short.MAX_VALUE))
-                                        .addComponent(chckbxDisabledredirectAll, GroupLayout.DEFAULT_SIZE, 760,
-                                                Short.MAX_VALUE)
-                                        .addComponent(chckbxRunAsDaemon, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
-                                        .addComponent(chckbxDisabledDaemon, GroupLayout.DEFAULT_SIZE, 760,
-                                                Short.MAX_VALUE))
-                                .addContainerGap()));
-                gl_panel.setVerticalGroup(
-                        gl_panel.createParallelGroup(Alignment.LEADING)
-                                .addGroup(gl_panel.createSequentialGroup().addContainerGap()
-                                        .addGroup(gl_panel.createParallelGroup(Alignment.TRAILING, false)
-                                                .addComponent(panel_1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE,
-                                                        GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(panel_2, Alignment.LEADING, GroupLayout.DEFAULT_SIZE,
-                                                        GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                        .addPreferredGap(ComponentPlacement.RELATED)
-                                        .addComponent(panel_3, GroupLayout.PREFERRED_SIZE, 150,
-                                                GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(ComponentPlacement.RELATED)
-                                        .addComponent(chckbxDisabledredirectAll)
-                                        .addPreferredGap(ComponentPlacement.RELATED).addComponent(chckbxRunAsDaemon)
-                                        .addPreferredGap(ComponentPlacement.RELATED).addComponent(chckbxDisabledDaemon)
-                                        .addGap(76)));
+                
+                JLabel lblSelectYourDefault = new JLabel("Select your default browser:");
+                
+                browserComboBoxModel = new DefaultComboBoxModel<String>();
+                browsersBox = new JComboBox<String>(browserComboBoxModel);
+                GroupLayout gl_oePanel = new GroupLayout(oePanel);
+                gl_oePanel.setHorizontalGroup(
+                    gl_oePanel.createParallelGroup(Alignment.LEADING)
+                        .addGroup(gl_oePanel.createSequentialGroup()
+                            .addContainerGap()
+                            .addGroup(gl_oePanel.createParallelGroup(Alignment.LEADING)
+                                .addComponent(chckbxDisabledDaemon, GroupLayout.DEFAULT_SIZE, 595, Short.MAX_VALUE)
+                                .addComponent(panel_3, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
+                                .addGroup(gl_oePanel.createSequentialGroup()
+                                    .addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 289, GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18)
+                                    .addComponent(panel_2, GroupLayout.DEFAULT_SIZE, 453, Short.MAX_VALUE))
+                                .addComponent(chckbxOeDisabled, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
+                                .addComponent(chckbxRunAsDaemon, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
+                                .addGroup(gl_oePanel.createSequentialGroup()
+                                    .addComponent(lblSelectYourDefault)
+                                    .addPreferredGap(ComponentPlacement.RELATED)
+                                    .addComponent(browsersBox, 0, 626, Short.MAX_VALUE)))
+                            .addContainerGap())
+                );
+                gl_oePanel.setVerticalGroup(
+                    gl_oePanel.createParallelGroup(Alignment.LEADING)
+                        .addGroup(gl_oePanel.createSequentialGroup()
+                            .addContainerGap()
+                            .addGroup(gl_oePanel.createParallelGroup(Alignment.TRAILING, false)
+                                .addComponent(panel_1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(panel_2, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addPreferredGap(ComponentPlacement.RELATED)
+                            .addComponent(panel_3, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(ComponentPlacement.RELATED)
+                            .addComponent(chckbxOeDisabled)
+                            .addPreferredGap(ComponentPlacement.RELATED)
+                            .addComponent(chckbxRunAsDaemon)
+                            .addPreferredGap(ComponentPlacement.RELATED)
+                            .addComponent(chckbxDisabledDaemon)
+                            .addPreferredGap(ComponentPlacement.RELATED)
+                            .addGroup(gl_oePanel.createParallelGroup(Alignment.BASELINE)
+                                .addComponent(lblSelectYourDefault)
+                                .addComponent(browsersBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                            .addGap(59))
+                );
 
                 JLabel lblStatus = new JLabel("Status:");
 
@@ -308,22 +387,14 @@ public class PreferenceDialog extends JDialog {
                                 .addContainerGap(45, Short.MAX_VALUE))
                         .addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE));
 
-                JList list = new JList();
-                list.setModel(new AbstractListModel() {
-                    String[] values = new String[] { "osu! forum" };
-
-                    public int getSize() {
-                        return values.length;
-                    }
-
-                    public Object getElementAt(int index) {
-                        return values[index];
-                    }
-                });
-                scrollPane.setViewportView(list);
+                serverProrityListModel = new DefaultListModel<String>();
+                serverProrityList = new JList<String>();
+                serverProrityList.setModel(serverProrityListModel);
+                
+                scrollPane.setViewportView(serverProrityList);
                 panel_1.setLayout(gl_panel_1);
 
-                JLabel lblLoggedInAs = new JLabel("Will be logged in as: Not logged in");
+                lblLoggedInAs = new JLabel("Will be logged in as: Not logged in");
 
                 JButton btnClickHereTo = new JButton("Add/Change credentials");
                 btnClickHereTo.addActionListener(new ActionListener() {
@@ -336,11 +407,18 @@ public class PreferenceDialog extends JDialog {
                         if (dialog.isUseCredentials()) {
                             lblLoggedInAs.setForeground(Color.BLUE);
                             lblLoggedInAs.setText("Will be logged in as: " + dialog.getUsername());
+                            
+                            config.setUser(dialog.getUsername());
+                            config.setPass(dialog.getPassword());
                         }
                     }
                 });
 
                 JButton btnRemoveCredentials = new JButton("Remove credentials");
+                btnRemoveCredentials.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                    }
+                });
                 GroupLayout gl_panel_2 = new GroupLayout(panel_2);
                 gl_panel_2.setHorizontalGroup(gl_panel_2.createParallelGroup(Alignment.LEADING)
                         .addGroup(Alignment.TRAILING, gl_panel_2.createSequentialGroup().addContainerGap()
@@ -364,27 +442,29 @@ public class PreferenceDialog extends JDialog {
                                                 GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
                                         .addContainerGap()));
                 panel_2.setLayout(gl_panel_2);
-                panel.setLayout(gl_panel);
+                oePanel.setLayout(gl_oePanel);
             }
 
-            JPanel panel = new JPanel();
-            tab.addTab("Queuing", null, panel, null);
+            JPanel queuingPanel = new JPanel();
+            tab.addTab("Queuing", null, queuingPanel, null);
 
             JLabel lblMaximumDownloadingThread = new JLabel("Maximum Downloading Thread:");
             lblMaximumDownloadingThread.setHorizontalAlignment(SwingConstants.RIGHT);
 
-            JSpinner spinner = new JSpinner();
+            queuingMaxThreadsSpinnerModel = new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1));
+            maxDwnThreadsSpinner = new JSpinner(queuingMaxThreadsSpinnerModel);
 
             JLabel lblNextQueuingCheck = new JLabel("Next Queuing Check Delay:");
             lblNextQueuingCheck.setHorizontalAlignment(SwingConstants.RIGHT);
 
-            JSpinner spinner_1 = new JSpinner();
+            queuingNextQueueCheckSpinnerModel = new SpinnerNumberModel(new Integer(0), new Integer(0), null, new Integer(250));
+            nextQueuingCheckDelaySpinner = new JSpinner(queuingNextQueueCheckSpinnerModel);
 
             JLabel lblMs = new JLabel("ms");
 
             JLabel lblThreads = new JLabel("thread(s)");
 
-            JCheckBox chckbxEnableMassiveDownloading = new JCheckBox(
+            chckbxEnableMassiveDownloading = new JCheckBox(
                     "Enable massive downloading threads of having more than 8 threads (Requires liability agreement)");
             chckbxEnableMassiveDownloading.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -403,43 +483,62 @@ public class PreferenceDialog extends JDialog {
                     }
                 }
             });
-            GroupLayout gl_panel = new GroupLayout(panel);
-            gl_panel.setHorizontalGroup(gl_panel.createParallelGroup(
-                    Alignment.LEADING)
-                    .addGroup(gl_panel.createSequentialGroup().addContainerGap().addGroup(gl_panel
-                            .createParallelGroup(Alignment.LEADING).addGroup(gl_panel
-                                    .createSequentialGroup().addGroup(gl_panel
-                                            .createParallelGroup(Alignment.TRAILING, false)
-                                            .addComponent(lblNextQueuingCheck, Alignment.LEADING,
-                                                    GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(lblMaximumDownloadingThread, Alignment.LEADING,
-                                                    GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-                                                    Short.MAX_VALUE))
-                                    .addPreferredGap(ComponentPlacement.RELATED)
-                                    .addGroup(gl_panel.createParallelGroup(Alignment.LEADING, false)
-                                            .addComponent(spinner).addComponent(spinner_1, GroupLayout.DEFAULT_SIZE, 82,
-                                                    Short.MAX_VALUE))
-                                    .addPreferredGap(ComponentPlacement.RELATED)
-                                    .addGroup(gl_panel.createParallelGroup(Alignment.LEADING).addComponent(lblMs)
-                                            .addComponent(lblThreads)))
-                            .addComponent(chckbxEnableMassiveDownloading)).addContainerGap(486, Short.MAX_VALUE)));
-            gl_panel.setVerticalGroup(gl_panel.createParallelGroup(Alignment.LEADING).addGroup(gl_panel
-                    .createSequentialGroup().addContainerGap()
-                    .addGroup(gl_panel.createParallelGroup(Alignment.BASELINE).addComponent(lblMaximumDownloadingThread)
-                            .addComponent(spinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-                                    GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblThreads))
-                    .addPreferredGap(ComponentPlacement.RELATED)
-                    .addGroup(gl_panel.createParallelGroup(Alignment.BASELINE).addComponent(lblNextQueuingCheck)
-                            .addComponent(spinner_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-                                    GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblMs))
-                    .addPreferredGap(ComponentPlacement.RELATED).addComponent(chckbxEnableMassiveDownloading)
-                    .addContainerGap(349, Short.MAX_VALUE)));
-            panel.setLayout(gl_panel);
+            
+            JLabel lblifMassiveDownloading = new JLabel("*If massive downloading not enabled, setting higher than 8 threads have no effect.");
+            lblifMassiveDownloading.setForeground(Color.RED);
+            
+            JLabel lbldoNotSet = new JLabel("*Do not set too low. Otherwise it may cause high CPU usage.");
+            lbldoNotSet.setForeground(Color.RED);
+            GroupLayout gl_queuingPanel = new GroupLayout(queuingPanel);
+            gl_queuingPanel.setHorizontalGroup(
+                gl_queuingPanel.createParallelGroup(Alignment.LEADING)
+                    .addGroup(gl_queuingPanel.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(gl_queuingPanel.createParallelGroup(Alignment.LEADING)
+                            .addGroup(gl_queuingPanel.createSequentialGroup()
+                                .addGroup(gl_queuingPanel.createParallelGroup(Alignment.TRAILING, false)
+                                    .addComponent(lblNextQueuingCheck, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(lblMaximumDownloadingThread, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(ComponentPlacement.RELATED)
+                                .addGroup(gl_queuingPanel.createParallelGroup(Alignment.LEADING, false)
+                                    .addComponent(maxDwnThreadsSpinner)
+                                    .addComponent(nextQueuingCheckDelaySpinner, GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE))
+                                .addPreferredGap(ComponentPlacement.RELATED)
+                                .addGroup(gl_queuingPanel.createParallelGroup(Alignment.LEADING)
+                                    .addGroup(gl_queuingPanel.createSequentialGroup()
+                                        .addComponent(lblMs)
+                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                        .addComponent(lbldoNotSet, GroupLayout.DEFAULT_SIZE, 498, Short.MAX_VALUE))
+                                    .addGroup(gl_queuingPanel.createSequentialGroup()
+                                        .addComponent(lblThreads)
+                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                        .addComponent(lblifMassiveDownloading, GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE))))
+                            .addComponent(chckbxEnableMassiveDownloading))
+                        .addContainerGap())
+            );
+            gl_queuingPanel.setVerticalGroup(
+                gl_queuingPanel.createParallelGroup(Alignment.LEADING)
+                    .addGroup(gl_queuingPanel.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(gl_queuingPanel.createParallelGroup(Alignment.BASELINE)
+                            .addComponent(lblMaximumDownloadingThread)
+                            .addComponent(maxDwnThreadsSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblThreads)
+                            .addComponent(lblifMassiveDownloading))
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addGroup(gl_queuingPanel.createParallelGroup(Alignment.BASELINE)
+                            .addComponent(lblNextQueuingCheck)
+                            .addComponent(nextQueuingCheckDelaySpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblMs)
+                            .addComponent(lbldoNotSet))
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(chckbxEnableMassiveDownloading)
+                        .addContainerGap(349, Short.MAX_VALUE))
+            );
+            queuingPanel.setLayout(gl_queuingPanel);
 
-            JPanel panel_1 = new JPanel();
-            tab.addTab("Updater", null, panel_1, null);
+            JPanel updaterPanel = new JPanel();
+            tab.addTab("Updater", null, updaterPanel, null);
 
             JPanel panel_2 = new JPanel();
             panel_2.setBorder(new TitledBorder(null, "Frequency on checking updates", TitledBorder.LEADING,
@@ -453,32 +552,32 @@ public class PreferenceDialog extends JDialog {
             panel_4.setBorder(
                     new TitledBorder(null, "Comparison algorithm", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 
-            JCheckBox chckbxAutomaticallyAcceptCritical = new JCheckBox("Automatically accept critical updates");
+            chckbxAutoCriticalUpdate = new JCheckBox("Automatically accept critical updates");
 
-            JCheckBox chckbxDownloadAndApply = new JCheckBox("Download and apply patches automatically");
+            chckbxAutoPatches = new JCheckBox("Download and apply patches automatically");
 
             JButton btnCheckUpdateNow = new JButton("Check update now");
 
             JPanel panel_5 = new JPanel();
             panel_5.setBorder(
                     new TitledBorder(null, "Down-grade software", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-            GroupLayout gl_panel_1 = new GroupLayout(panel_1);
-            gl_panel_1.setHorizontalGroup(gl_panel_1.createParallelGroup(Alignment.LEADING).addGroup(Alignment.TRAILING,
-                    gl_panel_1.createSequentialGroup().addContainerGap().addGroup(gl_panel_1
+            GroupLayout gl_updaterPanel = new GroupLayout(updaterPanel);
+            gl_updaterPanel.setHorizontalGroup(gl_updaterPanel.createParallelGroup(Alignment.LEADING).addGroup(Alignment.TRAILING,
+                    gl_updaterPanel.createSequentialGroup().addContainerGap().addGroup(gl_updaterPanel
                             .createParallelGroup(Alignment.TRAILING)
                             .addComponent(panel_5, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
-                            .addComponent(chckbxAutomaticallyAcceptCritical, Alignment.LEADING,
+                            .addComponent(chckbxAutoCriticalUpdate, Alignment.LEADING,
                                     GroupLayout.DEFAULT_SIZE, 764, Short.MAX_VALUE)
                             .addComponent(panel_4, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
                             .addComponent(panel_3, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
                             .addComponent(panel_2, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
-                            .addComponent(chckbxDownloadAndApply, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 760,
+                            .addComponent(chckbxAutoPatches, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 760,
                                     Short.MAX_VALUE)
                             .addComponent(btnCheckUpdateNow, Alignment.LEADING)).addContainerGap()));
-            gl_panel_1
+            gl_updaterPanel
                     .setVerticalGroup(
-                            gl_panel_1.createParallelGroup(Alignment.LEADING)
-                                    .addGroup(gl_panel_1.createSequentialGroup().addContainerGap()
+                            gl_updaterPanel.createParallelGroup(Alignment.LEADING)
+                                    .addGroup(gl_updaterPanel.createSequentialGroup().addContainerGap()
                                             .addComponent(panel_3, GroupLayout.PREFERRED_SIZE, 55,
                                                     GroupLayout.PREFERRED_SIZE)
                                             .addPreferredGap(ComponentPlacement.RELATED)
@@ -488,9 +587,9 @@ public class PreferenceDialog extends JDialog {
                                             .addComponent(panel_4, GroupLayout.PREFERRED_SIZE, 52,
                                                     GroupLayout.PREFERRED_SIZE)
                                             .addPreferredGap(ComponentPlacement.RELATED)
-                                            .addComponent(chckbxAutomaticallyAcceptCritical)
+                                            .addComponent(chckbxAutoCriticalUpdate)
                                             .addPreferredGap(ComponentPlacement.RELATED)
-                                            .addComponent(chckbxDownloadAndApply)
+                                            .addComponent(chckbxAutoPatches)
                                             .addPreferredGap(ComponentPlacement.RELATED).addComponent(btnCheckUpdateNow)
                                             .addPreferredGap(ComponentPlacement.RELATED)
                                             .addComponent(panel_5, GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)
@@ -503,11 +602,64 @@ public class PreferenceDialog extends JDialog {
 
             JLabel lblSelectVersion = new JLabel("Select version:");
 
-            JComboBox comboBox = new JComboBox();
+            versionsComboBoxModel = new DefaultComboBoxModel<String>();
+            versionsBox = new JComboBox<String>(versionsComboBoxModel);
+            versionsBox.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                }
+            });
 
-            JButton btnShowChangelog = new JButton("Show change-log");
+            btnShowChangelog = new JButton("Show change-log");
+            btnShowChangelog.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    String str = (String) versionsBox.getSelectedItem();
+                    if (str != null){
+                        ProgressDialog dialog = new ProgressDialog();
+                        dialog.setTitle("Downloading data...");
+                        dialog.getProgressBar().setIndeterminate(true);
+                        
+                        new Thread(){
+                            public void run(){
+                                String[] strs = str.split("-");
+                                if (strs.length < 3){
+                                    JOptionPane.showMessageDialog(PreferenceDialog.this, "The selected version name is in a wrong format. Please ignore this error.", "Error", JOptionPane.ERROR_MESSAGE);
+                                    dialog.dispose();
+                                    return;
+                                }
+                                JSONObject versionsJson = null;
+                                try {
+                                    versionsJson = updater.getVersions();
+                                } catch (DebuggableException e1) {
+                                    e1.printStackTrace();
+                                    JOptionPane.showMessageDialog(PreferenceDialog.this, "Could not download update data! Check Debug Dump.", "Error", JOptionPane.ERROR_MESSAGE);
+                                    dialog.dispose();
+                                    return;
+                                }
+                                JSONObject sourcesJson = versionsJson.getJSONObject("sources");
+                                JSONObject sourceJson = sourcesJson.getJSONObject(strs[1]);
+                                JSONArray verJson = sourceJson.getJSONArray(strs[0]);
+                                JSONObject buildJson = verJson.getJSONObject(Integer.parseInt(strs[2]) - 1);
+                                String desc = buildJson.isNull("desc") ? null : buildJson.getString("desc");
+                                dialog.dispose();
+                                if (desc == null){
+                                    JOptionPane.showMessageDialog(PreferenceDialog.this, "This version does not have an update description / change-log.\nThis version might be too old to install.", "Info", JOptionPane.INFORMATION_MESSAGE);
+                                } else {
+                                    JOptionPane.showMessageDialog(PreferenceDialog.this, desc, str + " Change-log / Description", JOptionPane.PLAIN_MESSAGE);
+                                }
+                            }
+                        }.start();
 
-            JButton btnDowngrade = new JButton("Down-grade");
+                        dialog.setLocationRelativeTo(PreferenceDialog.this);
+                        dialog.getLabel().setText("Versions' data might take some while to download...");
+                        dialog.setModal(true);
+                        dialog.setVisible(true);
+                    } else {
+                        JOptionPane.showMessageDialog(PreferenceDialog.this, "No version selected.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            });
+
+            btnDowngrade = new JButton("Down-grade");
 
             JLabel lbldowngradingToVersions = new JLabel(
                     "*Downgrading to versions older than 1.0.0-snapshot-b1 will loss updater functions.");
@@ -523,7 +675,7 @@ public class PreferenceDialog extends JDialog {
                             .addComponent(lblWarningDowngradingOsumer, GroupLayout.DEFAULT_SIZE, 728, Short.MAX_VALUE)
                             .addGroup(gl_panel_5.createSequentialGroup().addComponent(lblSelectVersion)
                                     .addPreferredGap(ComponentPlacement.RELATED)
-                                    .addComponent(comboBox, GroupLayout.PREFERRED_SIZE, 501, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(versionsBox, GroupLayout.PREFERRED_SIZE, 501, GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(ComponentPlacement.RELATED)
                                     .addComponent(btnShowChangelog, GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE))
                             .addComponent(lbldisableAutoInstall, GroupLayout.DEFAULT_SIZE, 728, Short.MAX_VALUE))
@@ -532,7 +684,7 @@ public class PreferenceDialog extends JDialog {
                     .addGroup(gl_panel_5.createSequentialGroup().addContainerGap()
                             .addComponent(lblWarningDowngradingOsumer).addPreferredGap(ComponentPlacement.RELATED)
                             .addGroup(gl_panel_5.createParallelGroup(Alignment.BASELINE).addComponent(lblSelectVersion)
-                                    .addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+                                    .addComponent(versionsBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
                                             GroupLayout.PREFERRED_SIZE)
                                     .addComponent(btnShowChangelog))
                             .addPreferredGap(ComponentPlacement.RELATED).addComponent(btnDowngrade)
@@ -541,16 +693,16 @@ public class PreferenceDialog extends JDialog {
                             .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
             panel_5.setLayout(gl_panel_5);
 
-            JRadioButton rdbtnPerVersion = new JRadioButton("Per version in selected branch");
+            rdbtnPerVersion = new JRadioButton("Per version in selected branch");
             panel_4.add(rdbtnPerVersion);
 
-            JRadioButton rdbtnLatestVersion = new JRadioButton("Latest version (per branch)");
+            rdbtnLatestVersion = new JRadioButton("Latest version (per branch)");
             panel_4.add(rdbtnLatestVersion);
 
-            JRadioButton rdbtnLatestVersionoverall = new JRadioButton("Latest version (overall)");
+            rdbtnLatestVersionoverall = new JRadioButton("Latest version (overall)");
             panel_4.add(rdbtnLatestVersionoverall);
 
-            JRadioButton rdbtnStablity = new JRadioButton("Stablity");
+            rdbtnStablity = new JRadioButton("Stablity");
             panel_4.add(rdbtnStablity);
 
             ButtonGroup updateCompareAlgoBtnGroup = new ButtonGroup();
@@ -573,43 +725,43 @@ public class PreferenceDialog extends JDialog {
             updateBranchBtnGroup.add(rdbtnBeta);
             updateBranchBtnGroup.add(rdbtnSnapshot);
 
-            JRadioButton rdbtnEveryStartup = new JRadioButton("Every startup");
+            rdbtnEveryStartup = new JRadioButton("Every startup");
             panel_2.add(rdbtnEveryStartup);
 
-            JRadioButton rdbtnEveryAct = new JRadioButton("Every download/request/activation");
+            rdbtnEveryAct = new JRadioButton("Every download/request/activation");
             panel_2.add(rdbtnEveryAct);
 
-            JRadioButton rdbtnNever = new JRadioButton("Never");
+            rdbtnNever = new JRadioButton("Never");
             panel_2.add(rdbtnNever);
-            panel_1.setLayout(gl_panel_1);
+            updaterPanel.setLayout(gl_updaterPanel);
 
             ButtonGroup updateFreqBtnGroup = new ButtonGroup();
             updateFreqBtnGroup.add(rdbtnEveryStartup);
             updateFreqBtnGroup.add(rdbtnEveryAct);
             updateFreqBtnGroup.add(rdbtnNever);
 
-            JPanel panel_6 = new JPanel();
-            tab.addTab("Security", null, panel_6, null);
+            JPanel securityPanel = new JPanel();
+            tab.addTab("Security", null, securityPanel, null);
 
             JPanel panel_7 = new JPanel();
             panel_7.setBorder(
                     new TitledBorder(null, "On-login password", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-            GroupLayout gl_panel_6 = new GroupLayout(panel_6);
-            gl_panel_6
-                    .setHorizontalGroup(gl_panel_6.createParallelGroup(Alignment.LEADING)
-                            .addGroup(gl_panel_6.createSequentialGroup().addContainerGap()
+            GroupLayout gl_securityPanel = new GroupLayout(securityPanel);
+            gl_securityPanel
+                    .setHorizontalGroup(gl_securityPanel.createParallelGroup(Alignment.LEADING)
+                            .addGroup(gl_securityPanel.createSequentialGroup().addContainerGap()
                                     .addComponent(panel_7, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
                                     .addContainerGap()));
-            gl_panel_6.setVerticalGroup(gl_panel_6.createParallelGroup(Alignment.LEADING)
-                    .addGroup(gl_panel_6.createSequentialGroup()
+            gl_securityPanel.setVerticalGroup(gl_securityPanel.createParallelGroup(Alignment.LEADING)
+                    .addGroup(gl_securityPanel.createSequentialGroup()
                             .addContainerGap().addComponent(panel_7, GroupLayout.PREFERRED_SIZE,
                                     GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                             .addContainerGap(340, Short.MAX_VALUE)));
 
-            JCheckBox chckbxEnabledusedAs = new JCheckBox(
+            chckbxEnabledusedAs = new JCheckBox(
                     "Enabled (Used as encryption with account osu! username and password)");
 
-            JCheckBox chckbxAskOnStartup = new JCheckBox("Ask on startup");
+            chckbxAskOnStartup = new JCheckBox("Ask on startup");
             GroupLayout gl_panel_7 = new GroupLayout(panel_7);
             gl_panel_7.setHorizontalGroup(gl_panel_7.createParallelGroup(Alignment.LEADING).addGroup(Alignment.TRAILING,
                     gl_panel_7.createSequentialGroup().addContainerGap()
@@ -624,99 +776,397 @@ public class PreferenceDialog extends JDialog {
                             .addPreferredGap(ComponentPlacement.RELATED).addComponent(chckbxAskOnStartup)
                             .addContainerGap(8, Short.MAX_VALUE)));
             panel_7.setLayout(gl_panel_7);
-            panel_6.setLayout(gl_panel_6);
+            securityPanel.setLayout(gl_securityPanel);
 
-            JPanel panel_9 = new JPanel();
-            tab.addTab("Plugins", null, panel_9, null);
+            JPanel pluginsPanel = new JPanel();
+            tab.addTab("Plugins", null, pluginsPanel, null);
 
             JLabel lblWarningOnlyAdd = new JLabel(
                     "Warning: Only add plugins that you trust, or officially trusted by the developer.");
             lblWarningOnlyAdd.setForeground(Color.RED);
             lblWarningOnlyAdd.setFont(new Font("Tahoma", Font.BOLD, 12));
-            GroupLayout gl_panel_9 = new GroupLayout(panel_9);
-            gl_panel_9.setHorizontalGroup(gl_panel_9.createParallelGroup(Alignment.LEADING)
-                    .addGroup(gl_panel_9.createSequentialGroup().addContainerGap()
-                            .addComponent(lblWarningOnlyAdd, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
-                            .addContainerGap()));
-            gl_panel_9.setVerticalGroup(
-                    gl_panel_9.createParallelGroup(Alignment.LEADING).addGroup(gl_panel_9.createSequentialGroup()
-                            .addContainerGap().addComponent(lblWarningOnlyAdd).addContainerGap(409, Short.MAX_VALUE)));
-            panel_9.setLayout(gl_panel_9);
+            
+            JLabel lblThisFeatureIs = new JLabel("This feature is currently not implemented.");
+            GroupLayout gl_pluginsPanel = new GroupLayout(pluginsPanel);
+            gl_pluginsPanel.setHorizontalGroup(
+                gl_pluginsPanel.createParallelGroup(Alignment.LEADING)
+                    .addGroup(Alignment.TRAILING, gl_pluginsPanel.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(gl_pluginsPanel.createParallelGroup(Alignment.TRAILING)
+                            .addComponent(lblThisFeatureIs, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
+                            .addComponent(lblWarningOnlyAdd, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE))
+                        .addContainerGap())
+            );
+            gl_pluginsPanel.setVerticalGroup(
+                gl_pluginsPanel.createParallelGroup(Alignment.LEADING)
+                    .addGroup(gl_pluginsPanel.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(lblWarningOnlyAdd)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(lblThisFeatureIs)
+                        .addContainerGap(388, Short.MAX_VALUE))
+            );
+            pluginsPanel.setLayout(gl_pluginsPanel);
 
-            JPanel panel_11 = new JPanel();
-            tab.addTab("Miscellaneous", null, panel_11, null);
+            JPanel miscPanel = new JPanel();
+            tab.addTab("Miscellaneous", null, miscPanel, null);
 
-            JPanel panel_12 = new JPanel();
-            panel_12.setBorder(new TitledBorder(null, "Event Handler Profile", TitledBorder.LEADING, TitledBorder.TOP,
-                    null, null));
-            GroupLayout gl_panel_11 = new GroupLayout(panel_11);
-            gl_panel_11
-                    .setHorizontalGroup(gl_panel_11.createParallelGroup(Alignment.LEADING)
-                            .addGroup(gl_panel_11.createSequentialGroup().addContainerGap()
-                                    .addComponent(panel_12, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
+            JPanel soundTonePanel = new JPanel();
+            soundTonePanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Sound/Tone", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+            GroupLayout gl_miscPanel = new GroupLayout(miscPanel);
+            gl_miscPanel
+                    .setHorizontalGroup(gl_miscPanel.createParallelGroup(Alignment.LEADING)
+                            .addGroup(gl_miscPanel.createSequentialGroup().addContainerGap()
+                                    .addComponent(soundTonePanel, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
                                     .addContainerGap()));
-            gl_panel_11.setVerticalGroup(gl_panel_11.createParallelGroup(Alignment.LEADING)
-                    .addGroup(gl_panel_11.createSequentialGroup()
-                            .addContainerGap().addComponent(panel_12, GroupLayout.PREFERRED_SIZE,
+            gl_miscPanel.setVerticalGroup(gl_miscPanel.createParallelGroup(Alignment.LEADING)
+                    .addGroup(gl_miscPanel.createSequentialGroup()
+                            .addContainerGap().addComponent(soundTonePanel, GroupLayout.PREFERRED_SIZE,
                                     GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                             .addContainerGap(314, Short.MAX_VALUE)));
 
-            JCheckBox chckbxEnableToneBefore = new JCheckBox("Enable tone before download");
+            chckbxToneBeforeDwn = new JCheckBox("Enable tone before download");
 
-            JCheckBox chckbxEnableToneOn = new JCheckBox("Enable tone on download started");
+            chckbxToneOnDwn = new JCheckBox("Enable tone on download started");
 
-            JCheckBox chckbxEnableToneAfter = new JCheckBox("Enable tone after download");
+            chckbxToneAfterDwn = new JCheckBox("Enable tone after download");
 
-            JButton btnSelect = new JButton("Select");
+            JButton btnSelectToneBeforeDwn = new JButton("Select");
 
-            JButton btnSelect_1 = new JButton("Select");
+            JButton btnSelectToneOnDwn = new JButton("Select");
 
-            JButton btnSelect_2 = new JButton("Select");
-            GroupLayout gl_panel_12 = new GroupLayout(panel_12);
-            gl_panel_12.setHorizontalGroup(gl_panel_12.createParallelGroup(Alignment.LEADING).addGroup(gl_panel_12
+            JButton btnSelectToneAfterDwn = new JButton("Select");
+            GroupLayout gl_soundTonePanel = new GroupLayout(soundTonePanel);
+            gl_soundTonePanel.setHorizontalGroup(gl_soundTonePanel.createParallelGroup(Alignment.LEADING).addGroup(gl_soundTonePanel
                     .createSequentialGroup().addContainerGap()
-                    .addGroup(gl_panel_12.createParallelGroup(Alignment.LEADING)
-                            .addGroup(gl_panel_12.createSequentialGroup().addComponent(chckbxEnableToneBefore)
-                                    .addPreferredGap(ComponentPlacement.RELATED).addComponent(btnSelect))
-                            .addGroup(gl_panel_12.createParallelGroup(Alignment.TRAILING).addGroup(Alignment.LEADING,
-                                    gl_panel_12.createSequentialGroup().addComponent(chckbxEnableToneAfter)
-                                            .addPreferredGap(ComponentPlacement.RELATED).addComponent(btnSelect_2))
+                    .addGroup(gl_soundTonePanel.createParallelGroup(Alignment.LEADING)
+                            .addGroup(gl_soundTonePanel.createSequentialGroup().addComponent(chckbxToneBeforeDwn)
+                                    .addPreferredGap(ComponentPlacement.RELATED).addComponent(btnSelectToneBeforeDwn))
+                            .addGroup(gl_soundTonePanel.createParallelGroup(Alignment.TRAILING).addGroup(Alignment.LEADING,
+                                    gl_soundTonePanel.createSequentialGroup().addComponent(chckbxToneAfterDwn)
+                                            .addPreferredGap(ComponentPlacement.RELATED).addComponent(btnSelectToneAfterDwn))
                                     .addGroup(Alignment.LEADING,
-                                            gl_panel_12.createSequentialGroup().addComponent(chckbxEnableToneOn)
+                                            gl_soundTonePanel.createSequentialGroup().addComponent(chckbxToneOnDwn)
                                                     .addPreferredGap(ComponentPlacement.RELATED)
-                                                    .addComponent(btnSelect_1))))
+                                                    .addComponent(btnSelectToneOnDwn))))
                     .addGap(476)));
-            gl_panel_12.setVerticalGroup(gl_panel_12.createParallelGroup(Alignment.LEADING)
-                    .addGroup(gl_panel_12.createSequentialGroup().addContainerGap()
-                            .addGroup(gl_panel_12.createParallelGroup(Alignment.BASELINE)
-                                    .addComponent(chckbxEnableToneBefore).addComponent(btnSelect))
+            gl_soundTonePanel.setVerticalGroup(gl_soundTonePanel.createParallelGroup(Alignment.LEADING)
+                    .addGroup(gl_soundTonePanel.createSequentialGroup().addContainerGap()
+                            .addGroup(gl_soundTonePanel.createParallelGroup(Alignment.BASELINE)
+                                    .addComponent(chckbxToneBeforeDwn).addComponent(btnSelectToneBeforeDwn))
                             .addPreferredGap(ComponentPlacement.RELATED)
-                            .addGroup(gl_panel_12.createParallelGroup(Alignment.BASELINE)
-                                    .addComponent(chckbxEnableToneOn).addComponent(btnSelect_1))
+                            .addGroup(gl_soundTonePanel.createParallelGroup(Alignment.BASELINE)
+                                    .addComponent(chckbxToneOnDwn).addComponent(btnSelectToneOnDwn))
                             .addPreferredGap(ComponentPlacement.RELATED)
-                            .addGroup(gl_panel_12.createParallelGroup(Alignment.BASELINE)
-                                    .addComponent(chckbxEnableToneAfter).addComponent(btnSelect_2))
+                            .addGroup(gl_soundTonePanel.createParallelGroup(Alignment.BASELINE)
+                                    .addComponent(chckbxToneAfterDwn).addComponent(btnSelectToneAfterDwn))
                             .addContainerGap(11, Short.MAX_VALUE)));
-            panel_12.setLayout(gl_panel_12);
-            panel_11.setLayout(gl_panel_11);
+            soundTonePanel.setLayout(gl_soundTonePanel);
+            miscPanel.setLayout(gl_miscPanel);
         }
         {
             JPanel buttonPane = new JPanel();
             buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
             getContentPane().add(buttonPane, BorderLayout.SOUTH);
             {
-                JButton okButton = new JButton("Save");
-                buttonPane.add(okButton);
-                getRootPane().setDefaultButton(okButton);
+                JButton saveButton = new JButton("Save");
+                saveButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent arg0) {
+                        applyChanges();
+                        dispose();
+                    }
+                });
+                buttonPane.add(saveButton);
+                getRootPane().setDefaultButton(saveButton);
             }
             {
-                JButton cancelButton = new JButton("Apply");
-                buttonPane.add(cancelButton);
+                JButton applyButton = new JButton("Apply");
+                applyButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        applyChanges();
+                    }
+                });
+                buttonPane.add(applyButton);
             }
             {
                 JButton cancelButton = new JButton("Cancel");
+                cancelButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        dispose();
+                    }
+                });
                 buttonPane.add(cancelButton);
             }
+        }
+        tab.setSelectedIndex(3);
+        updateConfigUi();
+    }
+    
+    
+    private void updateConfigUi(){
+        //Main Panel
+        chckbxShowGettingStarted.setSelected(config.isShowGettingStartedOnStartup());
+        
+        //OE
+        String[] serverProrityStrs = config.getServerPrority();
+        serverProrityListModel.clear();
+        for (int i = 0; i < serverProrityStrs.length; i++){
+            serverProrityListModel.addElement(serverProrityStrs[i]);
+        }
+        
+        String user = config.getUser();
+        if (config.isUserPassEncrypted()){
+            lblLoggedInAs.setForeground(Color.RED);
+            lblLoggedInAs.setText("Please enter encryption unlock key in order to manage credentials!");
+        } else if (user.isEmpty()){
+            lblLoggedInAs.setForeground(Color.BLACK);
+            lblLoggedInAs.setText("No credentials entered. Please save your credentials for a faster osumerExpress experience.");
+        } else {
+            lblLoggedInAs.setForeground(Color.BLUE);
+            lblLoggedInAs.setText("Will be logged in as: " + user);
+        }
+        
+        chckbxOeDisabled.setSelected(!config.isOEEnabled());
+        chckbxRunAsDaemon.setSelected(config.isRunDaemonOnWinStartup());
+        chckbxDisabledDaemon.setSelected(config.isDaemonDisabled());
+        
+        browserComboBoxModel.removeAllElements();
+        browserComboBoxModel.addElement("... relieving a list of available browsers ...");
+        browsersBox.setEnabled(false);
+        
+        new Thread(){
+            public void run(){
+                String[] browsers = null;
+                try {
+                    browsers = Installer.getAvailableBrowsers();
+                } catch (DebuggableException e) {
+                    e.printStackTrace();
+                }
+                browserComboBoxModel.removeAllElements();
+                if (browsers == null){
+                    browsersBox.setEnabled(false);
+                    browsers = new String[]{"-!- Could not relieve available browsers, check Debug Dumps. -!-"};
+                } else {
+                    int selectedIndex = -1;
+                    browsersBox.setEnabled(true);
+                    final String configBrowser = config.getDefaultBrowser();
+                    browserComboBoxModel.addElement("--- Select ---");
+                    for (int i = 0; i < browsers.length; i++){
+                        if (browsers[i].equals(configBrowser)){
+                            selectedIndex = i + 1;
+                        }
+                        browserComboBoxModel.addElement(browsers[i]);
+                    }
+                    browsersBox.setSelectedIndex(selectedIndex);
+                }
+            }
+        }.start();
+        
+        //Queuing
+        maxDwnThreadsSpinner.setValue(config.getMaxThreads());
+        nextQueuingCheckDelaySpinner.setValue(config.getNextCheckDelay());
+        chckbxEnableMassiveDownloading.setSelected(config.isMassiveDownloadingThreads());
+        
+        //Updater
+        int configUpdateSource = config.getUpdateSource();
+        if (configUpdateSource < 0 || configUpdateSource > 2){
+            configUpdateSource = 2;
+        }
+        final int updateSource = configUpdateSource;
+        
+        rdbtnStable.setSelected(updateSource == 0);
+        rdbtnBeta.setSelected(updateSource == 1);
+        rdbtnSnapshot.setSelected(updateSource == 2);
+        
+        String updateFreq = config.getCheckUpdateFreq();
+        
+        if (!updateFreq.equals(Config.CHECK_UPDATE_FREQ_EVERY_STARTUP) &&
+            !updateFreq.equals(Config.CHECK_UPDATE_FREQ_EVERY_ACT) &&
+            !updateFreq.equals(Config.CHECK_UPDATE_FREQ_NEVER)){
+            updateFreq = Config.CHECK_UPDATE_FREQ_EVERY_ACT;
+        }
+        
+        rdbtnEveryStartup.setSelected(updateFreq.equals(Config.CHECK_UPDATE_FREQ_EVERY_STARTUP)); //TDOO Change to constant
+        rdbtnEveryAct.setSelected(updateFreq.equals(Config.CHECK_UPDATE_FREQ_EVERY_ACT));
+        rdbtnNever.setSelected(updateFreq.equals(Config.CHECK_UPDATE_FREQ_NEVER));
+        
+        String updateAlgo = config.getCheckUpdateAlgo();
+        
+        if (!updateAlgo.equals(Config.CHECK_UPDATE_ALGO_PER_VER_PER_BRANCH) &&
+                !updateAlgo.equals(Config.CHECK_UPDATE_ALGO_LATEST_VER_PER_BRANCH) &&
+                !updateAlgo.equals(Config.CHECK_UPDATE_ALGO_LATEST_VER_OVERALL) &&
+                !updateAlgo.equals(Config.CHECK_UPDATE_ALGO_STABLITY)){
+            updateAlgo = Config.CHECK_UPDATE_ALGO_LATEST_VER_PER_BRANCH;
+        }
+        
+        rdbtnPerVersion.setSelected(updateAlgo.equals(Config.CHECK_UPDATE_ALGO_PER_VER_PER_BRANCH));
+        rdbtnLatestVersion.setSelected(updateAlgo.equals(Config.CHECK_UPDATE_ALGO_LATEST_VER_PER_BRANCH));
+        rdbtnLatestVersionoverall.setSelected(updateAlgo.equals(Config.CHECK_UPDATE_ALGO_LATEST_VER_OVERALL));
+        rdbtnStablity.setSelected(updateAlgo.equals(Config.CHECK_UPDATE_ALGO_STABLITY));
+        
+        chckbxAutoCriticalUpdate.setSelected(config.isAutoAcceptCriticalUpdates());
+        chckbxAutoPatches.setSelected(config.isAutoDownloadApplyPatches());
+
+        versionsComboBoxModel.removeAllElements();
+        versionsBox.setEnabled(false);
+        btnDowngrade.setEnabled(false);
+        btnShowChangelog.setEnabled(false);
+        versionsComboBoxModel.addElement("... relieving versions list ...");
+        new Thread(){
+            public void run(){
+                JSONObject json = null;
+                try {
+                    json = updater.getVersions();
+                } catch (DebuggableException e) {
+                    e.printStackTrace();
+                }
+                versionsComboBoxModel.removeAllElements();
+                
+                if (json == null){
+                    versionsComboBoxModel.addElement("-!- Cannot relieve versions data. Check Debug Dump. -!-");
+                    versionsBox.setEnabled(false);
+                    btnDowngrade.setEnabled(false);
+                    btnShowChangelog.setEnabled(false);
+                } else {
+                    String sourceStr = Updater.getBranchStr(updateSource);
+                    JSONObject sourcesJson = json.getJSONObject("sources");
+                    
+                    JSONObject sourceJson = sourcesJson.getJSONObject(sourceStr);
+                    
+                    Iterator<String> it = sourceJson.keys();
+                    
+                    List<String> strlist = new ArrayList<String>(50);
+                    while(it.hasNext()){
+                        strlist.add(it.next());
+                    }
+                    
+                    Collections.sort(strlist, new Comparator<String>(){
+
+                        @Override
+                        public int compare(String arg0, String arg1) {
+                            int result = Updater.compareVersion(arg0, arg1);
+                            if (result == -2){
+                                return -1;
+                            }
+                            return result;
+                        }
+                        
+                    });
+                    
+                    for (int i = 0; i < strlist.size(); i++){
+                        String str = strlist.get(i);
+                        JSONArray arr = sourceJson.getJSONArray(str);
+                        //int inc = arr.length() - 1;
+                        
+                        strlist.set(i, str + "-" + sourceStr + "-1");
+                        
+                        for (int j = 1; j < arr.length(); j++){
+                            strlist.add(++i, str + "-" + sourceStr + "-" + (j + 1));
+                        }
+                    }
+                    
+                    for (int i = 0; i < strlist.size(); i++){
+                        versionsComboBoxModel.addElement(strlist.get(i));
+                    }
+                    
+                    versionsBox.setEnabled(true);
+                    btnDowngrade.setEnabled(true);
+                    btnShowChangelog.setEnabled(true);
+                }
+            }
+        }.start();
+        
+        //Security
+        chckbxEnabledusedAs.setSelected(config.isUserPassEncrypted());
+        chckbxAskOnStartup.setSelected(config.isEncPassAskOnStartup());
+        
+        //Plugin
+        //
+        
+        //Misc
+        chckbxToneBeforeDwn.setSelected(config.isEnableToneBeforeDownload());
+        chckbxToneOnDwn.setSelected(config.isEnableToneDownloadStarted());
+        chckbxToneAfterDwn.setSelected(config.isEnableToneAfterDownload());
+    }
+    
+    private void applyChanges(){
+        //Main
+        config.setShowGettingStartedOnStartup(this.chckbxShowGettingStarted.isSelected());
+        
+        //OE
+        //TODO ServerPrority
+        config.setOEEnabled(!chckbxOeDisabled.isSelected());
+        config.setRunDaemonOnWinStartup(!chckbxRunAsDaemon.isSelected());
+        config.setDaemonDisabled(chckbxDisabledDaemon.isSelected());
+        
+        String selectedItem = (String) browsersBox.getSelectedItem();
+        if (!selectedItem.equals("--- Select ---")){
+            config.setDefaultBrowser(selectedItem);
+        }
+        
+        //Queuing
+        config.setMaxThreads((int) maxDwnThreadsSpinner.getValue());
+        config.setNextCheckDelay((int) nextQueuingCheckDelaySpinner.getValue());
+        config.setMassiveDownloadingThreads(chckbxEnableMassiveDownloading.isSelected());
+        
+        //Updater
+        int updateSource = -1;
+        if (rdbtnStable.isSelected()){
+            updateSource = 0;
+        } else if (rdbtnBeta.isSelected()){
+            updateSource = 1;
+        } else if (rdbtnNever.isSelected()){
+            updateSource = 2;
+        } else { //Default
+            updateSource = 2;
+        }
+        config.setUpdateSource(updateSource);
+        
+        String checkFreq = null;
+        if (rdbtnEveryStartup.isSelected()){
+            checkFreq = Config.CHECK_UPDATE_FREQ_EVERY_STARTUP;
+        } else if (rdbtnEveryAct.isSelected()){
+            checkFreq = Config.CHECK_UPDATE_FREQ_EVERY_ACT;
+        } else if (rdbtnNever.isSelected()){
+            checkFreq = Config.CHECK_UPDATE_FREQ_NEVER;
+        } else { //Default
+            checkFreq = Config.CHECK_UPDATE_FREQ_EVERY_ACT;
+        }
+        config.setCheckUpdateFreq(checkFreq);
+        
+        String checkAlgo = null;
+        if (rdbtnPerVersion.isSelected()){
+            checkAlgo = Config.CHECK_UPDATE_ALGO_PER_VER_PER_BRANCH;
+        } else if (rdbtnLatestVersion.isSelected()){
+            checkAlgo = Config.CHECK_UPDATE_ALGO_LATEST_VER_PER_BRANCH;
+        } else if (rdbtnLatestVersionoverall.isSelected()){
+            checkAlgo = Config.CHECK_UPDATE_ALGO_LATEST_VER_OVERALL;
+        } else if (rdbtnStablity.isSelected()){
+            checkAlgo = Config.CHECK_UPDATE_ALGO_STABLITY;
+        } else { //Default
+            checkAlgo = Config.CHECK_UPDATE_ALGO_LATEST_VER_PER_BRANCH;
+        }
+        config.setCheckUpdateAlgo(checkAlgo);
+        
+        config.setAutoAcceptCriticalUpdates(chckbxAutoCriticalUpdate.isSelected());
+        config.setAutoDownloadApplyPatches(chckbxAutoPatches.isSelected());
+        
+        //Security
+        config.setUserPassEncrypted(chckbxEnabledusedAs.isSelected());
+        config.setEncPassAskOnStartup(chckbxAskOnStartup.isSelected());
+        
+        //Plugins
+        //
+        
+        //Misc
+        config.setEnableToneBeforeDownload(chckbxToneBeforeDwn.isSelected());
+        config.setEnableToneDownloadStarted(chckbxToneOnDwn.isSelected());
+        config.setEnableToneAfterDownload(chckbxToneAfterDwn.isSelected());
+        
+        try {
+            config.write();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

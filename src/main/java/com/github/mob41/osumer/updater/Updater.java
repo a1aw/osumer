@@ -49,6 +49,8 @@ import com.github.mob41.osumer.exceptions.NoBuildsForVersionException;
 import com.github.mob41.osumer.exceptions.NoSuchBuildNumberException;
 import com.github.mob41.osumer.exceptions.NoSuchSourceException;
 import com.github.mob41.osumer.exceptions.NoSuchVersionException;
+import com.github.mob41.osumer.io.Installer;
+import com.github.mob41.osumer.io.VersionInfo;
 //import com.github.mob41.osumer.io.OsuDownloader;
 import com.github.mob41.osumer.io.beatmap.Osu;
 
@@ -103,57 +105,166 @@ public class Updater {
     public String getThisVersion() {
         return Osu.OSUMER_VERSION;
     }
-
-    public UpdateInfo getLatestVersion() throws DebuggableException {
-        final String thisVersion = Osu.OSUMER_VERSION;
-        final String buildBranch = Osu.OSUMER_BRANCH;
-        final int buildNum = Osu.OSUMER_BUILD_NUM;
-        final int updateSource = config.getUpdateSource();
-
+    
+    public JSONObject getVersions() throws DebuggableException{
         URL url = null;
-
+        
         try {
             url = new URL(VERSION_LIST + "?update=" + Calendar.getInstance().getTimeInMillis());
-        } catch (MalformedURLException e) {
-            throw new DebuggableException(VERSION_LIST, "URL url = null;", "new URL(VERSION_LIST);",
-                    "URLConnection conn = url.openConnection();", "", false, e);
+        } catch (MalformedURLException e){
+            throw new DebuggableException(
+                    VERSION_LIST,
+                    "URL url = null;",
+                    "new URL(VERSION_LIST);",
+                    "URLConnection conn = url.openConnection();",
+                    "",
+                    false, e);
         }
-
+        
         String data = "";
         try {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
+            
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Connection", "close");
             conn.setUseCaches(false);
             conn.setConnectTimeout(10000);
             conn.setReadTimeout(10000);
-
+            
             InputStream in = conn.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-
+            
             String line;
-            while ((line = reader.readLine()) != null) {
+            while ((line = reader.readLine()) != null){
                 data += line;
             }
         } catch (IOException e) {
-            throw new DebuggableException(VERSION_LIST, "URL url = new URL(VERSION_LIST);",
-                    "(lots of code) -- Connecting and fetch data", "Data validating (isEmpty / null)", "", false, e);
+            throw new DebuggableException(
+                    VERSION_LIST,
+                    "URL url = new URL(VERSION_LIST);",
+                    "(lots of code) -- Connecting and fetch data",
+                    "Data validating (isEmpty / null)",
+                    "",
+                    false, e);
         }
-
-        if (data == null || data.isEmpty()) {
-            throw new DebuggableException(VERSION_LIST, "(lots of code) -- Connecting and fetch data",
-                    "Data validating (isEmpty / null)", "Create JSONObject",
-                    "No data fetched. \"data\" is null/isEmpty", false);
+        
+        if (data == null || data.isEmpty()){
+            throw new DebuggableException(
+                    VERSION_LIST,
+                    "(lots of code) -- Connecting and fetch data",
+                    "Data validating (isEmpty / null)",
+                    "Create JSONObject",
+                    "No data fetched. \"data\" is null/isEmpty",
+                    false);
         }
-
+        
         JSONObject json = null;
         try {
             json = new JSONObject(data);
-        } catch (JSONException e) {
-            throw new DebuggableException(VERSION_LIST, "Data validating (isEmpty / null)", "Create JSONObject",
-                    "JSONObject validating \"sources\" parameter", "Structure invalid", false, e);
+        } catch (JSONException e){
+            throw new DebuggableException(
+                    VERSION_LIST,
+                    "Data validating (isEmpty / null)",
+                    "Create JSONObject",
+                    "JSONObject validating \"sources\" parameter",
+                    "Structure invalid",
+                    false, e);
         }
+        return json;
+    }
+    
+    public UpdateInfo getLatestVersion() throws DebuggableException{
+        final int updateSource = config.getUpdateSource();
+        JSONObject json = getVersions();
+        
+        if (json.isNull("sources")){
+            throw new DebuggableException(
+                    VERSION_LIST,
+                    "Create JSONObject",
+                    "JSONObject validating \"sources\" parameter",
+                    "Convert source integer to string",
+                    "Structure invalid, missing \"sources\" parameter",
+                    false);
+        }
+        
+        // sources -> snapshot (updateSource) -> 1.0.0 (version) -> (array: index0) 1 (build-number)
+        JSONObject sourcesJson = json.getJSONObject("sources");
+        JSONArray buildsArr;
+        
+        String sourceKey = null;
+        switch (updateSource){
+        case UPDATE_SOURCE_SNAPSHOT:
+            sourceKey = SOURCE_SNAPSHOT;
+            break;
+        case UPDATE_SOURCE_BETA:
+            sourceKey = SOURCE_BETA;
+            break;
+        case UPDATE_SOURCE_STABLE:
+            sourceKey = SOURCE_STABLE;
+            break;
+        default:
+            throw new InvalidSourceIntegerException(
+                    json.toString(5),
+                    "JSONObject validating \"sources\" parameter",
+                    "Convert source integer to string",
+                    "Validate sources' JSONObject and set variable",
+                    updateSource);
+        }
+        
+        if (sourcesJson.isNull(sourceKey)){
+            throw new NoSuchSourceException(
+                    json.toString(5),
+                    "Convert source integer to string",
+                    "Validate sources' JSONObject and set variable",
+                    "Validate versions' JSONObject and set variable",
+                    sourceKey);
+        }
+        
+        JSONObject versionsJson = sourcesJson.getJSONObject(sourceKey);
+        
+        VersionInfo thisInfo = Installer.getInstalledVersion();
+        
+        Iterator<String> it = versionsJson.keys();
+        String last = null;
+        String key;
+        while (it.hasNext()){
+            key = it.next();
+            
+            if (last != null && compareVersion(key, last) != 1){
+                continue;
+            } else {
+                last = key;
+            }
+        }
+        
+        if (last == null){
+            return null;
+        }
+        
+        buildsArr = versionsJson.getJSONArray(last);
+        
+        int latest = buildsArr.length();
+        
+        JSONObject verJson = buildsArr.getJSONObject(latest - 1);
+        
+        String webLink = verJson.isNull("web_link") ? null : verJson.getString("web_link");
+        String exeLink = verJson.isNull("exe_link") ? null : verJson.getString("exe_link");
+        String jarLink = verJson.isNull("jar_link") ? null : verJson.getString("jar_link");
+
+        String desc = verJson.isNull("desc") ? null : verJson.getString("desc");
+        
+        boolean isThisVersion = thisInfo != null && last.equals(thisInfo.getVersion()) &&
+                latest == thisInfo.getBuildNum() && getBranchStr(updateSource).equals(thisInfo.getBranch());
+        return new UpdateInfo(desc, last, updateSource, latest, webLink, exeLink, jarLink, isThisVersion, !isThisVersion);
+    }
+
+    public UpdateInfo getPerVersionPerBranchLatestVersion() throws DebuggableException {
+        final String thisVersion = Osu.OSUMER_VERSION;
+        final String buildBranch = Osu.OSUMER_BRANCH;
+        final int buildNum = Osu.OSUMER_BUILD_NUM;
+        final int updateSource = config.getUpdateSource();
+        
+        JSONObject json = getVersions();
 
         if (json.isNull("sources")) {
             throw new DebuggableException(VERSION_LIST, "Create JSONObject",
