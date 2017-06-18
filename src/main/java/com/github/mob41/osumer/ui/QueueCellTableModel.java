@@ -26,75 +26,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.github.mob41.osumer.updater;
+package com.github.mob41.osumer.ui;
 
-public class UpdateInfo {
+import javax.swing.table.AbstractTableModel;
 
-    private final String version;
+import com.github.mob41.osumer.io.queue.Queue;
+import com.github.mob41.osumer.io.queue.QueueManager;
 
-    private final String webLink;
+public class QueueCellTableModel extends AbstractTableModel {
 
-    private final String exeLink;
+    private QueueManager mgr;
 
-    private final String jarLink;
-
-    private final String description;
-
-    private final int branch;
-
-    private final int buildNum;
-
-    private final boolean isThisVersion;
-
-    private final boolean upgradedVersion;
-
-    public UpdateInfo(String description, String version, int branch, int buildNum, String webLink, String exeLink,
-            String jarLink, boolean isThisVersion, boolean upgradedVersion) {
-        this.description = description;
-        this.version = version;
-        this.webLink = webLink;
-        this.exeLink = exeLink;
-        this.jarLink = jarLink;
-        this.branch = branch;
-        this.buildNum = buildNum;
-        this.isThisVersion = isThisVersion;
-        this.upgradedVersion = upgradedVersion;
+    public QueueCellTableModel(QueueManager mgr) {
+        this.mgr = mgr;
     }
 
-    public String getVersion() {
-        return version;
+    public Class getColumnClass(int columnIndex) {
+        return Queue.class;
     }
 
-    public int getBranch() {
-        return branch;
+    @Override
+    public String getColumnName(int columnIndex) {
+        return "Running queue(s)";
     }
 
-    public int getBuildNum() {
-        return buildNum;
+    @Override
+    public int getColumnCount() {
+        return 1;
     }
 
-    public String getDescription() {
-        return description;
+    @Override
+    public int getRowCount() {
+        if (mgr == null || mgr.getList() == null) {
+            return 0;
+        }
+        return mgr.getList().size();
     }
 
-    public boolean isThisVersion() {
-        return isThisVersion;
-    }
-
-    public boolean isUpgradedVersion() {
-        return upgradedVersion;
-    }
-
-    public String getExeLink() {
-        return exeLink;
-    }
-
-    public String getJarLink() {
-        return jarLink;
-    }
-
-    public String getWebLink() {
-        return webLink;
+    @Override
+    public Object getValueAt(int arg0, int arg1) {
+        if (mgr == null || mgr.getList() == null) {
+            return null;
+        }
+        return mgr.getList().get(arg0);
     }
 
 }

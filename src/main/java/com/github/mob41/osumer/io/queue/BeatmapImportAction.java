@@ -26,75 +26,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.github.mob41.osumer.updater;
+package com.github.mob41.osumer.io.queue;
 
-public class UpdateInfo {
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
 
-    private final String version;
+import com.github.mob41.osumer.io.Downloader;
 
-    private final String webLink;
+public class BeatmapImportAction implements QueueAction {
 
-    private final String exeLink;
+    @Override
+    public void run(Queue queue) {
+        Downloader dwn = queue.getDownloader();
+        String path = dwn.getDownloadFolder() + dwn.getFileName();
 
-    private final String jarLink;
+        File file = new File(path + ".osz");
 
-    private final String description;
+        if (!file.exists()) {
+            System.out.println("File not exists: " + path + ".osz");
+            return;
+        }
 
-    private final int branch;
-
-    private final int buildNum;
-
-    private final boolean isThisVersion;
-
-    private final boolean upgradedVersion;
-
-    public UpdateInfo(String description, String version, int branch, int buildNum, String webLink, String exeLink,
-            String jarLink, boolean isThisVersion, boolean upgradedVersion) {
-        this.description = description;
-        this.version = version;
-        this.webLink = webLink;
-        this.exeLink = exeLink;
-        this.jarLink = jarLink;
-        this.branch = branch;
-        this.buildNum = buildNum;
-        this.isThisVersion = isThisVersion;
-        this.upgradedVersion = upgradedVersion;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public int getBranch() {
-        return branch;
-    }
-
-    public int getBuildNum() {
-        return buildNum;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public boolean isThisVersion() {
-        return isThisVersion;
-    }
-
-    public boolean isUpgradedVersion() {
-        return upgradedVersion;
-    }
-
-    public String getExeLink() {
-        return exeLink;
-    }
-
-    public String getJarLink() {
-        return jarLink;
-    }
-
-    public String getWebLink() {
-        return webLink;
+        try {
+            Desktop.getDesktop().open(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

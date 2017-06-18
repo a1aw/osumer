@@ -26,75 +26,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.github.mob41.osumer.updater;
+package com.github.mob41.osumer.ui;
 
-public class UpdateInfo {
+import java.awt.Component;
 
-    private final String version;
+import javax.swing.JTable;
+import javax.swing.table.TableCellRenderer;
 
-    private final String webLink;
+import com.github.mob41.osumer.io.queue.Queue;
 
-    private final String exeLink;
+public class QueueCellRenderer implements TableCellRenderer {
 
-    private final String jarLink;
+    private QueueCell comp;
 
-    private final String description;
-
-    private final int branch;
-
-    private final int buildNum;
-
-    private final boolean isThisVersion;
-
-    private final boolean upgradedVersion;
-
-    public UpdateInfo(String description, String version, int branch, int buildNum, String webLink, String exeLink,
-            String jarLink, boolean isThisVersion, boolean upgradedVersion) {
-        this.description = description;
-        this.version = version;
-        this.webLink = webLink;
-        this.exeLink = exeLink;
-        this.jarLink = jarLink;
-        this.branch = branch;
-        this.buildNum = buildNum;
-        this.isThisVersion = isThisVersion;
-        this.upgradedVersion = upgradedVersion;
+    public QueueCellRenderer(QueueCellTableModel model) {
+        comp = new QueueCell(model);
     }
 
-    public String getVersion() {
-        return version;
-    }
+    @Override
+    public Component getTableCellRendererComponent(JTable arg0, Object arg1, boolean arg2, boolean arg3, int arg4,
+            int arg5) {
+        comp.updateData((Queue) arg1);
+        if (arg2) {
+            comp.setBackground(arg0.getSelectionBackground());
+        } else {
+            comp.setBackground(arg0.getBackground());
+        }
+        return comp;
 
-    public int getBranch() {
-        return branch;
-    }
-
-    public int getBuildNum() {
-        return buildNum;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public boolean isThisVersion() {
-        return isThisVersion;
-    }
-
-    public boolean isUpgradedVersion() {
-        return upgradedVersion;
-    }
-
-    public String getExeLink() {
-        return exeLink;
-    }
-
-    public String getJarLink() {
-        return jarLink;
-    }
-
-    public String getWebLink() {
-        return webLink;
     }
 
 }
