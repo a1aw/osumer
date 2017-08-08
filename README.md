@@ -5,9 +5,9 @@ The easiest,express osu! beatmap downloader helper!
 
 Put a star if you like this software! I would be happy to continue developing this software!
 
-## Scheduled distribution of osumer2: Mid June-July, 2017
+## Scheduled distribution of osumer2: Late Aug-Oct, 2017
 
-> :warning: ```1.0.6-snapshot-b1``` will be published to let users of v1 to try out limited features of the uncompleted osumer2.
+> Sorry that I am really busy in holidays :( Trial version still not available.
 
 <em>Interested in what osumer2 great for?</em>
 
@@ -23,6 +23,8 @@ Put a star if you like this software! I would be happy to continue developing th
 - Beatmap searching
 - <b>osums</b> beatmap searching
 - <b>osums</b> beatmap management (i.e. exporting, categorizing)
+
+> Trial program around Late Aug
 
 <em>So interested? Join the trial program! Update your osumer to ```1.0.6-snapshot-b1```</em>
 
