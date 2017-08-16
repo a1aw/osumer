@@ -44,7 +44,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.github.mob41.osumer.exceptions.DebuggableException;
+import com.github.mob41.organdebug.exceptions.DebuggableException;
 import com.github.mob41.osumer.io.beatmap.Osu;
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.Win32Exception;

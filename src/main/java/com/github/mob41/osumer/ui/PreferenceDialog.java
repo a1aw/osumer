@@ -36,14 +36,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.AbstractListModel;
-import javax.swing.AbstractSpinnerModel;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
@@ -62,7 +59,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
@@ -72,13 +68,10 @@ import javax.swing.border.TitledBorder;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.github.mob41.organdebug.exceptions.DebuggableException;
 import com.github.mob41.osumer.Config;
-import com.github.mob41.osumer.exceptions.DebuggableException;
 import com.github.mob41.osumer.io.Installer;
 import com.github.mob41.osumer.updater.Updater;
-
-import javax.swing.JTextField;
-import javax.swing.JTable;
 
 public class PreferenceDialog extends JDialog {
 
@@ -898,7 +891,6 @@ public class PreferenceDialog extends JDialog {
                 buttonPane.add(cancelButton);
             }
         }
-        tab.setSelectedIndex(3);
         updateConfigUi();
     }
     

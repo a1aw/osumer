@@ -32,7 +32,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
-import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
@@ -41,19 +40,21 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
 import javax.imageio.ImageIO;
+import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -64,6 +65,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -71,9 +73,10 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileFilter;
 
+import com.github.mob41.organdebug.exceptions.DebuggableException;
 import com.github.mob41.osumer.Config;
-import com.github.mob41.osumer.exceptions.DebuggableException;
 import com.github.mob41.osumer.io.beatmap.Osu;
 import com.github.mob41.osumer.io.beatmap.OsuBeatmap;
 import com.github.mob41.osumer.io.beatmap.OsuDownloader;
@@ -83,8 +86,6 @@ import com.github.mob41.osumer.io.queue.Queue;
 import com.github.mob41.osumer.io.queue.QueueAction;
 import com.github.mob41.osumer.io.queue.QueueManager;
 import com.github.mob41.osumer.sock.SockThread;
-
-import javax.swing.JSeparator;
 
 public class UIFrame extends JFrame {
 
@@ -99,6 +100,9 @@ public class UIFrame extends JFrame {
     private final Config config;
     private final TrayIcon icon;
     private final Timer timer;
+    
+    private File selectedFile = null;
+    private File selectedFolder = null;
 
     private JPanel contentPane;
     private QueueCellTableModel tableModel;
@@ -314,21 +318,58 @@ public class UIFrame extends JFrame {
         lblYouWillBe.setForeground(Color.RED);
         lblYouWillBe.setFont(new Font("Tahoma", Font.BOLD, 12));
 
-        JRadioButton rdbtnDownloadAndImport = new JRadioButton("Download and import");
+        rdbtnDownloadAndImport = new JRadioButton("Download and import");
         rdbtnDownloadAndImport.setSelected(true);
         rdbtnDownloadAndImport.setFont(new Font("Tahoma", Font.PLAIN, 12));
 
-        JRadioButton rdbtnDownloadToFile = new JRadioButton("Download to file...");
+        rdbtnDownloadToFile = new JRadioButton("Download to file...");
         rdbtnDownloadToFile.setFont(new Font("Tahoma", Font.PLAIN, 12));
 
         JButton btnSelectFile = new JButton("Select file");
+        btnSelectFile.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                JFileChooser chooser = new JFileChooser();
+                int result = chooser.showSaveDialog(UIFrame.this);
+                if (result == JFileChooser.APPROVE_OPTION){
+                    selectedFile = chooser.getSelectedFile();
+                }
+            }
+        });
         btnSelectFile.setFont(new Font("Tahoma", Font.PLAIN, 12));
 
-        JRadioButton rdbtnDownloadToFolder = new JRadioButton("Download to folder...");
+        rdbtnDownloadToFolder = new JRadioButton("Download to folder...");
         rdbtnDownloadToFolder.setFont(new Font("Tahoma", Font.PLAIN, 12));
 
         JButton btnSelectFolder = new JButton("Select folder");
+        btnSelectFolder.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser chooser = new JFileChooser();
+                chooser.setAcceptAllFileFilterUsed(false);
+                chooser.setFileFilter(new FileFilter(){
+
+                    @Override
+                    public boolean accept(File f) {
+                        return f.isDirectory();
+                    }
+
+                    @Override
+                    public String getDescription() {
+                        return "All Folders";
+                    }
+                    
+                });
+                int result = chooser.showSaveDialog(UIFrame.this);
+                if (result == JFileChooser.APPROVE_OPTION){
+                    selectedFolder = chooser.getSelectedFile();
+                }
+            }
+        });
         btnSelectFolder.setFont(new Font("Tahoma", Font.PLAIN, 12));
+        
+        ButtonGroup dwnSelectionBtnGp = new ButtonGroup();
+        dwnSelectionBtnGp.add(rdbtnDownloadAndImport);
+        dwnSelectionBtnGp.add(rdbtnDownloadToFile);
+        dwnSelectionBtnGp.add(rdbtnDownloadToFolder);
 
         JButton btnOsumerPreferences = new JButton("osumer2 Preferences");
         btnOsumerPreferences.addActionListener(new ActionListener() {
@@ -454,12 +495,15 @@ public class UIFrame extends JFrame {
     private BufferedImage thumb = null;
     private ProgressDialog pbd = null;
     private JTabbedPane tab;
+    private JRadioButton rdbtnDownloadAndImport;
+    private JRadioButton rdbtnDownloadToFile;
+    private JRadioButton rdbtnDownloadToFolder;
 
     public boolean addBtQueue(String url, boolean preview) {
-        return addBtQueue(url, preview, true);
+        return addBtQueue(url, preview, true, null, null);
     }
 
-    public boolean addBtQueue(String url, boolean preview, boolean changeTab) {
+    public boolean addBtQueue(String url, boolean preview, boolean changeTab, QueueAction[] beforeActions, QueueAction[] afterActions) {
         map = null;
         thumb = null;
         pbd = new ProgressDialog();
@@ -604,17 +648,22 @@ public class UIFrame extends JFrame {
             final String mapName = map.getName();
             OsuDownloader dwn = new OsuDownloader(tmpdir,
                     map.getDwnUrl().substring(3, map.getDwnUrl().length()) + " " + map.getName(), osu, downloadUrl);
-            boolean added = mgr.addQueue(new Queue(map.getName(), dwn, thumb, null, new QueueAction[] { 
-                    new QueueAction(){
+            
+            if (afterActions == null){
+                afterActions = new QueueAction[] { 
+                        new QueueAction(){
 
-                        @Override
-                        public void run(Queue queue) {
-                            icon.displayMessage("Download completed for \"" + mapName + "\"", "This osumer queue has completed downloading.", TrayIcon.MessageType.INFO);
-                        }
-                        
-                    },
-                    new BeatmapImportAction()
-                    }));
+                            @Override
+                            public void run(Queue queue) {
+                                icon.displayMessage("Download completed for \"" + mapName + "\"", "This osumer queue has completed downloading.", TrayIcon.MessageType.INFO);
+                            }
+                            
+                        },
+                        new BeatmapImportAction()
+                };
+            }
+            
+            boolean added = mgr.addQueue(new Queue(map.getName(), dwn, thumb, beforeActions, afterActions));
             
             if (added){
                 icon.displayMessage("Downloading \"" + mapName + "\"", "osumerExpress is downloading the requested beatmap!", TrayIcon.MessageType.INFO);

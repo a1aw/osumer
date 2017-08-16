@@ -53,8 +53,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
 
-import com.github.mob41.osumer.exceptions.DebugDump;
-import com.github.mob41.osumer.exceptions.DumpManager;
+import com.github.mob41.organdebug.DebugDump;
+import com.github.mob41.organdebug.DumpManager;
 
 public class ViewDumpDialog extends JDialog {
 

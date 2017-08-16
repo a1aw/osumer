@@ -48,9 +48,9 @@ import java.net.URL;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
-import com.github.mob41.osumer.exceptions.DebugDump;
-import com.github.mob41.osumer.exceptions.DebuggableException;
-import com.github.mob41.osumer.exceptions.DumpManager;
+import com.github.mob41.organdebug.DebugDump;
+import com.github.mob41.organdebug.DumpManager;
+import com.github.mob41.organdebug.exceptions.DebuggableException;
 import com.github.mob41.osumer.io.Installer;
 import com.github.mob41.osumer.io.beatmap.Osu;
 import com.github.mob41.osumer.io.queue.QueueManager;
@@ -122,9 +122,9 @@ public class Main {
                     }
                 } catch (DebuggableException e) {
                     if (!ap.isNoUiFlag() && !GraphicsEnvironment.isHeadless()) {
-                        ErrorDumpDialog d = DebugDump.showDebugDialog(e.getDump());
-                        d.setModal(true);
-                        d.setVisible(true);
+                        ErrorDumpDialog dialog = new ErrorDumpDialog(e.getDump());
+                        dialog.setModal(true);
+                        dialog.setVisible(true);
                     }
 
                     if (!(ap.isQuietFlag() && ap.isForceFlag())) {
@@ -154,9 +154,9 @@ public class Main {
                     }
                 } catch (DebuggableException e) {
                     if (!ap.isNoUiFlag() && !GraphicsEnvironment.isHeadless()) {
-                        ErrorDumpDialog d = DebugDump.showDebugDialog(e.getDump());
-                        d.setModal(true);
-                        d.setVisible(true);
+                        ErrorDumpDialog dialog = new ErrorDumpDialog(e.getDump());
+                        dialog.setModal(true);
+                        dialog.setVisible(true);
                     }
 
                     if (!(ap.isQuietFlag() && ap.isForceFlag())) {
@@ -237,7 +237,7 @@ public class Main {
                             "Asking BG osumer to run with args: \"" + buildArgStr(args) + "\"", null, false,
                             "Could not start up BG osumer sucessfully. Destination did not response \"OK\": " + line);
                     DumpManager.getInstance().addDump(dump);
-                    ErrorDumpDialog dialog = DebugDump.showDebugDialog(dump);
+                    ErrorDumpDialog dialog = new ErrorDumpDialog(dump);
                     dialog.setModal(true);
                     dialog.setVisible(true);
                     return;
@@ -252,7 +252,9 @@ public class Main {
                 DebugDump dump = new DebugDump(null, null, "Opening connection to BG osumer socket", null,
                         "Could not open socket at 46725 for BG call. Not osumer running at that port?", false, e);
                 DumpManager.getInstance().addDump(dump);
-                DebugDump.showDebugDialog(dump);
+                ErrorDumpDialog dialog = new ErrorDumpDialog(dump);
+                dialog.setModal(true);
+                dialog.setVisible(true);
                 System.exit(-1);
                 return;
             }

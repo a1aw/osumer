@@ -88,7 +88,7 @@ public class ConnThread extends Thread {
                     if (urlStr != null) {
                         new Thread() {
                             public void run() {
-                                sockThread.getFrame().addBtQueue(urlStr, false, true);
+                                sockThread.getFrame().addBtQueue(urlStr, false, true, null, null);
                             }
                         }.start();
                     }
