@@ -534,6 +534,7 @@ public class UIFrame extends JFrame {
                         user = loginPanel.getUsername();
                         pass = loginPanel.getPassword();
                     } else {
+                        pbd.dispose();
                         return;
                     }
                 }
