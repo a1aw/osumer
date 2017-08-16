@@ -94,11 +94,27 @@ public class BeatmapPreviewDialog extends JDialog {
 
         txtrLoadingInformation = new JTextArea();
         txtrLoadingInformation.setEditable(false);
-        txtrLoadingInformation.setText("Name: " + map.getName() + "\n" + "Artist: " + map.getArtist() + "\n" + "Title: "
-                + map.getTitle() + "\n" + "BPM: " + map.getBpm() + "\n" + "Creator: " + map.getCreator() + "\n"
-                + "Source: " + map.getSource() + "\n" + "Genre: " + map.getGenre() + "\n" + "Rating: " + map.getRating()
+        txtrLoadingInformation.setText(
+                "=== URL Type: " + (map.isPageBeatmap() ? "Beatmap" : "Song") + " ===\n" +
+                 
+                "Name: " + map.getName() + "\n" +
+                "Artist: " + map.getArtist() + "\n" +
+                "Title: " + map.getTitle() + "\n" +
+                "BPM: " + map.getBpm() +
+                
+                (map.isPageBeatmap() ?
+                "\nCircle Size: " + map.getCircleSize() +
+                "\nApproach Rate: " + map.getApproachRate() +
+                "\nAccuracy: " + map.getAccuracy() +
+                "\nHP Drain: " + map.getHpDrain() +
+                "\nStar Difficulty: " + map.getStarDifficulty() + "*"
+                : "") +
+                
+                "\nCreator: " + map.getCreator() +
+                "\nSource: " + map.getSource() + "\n" + "Genre: " + map.getGenre() + "\n" + "Rating: " + map.getRating()
                 + "%\n" + "Good rating: " + map.getGoodRating() + "\n" + "Bad rating: " + map.getBadRating() + "\n"
                 + "Success rate: " + map.getSuccessRate());
+        txtrLoadingInformation.setCaretPosition(0);
         txtrLoadingInformation.setFont(new Font("Tahoma", Font.PLAIN, 13));
         scrollPane.setViewportView(txtrLoadingInformation);
         contentPanel.setLayout(gl_contentPanel);

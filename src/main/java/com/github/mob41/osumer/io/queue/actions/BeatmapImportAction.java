@@ -26,12 +26,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.github.mob41.osumer.io.queue;
+package com.github.mob41.osumer.io.queue.actions;
 
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 
+import com.github.mob41.osumer.io.queue.Queue;
+import com.github.mob41.osumer.io.queue.QueueAction;
 import com.github.mob41.osums.io.Downloader;
 
 public class BeatmapImportAction implements QueueAction {
