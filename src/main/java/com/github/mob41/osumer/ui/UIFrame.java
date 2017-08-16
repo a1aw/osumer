@@ -79,14 +79,16 @@ import com.github.mob41.organdebug.exceptions.DebuggableException;
 import com.github.mob41.osumer.Config;
 import com.github.mob41.osumer.io.beatmap.Osumer;
 import com.github.mob41.osumer.io.legacy.URLDownloader;
-import com.github.mob41.osumer.io.queue.BeatmapImportAction;
 import com.github.mob41.osumer.io.queue.Queue;
 import com.github.mob41.osumer.io.queue.QueueAction;
 import com.github.mob41.osumer.io.queue.QueueManager;
+import com.github.mob41.osumer.io.queue.actions.BeatmapImportAction;
 import com.github.mob41.osumer.sock.SockThread;
 import com.github.mob41.osums.io.OsuBeatmap;
 import com.github.mob41.osums.io.OsuDownloader;
 import com.github.mob41.osums.io.Osums;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class UIFrame extends JFrame {
 
@@ -293,6 +295,19 @@ public class UIFrame extends JFrame {
         lblBeatmapUrl.setFont(new Font("Tahoma", Font.PLAIN, 21));
 
         beatmapField = new JTextField();
+        beatmapField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent arg0) {
+                String text = beatmapField.getText();
+                if (Osums.isVaildBeatMapUrl(text)){
+                    beatmapField.setBackground(Color.WHITE);
+                    beatmapField.setForeground(Color.BLACK);
+                } else {
+                    beatmapField.setBackground(Color.PINK);
+                    beatmapField.setForeground(Color.WHITE);
+                }
+            }
+        });
         beatmapField.setFont(new Font("Tahoma", Font.PLAIN, 18));
         beatmapField.setColumns(10);
 
@@ -300,6 +315,10 @@ public class UIFrame extends JFrame {
         btnAddToQueue.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
+                if (!Osums.isVaildBeatMapUrl(beatmapField.getText())){
+                    JOptionPane.showMessageDialog(UIFrame.this, "Please enter a valid song/beatmap URL.", "Error", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
                 addBtQueue(beatmapField.getText(), chckbxShowBeatmapPreview.isSelected());
             }
 
@@ -385,46 +404,72 @@ public class UIFrame extends JFrame {
         chckbxShowBeatmapPreview = new JCheckBox("Show beatmap preview");
         chckbxShowBeatmapPreview.setSelected(true);
         chckbxShowBeatmapPreview.setFont(new Font("Tahoma", Font.PLAIN, 12));
+        
+        JButton btnDownloadAList = new JButton("Download a list of beatmaps");
+        btnDownloadAList.setFont(new Font("Tahoma", Font.PLAIN, 18));
         GroupLayout gl_panel = new GroupLayout(panel);
-        gl_panel.setHorizontalGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-                .addGroup(gl_panel.createSequentialGroup().addContainerGap()
-                        .addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-                                .addGroup(gl_panel.createSequentialGroup().addComponent(rdbtnDownloadToFolder)
-                                        .addPreferredGap(ComponentPlacement.RELATED).addComponent(btnSelectFolder))
-                                .addGroup(gl_panel.createSequentialGroup().addComponent(rdbtnDownloadToFile)
-                                        .addPreferredGap(ComponentPlacement.RELATED).addComponent(btnSelectFile))
-                                .addComponent(lblSpecifyYourDesired, GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE)
-                                .addGroup(gl_panel.createSequentialGroup()
-                                        .addComponent(lblBeatmapUrl).addPreferredGap(ComponentPlacement.RELATED)
-                                        .addComponent(beatmapField, GroupLayout.PREFERRED_SIZE, 441,
-                                                GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(ComponentPlacement.RELATED)
-                                        .addComponent(btnAddToQueue, GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE))
-                                .addComponent(lblNewWebpageUrls, GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE)
-                                .addComponent(lblYouWillBe, GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE)
-                                .addComponent(rdbtnDownloadAndImport, GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE)
-                                .addComponent(chckbxShowBeatmapPreview, GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE)
-                                .addComponent(btnOsumerPreferences))
-                        .addContainerGap()));
-        gl_panel.setVerticalGroup(gl_panel.createParallelGroup(Alignment.LEADING).addGroup(gl_panel
-                .createSequentialGroup().addContainerGap()
-                .addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
+        gl_panel.setHorizontalGroup(
+            gl_panel.createParallelGroup(Alignment.LEADING)
+                .addGroup(gl_panel.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
+                        .addGroup(gl_panel.createSequentialGroup()
+                            .addComponent(rdbtnDownloadToFolder)
+                            .addPreferredGap(ComponentPlacement.RELATED)
+                            .addComponent(btnSelectFolder))
+                        .addGroup(gl_panel.createSequentialGroup()
+                            .addComponent(rdbtnDownloadToFile)
+                            .addPreferredGap(ComponentPlacement.RELATED)
+                            .addComponent(btnSelectFile))
+                        .addComponent(lblSpecifyYourDesired, GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE)
+                        .addGroup(gl_panel.createSequentialGroup()
+                            .addComponent(lblBeatmapUrl)
+                            .addPreferredGap(ComponentPlacement.RELATED)
+                            .addComponent(beatmapField, GroupLayout.PREFERRED_SIZE, 441, GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(ComponentPlacement.RELATED)
+                            .addComponent(btnAddToQueue, GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE))
+                        .addComponent(lblNewWebpageUrls, GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE)
+                        .addComponent(lblYouWillBe, GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE)
+                        .addComponent(rdbtnDownloadAndImport, GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE)
+                        .addComponent(chckbxShowBeatmapPreview, GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE)
+                        .addGroup(gl_panel.createSequentialGroup()
+                            .addComponent(btnOsumerPreferences)
+                            .addPreferredGap(ComponentPlacement.RELATED)
+                            .addComponent(btnDownloadAList)))
+                    .addContainerGap())
+        );
+        gl_panel.setVerticalGroup(
+            gl_panel.createParallelGroup(Alignment.LEADING)
+                .addGroup(gl_panel.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
                         .addComponent(btnAddToQueue, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
-                        .addComponent(beatmapField, Alignment.LEADING, GroupLayout.PREFERRED_SIZE,
-                                GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(beatmapField, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                         .addComponent(lblBeatmapUrl, Alignment.LEADING))
-                .addPreferredGap(ComponentPlacement.RELATED).addComponent(lblSpecifyYourDesired)
-                .addPreferredGap(ComponentPlacement.RELATED).addComponent(lblNewWebpageUrls)
-                .addPreferredGap(ComponentPlacement.RELATED).addComponent(lblYouWillBe)
-                .addPreferredGap(ComponentPlacement.RELATED).addComponent(rdbtnDownloadAndImport)
-                .addPreferredGap(ComponentPlacement.RELATED)
-                .addGroup(gl_panel.createParallelGroup(Alignment.BASELINE).addComponent(rdbtnDownloadToFile)
+                    .addPreferredGap(ComponentPlacement.RELATED)
+                    .addComponent(lblSpecifyYourDesired)
+                    .addPreferredGap(ComponentPlacement.RELATED)
+                    .addComponent(lblNewWebpageUrls)
+                    .addPreferredGap(ComponentPlacement.RELATED)
+                    .addComponent(lblYouWillBe)
+                    .addPreferredGap(ComponentPlacement.RELATED)
+                    .addComponent(rdbtnDownloadAndImport)
+                    .addPreferredGap(ComponentPlacement.RELATED)
+                    .addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
+                        .addComponent(rdbtnDownloadToFile)
                         .addComponent(btnSelectFile))
-                .addPreferredGap(ComponentPlacement.RELATED)
-                .addGroup(gl_panel.createParallelGroup(Alignment.BASELINE).addComponent(rdbtnDownloadToFolder)
+                    .addPreferredGap(ComponentPlacement.RELATED)
+                    .addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
+                        .addComponent(rdbtnDownloadToFolder)
                         .addComponent(btnSelectFolder))
-                .addPreferredGap(ComponentPlacement.RELATED).addComponent(chckbxShowBeatmapPreview)
-                .addPreferredGap(ComponentPlacement.RELATED).addComponent(btnOsumerPreferences).addGap(99)));
+                    .addPreferredGap(ComponentPlacement.RELATED)
+                    .addComponent(chckbxShowBeatmapPreview)
+                    .addPreferredGap(ComponentPlacement.RELATED)
+                    .addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
+                        .addComponent(btnDownloadAList, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnOsumerPreferences))
+                    .addGap(99))
+        );
         panel.setLayout(gl_panel);
 
         JPanel queuePanel = new JPanel();
