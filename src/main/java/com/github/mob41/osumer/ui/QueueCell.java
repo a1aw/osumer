@@ -28,39 +28,30 @@
  *******************************************************************************/
 package com.github.mob41.osumer.ui;
 
-import javax.swing.JPanel;
-
-import com.github.mob41.osumer.io.Downloader;
-import com.github.mob41.osumer.io.queue.Queue;
-
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-import javax.swing.Timer;
-import javax.swing.table.TableModel;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import java.awt.Font;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.concurrent.TimeUnit;
-
-import javax.swing.JProgressBar;
-import javax.swing.JPopupMenu;
-
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.util.concurrent.TimeUnit;
 
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JProgressBar;
 import javax.swing.JSeparator;
-import javax.swing.JButton;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SwingConstants;
+
+import com.github.mob41.osumer.io.queue.Queue;
+import com.github.mob41.osums.io.Downloader;
 
 public class QueueCell extends JPanel {
     private JProgressBar pb;

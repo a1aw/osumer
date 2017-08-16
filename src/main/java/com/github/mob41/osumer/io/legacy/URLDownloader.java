@@ -37,7 +37,7 @@ import java.net.URL;
 
 import com.github.mob41.organdebug.DebugDump;
 import com.github.mob41.organdebug.DumpManager;
-import com.github.mob41.osumer.io.Downloader;
+import com.github.mob41.osums.io.Downloader;
 
 public class URLDownloader extends Downloader {
 

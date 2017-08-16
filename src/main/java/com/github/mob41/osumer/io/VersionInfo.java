@@ -28,7 +28,7 @@
  *******************************************************************************/
 package com.github.mob41.osumer.io;
 
-import com.github.mob41.osumer.io.beatmap.Osu;
+import com.github.mob41.osumer.io.beatmap.Osumer;
 import com.github.mob41.osumer.updater.Updater;
 
 public class VersionInfo {
@@ -58,12 +58,12 @@ public class VersionInfo {
     }
 
     public boolean isEqualToRunning() {
-        return Updater.compareVersion(Osu.OSUMER_VERSION, version) == 0 && Osu.OSUMER_BRANCH.equals(branch)
-                && Osu.OSUMER_BUILD_NUM == buildNum;
+        return Updater.compareVersion(Osumer.OSUMER_VERSION, version) == 0 && Osumer.OSUMER_BRANCH.equals(branch)
+                && Osumer.OSUMER_BUILD_NUM == buildNum;
     }
 
     public boolean isNewerThanRunning() {
-        int result = Updater.compareVersion(Osu.OSUMER_VERSION, version);
-        return result == -1 || (result == 0 && Osu.OSUMER_BUILD_NUM < buildNum);
+        int result = Updater.compareVersion(Osumer.OSUMER_VERSION, version);
+        return result == -1 || (result == 0 && Osumer.OSUMER_BUILD_NUM < buildNum);
     }
 }

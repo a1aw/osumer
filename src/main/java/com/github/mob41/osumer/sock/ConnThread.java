@@ -39,7 +39,8 @@ import javax.annotation.processing.Processor;
 import javax.tools.JavaCompiler;
 
 import com.github.mob41.osumer.ArgParser;
-import com.github.mob41.osumer.io.beatmap.Osu;
+import com.github.mob41.osumer.io.beatmap.Osumer;
+import com.github.mob41.osums.io.Osums;
 
 public class ConnThread extends Thread {
 
@@ -77,7 +78,7 @@ public class ConnThread extends Thread {
 
                     String urlStrDy = null;
                     for (int i = 0; i < args.length; i++) {
-                        if (Osu.isVaildBeatMapUrl(args[i])) {
+                        if (Osums.isVaildBeatMapUrl(args[i])) {
                             urlStrDy = args[i];
                             break;
                         }

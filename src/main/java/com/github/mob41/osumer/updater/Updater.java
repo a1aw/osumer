@@ -52,7 +52,7 @@ import com.github.mob41.osumer.exceptions.NoSuchVersionException;
 import com.github.mob41.osumer.io.Installer;
 import com.github.mob41.osumer.io.VersionInfo;
 //import com.github.mob41.osumer.io.OsuDownloader;
-import com.github.mob41.osumer.io.beatmap.Osu;
+import com.github.mob41.osumer.io.beatmap.Osumer;
 
 public class Updater {
 
@@ -103,7 +103,7 @@ public class Updater {
     }
 
     public String getThisVersion() {
-        return Osu.OSUMER_VERSION;
+        return Osumer.OSUMER_VERSION;
     }
     
     public JSONObject getVersions() throws DebuggableException{
@@ -259,9 +259,9 @@ public class Updater {
     }
 
     public UpdateInfo getPerVersionPerBranchLatestVersion() throws DebuggableException {
-        final String thisVersion = Osu.OSUMER_VERSION;
-        final String buildBranch = Osu.OSUMER_BRANCH;
-        final int buildNum = Osu.OSUMER_BUILD_NUM;
+        final String thisVersion = Osumer.OSUMER_VERSION;
+        final String buildBranch = Osumer.OSUMER_BRANCH;
+        final int buildNum = Osumer.OSUMER_BUILD_NUM;
         final int updateSource = config.getUpdateSource();
         
         JSONObject json = getVersions();

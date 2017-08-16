@@ -35,7 +35,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.codec.binary.Base64;
@@ -43,9 +42,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.github.mob41.osumer.io.beatmap.Osu;
-import com.github.mob41.osumer.io.queue.QueueManager;
-import com.github.mob41.osumer.updater.Updater;
+import com.github.mob41.osumer.io.beatmap.Osumer;
 
 public class Config {
     
@@ -67,7 +64,7 @@ public class Config {
 
     private static final String KEY_UPDATE_SOURCE = "updateSource";
 
-    private static final int KEY_UPDATE_SOURCE_DEFAULT_VALUE = Osu.updateSourceStrToInt(Osu.OSUMER_BRANCH);
+    private static final int KEY_UPDATE_SOURCE_DEFAULT_VALUE = Osumer.updateSourceStrToInt(Osumer.OSUMER_BRANCH);
 
     private static final String KEY_DEFAULT_BROWSER = "defaultBrowser";
 
@@ -85,8 +82,8 @@ public class Config {
 
     private static final boolean KEY_AUTO_SWITCH_BROWSER_DEFAULT_VALUE = true;
 
-    private static final String KEY_GETTING_STARTED_STARTUP = "gettingStartedOnStartup_Version" + Osu.OSUMER_VERSION
-            + "-" + Osu.OSUMER_BRANCH + "-" + Osu.OSUMER_BUILD_NUM;
+    private static final String KEY_GETTING_STARTED_STARTUP = "gettingStartedOnStartup_Version" + Osumer.OSUMER_VERSION
+            + "-" + Osumer.OSUMER_BRANCH + "-" + Osumer.OSUMER_BUILD_NUM;
 
     private static final boolean KEY_GETTING_STARTED_STARTUP_DEFAULT_VALUE = true;
 
@@ -154,19 +151,19 @@ public class Config {
 
     private static final boolean KEY_ENABLE_TONE_BEFORE_DOWNLOAD_DEFAULT_VALUE = true;
     
-    private static final String KEY_SELECTED_TONE_BEFORE_DOWNLOAD = "toneBeforeDownloadPath";
+    //private static final String KEY_SELECTED_TONE_BEFORE_DOWNLOAD = "toneBeforeDownloadPath";
 
     private static final String KEY_ENABLE_TONE_DOWNLOAD_STARTED = "toneDownloadStarted";
 
     private static final boolean KEY_ENABLE_TONE_DOWNLOAD_STARTED_DEFAULT_VALUE = true;
     
-    private static final String KEY_SELECTED_TONE_DOWNLOAD_STARTED = "toneDownloadStartedPath";
+    //private static final String KEY_SELECTED_TONE_DOWNLOAD_STARTED = "toneDownloadStartedPath";
 
     private static final String KEY_ENABLE_TONE_AFTER_DOWNLOAD = "toneAfterDownload";
 
     private static final boolean KEY_ENABLE_TONE_AFTER_DOWNLOAD_DEFAULT_VALUE = true;
     
-    private static final String KEY_SELECTED_TONE_AFTER_DOWNLOAD = "toneAfterDownloadPath";
+    //private static final String KEY_SELECTED_TONE_AFTER_DOWNLOAD = "toneAfterDownloadPath";
 
     private JSONObject json;
 

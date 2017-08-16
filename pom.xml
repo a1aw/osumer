@@ -64,5 +64,10 @@
   		<artifactId>OrganDebugger</artifactId>
   		<version>0.0.1-SNAPSHOT</version>
   	</dependency>
+  	<dependency>
+  		<groupId>com.github.mob41.osums</groupId>
+  		<artifactId>osums-api</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
   </dependencies>
 </project>

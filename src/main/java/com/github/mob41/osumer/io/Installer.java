@@ -45,7 +45,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.github.mob41.organdebug.exceptions.DebuggableException;
-import com.github.mob41.osumer.io.beatmap.Osu;
+import com.github.mob41.osumer.io.beatmap.Osumer;
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.Win32Exception;
 import com.sun.jna.platform.win32.WinReg;
@@ -241,12 +241,12 @@ public class Installer {
             return false;
         }
 
-        return verInfo.getVersion().equals(Osu.OSUMER_VERSION) && verInfo.getBranch().equals(Osu.OSUMER_BRANCH)
-                && verInfo.getBuildNum() == Osu.OSUMER_BUILD_NUM;
+        return verInfo.getVersion().equals(Osumer.OSUMER_VERSION) && verInfo.getBranch().equals(Osumer.OSUMER_BRANCH)
+                && verInfo.getBuildNum() == Osumer.OSUMER_BUILD_NUM;
     }
 
     public static VersionInfo getInstalledVersion() {
-        if (!Osu.isWindows()) {
+        if (!Osumer.isWindows()) {
             return null;
         }
 
@@ -304,12 +304,12 @@ public class Installer {
     }
 
     public void install() throws DebuggableException {
-        if (!Osu.isWindows()) {
+        if (!Osumer.isWindows()) {
             throw new DebuggableException(null, "Validate OS is Windows", "Throw debuggable exception",
                     "Validate is osumer elevated", "Installer does not support non-Windows environment", false);
         }
 
-        if (!Osu.isWindowsElevated()) {
+        if (!Osumer.isWindowsElevated()) {
             throw new DebuggableException(null, "Validate OS is Windows", "Validate is osumer elevated",
                     "Create File instance of \"osumer.exe\"",
                     "osumer is not elevated. Restart osumer with administrative privileges.", false);
@@ -352,9 +352,9 @@ public class Installer {
             }
 
             JSONObject verInfoJson = new JSONObject();
-            verInfoJson.put("version", Osu.OSUMER_VERSION);
-            verInfoJson.put("branch", Osu.OSUMER_BRANCH);
-            verInfoJson.put("build", Osu.OSUMER_BUILD_NUM);
+            verInfoJson.put("version", Osumer.OSUMER_VERSION);
+            verInfoJson.put("branch", Osumer.OSUMER_BRANCH);
+            verInfoJson.put("build", Osumer.OSUMER_BUILD_NUM);
 
             verInfo.createNewFile();
 
