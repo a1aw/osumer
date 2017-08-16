@@ -26,33 +26,67 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.github.mob41.osumer.io.queue;
+package com.github.mob41.osumer.io.beatmap;
 
-import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 
-import com.github.mob41.osums.io.Downloader;
+public class Osumer {
 
-public class BeatmapImportAction implements QueueAction {
+    // TODO: Hard-code version?
 
-    @Override
-    public void run(Queue queue) {
-        Downloader dwn = queue.getDownloader();
-        String path = dwn.getDownloadFolder() + dwn.getFileName();
+    public static final String OSUMER_VERSION = "2.0.0";
 
-        File file = new File(path + ".osz");
+    public static final String OSUMER_BRANCH = "snapshot";
 
-        if (!file.exists()) {
-            System.out.println("File not exists: " + path + ".osz");
-            return;
+    public static final int OSUMER_BUILD_NUM = 1;
+
+    private Osumer() {
+    
+    }
+
+    public static boolean isWindows() {
+        return System.getProperty("os.name").contains("Windows");
+    }
+
+    public static boolean isWindowsElevated() {
+        if (!isWindows()) {
+            return false;
         }
+
+        final String programfiles = System.getenv("PROGRAMFILES");
+
+        if (programfiles == null || programfiles.length() < 1) {
+            throw new IllegalStateException("OS mismatch. Program Files directory not detected");
+        }
+
+        File testPriv = new File(programfiles);
+        if (!testPriv.canWrite()) {
+            return false;
+        }
+        File fileTest = null;
 
         try {
-            Desktop.getDesktop().open(file);
+            fileTest = File.createTempFile("testsu", ".dll", testPriv);
         } catch (IOException e) {
-            e.printStackTrace();
+            return false;
+        } finally {
+            if (fileTest != null) {
+                fileTest.delete();
+            }
         }
+        return true;
+    }
+
+    public static int updateSourceStrToInt(String branchStr) {
+        if (branchStr.equals("snapshot")) {
+            return 2;
+        } else if (branchStr.equals("beta")) {
+            return 1;
+        } else if (branchStr.equals("stable")) {
+            return 0;
+        }
+        return -1;
     }
 
 }

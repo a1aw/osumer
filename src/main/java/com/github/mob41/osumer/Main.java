@@ -52,11 +52,12 @@ import com.github.mob41.organdebug.DebugDump;
 import com.github.mob41.organdebug.DumpManager;
 import com.github.mob41.organdebug.exceptions.DebuggableException;
 import com.github.mob41.osumer.io.Installer;
-import com.github.mob41.osumer.io.beatmap.Osu;
+import com.github.mob41.osumer.io.beatmap.Osumer;
 import com.github.mob41.osumer.io.queue.QueueManager;
 import com.github.mob41.osumer.sock.SockThread;
 import com.github.mob41.osumer.ui.ErrorDumpDialog;
 import com.github.mob41.osumer.ui.UIFrame;
+import com.github.mob41.osums.io.Osums;
 
 public class Main {
 
@@ -72,7 +73,7 @@ public class Main {
         ArgParser ap = new ArgParser(args);
 
         if (ap.isVersionFlag()) {
-            System.out.println(Osu.OSUMER_VERSION + "-" + Osu.OSUMER_BRANCH + "-" + Osu.OSUMER_BUILD_NUM);
+            System.out.println(Osumer.OSUMER_VERSION + "-" + Osumer.OSUMER_BRANCH + "-" + Osumer.OSUMER_BUILD_NUM);
             return;
         }
 
@@ -102,8 +103,8 @@ public class Main {
             } else if (ap.isInstallFlag()) {
                 if (!ap.isQuietFlag() && !ap.isForceFlag()) {
                     int option = JOptionPane.showOptionDialog(null,
-                            "You are installing osumer " + Osu.OSUMER_VERSION + "-" + Osu.OSUMER_BRANCH + "-"
-                                    + Osu.OSUMER_BUILD_NUM + ".\n" + "Are you sure?",
+                            "You are installing osumer " + Osumer.OSUMER_VERSION + "-" + Osumer.OSUMER_BRANCH + "-"
+                                    + Osumer.OSUMER_BUILD_NUM + ".\n" + "Are you sure?",
                             "Installing osumer", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null,
                             JOptionPane.NO_OPTION);
 
@@ -134,8 +135,8 @@ public class Main {
             } else if (ap.isUninstallFlag()) {
                 if (!ap.isQuietFlag() && !ap.isForceFlag()) {
                     int option = JOptionPane.showOptionDialog(null,
-                            "You are uninstalling osumer " + Osu.OSUMER_VERSION + "-" + Osu.OSUMER_BRANCH + "-"
-                                    + Osu.OSUMER_BUILD_NUM + ".\n" + "Are you sure?",
+                            "You are uninstalling osumer " + Osumer.OSUMER_VERSION + "-" + Osumer.OSUMER_BRANCH + "-"
+                                    + Osumer.OSUMER_BUILD_NUM + ".\n" + "Are you sure?",
                             "Uninstalling osumer", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null,
                             JOptionPane.NO_OPTION);
 
@@ -169,7 +170,7 @@ public class Main {
             return;
         }
 
-        String configPath = Osu.isWindows() ? System.getenv("localappdata") + "\\osumerExpress" : "";
+        String configPath = Osumer.isWindows() ? System.getenv("localappdata") + "\\osumerExpress" : "";
 
         Config config = new Config(configPath, Config.DEFAULT_DATA_FILE_NAME);
         // QueueManager mgr = new QueueManager();
@@ -261,7 +262,7 @@ public class Main {
         } else {
             String urlStr = null;
             for (int i = 0; i < args.length; i++) {
-                if (Osu.isVaildBeatMapUrl(args[i])) {
+                if (Osums.isVaildBeatMapUrl(args[i])) {
                     urlStr = args[i];
                     break;
                 }
@@ -356,7 +357,7 @@ public class Main {
     private static void runBrowser(Config config, String[] args) {
         String argstr = buildArgStr(args);
         // Run the default browser application
-        if (!GraphicsEnvironment.isHeadless() && Osu.isWindows()) {
+        if (!GraphicsEnvironment.isHeadless() && Osumer.isWindows()) {
 
             System.out.println(config.getDefaultBrowser());
             if (config.getDefaultBrowser() == null || config.getDefaultBrowser().isEmpty()) {

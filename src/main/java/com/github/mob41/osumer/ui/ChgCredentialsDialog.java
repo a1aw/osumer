@@ -50,14 +50,18 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import com.github.mob41.organdebug.exceptions.DebuggableException;
-import com.github.mob41.osumer.io.beatmap.Osu;
+import com.github.mob41.osums.io.Osums;
 
 public class ChgCredentialsDialog extends JDialog {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 2613585397065249917L;
     private final JPanel contentPanel = new JPanel();
     private JTextField userFld;
 
-    private final Osu osu;
+    private final Osums osu;
     private JButton loginButton;
     private JProgressBar pb;
     private JLabel lblLoggingIn;
@@ -72,7 +76,7 @@ public class ChgCredentialsDialog extends JDialog {
      */
     public ChgCredentialsDialog() {
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        osu = new Osu();
+        osu = new Osums();
 
         setTitle("Login into osu!");
         setBounds(100, 100, 451, 183);

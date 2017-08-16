@@ -28,13 +28,12 @@
  *******************************************************************************/
 package com.github.mob41.osumer.io.queue;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.github.mob41.osumer.Config;
-import com.github.mob41.osumer.io.Downloader;
+import com.github.mob41.osums.io.Downloader;
 
 public class QueueManager {
 

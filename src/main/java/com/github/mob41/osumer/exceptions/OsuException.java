@@ -30,6 +30,11 @@ package com.github.mob41.osumer.exceptions;
 
 public class OsuException extends Exception {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -7589497596398382068L;
+
     public OsuException() {
 
     }
