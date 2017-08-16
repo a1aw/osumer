@@ -33,8 +33,9 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import com.github.mob41.osumer.exceptions.DebugDump;
-import com.github.mob41.osumer.exceptions.DumpManager;
+import com.github.mob41.organdebug.DebugDump;
+import com.github.mob41.organdebug.DumpManager;
+import com.github.mob41.osumer.exceptions.ErrorDumpDialog;
 import com.github.mob41.osumer.ui.UIFrame;
 
 public class SockThread extends Thread {
@@ -72,7 +73,9 @@ public class SockThread extends Thread {
                 DebugDump dump = new DebugDump(null, null, "Opening osumer socket", null,
                         "Could not open socket at 46725 for BG call. Another osumer application running?", false, e1);
                 DumpManager.getInstance().addDump(dump);
-                DebugDump.showDebugDialog(dump);
+                ErrorDumpDialog dialog = new ErrorDumpDialog(dump);
+                dialog.setModal(true);
+                dialog.setVisible(true);
                 System.exit(-1);
                 return;
             }
@@ -87,7 +90,9 @@ public class SockThread extends Thread {
                 DebugDump dump = new DebugDump(null, null, "ServerSocket breaks at exception", null,
                         "Unexpected ServerSocket break", false, e);
                 DumpManager.getInstance().addDump(dump);
-                DebugDump.showDebugDialog(dump);
+                ErrorDumpDialog dialog = new ErrorDumpDialog(dump);
+                dialog.setModal(true);
+                dialog.setVisible(true);
                 System.exit(-1);
                 return;
             }

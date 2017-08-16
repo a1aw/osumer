@@ -34,10 +34,9 @@ import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Observable;
 
-import com.github.mob41.osumer.exceptions.DebugDump;
-import com.github.mob41.osumer.exceptions.DumpManager;
+import com.github.mob41.organdebug.DebugDump;
+import com.github.mob41.organdebug.DumpManager;
 import com.github.mob41.osumer.io.Downloader;
 
 public class URLDownloader extends Downloader {

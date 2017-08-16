@@ -45,7 +45,7 @@ import java.util.Map;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import com.github.mob41.osumer.exceptions.DebuggableException;
+import com.github.mob41.organdebug.exceptions.DebuggableException;
 
 public class Osu {
 

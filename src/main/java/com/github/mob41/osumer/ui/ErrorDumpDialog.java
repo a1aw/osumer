@@ -60,7 +60,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
 
-import com.github.mob41.osumer.exceptions.DebugDump;
+import com.github.mob41.organdebug.DebugDump;
 
 public class ErrorDumpDialog extends JDialog {
 

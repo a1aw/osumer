@@ -36,10 +36,9 @@ import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
-import java.util.Observable;
 
-import com.github.mob41.osumer.exceptions.DebugDump;
-import com.github.mob41.osumer.exceptions.DumpManager;
+import com.github.mob41.organdebug.DebugDump;
+import com.github.mob41.organdebug.DumpManager;
 import com.github.mob41.osumer.io.Downloader;
 
 public class OsuDownloader extends Downloader {

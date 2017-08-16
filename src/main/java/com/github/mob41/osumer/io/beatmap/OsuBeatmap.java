@@ -34,7 +34,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.github.mob41.osumer.exceptions.DebuggableException;
+import com.github.mob41.organdebug.exceptions.DebuggableException;
 
 public class OsuBeatmap implements Serializable {
 

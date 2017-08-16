@@ -28,6 +28,8 @@
  *******************************************************************************/
 package com.github.mob41.osumer.exceptions;
 
+import com.github.mob41.organdebug.exceptions.DebuggableException;
+
 public class NoBuildsForVersionException extends DebuggableException {
 
     /**

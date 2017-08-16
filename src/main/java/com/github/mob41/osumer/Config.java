@@ -153,14 +153,20 @@ public class Config {
     private static final String KEY_ENABLE_TONE_BEFORE_DOWNLOAD = "toneBeforeDownload";
 
     private static final boolean KEY_ENABLE_TONE_BEFORE_DOWNLOAD_DEFAULT_VALUE = true;
+    
+    private static final String KEY_SELECTED_TONE_BEFORE_DOWNLOAD = "toneBeforeDownloadPath";
 
     private static final String KEY_ENABLE_TONE_DOWNLOAD_STARTED = "toneDownloadStarted";
 
     private static final boolean KEY_ENABLE_TONE_DOWNLOAD_STARTED_DEFAULT_VALUE = true;
+    
+    private static final String KEY_SELECTED_TONE_DOWNLOAD_STARTED = "toneDownloadStartedPath";
 
     private static final String KEY_ENABLE_TONE_AFTER_DOWNLOAD = "toneAfterDownload";
 
     private static final boolean KEY_ENABLE_TONE_AFTER_DOWNLOAD_DEFAULT_VALUE = true;
+    
+    private static final String KEY_SELECTED_TONE_AFTER_DOWNLOAD = "toneAfterDownloadPath";
 
     private JSONObject json;
 
@@ -479,7 +485,7 @@ public class Config {
         }
         reader.close();
 
-        /*
+        /* 
          * Preferences prefs = Preferences.userRoot();
          * 
          * String data = prefs.get("com.github.mob41.osumer.configuration",
