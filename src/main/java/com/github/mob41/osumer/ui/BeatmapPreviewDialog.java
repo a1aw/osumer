@@ -54,7 +54,7 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import com.github.mob41.osums.io.OsuBeatmap;
+import com.github.mob41.osums.io.beatmap.OsuBeatmap;
 
 public class BeatmapPreviewDialog extends JDialog {
 
@@ -95,14 +95,14 @@ public class BeatmapPreviewDialog extends JDialog {
         txtrLoadingInformation = new JTextArea();
         txtrLoadingInformation.setEditable(false);
         txtrLoadingInformation.setText(
-                "=== URL Type: " + (map.isPageBeatmap() ? "Beatmap" : "Song") + " ===\n" +
+                "=== URL Type: " + (map instanceof OsuBeatmap ? "Beatmap" : "Song") + " ===\n" +
                  
                 "Name: " + map.getName() + "\n" +
                 "Artist: " + map.getArtist() + "\n" +
                 "Title: " + map.getTitle() + "\n" +
                 "BPM: " + map.getBpm() +
                 
-                (map.isPageBeatmap() ?
+                (map instanceof OsuBeatmap ?
                 "\nCircle Size: " + map.getCircleSize() +
                 "\nApproach Rate: " + map.getApproachRate() +
                 "\nAccuracy: " + map.getAccuracy() +

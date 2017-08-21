@@ -57,7 +57,7 @@ import com.github.mob41.osumer.io.queue.QueueManager;
 import com.github.mob41.osumer.sock.SockThread;
 import com.github.mob41.osumer.ui.ErrorDumpDialog;
 import com.github.mob41.osumer.ui.UIFrame;
-import com.github.mob41.osums.io.Osums;
+import com.github.mob41.osums.io.beatmap.Osums;
 
 public class Main {
 

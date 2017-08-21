@@ -50,7 +50,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import com.github.mob41.organdebug.exceptions.DebuggableException;
-import com.github.mob41.osums.io.Osums;
+import com.github.mob41.osums.io.beatmap.Osums;
 
 public class ChgCredentialsDialog extends JDialog {
 
