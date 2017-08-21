@@ -84,9 +84,10 @@ import com.github.mob41.osumer.io.queue.QueueAction;
 import com.github.mob41.osumer.io.queue.QueueManager;
 import com.github.mob41.osumer.io.queue.actions.BeatmapImportAction;
 import com.github.mob41.osumer.sock.SockThread;
-import com.github.mob41.osums.io.OsuBeatmap;
-import com.github.mob41.osums.io.OsuDownloader;
-import com.github.mob41.osums.io.Osums;
+import com.github.mob41.osums.io.beatmap.OsuBeatmap;
+import com.github.mob41.osums.io.beatmap.OsuDownloader;
+import com.github.mob41.osums.io.beatmap.Osums;
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -524,9 +525,18 @@ public class UIFrame extends JFrame {
 
         scrollPane.setViewportView(table);
         contentPane.setLayout(gl_contentPane);
+        
+        tab.add("Search beatmaps", new BeatmapSearchPanel(osu));
 
         this.sockThread = new SockThread(this);
         sockThread.start();
+        
+        
+        new Thread(){
+            public void run(){
+                
+            }
+        }.start();
     }
 
     public Osums getOsums() {

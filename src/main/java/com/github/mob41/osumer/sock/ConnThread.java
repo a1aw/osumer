@@ -40,7 +40,7 @@ import javax.tools.JavaCompiler;
 
 import com.github.mob41.osumer.ArgParser;
 import com.github.mob41.osumer.io.beatmap.Osumer;
-import com.github.mob41.osums.io.Osums;
+import com.github.mob41.osums.io.beatmap.Osums;
 
 public class ConnThread extends Thread {
 
