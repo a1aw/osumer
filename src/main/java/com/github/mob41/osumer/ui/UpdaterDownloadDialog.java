@@ -158,7 +158,7 @@ public class UpdaterDownloadDialog extends JDialog {
 					System.out.println("Download completed. Importing...");
 					
 					try {
-						Runtime.getRuntime().exec("cmd /c " + loc + " -install");
+						Runtime.getRuntime().exec("cmd.exe /c \"" + loc + "\" -install");
 					} catch (IOException e1) {
 						e1.printStackTrace();
 						DumpManager.getInstance()
@@ -172,6 +172,12 @@ public class UpdaterDownloadDialog extends JDialog {
 								e1));
 					}
 					
+					try {
+					    lblStatus.setText("Status: Cooling down...");
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
 					System.exit(0);
 					return;
 				}
