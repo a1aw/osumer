@@ -37,9 +37,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 
 import javax.imageio.ImageIO;
 import javax.swing.GroupLayout;
@@ -155,9 +157,15 @@ public class BeatmapPreviewDialog extends JDialog {
 
         new Thread() {
             public void run() {
+                String urlStr = map.getThumbUrl();
+                int i = urlStr.lastIndexOf("?");
+                if (i != -1){
+                    urlStr = urlStr.substring(0, i);
+                }
+                
                 URL url = null;
                 try {
-                    url = new URL("http:" + map.getThumbUrl());
+                    url = new URL("http:" + urlStr);
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                     lblThumb.setForeground(Color.RED);

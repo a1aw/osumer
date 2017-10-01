@@ -526,7 +526,7 @@ public class UIFrame extends JFrame {
         scrollPane.setViewportView(table);
         contentPane.setLayout(gl_contentPane);
         
-        tab.add("Search beatmaps", new BeatmapSearchPanel(osu));
+        tab.add("Search beatmaps", new BeatmapSearchPanel(this, osu));
 
         this.sockThread = new SockThread(this);
         sockThread.start();
