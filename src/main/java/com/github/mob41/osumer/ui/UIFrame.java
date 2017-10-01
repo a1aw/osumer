@@ -113,7 +113,7 @@ public class UIFrame extends JFrame {
 		}
 		setIconImage(Toolkit.getDefaultToolkit().getImage(UIFrame.class.getResource("/com/github/mob41/osumer/ui/osumerIcon_32px.png")));
 		setResizable(false);
-		setTitle("osumer UI");
+		setTitle("osumer1 UI");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 655, 535);
 		
@@ -293,7 +293,7 @@ public class UIFrame extends JFrame {
 		setContentPane(contentPane);
 		contentPane.repaint();
 		
-		JLabel lblOsumer = new JLabel("osumer");
+		JLabel lblOsumer = new JLabel("osumer1");
 		lblOsumer.setHorizontalAlignment(SwingConstants.LEFT);
 		lblOsumer.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		
@@ -371,9 +371,6 @@ public class UIFrame extends JFrame {
 		JLabel label = new JLabel("");
 		label.setHorizontalAlignment(SwingConstants.RIGHT);
 		label.setIcon(new ImageIcon(UIFrame.class.getResource("/com/github/mob41/osumer/ui/osumerIcon_64px.png")));
-		
-		JLabel lblNewLabel = new JLabel("The easiest,express way to obtain beatmaps");
-		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
 
 		JPopupMenu popupMenu = new JPopupMenu();
 		JButton btnDownload = new JButton("Download...");
@@ -568,69 +565,74 @@ public class UIFrame extends JFrame {
 		updateTxtPn.setEditable(false);
 		updateTxtPn.setBackground(SystemColor.control);
 		
+		JTextPane txtpnTheEasiestexpressWay = new JTextPane();
+		txtpnTheEasiestexpressWay.setEditable(false);
+		txtpnTheEasiestexpressWay.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		txtpnTheEasiestexpressWay.setText("osumer2 scheduled distribution on Late October!\r\n\r\nKeep in touch of any software updates!\r\n");
+		txtpnTheEasiestexpressWay.setBackground(SystemColor.control);
+		
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
-			gl_contentPane.createParallelGroup(Alignment.TRAILING)
-				.addGroup(gl_contentPane.createSequentialGroup()
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblCopyrightc, GroupLayout.DEFAULT_SIZE, 642, Short.MAX_VALUE)
-						.addComponent(panel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addGroup(gl_contentPane.createSequentialGroup()
-							.addComponent(label)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(lblOsumer)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(lblNewLabel, GroupLayout.PREFERRED_SIZE, 337, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-								.addComponent(updateTxtPn, GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
-								.addComponent(lblUpdateBranchLabel, GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
-								.addComponent(lblVersion, GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)))
-						.addGroup(gl_contentPane.createSequentialGroup()
-							.addComponent(lblBeatmapUrl)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(mapUrlFld, GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(btnDownloadImport)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(btnDownload))
-						.addGroup(gl_contentPane.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(lblHttpsgithubcommobosumer, GroupLayout.DEFAULT_SIZE, 632, Short.MAX_VALUE)))
-					.addContainerGap())
+		    gl_contentPane.createParallelGroup(Alignment.TRAILING)
+		        .addGroup(gl_contentPane.createSequentialGroup()
+		            .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+		                .addComponent(lblCopyrightc, GroupLayout.DEFAULT_SIZE, 629, Short.MAX_VALUE)
+		                .addComponent(panel, GroupLayout.PREFERRED_SIZE, 629, Short.MAX_VALUE)
+		                .addGroup(gl_contentPane.createSequentialGroup()
+		                    .addComponent(label)
+		                    .addPreferredGap(ComponentPlacement.RELATED)
+		                    .addComponent(lblOsumer)
+		                    .addPreferredGap(ComponentPlacement.RELATED)
+		                    .addComponent(txtpnTheEasiestexpressWay, GroupLayout.PREFERRED_SIZE, 339, GroupLayout.PREFERRED_SIZE)
+		                    .addPreferredGap(ComponentPlacement.RELATED)
+		                    .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+		                        .addComponent(updateTxtPn, GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
+		                        .addComponent(lblUpdateBranchLabel, GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
+		                        .addComponent(lblVersion, GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)))
+		                .addGroup(gl_contentPane.createSequentialGroup()
+		                    .addComponent(lblBeatmapUrl)
+		                    .addPreferredGap(ComponentPlacement.RELATED)
+		                    .addComponent(mapUrlFld, GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)
+		                    .addPreferredGap(ComponentPlacement.RELATED)
+		                    .addComponent(btnDownloadImport)
+		                    .addPreferredGap(ComponentPlacement.RELATED)
+		                    .addComponent(btnDownload))
+		                .addGroup(gl_contentPane.createSequentialGroup()
+		                    .addContainerGap()
+		                    .addComponent(lblHttpsgithubcommobosumer, GroupLayout.DEFAULT_SIZE, 619, Short.MAX_VALUE)))
+		            .addContainerGap())
 		);
 		gl_contentPane.setVerticalGroup(
-			gl_contentPane.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_contentPane.createSequentialGroup()
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
-							.addComponent(lblOsumer, GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
-							.addComponent(lblNewLabel, GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE))
-						.addComponent(label, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
-						.addGroup(gl_contentPane.createSequentialGroup()
-							.addComponent(lblVersion)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(lblUpdateBranchLabel)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(updateTxtPn, GroupLayout.PREFERRED_SIZE, 42, GroupLayout.PREFERRED_SIZE)))
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_contentPane.createSequentialGroup()
-							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
-									.addComponent(btnDownload, GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
-									.addComponent(btnDownloadImport, GroupLayout.PREFERRED_SIZE, 28, Short.MAX_VALUE))
-								.addComponent(lblBeatmapUrl))
-							.addGap(7))
-						.addGroup(gl_contentPane.createSequentialGroup()
-							.addComponent(mapUrlFld, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED)))
-					.addComponent(panel, GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(lblCopyrightc)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(lblHttpsgithubcommobosumer, GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
-					.addGap(3))
+		    gl_contentPane.createParallelGroup(Alignment.LEADING)
+		        .addGroup(gl_contentPane.createSequentialGroup()
+		            .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+		                .addComponent(txtpnTheEasiestexpressWay, GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
+		                .addComponent(lblOsumer, GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
+		                .addComponent(label, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
+		                .addGroup(gl_contentPane.createSequentialGroup()
+		                    .addComponent(lblVersion)
+		                    .addPreferredGap(ComponentPlacement.RELATED)
+		                    .addComponent(lblUpdateBranchLabel)
+		                    .addPreferredGap(ComponentPlacement.RELATED)
+		                    .addComponent(updateTxtPn, GroupLayout.PREFERRED_SIZE, 42, GroupLayout.PREFERRED_SIZE)))
+		            .addPreferredGap(ComponentPlacement.RELATED)
+		            .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+		                .addGroup(gl_contentPane.createSequentialGroup()
+		                    .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+		                        .addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+		                            .addComponent(btnDownload, GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+		                            .addComponent(btnDownloadImport, GroupLayout.PREFERRED_SIZE, 28, Short.MAX_VALUE))
+		                        .addComponent(lblBeatmapUrl))
+		                    .addGap(7))
+		                .addGroup(gl_contentPane.createSequentialGroup()
+		                    .addComponent(mapUrlFld, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+		                    .addPreferredGap(ComponentPlacement.RELATED)))
+		            .addComponent(panel, GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
+		            .addPreferredGap(ComponentPlacement.RELATED)
+		            .addComponent(lblCopyrightc)
+		            .addPreferredGap(ComponentPlacement.RELATED)
+		            .addComponent(lblHttpsgithubcommobosumer, GroupLayout.DEFAULT_SIZE, 43, Short.MAX_VALUE)
+		            .addGap(3))
 		);
 		
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));

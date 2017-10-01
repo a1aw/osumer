@@ -46,7 +46,7 @@ public class Osu {
 	
 //TODO: Hard-code version?
 	
-	public static final String OSUMER_VERSION = "1.0.5";
+	public static final String OSUMER_VERSION = "1.0.6";
 	
 	public static final String OSUMER_BRANCH = "snapshot";
 	
@@ -245,7 +245,7 @@ public class Osu {
 			
 			List<String> locationHeader = headerFields.get("Location");
 			
-			if (locationHeader == null || locationHeader.size() != 1 || !locationHeader.get(0).equals(INDEX_LOCATION_URL)){
+			if (locationHeader == null || locationHeader.size() != 1 || !locationHeader.get(0).startsWith(INDEX_LOCATION_URL)){
 				throw new DebuggableException(
 						"",
 						"Get \"Location\" from headerFields and assign to locationHeader",
