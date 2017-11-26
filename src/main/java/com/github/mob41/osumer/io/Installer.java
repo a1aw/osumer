@@ -180,6 +180,14 @@ public class Installer {
     // HKLM/SOFTWARE/Classes/osumer/@
     private static final String WIN_REG_CLASSES_OSUMER_DEFAULT_VALUE = "osumerExpress"; // Refer
                                                                                         // upstairs
+    
+    //Run
+    
+    private static final String WIN_REG_RUN_PATH = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
+    
+    // HKLM/SOFTWARE/Microsoft/Windows/CurrentVersion/Run/@osumerDaemon
+    private static final String WIN_REG_RUN_OSUMERDAEMON_PARA = "osumerDaemon";
+    private static final String WIN_REG_RUN_OSUMERDAEMON_VALUE = "\"" + winPath + "\\" + winFile + "\" -daemon";
 
     public Installer() {
 
@@ -527,6 +535,11 @@ public class Installer {
             Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE,
                     osumerClassRegPath + "\\shell\\open\\command", "",
                     WIN_REG_SHELL_OPEN_COMMAND_DEFAULT_VALUE + " \"%1\"");
+            
+            // Run
+            
+            // HKLM/SOFTWARE/Microsoft/Windows/CurrentVersion/@osumerDaemon
+            Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_RUN_PATH + "\\" + WIN_REG_RUN_OSUMERDAEMON_PARA, WIN_REG_RUN_OSUMERDAEMON_VALUE);
         } catch (Win32Exception e) {
             throw new DebuggableException(null, "(Try&catch try) Writing to registry", "Throw debuggable exception",
                     "(End of function)", "Error writing registry", false, e);
