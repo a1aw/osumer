@@ -1040,7 +1040,7 @@ public class PreferenceDialog extends JDialog {
                             if (result == -2){
                                 return -1;
                             }
-                            return result;
+                            return result * -1;
                         }
                         
                     });
