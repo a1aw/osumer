@@ -592,6 +592,8 @@ public class Installer {
             Advapi32Util.registryDeleteKey(WinReg.HKEY_LOCAL_MACHINE,
                     WIN_REG_CLASSES_PATH + "\\" + WIN_REG_CLASSES_OSUMER_KEY, "shell");
             Advapi32Util.registryDeleteKey(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_CLASSES_PATH, WIN_REG_CLASSES_OSUMER_KEY);
+            
+            Advapi32Util.registryDeleteKey(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_RUN_PATH, WIN_REG_RUN_OSUMERDAEMON_PARA); 
         } catch (Win32Exception e) {
             e.printStackTrace();
             throw new DebuggableException(null, "(Try&catch try) Writing to registry", "Throw debuggable exception",

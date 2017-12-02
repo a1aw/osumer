@@ -69,6 +69,14 @@ public class Config {
     private static final String KEY_DEFAULT_BROWSER = "defaultBrowser";
 
     private static final String KEY_DEFAULT_BROWSER_DEFAULT_VALUE = "IEXPLORE.EXE";
+    
+    private static final String KEY_DEFAULT_OPEN_BEATMAP_ACTION = "defaultOpenBeatmapAction";
+    
+    private static final int KEY_DEFAULT_OPEN_BEATMAP_ACTION_DEFAULT_VALUE = 0;
+    
+    private static final String KEY_DEFAULT_BEATMAP_SAVE_LOCATION = "defaultBeatmapSaveLocation";
+    
+    private static final String KEY_DEFAULT_BEATMAP_SAVE_LOCATION_DEFAULT_VALUE = System.getenv("USERPROFILE") + "\\osumerDownloads";
 
     private static final String KEY_OE_ENABLED = "oeenabled";
 
@@ -192,6 +200,22 @@ public class Config {
 
     public String getDefaultBrowser() {
         return json.getString(KEY_DEFAULT_BROWSER);
+    }
+    
+    public void setDefaultOpenBeatmapAction(int action) {
+        json.put(KEY_DEFAULT_OPEN_BEATMAP_ACTION, action);
+    }
+    
+    public int getDefaultOpenBeatmapAction() {
+        return json.getInt(KEY_DEFAULT_OPEN_BEATMAP_ACTION);
+    }
+    
+    public void setDefaultBeatmapSaveLocation(String location) {
+        json.put(KEY_DEFAULT_BEATMAP_SAVE_LOCATION, location);
+    }
+    
+    public String getDefaultBeatmapSaveLocation() {
+        return json.getString(KEY_DEFAULT_BEATMAP_SAVE_LOCATION);
     }
     
     public void setOEEnabled(boolean enabled){
@@ -425,6 +449,8 @@ public class Config {
         boolean modified = false;
         modified |= ifNullPutValue(json, KEY_UPDATE_SOURCE, KEY_UPDATE_SOURCE_DEFAULT_VALUE);
         modified |= ifNullPutValue(json, KEY_DEFAULT_BROWSER, KEY_DEFAULT_BROWSER_DEFAULT_VALUE);
+        modified |= ifNullPutValue(json, KEY_DEFAULT_OPEN_BEATMAP_ACTION, KEY_DEFAULT_OPEN_BEATMAP_ACTION_DEFAULT_VALUE);
+        modified |= ifNullPutValue(json, KEY_DEFAULT_BEATMAP_SAVE_LOCATION, KEY_DEFAULT_BEATMAP_SAVE_LOCATION_DEFAULT_VALUE);
         modified |= ifNullPutValue(json, KEY_OE_ENABLED, KEY_OE_ENABLED_DEFAULT_VALUE);
         modified |= ifNullPutValue(json, KEY_NO_UI_ARG_SWITCH_BROWSER, KEY_NO_UI_ARG_SWITCH_BROWSER_DEFAULT_VALUE);
         modified |= ifNullPutValue(json, KEY_AUTO_SWITCH_BROWSER, KEY_AUTO_SWITCH_BROWSER_DEFAULT_VALUE);

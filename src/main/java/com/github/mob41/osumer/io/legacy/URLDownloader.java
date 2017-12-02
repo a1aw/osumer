@@ -173,7 +173,24 @@ public class URLDownloader extends Downloader {
             }
 
             if (status == DOWNLOADING) {
+                if (file != null) {
+                    try {
+                        file.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                
                 status = COMPLETED;
+                
                 reportState();
             }
         } catch (IOException e) {
