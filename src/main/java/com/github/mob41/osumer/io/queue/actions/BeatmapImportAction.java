@@ -30,13 +30,24 @@ package com.github.mob41.osumer.io.queue.actions;
 
 import java.awt.Desktop;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 
+import javax.swing.JOptionPane;
+
+import com.github.mob41.osumer.Config;
 import com.github.mob41.osumer.io.queue.Queue;
 import com.github.mob41.osumer.io.queue.QueueAction;
 import com.github.mob41.osums.io.Downloader;
 
 public class BeatmapImportAction implements QueueAction {
+    
+    private final Config config;
+    
+    public BeatmapImportAction(Config config) {
+        this.config = config;
+    }
 
     @Override
     public void run(Queue queue) {
@@ -49,11 +60,45 @@ public class BeatmapImportAction implements QueueAction {
             System.out.println("File not exists: " + path + ".osz");
             return;
         }
+        
+        int action = config.getDefaultOpenBeatmapAction();
 
-        try {
-            Desktop.getDesktop().open(file);
-        } catch (IOException e) {
-            e.printStackTrace();
+        
+        if (action == 1 || action == 2) {
+            String loc = null;
+            if (action == 1) {
+                loc = System.getenv("LOCALAPPDATA") + "\\osu!\\Songs";
+            } else {
+                loc = config.getDefaultBeatmapSaveLocation();
+            }
+            
+            File songsFolder = new File(loc);
+            
+            if (!songsFolder.exists()) {
+                songsFolder.mkdirs();   
+            }
+            
+            File toFile = new File(loc + "\\" + dwn.getFileName() + ".osz");
+            
+            if (toFile.exists()) {
+                toFile.delete();
+            }
+
+            FileOutputStream toFileOut;
+            try {
+                toFileOut = new FileOutputStream(toFile);
+                Files.copy(file.toPath(), toFileOut);
+                toFileOut.close();
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(null, "osumer Song Copy failed:\n\nFrom: " + path + "\nTo: " + loc + "\n\nMake sure you have access to that folder.\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                Desktop.getDesktop().open(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

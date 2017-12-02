@@ -34,8 +34,13 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -50,6 +55,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -65,13 +71,24 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
+import org.apache.commons.codec.binary.Base64;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.github.mob41.organdebug.exceptions.DebuggableException;
 import com.github.mob41.osumer.Config;
+import com.github.mob41.osumer.exceptions.OsuException;
 import com.github.mob41.osumer.io.Installer;
+import com.github.mob41.osumer.io.beatmap.Osumer;
+import com.github.mob41.osumer.io.legacy.URLDownloader;
+import com.github.mob41.osumer.io.queue.Queue;
+import com.github.mob41.osumer.io.queue.QueueAction;
+import com.github.mob41.osumer.io.queue.QueueManager;
+import com.github.mob41.osumer.io.queue.actions.UpdaterRunAction;
 import com.github.mob41.osumer.updater.Updater;
+import javax.swing.JTextField;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 public class PreferenceDialog extends JDialog {
 
@@ -80,6 +97,7 @@ public class PreferenceDialog extends JDialog {
      */
     private static final long serialVersionUID = 3143276952707175093L;
     
+    private final Installer installer;
     private final Config config;
     private final UIManager.LookAndFeelInfo[] infos;
     private final JPanel contentPanel = new JPanel();
@@ -123,13 +141,25 @@ public class PreferenceDialog extends JDialog {
     private JButton btnDowngrade;
     private JButton btnShowChangelog;
     private JTabbedPane tab;
+    private JLabel lblStatusValue;
+    private JButton btnInstallOsumerexpress;
 
+    private UIFrame uiFrame;
+    private JTextField downloadFolderField;
+    private JRadioButton rdbtnPutDownloadsTo_1;
+    private JRadioButton rdbtnPutDownloadsTo;
+    private JRadioButton rdbtnLaunchOsuAutomatically;
+    private JLabel lblDownloadFolder;
+    private JButton btnDownloadLocSelect;
+    
     /**
      * Create the dialog.
      */
-    public PreferenceDialog(Config config) {
+    public PreferenceDialog(Config config, UIFrame uiFrame) {
         this.config = config;
         this.updater = new Updater(config);
+        this.installer = new Installer();
+        this.uiFrame = uiFrame;
         
         setTitle("osumer2 Preferences");
         setBounds(100, 100, 811, 545);
@@ -300,7 +330,7 @@ public class PreferenceDialog extends JDialog {
 
                 JLabel lblStatus = new JLabel("Status:");
 
-                JLabel lblUnknown = new JLabel("Unknown");
+                lblStatusValue = new JLabel("Unknown");
 
                 JLabel lblPleaseSetosumerexpress = new JLabel(
                         "Hint: Please set \"osumerExpress\" as default browser in order to receive beatmap URLs.");
@@ -312,7 +342,109 @@ public class PreferenceDialog extends JDialog {
                 lblPleaseRestartOsumer.setForeground(Color.RED);
                 lblPleaseRestartOsumer.setHorizontalAlignment(SwingConstants.CENTER);
 
-                JButton btnInstallOsumerexpress = new JButton("Install osumerExpress, osumer2 daemon");
+                btnInstallOsumerexpress = new JButton("Install osumerExpress, osumer2 daemon");
+                btnInstallOsumerexpress.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent arg0) {
+                        boolean installed = Installer.isInstalled();
+                        
+                        if (true || !installed) {
+                            int option = JOptionPane.showOptionDialog(PreferenceDialog.this, "Are you sure to install?", "Install osumerExpress", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 1);
+                            
+                            if (option == JOptionPane.CLOSED_OPTION || option == JOptionPane.NO_OPTION) {
+                                return;
+                            }
+                            
+                            boolean useWebUpdater = false;
+                            
+                            if (!Osumer.isWindowsElevated()){
+                                int option2 = JOptionPane.showOptionDialog(null, "Installation requires osumer to be elevated.\nosumer will use the web updater instead.\nAre you sure?", "Not elevated", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, JOptionPane.YES_OPTION);
+                                
+                                if (option2 == JOptionPane.NO_OPTION){
+                                    return;
+                                }
+                                
+                                useWebUpdater = true;
+                            }
+                            
+                            if (!useWebUpdater){
+                                try {
+                                    if (updater.isUpdateAvailable()){
+                                        int option2 = JOptionPane.showOptionDialog(null, "osumer Update available!\nDo you want to launch the web updater\ninstead of installing the current version?", "Update available", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, JOptionPane.YES_OPTION);
+                                        
+                                        if (option2 == JOptionPane.YES_OPTION){
+                                            useWebUpdater = true;
+                                        }
+                                    }
+                                } catch (DebuggableException e1) {
+                                    int option2 = JOptionPane.showOptionDialog(null, "osumer cannot check for updates for latest version.\nDo you still want to install the current version?", "Cannot check update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, null, JOptionPane.YES_OPTION);
+                                    
+                                    if (option2 != JOptionPane.YES_OPTION){
+                                        return;
+                                    }
+                                }
+                            }
+                            
+                            if (useWebUpdater){
+                                try {
+                                    String updaterLink = Updater.getUpdaterLink();
+                                    
+                                    if (updaterLink == null){
+                                        System.out.println("No latest updater .exe defined! Falling back to legacy updater!");
+                                        updaterLink = Updater.LEGACY_UPDATER_JAR;
+                                    }
+                                    
+                                    URL url;
+                                    try {
+                                        url = new URL(updaterLink);
+                                    } catch (MalformedURLException e) {
+                                        e.printStackTrace();
+                                        JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+                                        return;
+                                    }
+                                    
+                                    final String folder = System.getProperty("java.io.tmpdir");
+                                    final String fileName = "osumer_updater_" + Calendar.getInstance().getTimeInMillis() + ".exe";
+                                    
+                                    QueueManager mgr = uiFrame.getQueueManager();
+                                    mgr.addQueue(new Queue(
+                                            "osumer Updater",
+                                            new URLDownloader(folder, fileName, url),
+                                            null,
+                                            null,
+                                            new QueueAction[] {
+                                                    new UpdaterRunAction(folder + fileName)
+                                            })
+                                     );
+                                    uiFrame.getTab().setSelectedIndex(1);
+                                    new Thread() {
+                                        public void run() {
+                                            JOptionPane.showMessageDialog(uiFrame, "The web updater will be downloaded and started very soon.", "Notice", JOptionPane.INFORMATION_MESSAGE);
+                                        }
+                                    }.start();
+                                    dispose();
+                                } catch (DebuggableException e){
+                                    e.printStackTrace();
+                                    JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+                                }
+                            } else {
+                                try {
+                                    installer.install();
+                                    JOptionPane.showMessageDialog(null, "Installation success.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                                } catch (DebuggableException e){
+                                    JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+                                }
+                                
+                                if (installer.isInstalled()){
+                                    //panelSettings();
+                                } else {
+                                    //panelNotInstalled();
+                                }
+                            }
+                        } else {
+                            
+                        }
+                    }
+                });
                 GroupLayout gl_panel_3 = new GroupLayout(panel_3);
                 gl_panel_3.setHorizontalGroup(gl_panel_3.createParallelGroup(Alignment.TRAILING).addGroup(gl_panel_3
                         .createSequentialGroup().addContainerGap()
@@ -328,13 +460,13 @@ public class PreferenceDialog extends JDialog {
                                                 .addPreferredGap(ComponentPlacement.RELATED).addComponent(btnShowGuide))
                                 .addGroup(Alignment.LEADING,
                                         gl_panel_3.createSequentialGroup().addComponent(lblStatus)
-                                                .addPreferredGap(ComponentPlacement.RELATED).addComponent(lblUnknown,
+                                                .addPreferredGap(ComponentPlacement.RELATED).addComponent(lblStatusValue,
                                                         GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE)))
                         .addContainerGap()));
                 gl_panel_3.setVerticalGroup(gl_panel_3.createParallelGroup(Alignment.LEADING)
                         .addGroup(gl_panel_3.createSequentialGroup()
                                 .addGroup(gl_panel_3.createParallelGroup(Alignment.BASELINE).addComponent(lblStatus)
-                                        .addComponent(lblUnknown))
+                                        .addComponent(lblStatusValue))
                                 .addPreferredGap(ComponentPlacement.RELATED)
                                 .addGroup(gl_panel_3.createParallelGroup(Alignment.BASELINE)
                                         .addComponent(lblPleaseSetosumerexpress).addComponent(btnShowGuide))
@@ -345,12 +477,16 @@ public class PreferenceDialog extends JDialog {
                 panel_3.setLayout(gl_panel_3);
 
                 JButton btnAdd = new JButton("Add");
+                btnAdd.setEnabled(false);
 
                 JButton btnRmv = new JButton("Rmv");
+                btnRmv.setEnabled(false);
 
                 JButton btnUp = new JButton("Up");
+                btnUp.setEnabled(false);
 
                 JButton btnDown = new JButton("Down");
+                btnDown.setEnabled(false);
 
                 JScrollPane scrollPane = new JScrollPane();
                 GroupLayout gl_panel_1 = new GroupLayout(panel_1);
@@ -401,8 +537,8 @@ public class PreferenceDialog extends JDialog {
                             lblLoggedInAs.setForeground(Color.BLUE);
                             lblLoggedInAs.setText("Will be logged in as: " + dialog.getUsername());
                             
-                            config.setUser(dialog.getUsername());
-                            config.setPass(dialog.getPassword());
+                            config.setUser(Base64.encodeBase64String(dialog.getUsername().getBytes(StandardCharsets.UTF_8)));
+                            config.setPass(Base64.encodeBase64String(dialog.getPassword().getBytes(StandardCharsets.UTF_8)));
                         }
                     }
                 });
@@ -410,6 +546,10 @@ public class PreferenceDialog extends JDialog {
                 JButton btnRemoveCredentials = new JButton("Remove credentials");
                 btnRemoveCredentials.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
+                        if (JOptionPane.showOptionDialog(PreferenceDialog.this, "Are you sure?", "Removing credentials", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null) == JOptionPane.YES_OPTION) {
+                            config.setUser("");
+                            config.setPass("");
+                        }
                     }
                 });
                 GroupLayout gl_panel_2 = new GroupLayout(panel_2);
@@ -437,6 +577,112 @@ public class PreferenceDialog extends JDialog {
                 panel_2.setLayout(gl_panel_2);
                 oePanel.setLayout(gl_oePanel);
             }
+            
+            JPanel panel = new JPanel();
+            tab.addTab("Downloading", null, panel, null);
+            
+            JPanel panel_1 = new JPanel();
+            panel_1.setBorder(new TitledBorder(null, "Default After-Download Action and Location", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+            GroupLayout gl_panel = new GroupLayout(panel);
+            gl_panel.setHorizontalGroup(
+                gl_panel.createParallelGroup(Alignment.LEADING)
+                    .addGroup(gl_panel.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(panel_1, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
+                        .addContainerGap())
+            );
+            gl_panel.setVerticalGroup(
+                gl_panel.createParallelGroup(Alignment.LEADING)
+                    .addGroup(gl_panel.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 157, GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(267, Short.MAX_VALUE))
+            );
+            
+            rdbtnLaunchOsuAutomatically = new JRadioButton("Launch osu! automatically to import beatmap (Default & recommended)");
+            
+            rdbtnPutDownloadsTo = new JRadioButton("Put downloads to osu! Songs folder (Then press F5 in osu! to import)");
+            
+            rdbtnPutDownloadsTo_1 = new JRadioButton("Put downloads to a folder");
+            rdbtnPutDownloadsTo_1.addItemListener(new ItemListener() {
+                public void itemStateChanged(ItemEvent e) {
+                    lblDownloadFolder.setEnabled(rdbtnPutDownloadsTo_1.isSelected());
+                    downloadFolderField.setEnabled(rdbtnPutDownloadsTo_1.isSelected());
+                    btnDownloadLocSelect.setEnabled(rdbtnPutDownloadsTo_1.isSelected());
+                }
+            });
+            
+            ButtonGroup rdbtnDefaultDownloadGp = new ButtonGroup();
+            rdbtnDefaultDownloadGp.add(rdbtnLaunchOsuAutomatically);;
+            rdbtnDefaultDownloadGp.add(rdbtnPutDownloadsTo);
+            rdbtnDefaultDownloadGp.add(rdbtnPutDownloadsTo_1);
+            
+            lblDownloadFolder = new JLabel("Folder:");
+            lblDownloadFolder.setEnabled(false);
+            
+            downloadFolderField = new JTextField();
+            downloadFolderField.setEnabled(false);
+            downloadFolderField.setColumns(10);
+            
+            btnDownloadLocSelect = new JButton("Select");
+            btnDownloadLocSelect.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    JFileChooser c = new JFileChooser();
+                    c.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                    
+                    File file = new File(downloadFolderField.getText());
+                    if (file.exists() && file.isDirectory()) {
+                        c.setSelectedFile(file);
+                    }
+                    
+                    int opt = c.showOpenDialog(PreferenceDialog.this);
+                    if (opt == JFileChooser.APPROVE_OPTION) {
+                        File sf = c.getSelectedFile();
+                        if (sf != null && sf.exists() && sf.isDirectory()) {
+                            downloadFolderField.setText(sf.getAbsolutePath());
+                        } else {
+                            JOptionPane.showMessageDialog(PreferenceDialog.this, "You must select a folder that exists.", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                }
+            });
+            btnDownloadLocSelect.setEnabled(false);
+            GroupLayout gl_panel_1 = new GroupLayout(panel_1);
+            gl_panel_1.setHorizontalGroup(
+                gl_panel_1.createParallelGroup(Alignment.LEADING)
+                    .addGroup(gl_panel_1.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+                            .addGroup(gl_panel_1.createSequentialGroup()
+                                .addGap(21)
+                                .addComponent(lblDownloadFolder)
+                                .addPreferredGap(ComponentPlacement.RELATED)
+                                .addComponent(downloadFolderField, GroupLayout.DEFAULT_SIZE, 606, Short.MAX_VALUE)
+                                .addPreferredGap(ComponentPlacement.RELATED)
+                                .addComponent(btnDownloadLocSelect))
+                            .addComponent(rdbtnPutDownloadsTo, GroupLayout.DEFAULT_SIZE, 736, Short.MAX_VALUE)
+                            .addComponent(rdbtnLaunchOsuAutomatically, GroupLayout.DEFAULT_SIZE, 736, Short.MAX_VALUE)
+                            .addComponent(rdbtnPutDownloadsTo_1, GroupLayout.DEFAULT_SIZE, 736, Short.MAX_VALUE))
+                        .addContainerGap())
+            );
+            gl_panel_1.setVerticalGroup(
+                gl_panel_1.createParallelGroup(Alignment.LEADING)
+                    .addGroup(gl_panel_1.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(rdbtnLaunchOsuAutomatically)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(rdbtnPutDownloadsTo)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(rdbtnPutDownloadsTo_1)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
+                            .addComponent(downloadFolderField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblDownloadFolder)
+                            .addComponent(btnDownloadLocSelect))
+                        .addContainerGap(53, Short.MAX_VALUE))
+            );
+            panel_1.setLayout(gl_panel_1);
+            panel.setLayout(gl_panel);
 
             JPanel queuingPanel = new JPanel();
             tab.addTab("Queuing", null, queuingPanel, null);
@@ -546,8 +792,10 @@ public class PreferenceDialog extends JDialog {
                     new TitledBorder(null, "Comparison algorithm", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 
             chckbxAutoCriticalUpdate = new JCheckBox("Automatically accept critical updates");
+            chckbxAutoCriticalUpdate.setEnabled(false);
 
             chckbxAutoPatches = new JCheckBox("Download and apply patches automatically");
+            chckbxAutoPatches.setEnabled(false);
 
             JButton btnCheckUpdateNow = new JButton("Check update now");
 
@@ -687,15 +935,19 @@ public class PreferenceDialog extends JDialog {
             panel_5.setLayout(gl_panel_5);
 
             rdbtnPerVersion = new JRadioButton("Per version in selected branch");
+            rdbtnPerVersion.setEnabled(false);
             panel_4.add(rdbtnPerVersion);
 
             rdbtnLatestVersion = new JRadioButton("Latest version (per branch)");
+            rdbtnLatestVersion.setEnabled(false);
             panel_4.add(rdbtnLatestVersion);
 
             rdbtnLatestVersionoverall = new JRadioButton("Latest version (overall)");
+            rdbtnLatestVersionoverall.setEnabled(false);
             panel_4.add(rdbtnLatestVersionoverall);
 
             rdbtnStablity = new JRadioButton("Stablity");
+            rdbtnStablity.setEnabled(false);
             panel_4.add(rdbtnStablity);
 
             ButtonGroup updateCompareAlgoBtnGroup = new ButtonGroup();
@@ -705,12 +957,15 @@ public class PreferenceDialog extends JDialog {
             updateCompareAlgoBtnGroup.add(rdbtnStablity);
 
             rdbtnStable = new JRadioButton("Stable");
+            rdbtnStable.setEnabled(false);
             panel_3.add(rdbtnStable);
 
             rdbtnBeta = new JRadioButton("Beta");
+            rdbtnBeta.setEnabled(false);
             panel_3.add(rdbtnBeta);
 
             rdbtnSnapshot = new JRadioButton("Snapshot");
+            rdbtnSnapshot.setEnabled(false);
             panel_3.add(rdbtnSnapshot);
 
             ButtonGroup updateBranchBtnGroup = new ButtonGroup();
@@ -719,12 +974,15 @@ public class PreferenceDialog extends JDialog {
             updateBranchBtnGroup.add(rdbtnSnapshot);
 
             rdbtnEveryStartup = new JRadioButton("Every startup");
+            rdbtnEveryStartup.setEnabled(false);
             panel_2.add(rdbtnEveryStartup);
 
             rdbtnEveryAct = new JRadioButton("Every download/request/activation");
+            rdbtnEveryAct.setEnabled(false);
             panel_2.add(rdbtnEveryAct);
 
             rdbtnNever = new JRadioButton("Never");
+            rdbtnNever.setEnabled(false);
             panel_2.add(rdbtnNever);
             updaterPanel.setLayout(gl_updaterPanel);
 
@@ -735,6 +993,7 @@ public class PreferenceDialog extends JDialog {
 
             JPanel securityPanel = new JPanel();
             tab.addTab("Security", null, securityPanel, null);
+            tab.setEnabledAt(5, false);
 
             JPanel panel_7 = new JPanel();
             panel_7.setBorder(
@@ -773,6 +1032,7 @@ public class PreferenceDialog extends JDialog {
 
             JPanel pluginsPanel = new JPanel();
             tab.addTab("Plugins", null, pluginsPanel, null);
+            tab.setEnabledAt(6, false);
 
             JLabel lblWarningOnlyAdd = new JLabel(
                     "Warning: Only add plugins that you trust, or officially trusted by the developer.");
@@ -803,6 +1063,7 @@ public class PreferenceDialog extends JDialog {
 
             JPanel miscPanel = new JPanel();
             tab.addTab("Miscellaneous", null, miscPanel, null);
+            tab.setEnabledAt(7, false);
 
             JPanel soundTonePanel = new JPanel();
             soundTonePanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Sound/Tone", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
@@ -926,6 +1187,17 @@ public class PreferenceDialog extends JDialog {
         browserComboBoxModel.addElement("... relieving a list of available browsers ...");
         browsersBox.setEnabled(false);
         
+        boolean installed = Installer.isInstalled();
+        if (installed) {
+            lblStatusValue.setText("Installed");
+            lblStatusValue.setForeground(Color.GREEN);
+            btnInstallOsumerexpress.setText("Uninstall osumerExpress, osumer2 daemon");
+        } else {
+            lblStatusValue.setText("Not installed");
+            lblStatusValue.setForeground(Color.RED);
+            btnInstallOsumerexpress.setText("Install osumerExpress, osumer2 daemon");
+        }
+        
         new Thread(){
             public void run(){
                 String[] browsers = null;
@@ -953,6 +1225,22 @@ public class PreferenceDialog extends JDialog {
                 }
             }
         }.start();
+        
+        //Downloading
+        int action = config.getDefaultOpenBeatmapAction();
+        if (action < 0 || action > 2) {
+            action = 0;
+            config.setDefaultOpenBeatmapAction(0);
+            try {
+                config.write();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        rdbtnLaunchOsuAutomatically.setSelected(action == 0);
+        rdbtnPutDownloadsTo.setSelected(action == 1);
+        rdbtnPutDownloadsTo_1.setSelected(action == 2);
+        downloadFolderField.setText(config.getDefaultBeatmapSaveLocation());
         
         //Queuing
         maxDwnThreadsSpinner.setValue(config.getMaxThreads());
@@ -1095,6 +1383,18 @@ public class PreferenceDialog extends JDialog {
         if (!selectedItem.equals("--- Select ---")){
             config.setDefaultBrowser(selectedItem);
         }
+        
+        //Downloading
+        int action = 0;
+        if (rdbtnLaunchOsuAutomatically.isSelected()) {
+            action = 0;
+        } else if (rdbtnPutDownloadsTo.isSelected()) {
+            action = 1;
+        } else if (rdbtnPutDownloadsTo_1.isSelected()) {
+            action = 2;
+        }
+        config.setDefaultOpenBeatmapAction(action);
+        config.setDefaultBeatmapSaveLocation(downloadFolderField.getText());
         
         //Queuing
         config.setMaxThreads((int) maxDwnThreadsSpinner.getValue());

@@ -165,7 +165,7 @@ public class UIFrame extends JFrame {
         JMenuItem mntmPreferences = new JMenuItem("Preferences");
         mntmPreferences.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                PreferenceDialog dialog = new PreferenceDialog(config);
+                PreferenceDialog dialog = new PreferenceDialog(config, UIFrame.this);
                 dialog.setModal(true);
                 dialog.setVisible(true);
             }
@@ -395,7 +395,7 @@ public class UIFrame extends JFrame {
         JButton btnOsumerPreferences = new JButton("osumer2 Preferences");
         btnOsumerPreferences.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                PreferenceDialog dialog = new PreferenceDialog(config);
+                PreferenceDialog dialog = new PreferenceDialog(config, UIFrame.this);
                 dialog.setModal(true);
                 dialog.setVisible(true);
             }
@@ -407,6 +407,14 @@ public class UIFrame extends JFrame {
         chckbxShowBeatmapPreview.setFont(new Font("Tahoma", Font.PLAIN, 12));
         
         JButton btnDownloadAList = new JButton("Download a list of beatmaps");
+        btnDownloadAList.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                MultiDownloadDialog d = new MultiDownloadDialog(UIFrame.this);
+                d.setLocationRelativeTo(UIFrame.this);
+                d.setModal(true);
+                d.setVisible(true);
+            }
+        });
         btnDownloadAList.setFont(new Font("Tahoma", Font.PLAIN, 18));
         GroupLayout gl_panel = new GroupLayout(panel);
         gl_panel.setHorizontalGroup(
@@ -415,36 +423,39 @@ public class UIFrame extends JFrame {
                     .addContainerGap()
                     .addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
                         .addGroup(gl_panel.createSequentialGroup()
-                            .addComponent(rdbtnDownloadToFolder)
-                            .addPreferredGap(ComponentPlacement.RELATED)
-                            .addComponent(btnSelectFolder))
-                        .addGroup(gl_panel.createSequentialGroup()
-                            .addComponent(rdbtnDownloadToFile)
-                            .addPreferredGap(ComponentPlacement.RELATED)
-                            .addComponent(btnSelectFile))
-                        .addComponent(lblSpecifyYourDesired, GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE)
-                        .addGroup(gl_panel.createSequentialGroup()
-                            .addComponent(lblBeatmapUrl)
-                            .addPreferredGap(ComponentPlacement.RELATED)
-                            .addComponent(beatmapField, GroupLayout.PREFERRED_SIZE, 441, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(ComponentPlacement.RELATED)
-                            .addComponent(btnAddToQueue, GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE))
-                        .addComponent(lblNewWebpageUrls, GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE)
-                        .addComponent(lblYouWillBe, GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE)
-                        .addComponent(rdbtnDownloadAndImport, GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE)
-                        .addComponent(chckbxShowBeatmapPreview, GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE)
-                        .addGroup(gl_panel.createSequentialGroup()
-                            .addComponent(btnOsumerPreferences)
-                            .addPreferredGap(ComponentPlacement.RELATED)
-                            .addComponent(btnDownloadAList)))
-                    .addContainerGap())
+                            .addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
+                                .addGroup(gl_panel.createSequentialGroup()
+                                    .addComponent(rdbtnDownloadToFolder)
+                                    .addPreferredGap(ComponentPlacement.RELATED)
+                                    .addComponent(btnSelectFolder))
+                                .addGroup(gl_panel.createSequentialGroup()
+                                    .addComponent(rdbtnDownloadToFile)
+                                    .addPreferredGap(ComponentPlacement.RELATED)
+                                    .addComponent(btnSelectFile))
+                                .addComponent(lblSpecifyYourDesired, GroupLayout.DEFAULT_SIZE, 736, Short.MAX_VALUE)
+                                .addGroup(gl_panel.createSequentialGroup()
+                                    .addComponent(lblBeatmapUrl)
+                                    .addPreferredGap(ComponentPlacement.RELATED)
+                                    .addComponent(beatmapField, GroupLayout.PREFERRED_SIZE, 441, GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(ComponentPlacement.RELATED)
+                                    .addComponent(btnAddToQueue, GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE))
+                                .addComponent(lblNewWebpageUrls, GroupLayout.DEFAULT_SIZE, 736, Short.MAX_VALUE)
+                                .addComponent(lblYouWillBe, GroupLayout.DEFAULT_SIZE, 736, Short.MAX_VALUE)
+                                .addComponent(rdbtnDownloadAndImport, GroupLayout.DEFAULT_SIZE, 736, Short.MAX_VALUE)
+                                .addComponent(chckbxShowBeatmapPreview, GroupLayout.DEFAULT_SIZE, 736, Short.MAX_VALUE))
+                            .addContainerGap())
+                        .addGroup(Alignment.TRAILING, gl_panel.createSequentialGroup()
+                            .addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
+                                .addComponent(btnOsumerPreferences, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
+                                .addComponent(btnDownloadAList, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGap(489))))
         );
         gl_panel.setVerticalGroup(
             gl_panel.createParallelGroup(Alignment.LEADING)
                 .addGroup(gl_panel.createSequentialGroup()
                     .addContainerGap()
-                    .addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
-                        .addComponent(btnAddToQueue, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                    .addGroup(gl_panel.createParallelGroup(Alignment.TRAILING, false)
+                        .addComponent(btnAddToQueue, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
                         .addComponent(beatmapField, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                         .addComponent(lblBeatmapUrl, Alignment.LEADING))
                     .addPreferredGap(ComponentPlacement.RELATED)
@@ -466,10 +477,10 @@ public class UIFrame extends JFrame {
                     .addPreferredGap(ComponentPlacement.RELATED)
                     .addComponent(chckbxShowBeatmapPreview)
                     .addPreferredGap(ComponentPlacement.RELATED)
-                    .addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-                        .addComponent(btnDownloadAList, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnOsumerPreferences))
-                    .addGap(99))
+                    .addComponent(btnOsumerPreferences)
+                    .addPreferredGap(ComponentPlacement.RELATED)
+                    .addComponent(btnDownloadAList, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+                    .addGap(62))
         );
         panel.setLayout(gl_panel);
 
@@ -538,9 +549,17 @@ public class UIFrame extends JFrame {
             }
         }.start();
     }
+    
+    public Config getConfig() {
+        return config;
+    }
 
     public Osums getOsums() {
         return osu;
+    }
+    
+    public JTabbedPane getTab() {
+        return tab;
     }
 
     public QueueManager getQueueManager() {
@@ -716,7 +735,7 @@ public class UIFrame extends JFrame {
                             }
                             
                         },
-                        new BeatmapImportAction()
+                        new BeatmapImportAction(config)
                 };
             }
             

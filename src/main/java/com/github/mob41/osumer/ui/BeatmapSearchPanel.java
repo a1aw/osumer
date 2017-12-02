@@ -16,6 +16,7 @@ import javax.swing.table.DefaultTableModel;
 import org.json.JSONArray;
 
 import com.github.mob41.organdebug.exceptions.DebuggableException;
+import com.github.mob41.osumer.Config;
 import com.github.mob41.osumer.io.queue.Queue;
 import com.github.mob41.osums.indexing.IndexingProgressHandler;
 import com.github.mob41.osums.indexing.OnlineIndexManager;
@@ -46,14 +47,24 @@ public class BeatmapSearchPanel extends JPanel {
     private JRadioButton rdbtnUseOfflineIndexed;
     private JRadioButton rdbtnUseOnlineWeb;
     
+    private UIFrame frame;
     private Osums osums;
+    
+    public BeatmapSearchPanel() {
+        this(null, null);
+    }
 
     /**
      * Create the panel.
      */
     public BeatmapSearchPanel(UIFrame frame, Osums osums) {
         this.osums = osums;
-        mgr = osums.getOimgr();
+        this.frame = frame;
+        if (osums != null) {
+            mgr = osums.getOimgr();
+        } else {
+            mgr = null;
+        }
         
         JLabel lblSearchBeatmap = new JLabel("Search beatmap:");
         lblSearchBeatmap.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -254,14 +265,32 @@ public class BeatmapSearchPanel extends JPanel {
                                 JOptionPane.showMessageDialog(BeatmapSearchPanel.this, "Please make another search again.", "Info", JOptionPane.INFORMATION_MESSAGE);
                                 return;
                             } else if (option == JOptionPane.NO_OPTION){
-                                maps = osums.getLinksOfBeatmapSearch(dialog.getHandler(), "https://osu.ppy.sh/p/beatmaplist?q=" + searchFld.getText());
+                                Config config = frame.getConfig();
+                                doUiLogin(config);
+                                
+                                try {
+                                    maps = osums.getLinksOfBeatmapSearch(dialog.getHandler(), "https://osu.ppy.sh/p/beatmaplist?q=" + searchFld.getText());
+                                } catch (DebuggableException e) {
+                                    e.printStackTrace();
+                                }
                             } else {
                                 dialog.dispose();
                                 return;
                             }
                         }
                     } else {
-                        maps = osums.getLinksOfBeatmapSearch(dialog.getHandler(), "https://osu.ppy.sh/p/beatmaplist?q=" + searchFld.getText());
+                        Config config = frame.getConfig();
+                        if (!osums.isLoggedIn()) {
+                            doUiLogin(config);
+                        }
+                        
+                        if (osums.isLoggedIn()) {
+                            maps = osums.getLinksOfBeatmapSearch(dialog.getHandler(), "https://osu.ppy.sh/p/beatmaplist?q=" + searchFld.getText());
+                        } else {
+                            dialog.dispose();
+                            JOptionPane.showMessageDialog(BeatmapSearchPanel.this, "You must be logged into osu! forum to perform online search.", "Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
                     }
                 } catch (DebuggableException e) {
                     e.printStackTrace();
@@ -292,5 +321,61 @@ public class BeatmapSearchPanel extends JPanel {
         dialog.setLocationRelativeTo(BeatmapSearchPanel.this);
         dialog.setModal(true);
         dialog.setVisible(true);
+    }
+    
+    private ProgressDialog doUiLogin(Config config) {
+        ProgressDialog pbd = new ProgressDialog();
+        pbd.setTitle("osums Login Client");
+        Thread th = new Thread() {
+            public void run() {
+                pbd.getProgressBar().setIndeterminate(true);
+                pbd.getLabel().setText("Status: Getting configuration...");
+                String user = config.getUser();
+                String pass = config.getPass();
+
+                if (user == null || user.isEmpty() || pass == null || pass.isEmpty()) {
+                    pbd.getLabel().setText("Status: Prompting username and password...");
+                    LoginPanel loginPanel = new LoginPanel();
+                    int option = JOptionPane.showOptionDialog(frame, loginPanel, "Login to osu!",
+                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null,
+                            JOptionPane.CANCEL_OPTION);
+
+                    if (option == JOptionPane.OK_OPTION) {
+                        if (loginPanel.getUsername().isEmpty() || loginPanel.getPassword().isEmpty()) {
+                            JOptionPane.showMessageDialog(frame, "Username or password cannot be empty.",
+                                    "Error", JOptionPane.ERROR_MESSAGE);
+                            pbd.dispose();
+                            return;
+                        }
+
+                        user = loginPanel.getUsername();
+                        pass = loginPanel.getPassword();
+                    } else {
+                        pbd.dispose();
+                        return;
+                    }
+                }
+
+                pbd.getLabel().setText("Status: Logging in...");
+                try {
+                    osums.login(user, pass);
+                } catch (DebuggableException e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(frame, "Error logging in:\n" + e.getDump().getMessage(),
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                    pbd.dispose();
+                    return;
+                }
+
+                pbd.dispose();
+            }
+        };
+        th.setDaemon(true);
+        th.start();
+        
+        pbd.setLocationRelativeTo(BeatmapSearchPanel.this);
+        pbd.setModal(true);
+        pbd.setVisible(true);
+        return pbd;
     }
 }
