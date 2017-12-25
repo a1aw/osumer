@@ -31,6 +31,7 @@ package com.github.mob41.osumer.ui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Toolkit;
@@ -45,6 +46,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Calendar;
@@ -79,15 +81,18 @@ import javax.swing.filechooser.FileFilter;
 
 import com.github.mob41.organdebug.exceptions.DebuggableException;
 import com.github.mob41.osumer.Config;
+import com.github.mob41.osumer.Osumer;
 import com.github.mob41.osumer.exceptions.NoBuildsForVersionException;
 import com.github.mob41.osumer.exceptions.NoSuchBuildNumberException;
 import com.github.mob41.osumer.exceptions.NoSuchVersionException;
-import com.github.mob41.osumer.io.beatmap.Osumer;
 import com.github.mob41.osumer.io.legacy.URLDownloader;
 import com.github.mob41.osumer.io.queue.Queue;
 import com.github.mob41.osumer.io.queue.QueueAction;
 import com.github.mob41.osumer.io.queue.QueueManager;
+import com.github.mob41.osumer.io.queue.actions.AfterSoundAction;
 import com.github.mob41.osumer.io.queue.actions.BeatmapImportAction;
+import com.github.mob41.osumer.io.queue.actions.BeforeSoundAction;
+import com.github.mob41.osumer.io.queue.actions.CustomImportAction;
 import com.github.mob41.osumer.io.queue.actions.UpdaterRunAction;
 import com.github.mob41.osumer.sock.SockThread;
 import com.github.mob41.osumer.updater.UpdateInfo;
@@ -98,6 +103,9 @@ import com.github.mob41.osums.io.beatmap.Osums;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import javax.swing.border.TitledBorder;
+import java.awt.FlowLayout;
+import javax.swing.BoxLayout;
 
 public class UIFrame extends JFrame {
 
@@ -124,6 +132,9 @@ public class UIFrame extends JFrame {
     private JCheckBox chckbxShowBeatmapPreview;
     
     private boolean checkingUpdate = false;
+    
+    private String targetFile = "";
+    private String targetFolder = "";
 
     /**
      * Create the frame.
@@ -156,7 +167,7 @@ public class UIFrame extends JFrame {
                 .getImage(UIFrame.class.getResource("/com/github/mob41/osumer/ui/osumerIcon_32px.png")));
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
-        setBounds(100, 100, 796, 541);
+        setBounds(100, 100, 883, 578);
 
         JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
@@ -183,6 +194,18 @@ public class UIFrame extends JFrame {
                 dialog.setVisible(true);
             }
         });
+        
+        JMenuItem mntmViewConfigurationLocation = new JMenuItem("Open configuration location");
+        mntmViewConfigurationLocation.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    Desktop.getDesktop().open(new File(System.getenv("LOCALAPPDATA") + "\\osumerExpress"));
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+        mnOsumer2.add(mntmViewConfigurationLocation);
         mnOsumer2.add(mntmPreferences);
 
         JSeparator separator = new JSeparator();
@@ -272,6 +295,15 @@ public class UIFrame extends JFrame {
         menuBar.add(mnAbout);
         
         JMenuItem mntmGithubProject = new JMenuItem("GitHub Project");
+        mntmGithubProject.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    Desktop.getDesktop().browse(new URL("https://github.com/mob41/osumer").toURI());
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
         mnAbout.add(mntmGithubProject);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -389,59 +421,8 @@ public class UIFrame extends JFrame {
                 "WARNING: You haven't setup an osu! account for beatmap downloading. Go to \"Preferences\" to configure.");
         lblYouWillBe.setForeground(Color.RED);
         lblYouWillBe.setFont(new Font("Tahoma", Font.BOLD, 12));
-
-        rdbtnDownloadAndImport = new JRadioButton("Download and import");
-        rdbtnDownloadAndImport.setSelected(true);
-        rdbtnDownloadAndImport.setFont(new Font("Tahoma", Font.PLAIN, 12));
-
-        rdbtnDownloadToFile = new JRadioButton("Download to file...");
-        rdbtnDownloadToFile.setFont(new Font("Tahoma", Font.PLAIN, 12));
-
-        JButton btnSelectFile = new JButton("Select file");
-        btnSelectFile.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                JFileChooser chooser = new JFileChooser();
-                int result = chooser.showSaveDialog(UIFrame.this);
-                if (result == JFileChooser.APPROVE_OPTION){
-                    selectedFile = chooser.getSelectedFile();
-                }
-            }
-        });
-        btnSelectFile.setFont(new Font("Tahoma", Font.PLAIN, 12));
-
-        rdbtnDownloadToFolder = new JRadioButton("Download to folder...");
-        rdbtnDownloadToFolder.setFont(new Font("Tahoma", Font.PLAIN, 12));
-
-        JButton btnSelectFolder = new JButton("Select folder");
-        btnSelectFolder.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser chooser = new JFileChooser();
-                chooser.setAcceptAllFileFilterUsed(false);
-                chooser.setFileFilter(new FileFilter(){
-
-                    @Override
-                    public boolean accept(File f) {
-                        return f.isDirectory();
-                    }
-
-                    @Override
-                    public String getDescription() {
-                        return "All Folders";
-                    }
-                    
-                });
-                int result = chooser.showSaveDialog(UIFrame.this);
-                if (result == JFileChooser.APPROVE_OPTION){
-                    selectedFolder = chooser.getSelectedFile();
-                }
-            }
-        });
-        btnSelectFolder.setFont(new Font("Tahoma", Font.PLAIN, 12));
         
         ButtonGroup dwnSelectionBtnGp = new ButtonGroup();
-        dwnSelectionBtnGp.add(rdbtnDownloadAndImport);
-        dwnSelectionBtnGp.add(rdbtnDownloadToFile);
-        dwnSelectionBtnGp.add(rdbtnDownloadToFolder);
 
         JButton btnOsumerPreferences = new JButton("osumer2 Preferences");
         btnOsumerPreferences.addActionListener(new ActionListener() {
@@ -468,39 +449,36 @@ public class UIFrame extends JFrame {
             }
         });
         btnDownloadAList.setFont(new Font("Tahoma", Font.PLAIN, 18));
+        
+        JPanel panel_1 = new JPanel();
+        panel_1.setBorder(new TitledBorder(null, "Beatmap Import Actions", TitledBorder.LEADING, TitledBorder.TOP, null, null));
         GroupLayout gl_panel = new GroupLayout(panel);
         gl_panel.setHorizontalGroup(
             gl_panel.createParallelGroup(Alignment.LEADING)
                 .addGroup(gl_panel.createSequentialGroup()
                     .addContainerGap()
-                    .addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
+                    .addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
+                        .addComponent(panel_1, GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
                         .addGroup(gl_panel.createSequentialGroup()
-                            .addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
+                            .addComponent(chckbxShowBeatmapPreview, GroupLayout.DEFAULT_SIZE, 794, Short.MAX_VALUE)
+                            .addContainerGap())
+                        .addGroup(Alignment.TRAILING, gl_panel.createSequentialGroup()
+                            .addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
+                                .addComponent(lblSpecifyYourDesired, GroupLayout.DEFAULT_SIZE, 790, Short.MAX_VALUE)
                                 .addGroup(gl_panel.createSequentialGroup()
-                                    .addComponent(rdbtnDownloadToFolder)
-                                    .addPreferredGap(ComponentPlacement.RELATED)
-                                    .addComponent(btnSelectFolder))
-                                .addGroup(gl_panel.createSequentialGroup()
-                                    .addComponent(rdbtnDownloadToFile)
-                                    .addPreferredGap(ComponentPlacement.RELATED)
-                                    .addComponent(btnSelectFile))
-                                .addComponent(lblSpecifyYourDesired, GroupLayout.DEFAULT_SIZE, 736, Short.MAX_VALUE)
-                                .addGroup(Alignment.TRAILING, gl_panel.createSequentialGroup()
                                     .addComponent(lblBeatmapUrl)
                                     .addPreferredGap(ComponentPlacement.RELATED)
-                                    .addComponent(beatmapField, GroupLayout.DEFAULT_SIZE, 441, Short.MAX_VALUE)
+                                    .addComponent(beatmapField, GroupLayout.DEFAULT_SIZE, 495, Short.MAX_VALUE)
                                     .addPreferredGap(ComponentPlacement.RELATED)
                                     .addComponent(btnAddToQueue, GroupLayout.PREFERRED_SIZE, 151, GroupLayout.PREFERRED_SIZE))
-                                .addComponent(lblNewWebpageUrls, GroupLayout.DEFAULT_SIZE, 736, Short.MAX_VALUE)
-                                .addComponent(lblYouWillBe, GroupLayout.DEFAULT_SIZE, 736, Short.MAX_VALUE)
-                                .addComponent(rdbtnDownloadAndImport, GroupLayout.DEFAULT_SIZE, 736, Short.MAX_VALUE)
-                                .addComponent(chckbxShowBeatmapPreview, GroupLayout.DEFAULT_SIZE, 736, Short.MAX_VALUE))
+                                .addComponent(lblNewWebpageUrls, GroupLayout.DEFAULT_SIZE, 790, Short.MAX_VALUE)
+                                .addComponent(lblYouWillBe, GroupLayout.DEFAULT_SIZE, 790, Short.MAX_VALUE))
                             .addContainerGap())
-                        .addGroup(gl_panel.createSequentialGroup()
+                        .addGroup(Alignment.TRAILING, gl_panel.createSequentialGroup()
                             .addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
-                                .addComponent(btnOsumerPreferences, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
-                                .addComponent(btnDownloadAList, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGap(489))))
+                                .addComponent(btnDownloadAList, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 822, Short.MAX_VALUE)
+                                .addComponent(btnOsumerPreferences, GroupLayout.DEFAULT_SIZE, 822, Short.MAX_VALUE))
+                            .addContainerGap())))
         );
         gl_panel.setVerticalGroup(
             gl_panel.createParallelGroup(Alignment.LEADING)
@@ -517,23 +495,99 @@ public class UIFrame extends JFrame {
                     .addPreferredGap(ComponentPlacement.RELATED)
                     .addComponent(lblYouWillBe)
                     .addPreferredGap(ComponentPlacement.RELATED)
-                    .addComponent(rdbtnDownloadAndImport)
-                    .addPreferredGap(ComponentPlacement.RELATED)
-                    .addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
-                        .addComponent(rdbtnDownloadToFile)
-                        .addComponent(btnSelectFile))
-                    .addPreferredGap(ComponentPlacement.RELATED)
-                    .addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
-                        .addComponent(rdbtnDownloadToFolder)
-                        .addComponent(btnSelectFolder))
-                    .addPreferredGap(ComponentPlacement.RELATED)
+                    .addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(ComponentPlacement.UNRELATED)
                     .addComponent(chckbxShowBeatmapPreview)
-                    .addPreferredGap(ComponentPlacement.RELATED)
+                    .addPreferredGap(ComponentPlacement.UNRELATED)
                     .addComponent(btnOsumerPreferences)
                     .addPreferredGap(ComponentPlacement.RELATED)
                     .addComponent(btnDownloadAList, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-                    .addGap(62))
+                    .addContainerGap())
         );
+        
+        rdbtnUseDefaultSettings = new JRadioButton("Use default settings in Preferences");
+        rdbtnUseDefaultSettings.setSelected(true);
+        
+        rdbtnDownloadAndImport = new JRadioButton("Download and Import (Recommended)");
+        
+        rdbtnDownloadToOsu = new JRadioButton("Download to osu! Song folder (Press F5 in osu! to load)");
+        
+        rdbtnDownloadToFile = new JRadioButton("Download to file");
+        
+        rdbtnDownloadToFolder = new JRadioButton("Download to folder");
+        
+        ButtonGroup downloadSettingsGroup = new ButtonGroup();
+        downloadSettingsGroup.add(rdbtnUseDefaultSettings);
+        downloadSettingsGroup.add(rdbtnDownloadAndImport);
+        downloadSettingsGroup.add(rdbtnDownloadToOsu);
+        downloadSettingsGroup.add(rdbtnDownloadToFile);
+        downloadSettingsGroup.add(rdbtnDownloadToFolder);
+        
+        JButton btnSelectFile = new JButton("Select file");
+        btnSelectFile.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                JFileChooser c = new JFileChooser();
+                c.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                
+                File file = new File(targetFile);
+                c.setSelectedFile(file);
+                
+                int opt = c.showSaveDialog(UIFrame.this);
+                if (opt == JFileChooser.APPROVE_OPTION) {
+                    File sf = c.getSelectedFile();
+                    targetFile = sf.getAbsolutePath();
+                }
+            }
+        });
+        
+        JButton btnSelectFolder = new JButton("Select folder");
+        btnSelectFolder.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser c = new JFileChooser();
+                c.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                
+                File file = new File(targetFolder);
+                c.setSelectedFile(file);
+                
+                int opt = c.showSaveDialog(UIFrame.this);
+                if (opt == JFileChooser.APPROVE_OPTION) {
+                    File sf = c.getSelectedFile();
+                    targetFolder = sf.getAbsolutePath();
+                }
+            }
+        });
+        GroupLayout gl_panel_1 = new GroupLayout(panel_1);
+        gl_panel_1.setHorizontalGroup(
+            gl_panel_1.createParallelGroup(Alignment.LEADING)
+                .addGroup(gl_panel_1.createSequentialGroup()
+                    .addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+                        .addComponent(rdbtnUseDefaultSettings)
+                        .addComponent(rdbtnDownloadAndImport)
+                        .addComponent(rdbtnDownloadToOsu)
+                        .addGroup(gl_panel_1.createSequentialGroup()
+                            .addComponent(rdbtnDownloadToFile)
+                            .addPreferredGap(ComponentPlacement.RELATED)
+                            .addComponent(btnSelectFile))
+                        .addGroup(gl_panel_1.createSequentialGroup()
+                            .addComponent(rdbtnDownloadToFolder)
+                            .addPreferredGap(ComponentPlacement.RELATED)
+                            .addComponent(btnSelectFolder)))
+                    .addContainerGap(529, Short.MAX_VALUE))
+        );
+        gl_panel_1.setVerticalGroup(
+            gl_panel_1.createParallelGroup(Alignment.LEADING)
+                .addGroup(gl_panel_1.createSequentialGroup()
+                    .addComponent(rdbtnUseDefaultSettings)
+                    .addComponent(rdbtnDownloadAndImport)
+                    .addComponent(rdbtnDownloadToOsu)
+                    .addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
+                        .addComponent(rdbtnDownloadToFile)
+                        .addComponent(btnSelectFile))
+                    .addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
+                        .addComponent(rdbtnDownloadToFolder)
+                        .addComponent(btnSelectFolder)))
+        );
+        panel_1.setLayout(gl_panel_1);
         panel.setLayout(gl_panel);
 
         JPanel queuePanel = new JPanel();
@@ -589,6 +643,10 @@ public class UIFrame extends JFrame {
         scrollPane.setViewportView(table);
         contentPane.setLayout(gl_contentPane);
         
+        JPanel panel_2 = new JPanel();
+        tab.addTab("Manage beatmaps", null, panel_2, null);
+        tab.setEnabledAt(2, false);
+        
         tab.add("Search beatmaps", new BeatmapSearchPanel(this, osu));
 
         this.sockThread = new SockThread(this);
@@ -597,6 +655,12 @@ public class UIFrame extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 checkUpdate();
+                if (config.isShowGettingStartedOnStartup()) {
+                    GettingStartedDialog gsd = new GettingStartedDialog();
+                    gsd.setLocationRelativeTo(UIFrame.this);
+                    gsd.setModal(true);
+                    gsd.setVisible(true);
+                }
             }
         });
     }
@@ -621,16 +685,163 @@ public class UIFrame extends JFrame {
     private BufferedImage thumb = null;
     private ProgressDialog pbd = null;
     private JTabbedPane tab;
+    private JLabel lblUpdateStatus;
+    private JRadioButton rdbtnUseDefaultSettings;
     private JRadioButton rdbtnDownloadAndImport;
+    private JRadioButton rdbtnDownloadToOsu;
     private JRadioButton rdbtnDownloadToFile;
     private JRadioButton rdbtnDownloadToFolder;
-    private JLabel lblUpdateStatus;
 
     public boolean addBtQueue(String url, boolean preview) {
         return addBtQueue(url, preview, true, null, null);
     }
+    
+    public boolean addQuietBtQueue(String url) {
+        if (config.getCheckUpdateFreq() == Config.CHECK_UPDATE_FREQ_EVERY_ACT) {
+            checkUpdate();
+        }
+        
+        String user = config.getUser();
+        String pass = config.getPass();
+
+        if (user == null || user.isEmpty() || pass == null || pass.isEmpty()) {
+            LoginPanel loginPanel = new LoginPanel();
+            int option = JOptionPane.showOptionDialog(UIFrame.this, loginPanel, "Login to osu!",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null,
+                    JOptionPane.CANCEL_OPTION);
+
+            if (option == JOptionPane.OK_OPTION) {
+                if (loginPanel.getUsername().isEmpty() || loginPanel.getPassword().isEmpty()) {
+                    JOptionPane.showMessageDialog(UIFrame.this, "Username or password cannot be empty.",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
+
+                user = loginPanel.getUsername();
+                pass = loginPanel.getPassword();
+            } else {
+                return false;
+            }
+        }
+        
+        try {
+            osu.login(user, pass);
+        } catch (DebuggableException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(UIFrame.this, "Error logging in:\n" + e.getDump().getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        
+        try {
+            map = osu.getBeatmapInfo(url);
+        } catch (DebuggableException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(UIFrame.this,
+                    "Error getting beatmap info:\n" + e.getDump().getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        
+        String modUrl = map.getThumbUrl();
+        URL thumbUrl = null;
+        try {
+            thumbUrl = new URL("http:" + modUrl);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        URLConnection conn = null;
+        try {
+            conn = thumbUrl.openConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        conn.setConnectTimeout(5000);
+        conn.setReadTimeout(5000);
+
+        try {
+            thumb = ImageIO.read(conn.getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+            thumb = null;
+        }
+        
+        URL downloadUrl = null;
+        try {
+            downloadUrl = new URL("http://osu.ppy.sh" + map.getDwnUrl());
+        } catch (MalformedURLException e1) {
+            e1.printStackTrace();
+            JOptionPane.showMessageDialog(UIFrame.this, "Error validating download URL:\n" + e1, "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        String tmpdir = System.getProperty("java.io.tmpdir");
+
+        final String mapName = map.getName();
+        OsuDownloader dwn = new OsuDownloader(tmpdir,
+                map.getDwnUrl().substring(3, map.getDwnUrl().length()) + " " + map.getName(), osu, downloadUrl);
+        
+        QueueAction importAction;
+        if (rdbtnUseDefaultSettings.isSelected()) {
+            importAction = new BeatmapImportAction(config);
+        } else {
+            int action = -1;
+            String targetFileOrFolder = null;
+            
+            if (rdbtnDownloadAndImport.isSelected()) {
+                action = 0;
+            } else if (rdbtnDownloadToOsu.isSelected()) {
+                action = 1;
+            } else if (rdbtnDownloadToFile.isSelected()) {
+                action = 2;
+                targetFileOrFolder = targetFile;
+            } else if (rdbtnDownloadToFolder.isSelected()) {
+                action = 3;
+                targetFileOrFolder = targetFolder;
+            }
+            
+            importAction = new CustomImportAction(action, targetFileOrFolder);
+        }
+
+        QueueAction[] beforeActions = new QueueAction[] {
+                new BeforeSoundAction(config)
+        };
+        
+        QueueAction[] afterActions = new QueueAction[] { 
+                new AfterSoundAction(config),
+                new QueueAction(){
+
+                    @Override
+                    public void run(Queue queue) {
+                        icon.displayMessage("Download completed for \"" + mapName + "\"", "This osumer queue has completed downloading.", TrayIcon.MessageType.INFO);
+                    }
+                    
+                },
+                importAction
+        };
+        
+        boolean added = mgr.addQueue(new Queue(map.getName(), dwn, thumb, beforeActions, afterActions));
+        
+        if (added){
+            icon.displayMessage("Downloading \"" + mapName + "\"", "osumerExpress is downloading the requested beatmap!", TrayIcon.MessageType.INFO);
+        } else {
+            icon.displayMessage("Could not add \"" + mapName + "\" to queue", "It has already in queue/downloading or completed.", TrayIcon.MessageType.INFO);
+        }
+        
+        tableModel.fireTableDataChanged();
+        
+        return true;
+    }
 
     public boolean addBtQueue(String url, boolean preview, boolean changeTab, QueueAction[] beforeActions, QueueAction[] afterActions) {
+        if (config.getCheckUpdateFreq() == Config.CHECK_UPDATE_FREQ_EVERY_ACT) {
+            checkUpdate();
+        }
+        
         map = null;
         thumb = null;
         pbd = new ProgressDialog();
@@ -777,8 +988,37 @@ public class UIFrame extends JFrame {
             OsuDownloader dwn = new OsuDownloader(tmpdir,
                     map.getDwnUrl().substring(3, map.getDwnUrl().length()) + " " + map.getName(), osu, downloadUrl);
             
+            QueueAction importAction;
+            if (rdbtnUseDefaultSettings.isSelected()) {
+                importAction = new BeatmapImportAction(config);
+            } else {
+                int action = -1;
+                String targetFileOrFolder = null;
+                
+                if (rdbtnDownloadAndImport.isSelected()) {
+                    action = 0;
+                } else if (rdbtnDownloadToOsu.isSelected()) {
+                    action = 1;
+                } else if (rdbtnDownloadToFile.isSelected()) {
+                    action = 2;
+                    targetFileOrFolder = targetFile;
+                } else if (rdbtnDownloadToFolder.isSelected()) {
+                    action = 3;
+                    targetFileOrFolder = targetFolder;
+                }
+                
+                importAction = new CustomImportAction(action, targetFileOrFolder);
+            }
+            
+            if (beforeActions == null) {
+                beforeActions = new QueueAction[] {
+                        new BeforeSoundAction(config)
+                };
+            }
+            
             if (afterActions == null){
                 afterActions = new QueueAction[] { 
+                        new AfterSoundAction(config),
                         new QueueAction(){
 
                             @Override
@@ -787,7 +1027,7 @@ public class UIFrame extends JFrame {
                             }
                             
                         },
-                        new BeatmapImportAction(config)
+                        importAction
                 };
             }
             
@@ -822,7 +1062,7 @@ public class UIFrame extends JFrame {
         }
     }
     
-    private void checkUpdate() {
+    public void checkUpdate() {
         if (checkingUpdate) {
             return;
         }

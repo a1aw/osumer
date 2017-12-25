@@ -28,7 +28,7 @@
  *******************************************************************************/
 package com.github.mob41.osumer.io;
 
-import com.github.mob41.osumer.io.beatmap.Osumer;
+import com.github.mob41.osumer.Osumer;
 import com.github.mob41.osumer.updater.Updater;
 
 public class VersionInfo {

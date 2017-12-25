@@ -36,8 +36,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -75,14 +77,16 @@ import org.apache.commons.codec.binary.Base64;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.github.mob41.organdebug.DebugDump;
+import com.github.mob41.organdebug.DumpManager;
 import com.github.mob41.organdebug.exceptions.DebuggableException;
 import com.github.mob41.osumer.Config;
+import com.github.mob41.osumer.Osumer;
 import com.github.mob41.osumer.exceptions.NoBuildsForVersionException;
 import com.github.mob41.osumer.exceptions.NoSuchBuildNumberException;
 import com.github.mob41.osumer.exceptions.NoSuchVersionException;
 import com.github.mob41.osumer.exceptions.OsuException;
 import com.github.mob41.osumer.io.Installer;
-import com.github.mob41.osumer.io.beatmap.Osumer;
 import com.github.mob41.osumer.io.legacy.URLDownloader;
 import com.github.mob41.osumer.io.queue.Queue;
 import com.github.mob41.osumer.io.queue.QueueAction;
@@ -93,6 +97,8 @@ import com.github.mob41.osumer.updater.Updater;
 import javax.swing.JTextField;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 
 public class PreferenceDialog extends JDialog {
 
@@ -135,7 +141,6 @@ public class PreferenceDialog extends JDialog {
     private JCheckBox chckbxEnabledusedAs;
     private JCheckBox chckbxAskOnStartup;
     private JCheckBox chckbxToneBeforeDwn;
-    private JCheckBox chckbxToneOnDwn;
     private JCheckBox chckbxToneAfterDwn;
     private JRadioButton rdbtnStable;
     private JRadioButton rdbtnBeta;
@@ -155,6 +160,13 @@ public class PreferenceDialog extends JDialog {
     private JRadioButton rdbtnLaunchOsuAutomatically;
     private JLabel lblDownloadFolder;
     private JButton btnDownloadLocSelect;
+    private JLabel lblPleaseRestartOsumer;
+    private JTextField toneBeforeField;
+    private JTextField toneAfterField;
+    private JLabel lblFileToneBefore;
+    private JLabel lblFileToneAfter;
+    private JButton btnSelectToneBefore;
+    private JButton btnSelectToneAfter;
     
     /**
      * Create the dialog.
@@ -242,6 +254,14 @@ public class PreferenceDialog extends JDialog {
             chckbxShowGettingStarted = new JCheckBox("Show getting started v2.0.0 on startup");
 
             JButton btnShowGuide_1 = new JButton("Show Guide");
+            btnShowGuide_1.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    GettingStartedDialog gsd = new GettingStartedDialog();
+                    gsd.setLocationRelativeTo(PreferenceDialog.this);
+                    gsd.setModal(true);
+                    gsd.setVisible(true);
+                }
+            });
             GroupLayout gl_panel_8 = new GroupLayout(panel_8);
             gl_panel_8.setHorizontalGroup(gl_panel_8.createParallelGroup(Alignment.LEADING)
                     .addGroup(gl_panel_8.createSequentialGroup().addContainerGap()
@@ -282,9 +302,11 @@ public class PreferenceDialog extends JDialog {
                 chckbxOeDisabled = new JCheckBox("Disabled (Redirect all URLs to browser directly)");
 
                 chckbxRunAsDaemon = new JCheckBox("Run as daemon on Windows startup (-daemon)");
+                chckbxRunAsDaemon.setEnabled(false);
 
                 chckbxDisabledDaemon = new JCheckBox(
                         "Daemon Disabled (Uses traditional v1 start-on-command instead of daemon socket call, comparatively slower)");
+                chckbxDisabledDaemon.setEnabled(false);
                 
                 JLabel lblSelectYourDefault = new JLabel("Select your default browser:");
                 
@@ -340,8 +362,16 @@ public class PreferenceDialog extends JDialog {
                         "Hint: Please set \"osumerExpress\" as default browser in order to receive beatmap URLs.");
 
                 JButton btnShowGuide = new JButton("Show Guide");
+                btnShowGuide.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        GettingStartedDialog gsd = new GettingStartedDialog();
+                        gsd.setLocationRelativeTo(PreferenceDialog.this);
+                        gsd.setModal(true);
+                        gsd.setVisible(true);
+                    }
+                });
 
-                JLabel lblPleaseRestartOsumer = new JLabel(
+                lblPleaseRestartOsumer = new JLabel(
                         "Please restart osumer2 with administrative priviledges to have un/installations ");
                 lblPleaseRestartOsumer.setForeground(Color.RED);
                 lblPleaseRestartOsumer.setHorizontalAlignment(SwingConstants.CENTER);
@@ -438,14 +468,50 @@ public class PreferenceDialog extends JDialog {
                                     JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
                                 }
                                 
-                                if (installer.isInstalled()){
-                                    //panelSettings();
-                                } else {
-                                    //panelNotInstalled();
-                                }
+                                updateConfigUi();
                             }
                         } else {
+                            String runningFilePath = null;
+                            try {
+                                runningFilePath = URLDecoder.decode(Installer.class.getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
+                            } catch (UnsupportedEncodingException e1) {
+                                e1.printStackTrace();
+                                DebugDump dump = new DebugDump(runningFilePath, "None", "Decoding running file path in UninstallOsumer", "Ask for option", "Error decoding?", false, e1);
+                                DumpManager.getInstance().addDump(dump);
+                                ErrorDumpDialog dialog = new ErrorDumpDialog(dump);
+                                dialog.setModal(true);
+                                dialog.setVisible(true);
+                                return;
+                            }
                             
+                            File file = new File(runningFilePath);
+                            String path = file.toPath().toString();
+                            System.out.println(path);
+                            
+                            if (path.contains(Installer.winPath)){
+                                JOptionPane.showMessageDialog(null, "osumer cannot be uninstalled if launched from \"Program Files\".\nYou have to use an external osumer downloaded from the releases.\nAnd press \"Uninstall osumerExpress\" there.", "Error", JOptionPane.ERROR_MESSAGE);
+                                return;
+                            }
+                            
+                            int option = JOptionPane.showOptionDialog(null, "Are you sure to uninstall? osumerExpress will no longer act as a browser.", "Uninstall osumerExpress", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 1);
+                            
+                            if (option == JOptionPane.CLOSED_OPTION || option == JOptionPane.NO_OPTION){
+                                return;
+                            }
+                            
+                            try {
+                                installer.uninstall();
+                                JOptionPane.showMessageDialog(null, "Uninstallation success.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                            } catch (DebuggableException e){
+                                updateConfigUi();
+                                e.printStackTrace();
+                                ErrorDumpDialog dialog = new ErrorDumpDialog(e.getDump());
+                                dialog.setModal(true);
+                                dialog.setVisible(true);
+                                return;
+                            }
+                            
+                            updateConfigUi();
                         }
                     }
                 });
@@ -1045,7 +1111,13 @@ public class PreferenceDialog extends JDialog {
                 }
             });
 
-            btnDowngrade = new JButton("Down-grade");
+            btnDowngrade = new JButton("Down-grade (Feature currently not available)");
+            btnDowngrade.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    
+                }
+            });
+            btnDowngrade.setEnabled(false);
 
             JLabel lbldowngradingToVersions = new JLabel(
                     "*Downgrading to versions older than 1.0.0-snapshot-b1 will loss updater functions.");
@@ -1203,58 +1275,148 @@ public class PreferenceDialog extends JDialog {
 
             JPanel miscPanel = new JPanel();
             tab.addTab("Miscellaneous", null, miscPanel, null);
-            tab.setEnabledAt(7, false);
 
             JPanel soundTonePanel = new JPanel();
             soundTonePanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Sound/Tone", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
             GroupLayout gl_miscPanel = new GroupLayout(miscPanel);
-            gl_miscPanel
-                    .setHorizontalGroup(gl_miscPanel.createParallelGroup(Alignment.LEADING)
-                            .addGroup(gl_miscPanel.createSequentialGroup().addContainerGap()
-                                    .addComponent(soundTonePanel, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
-                                    .addContainerGap()));
-            gl_miscPanel.setVerticalGroup(gl_miscPanel.createParallelGroup(Alignment.LEADING)
+            gl_miscPanel.setHorizontalGroup(
+                gl_miscPanel.createParallelGroup(Alignment.LEADING)
                     .addGroup(gl_miscPanel.createSequentialGroup()
-                            .addContainerGap().addComponent(soundTonePanel, GroupLayout.PREFERRED_SIZE,
-                                    GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap(314, Short.MAX_VALUE)));
+                        .addContainerGap()
+                        .addComponent(soundTonePanel, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
+                        .addContainerGap())
+            );
+            gl_miscPanel.setVerticalGroup(
+                gl_miscPanel.createParallelGroup(Alignment.LEADING)
+                    .addGroup(gl_miscPanel.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(soundTonePanel, GroupLayout.PREFERRED_SIZE, 151, GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(273, Short.MAX_VALUE))
+            );
 
             chckbxToneBeforeDwn = new JCheckBox("Enable tone before download");
-
-            chckbxToneOnDwn = new JCheckBox("Enable tone on download started");
-
-            chckbxToneAfterDwn = new JCheckBox("Enable tone after download");
-
-            JButton btnSelectToneBeforeDwn = new JButton("Select");
-
-            JButton btnSelectToneOnDwn = new JButton("Select");
-
-            JButton btnSelectToneAfterDwn = new JButton("Select");
+            chckbxToneBeforeDwn.addChangeListener(new ChangeListener() {
+                public void stateChanged(ChangeEvent arg0) {
+                    lblFileToneBefore.setEnabled(chckbxToneBeforeDwn.isSelected());
+                    toneBeforeField.setEnabled(chckbxToneBeforeDwn.isSelected());
+                    btnSelectToneBefore.setEnabled(chckbxToneBeforeDwn.isSelected());
+                }
+            });
+            
+            lblFileToneBefore = new JLabel("File:");
+            lblFileToneBefore.setEnabled(false);
+            
+            toneBeforeField = new JTextField();
+            toneBeforeField.setEnabled(false);
+            toneBeforeField.setColumns(10);
+            
+            btnSelectToneBefore = new JButton("Select");
+            btnSelectToneBefore.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    JFileChooser c = new JFileChooser();
+                    c.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                    
+                    File file = new File(toneBeforeField.getText());
+                    if (file.exists() && file.isFile()) {
+                        c.setSelectedFile(file);
+                    }
+                    
+                    int opt = c.showOpenDialog(PreferenceDialog.this);
+                    if (opt == JFileChooser.APPROVE_OPTION) {
+                        File sf = c.getSelectedFile();
+                        if (sf != null && sf.exists() && sf.isFile()) {
+                            toneBeforeField.setText(sf.getAbsolutePath());
+                        } else {
+                            JOptionPane.showMessageDialog(PreferenceDialog.this, "You must select a file that exists.", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                }
+            });
+            btnSelectToneBefore.setEnabled(false);
+            
+                        chckbxToneAfterDwn = new JCheckBox("Enable tone after download");
+                        chckbxToneAfterDwn.addChangeListener(new ChangeListener() {
+                            public void stateChanged(ChangeEvent e) {
+                                lblFileToneAfter.setEnabled(chckbxToneAfterDwn.isSelected());
+                                toneAfterField.setEnabled(chckbxToneAfterDwn.isSelected());
+                                btnSelectToneAfter.setEnabled(chckbxToneAfterDwn.isSelected());
+                            }
+                        });
+            
+            lblFileToneAfter = new JLabel("File:");
+            lblFileToneAfter.setEnabled(false);
+            
+            toneAfterField = new JTextField();
+            toneAfterField.setEnabled(false);
+            toneAfterField.setColumns(10);
+            
+            btnSelectToneAfter = new JButton("Select");
+            btnSelectToneAfter.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    JFileChooser c = new JFileChooser();
+                    c.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                    
+                    File file = new File(toneAfterField.getText());
+                    if (file.exists() && file.isFile()) {
+                        c.setSelectedFile(file);
+                    }
+                    
+                    int opt = c.showOpenDialog(PreferenceDialog.this);
+                    if (opt == JFileChooser.APPROVE_OPTION) {
+                        File sf = c.getSelectedFile();
+                        if (sf != null && sf.exists() && sf.isFile()) {
+                            toneAfterField.setText(sf.getAbsolutePath());
+                        } else {
+                            JOptionPane.showMessageDialog(PreferenceDialog.this, "You must select a file that exists.", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                }
+            });
+            btnSelectToneAfter.setEnabled(false);
             GroupLayout gl_soundTonePanel = new GroupLayout(soundTonePanel);
-            gl_soundTonePanel.setHorizontalGroup(gl_soundTonePanel.createParallelGroup(Alignment.LEADING).addGroup(gl_soundTonePanel
-                    .createSequentialGroup().addContainerGap()
-                    .addGroup(gl_soundTonePanel.createParallelGroup(Alignment.LEADING)
-                            .addGroup(gl_soundTonePanel.createSequentialGroup().addComponent(chckbxToneBeforeDwn)
-                                    .addPreferredGap(ComponentPlacement.RELATED).addComponent(btnSelectToneBeforeDwn))
-                            .addGroup(gl_soundTonePanel.createParallelGroup(Alignment.TRAILING).addGroup(Alignment.LEADING,
-                                    gl_soundTonePanel.createSequentialGroup().addComponent(chckbxToneAfterDwn)
-                                            .addPreferredGap(ComponentPlacement.RELATED).addComponent(btnSelectToneAfterDwn))
-                                    .addGroup(Alignment.LEADING,
-                                            gl_soundTonePanel.createSequentialGroup().addComponent(chckbxToneOnDwn)
-                                                    .addPreferredGap(ComponentPlacement.RELATED)
-                                                    .addComponent(btnSelectToneOnDwn))))
-                    .addGap(476)));
-            gl_soundTonePanel.setVerticalGroup(gl_soundTonePanel.createParallelGroup(Alignment.LEADING)
-                    .addGroup(gl_soundTonePanel.createSequentialGroup().addContainerGap()
+            gl_soundTonePanel.setHorizontalGroup(
+                gl_soundTonePanel.createParallelGroup(Alignment.LEADING)
+                    .addGroup(gl_soundTonePanel.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(gl_soundTonePanel.createParallelGroup(Alignment.LEADING)
+                            .addGroup(gl_soundTonePanel.createSequentialGroup()
+                                .addGap(21)
+                                .addComponent(lblFileToneAfter)
+                                .addPreferredGap(ComponentPlacement.RELATED)
+                                .addComponent(toneAfterField, GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
+                                .addPreferredGap(ComponentPlacement.RELATED)
+                                .addComponent(btnSelectToneAfter))
+                            .addComponent(chckbxToneAfterDwn, GroupLayout.DEFAULT_SIZE, 736, Short.MAX_VALUE)
+                            .addGroup(Alignment.TRAILING, gl_soundTonePanel.createSequentialGroup()
+                                .addGap(21)
+                                .addComponent(lblFileToneBefore, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(ComponentPlacement.RELATED)
+                                .addComponent(toneBeforeField, GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
+                                .addPreferredGap(ComponentPlacement.RELATED)
+                                .addComponent(btnSelectToneBefore))
+                            .addComponent(chckbxToneBeforeDwn, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 732, Short.MAX_VALUE))
+                        .addContainerGap())
+            );
+            gl_soundTonePanel.setVerticalGroup(
+                gl_soundTonePanel.createParallelGroup(Alignment.LEADING)
+                    .addGroup(gl_soundTonePanel.createSequentialGroup()
+                        .addGap(11)
+                        .addComponent(chckbxToneBeforeDwn)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addGroup(gl_soundTonePanel.createParallelGroup(Alignment.BASELINE)
+                            .addComponent(toneBeforeField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnSelectToneBefore)
+                            .addComponent(lblFileToneBefore))
+                        .addPreferredGap(ComponentPlacement.UNRELATED)
+                        .addComponent(chckbxToneAfterDwn)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addGroup(gl_soundTonePanel.createParallelGroup(Alignment.LEADING)
+                            .addComponent(btnSelectToneAfter)
                             .addGroup(gl_soundTonePanel.createParallelGroup(Alignment.BASELINE)
-                                    .addComponent(chckbxToneBeforeDwn).addComponent(btnSelectToneBeforeDwn))
-                            .addPreferredGap(ComponentPlacement.RELATED)
-                            .addGroup(gl_soundTonePanel.createParallelGroup(Alignment.BASELINE)
-                                    .addComponent(chckbxToneOnDwn).addComponent(btnSelectToneOnDwn))
-                            .addPreferredGap(ComponentPlacement.RELATED)
-                            .addGroup(gl_soundTonePanel.createParallelGroup(Alignment.BASELINE)
-                                    .addComponent(chckbxToneAfterDwn).addComponent(btnSelectToneAfterDwn))
-                            .addContainerGap(11, Short.MAX_VALUE)));
+                                .addComponent(toneAfterField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(lblFileToneAfter)))
+                        .addGap(82))
+            );
             soundTonePanel.setLayout(gl_soundTonePanel);
             miscPanel.setLayout(gl_miscPanel);
         }
@@ -1329,9 +1491,6 @@ public class PreferenceDialog extends JDialog {
             lblLoggedInAs.setForeground(Color.BLUE);
             lblLoggedInAs.setText("Will be logged in as: " + user);
         }
-        
-        chckbxOeDisabled.setSelected(!config.isOEEnabled());
-        chckbxRunAsDaemon.setSelected(config.isRunDaemonOnWinStartup());
         chckbxDisabledDaemon.setSelected(config.isDaemonDisabled());
         
         browserComboBoxModel.removeAllElements();
@@ -1348,6 +1507,10 @@ public class PreferenceDialog extends JDialog {
             lblStatusValue.setForeground(Color.RED);
             btnInstallOsumerexpress.setText("Install osumerExpress, osumer2 daemon");
         }
+        
+        boolean admin = Osumer.isWindowsElevated();
+        lblPleaseRestartOsumer.setVisible(!admin);
+        btnInstallOsumerexpress.setEnabled(!installed || admin);
         
         new Thread(){
             public void run(){
@@ -1440,7 +1603,6 @@ public class PreferenceDialog extends JDialog {
 
         versionsComboBoxModel.removeAllElements();
         versionsBox.setEnabled(false);
-        btnDowngrade.setEnabled(false);
         btnShowChangelog.setEnabled(false);
         versionsComboBoxModel.addElement("... relieving versions list ...");
         new Thread(){
@@ -1501,7 +1663,7 @@ public class PreferenceDialog extends JDialog {
                     }
                     
                     versionsBox.setEnabled(true);
-                    btnDowngrade.setEnabled(true);
+                    //btnDowngrade.setEnabled(true);
                     btnShowChangelog.setEnabled(true);
                 }
             }
@@ -1516,8 +1678,9 @@ public class PreferenceDialog extends JDialog {
         
         //Misc
         chckbxToneBeforeDwn.setSelected(config.isEnableToneBeforeDownload());
-        chckbxToneOnDwn.setSelected(config.isEnableToneDownloadStarted());
+        toneBeforeField.setText(config.getToneBeforeDownloadPath());
         chckbxToneAfterDwn.setSelected(config.isEnableToneAfterDownload());
+        toneAfterField.setText(config.getToneAfterDownloadPath());
     }
     
     private void applyChanges(){
@@ -1603,8 +1766,9 @@ public class PreferenceDialog extends JDialog {
         
         //Misc
         config.setEnableToneBeforeDownload(chckbxToneBeforeDwn.isSelected());
-        config.setEnableToneDownloadStarted(chckbxToneOnDwn.isSelected());
+        config.setToneBeforeDownloadPath(toneBeforeField.getText());
         config.setEnableToneAfterDownload(chckbxToneAfterDwn.isSelected());
+        config.setToneAfterDownloadPath(toneAfterField.getText());
         
         try {
             config.write();

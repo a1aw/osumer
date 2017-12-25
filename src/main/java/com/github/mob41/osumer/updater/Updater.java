@@ -44,6 +44,7 @@ import org.json.JSONObject;
 
 import com.github.mob41.organdebug.exceptions.DebuggableException;
 import com.github.mob41.osumer.Config;
+import com.github.mob41.osumer.Osumer;
 import com.github.mob41.osumer.exceptions.InvalidSourceIntegerException;
 import com.github.mob41.osumer.exceptions.NoBuildsForVersionException;
 import com.github.mob41.osumer.exceptions.NoSuchBuildNumberException;
@@ -51,8 +52,6 @@ import com.github.mob41.osumer.exceptions.NoSuchSourceException;
 import com.github.mob41.osumer.exceptions.NoSuchVersionException;
 import com.github.mob41.osumer.io.Installer;
 import com.github.mob41.osumer.io.VersionInfo;
-//import com.github.mob41.osumer.io.OsuDownloader;
-import com.github.mob41.osumer.io.beatmap.Osumer;
 
 public class Updater {
 
@@ -222,7 +221,7 @@ public class Updater {
         
         JSONObject versionsJson = sourcesJson.getJSONObject(sourceKey);
         
-        VersionInfo thisInfo = Installer.getInstalledVersion();
+        VersionInfo thisInfo = new VersionInfo(Osumer.OSUMER_VERSION, Osumer.OSUMER_BRANCH, Osumer.OSUMER_BUILD_NUM);
         
         Iterator<String> it = versionsJson.keys();
         String last = null;
@@ -255,6 +254,14 @@ public class Updater {
         
         boolean isThisVersion = thisInfo != null && last.equals(thisInfo.getVersion()) &&
                 latest == thisInfo.getBuildNum() && getBranchStr(updateSource).equals(thisInfo.getBranch());
+        if (thisInfo != null) {
+            System.out.println(last + " to " + thisInfo.getVersion());
+            System.out.println(latest + " to " + thisInfo.getBuildNum());
+            System.out.println(getBranchStr(updateSource) + " to " + thisInfo.getBranch());
+        } else {
+            System.out.println("ThisInfoNull");
+        }
+        System.out.println("IsThisVer: " + isThisVersion);
         return new UpdateInfo(desc, last, updateSource, latest, webLink, exeLink, jarLink, isThisVersion, !isThisVersion);
     }
 
