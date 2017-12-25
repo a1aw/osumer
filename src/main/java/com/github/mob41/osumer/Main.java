@@ -52,12 +52,13 @@ import com.github.mob41.organdebug.DebugDump;
 import com.github.mob41.organdebug.DumpManager;
 import com.github.mob41.organdebug.exceptions.DebuggableException;
 import com.github.mob41.osumer.io.Installer;
-import com.github.mob41.osumer.io.beatmap.Osumer;
 import com.github.mob41.osumer.io.queue.QueueManager;
 import com.github.mob41.osumer.sock.SockThread;
 import com.github.mob41.osumer.ui.ErrorDumpDialog;
 import com.github.mob41.osumer.ui.UIFrame;
 import com.github.mob41.osums.io.beatmap.Osums;
+
+import javafx.embed.swing.JFXPanel;
 
 public class Main {
 
@@ -294,6 +295,8 @@ public class Main {
                     }
                 }
             }
+            //Initialize JFX toolkit
+            new JFXPanel();
 
             TrayIcon icon = new TrayIcon(Toolkit.getDefaultToolkit()
                     .getImage(UIFrame.class.getResource("/com/github/mob41/osumer/ui/osumerIcon_16px.png")));
@@ -354,7 +357,7 @@ public class Main {
         }
     }
 
-    private static void runBrowser(Config config, String[] args) {
+    public static void runBrowser(Config config, String[] args) {
         String argstr = buildArgStr(args);
         // Run the default browser application
         if (!GraphicsEnvironment.isHeadless() && Osumer.isWindows()) {

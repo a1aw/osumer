@@ -28,7 +28,9 @@
  *******************************************************************************/
 package com.github.mob41.osumer.sock;
 
+import java.awt.GraphicsEnvironment;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -36,10 +38,14 @@ import java.net.Socket;
 import java.util.Locale;
 
 import javax.annotation.processing.Processor;
+import javax.swing.JOptionPane;
 import javax.tools.JavaCompiler;
 
 import com.github.mob41.osumer.ArgParser;
-import com.github.mob41.osumer.io.beatmap.Osumer;
+import com.github.mob41.osumer.Config;
+import com.github.mob41.osumer.Main;
+import com.github.mob41.osumer.Osumer;
+import com.github.mob41.osumer.io.Installer;
 import com.github.mob41.osums.io.beatmap.Osums;
 
 public class ConnThread extends Thread {
@@ -65,6 +71,8 @@ public class ConnThread extends Thread {
 
             if (line != null) {
                 if (line.equals("RUN ")) {
+                    sockThread.getFrame().checkUpdate();
+                    
                     sockThread.getFrame().setVisible(true);
                     sockThread.getFrame().setLocationRelativeTo(null);
                     sockThread.getFrame().setAlwaysOnTop(true);
@@ -72,6 +80,8 @@ public class ConnThread extends Thread {
                     sockThread.getFrame().setAlwaysOnTop(false);
                     writer.println("OK");
                 } else if (line.startsWith("RUN")) {
+                    sockThread.getFrame().checkUpdate();
+                    
                     String[] args = line.substring(4).split(" ");
 
                     // ArgParser ap = new ArgParser(args);
@@ -89,12 +99,53 @@ public class ConnThread extends Thread {
                     if (urlStr != null) {
                         new Thread() {
                             public void run() {
-                                sockThread.getFrame().addBtQueue(urlStr, false, true, null, null);
+                                sockThread.getFrame().addQuietBtQueue(urlStr);
+                                //sockThread.getFrame().addBtQueue(urlStr, false, false, true, null, null);
                             }
                         }.start();
-                    }
+                    } else {
+                        String argstr = buildArgStr(args);
+                        Config config = sockThread.getFrame().getConfig();
+                        
+                        // Run the default browser application
+                        System.out.println(config.getDefaultBrowser());
+                        if (config.getDefaultBrowser() == null || config.getDefaultBrowser().isEmpty()) {
+                            System.out.println(config.getDefaultBrowser());
+                            JOptionPane.showInputDialog(null,
+                                    "No default browser path is specified. Please maunally launch the browser the following arguments:",
+                                    "osumer - Automatic browser switching", JOptionPane.INFORMATION_MESSAGE, null, null, argstr);
+                            return;
+                        }
 
+                        String browserPath = Installer.getBrowserExePath(config.getDefaultBrowser());
+                        System.out.println(browserPath);
+                        if (browserPath == null) {
+                            JOptionPane.showMessageDialog(null,
+                                    "Cannot read browser executable path in registry.\nCannot start default browser application for:\n"
+                                            + argstr,
+                                    "Configuration Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+
+                        File file = new File(browserPath.replaceAll("\"", ""));
+                        if (!file.exists()) {
+                            JOptionPane.showMessageDialog(null,
+                                    "The specified browser application does not exist.\nCannot start default browser application for:\n"
+                                            + argstr,
+                                    "Configuration Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+
+                        try {
+                            Runtime.getRuntime().exec(browserPath + " " + argstr);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
                     writer.println("OK");
+                } else if (line.equals("STOP")) {
+                    System.exit(0);
+                    return;
                 }
             }
 
@@ -106,6 +157,17 @@ public class ConnThread extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static String buildArgStr(String[] args) {
+        String out = "";
+        for (int i = 0; i < args.length; i++) {
+            out += args[i];
+            if (i != args.length - 1) {
+                out += " ";
+            }
+        }
+        return out;
     }
 
 }

@@ -45,14 +45,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.github.mob41.organdebug.exceptions.DebuggableException;
-import com.github.mob41.osumer.io.beatmap.Osumer;
+import com.github.mob41.osumer.Osumer;
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.Win32Exception;
 import com.sun.jna.platform.win32.WinReg;
 
+import mslinks.ShellLink;
+
 public class Installer {
 
     public static final String winPath = "C:\\Program Files\\osumer";
+    
+    public static final String START_MENU_PATH = "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\osumer";
 
     public static final String winFile = "osumer.exe";
 
@@ -393,7 +397,38 @@ public class Installer {
             out.close();
         } catch (IOException e) {
             throw new DebuggableException(null, "Create new File instance with \"" + winPath + "\\" + winFile + "\"",
-                    "(Try scope) Copying file", "(Next Try scope) Writing to registry", "Error copying file", false, e);
+                    "(Try scope) Copying file", "Creating Main osumer link in Start Menu", "Error copying file", false, e);
+        }
+        
+        File startPathFolder = new File(START_MENU_PATH);
+        
+        if (!startPathFolder.exists() || !startPathFolder.isDirectory()) {
+            startPathFolder.mkdir();
+        }
+        
+        ShellLink slMain = ShellLink.createLink(Installer.winPath + "\\" + Installer.winFile);
+        slMain.setWorkingDir(Installer.winPath);
+        slMain.setIconLocation(Installer.winPath + "\\" + Installer.winFile);
+        slMain.getHeader().setIconIndex(0);
+        
+        try {
+            slMain.saveTo(START_MENU_PATH + "\\osumer.lnk");
+        } catch (IOException e1) {
+            throw new DebuggableException(null, "(Try scope) Copying file",
+                    "Creating Main osumer link in Start Menu", "Creating Daemon osumer link in Start Menu", "Error copying file", false, e1);
+        }
+        
+        ShellLink slDaemon = ShellLink.createLink(Installer.winPath + "\\" + Installer.winFile);
+        slDaemon.setWorkingDir(Installer.winPath);
+        slDaemon.setCMDArgs("-daemon");
+        slDaemon.setIconLocation(Installer.winPath + "\\" + Installer.winFile);
+        slDaemon.getHeader().setIconIndex(0);
+        
+        try {
+            slDaemon.saveTo(START_MENU_PATH + "\\osumer (Start as Daemon).lnk");
+        } catch (IOException e1) {
+            throw new DebuggableException(null, "Creating Main osumer link in Start Menu",
+                    "Creating Daemon osumer link in Start Menu", "(Next Try scope) Writing to registry", "Error copying file", false, e1);
         }
 
         try {
@@ -538,8 +573,8 @@ public class Installer {
             
             // Run
             
-            // HKLM/SOFTWARE/Microsoft/Windows/CurrentVersion/@osumerDaemon
-            Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_RUN_PATH + "\\" + WIN_REG_RUN_OSUMERDAEMON_PARA, WIN_REG_RUN_OSUMERDAEMON_VALUE);
+            // HKLM/SOFTWARE/Microsoft/Windows/CurrentVersion/Run/@osumerDaemon
+            Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_RUN_PATH, WIN_REG_RUN_OSUMERDAEMON_PARA, WIN_REG_RUN_OSUMERDAEMON_VALUE);
         } catch (Win32Exception e) {
             throw new DebuggableException(null, "(Try&catch try) Writing to registry", "Throw debuggable exception",
                     "(End of function)", "Error writing registry", false, e);
@@ -552,6 +587,14 @@ public class Installer {
             file.delete();
         }
         file = new File(winPath + "\\" + verInfoFile);
+        if (file.exists()) {
+            file.delete();
+        }
+        file = new File(START_MENU_PATH + "\\osumer.lnk");
+        if (file.exists()) {
+            file.delete();
+        }
+        file = new File(START_MENU_PATH + "\\osumer (Start as Daemon).lnk");
         if (file.exists()) {
             file.delete();
         }
@@ -593,7 +636,7 @@ public class Installer {
                     WIN_REG_CLASSES_PATH + "\\" + WIN_REG_CLASSES_OSUMER_KEY, "shell");
             Advapi32Util.registryDeleteKey(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_CLASSES_PATH, WIN_REG_CLASSES_OSUMER_KEY);
             
-            Advapi32Util.registryDeleteKey(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_RUN_PATH, WIN_REG_RUN_OSUMERDAEMON_PARA); 
+            Advapi32Util.registryDeleteValue(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_RUN_PATH, WIN_REG_RUN_OSUMERDAEMON_PARA); 
         } catch (Win32Exception e) {
             e.printStackTrace();
             throw new DebuggableException(null, "(Try&catch try) Writing to registry", "Throw debuggable exception",

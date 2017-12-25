@@ -97,19 +97,40 @@ public class MultiDownloadDialog extends JDialog {
                         if (!valid) {
                             JOptionPane.showMessageDialog(MultiDownloadDialog.this, "The URL syntax is invalid or the URL provided is not a song/beatmap URL.\nPlease correct it to continue.", "Error", JOptionPane.ERROR_MESSAGE);
                         } else {
-                            int added = 0;
-                            for (int i = 0; i < lines.length; i++) {
-                                if (lines[i].startsWith("#@//")) {
-                                    continue;
+                            ProgressDialog dialog = new ProgressDialog();
+                            dialog.getLabel().setText("Status: Getting ready...");
+                            dialog.getProgressBar().setIndeterminate(true);
+                            
+                            Thread thread = new Thread(new Runnable() {
+                                public void run() {
+                                    int added = 0;
+                                    for (int i = 0; i < lines.length; i++) {
+                                        if (lines[i].startsWith("#@//")) {
+                                            continue;
+                                        }
+
+                                        dialog.getLabel().setText("Status: osumer is still busy in adding beatmaps >.< (" + (i + 1) + "/" + lines.length + ")");
+                                        frame.addQuietBtQueue(lines[i]);
+                                        added++;
+                                    }
+                                    dialog.dispose();
+                                    dispose();
+                                    JOptionPane.showMessageDialog(frame, added + " songs/beatmaps have been added to queue.", "Info", JOptionPane.INFORMATION_MESSAGE);
                                 }
-                                frame.addBtQueue(lines[i], false);
-                                added++;
-                            }
-                            JOptionPane.showMessageDialog(MultiDownloadDialog.this, added + " songs/beatmaps have been added to queue.", "Info", JOptionPane.INFORMATION_MESSAGE);
-                            dispose();
+                            });
+                            thread.setDaemon(true);
+                            thread.start();
+                            
+                            dialog.setLocationRelativeTo(MultiDownloadDialog.this);
+                            dialog.setModal(true);
+                            dialog.setVisible(true);
                         }
                     }
                 });
+                {
+                    JLabel lblTheAfterdownloadActions = new JLabel("The after-download actions are set in Preferences.");
+                    buttonPane.add(lblTheAfterdownloadActions);
+                }
                 okButton.setActionCommand("OK");
                 buttonPane.add(okButton);
                 getRootPane().setDefaultButton(okButton);

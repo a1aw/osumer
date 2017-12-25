@@ -5,30 +5,11 @@ The easiest,express osu! beatmap downloader helper!
 
 Put a star if you like this software! I would be happy to continue developing this software!
 
-## Scheduled distribution of osumer2: Late Aug-Oct, 2017
+## v2 has released
 
-> Sorry that I am really busy in holidays :( Trial version still not available.
+Experimental Builds of osumer v2 has been released at https://github.com/mob41/mob41/releases/latest . And to all osumer clients with updater functionality. Please do not hesitate trying it with new features!
 
-<em>Interested in what osumer2 great for?</em>
-
-- Background downloading
-- Pre-started daemon for more, and more faster osumerExpress experience
-- Improved, and more application preferences!
-- In-app down-grade software unlocked
-- Multi-downloading for default 4 threads, at with no modification max 8 threads!
-- Before,Started,After download tones!
-- Estimated Time Arrival (ETA) and elapsed time
-- Listed downloading
-- Allows download queuing
-- Beatmap searching
-- <b>osums</b> beatmap searching
-- <b>osums</b> beatmap management (i.e. exporting, categorizing)
-
-> Trial program around Late Aug
-
-<em>So interested? Join the trial program! Update your osumer to ```1.0.6-snapshot-b1```</em>
-
-The trial program lasts for 1 month till the distribution date.
+Tutorials (still building) can be found at https://github.com/mob41/osumer/wiki/osumer-tutorial .
 
 ## Disclaimer
 This software does not contain malicious code that will send username and password to another server other than osu!'s login server. You can feel free to look through the code. If you still feel uncomfortable with this software, you can simply stop using it. Thank you!
@@ -46,6 +27,19 @@ By using this software, I take no responsibility here. Use in your own risk.
 - It will start beatmaps download automatically when an arugment of the beatmap URL is passed to the application.
 
 - In the user interface, users can download beatmaps manually by pasting a beatmap URL, and press the ```Download & Import``` button.
+
+- Background downloading
+- Pre-started daemon for more, and more faster osumerExpress experience
+- Improved, and more application preferences!
+- In-app down-grade software unlocked
+- Multi-downloading for default 4 threads, at with no modification max 8 threads!
+- Before,Started,After download tones!
+- Estimated Time Arrival (ETA) and elapsed time
+- Listed downloading
+- Allows download queuing
+- Beatmap searching
+- <b>osums</b> beatmap searching
+- <b>osums</b> beatmap management (i.e. exporting, categorizing)
 
 ## Screenshots
 

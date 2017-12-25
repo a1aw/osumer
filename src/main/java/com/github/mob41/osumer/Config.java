@@ -42,8 +42,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.github.mob41.osumer.io.beatmap.Osumer;
-
 public class Config {
     
     public static final String CHECK_UPDATE_FREQ_EVERY_STARTUP = "everyStartup";
@@ -159,19 +157,17 @@ public class Config {
 
     private static final boolean KEY_ENABLE_TONE_BEFORE_DOWNLOAD_DEFAULT_VALUE = true;
     
-    //private static final String KEY_SELECTED_TONE_BEFORE_DOWNLOAD = "toneBeforeDownloadPath";
-
-    private static final String KEY_ENABLE_TONE_DOWNLOAD_STARTED = "toneDownloadStarted";
-
-    private static final boolean KEY_ENABLE_TONE_DOWNLOAD_STARTED_DEFAULT_VALUE = true;
+    private static final String KEY_SELECTED_TONE_BEFORE_DOWNLOAD = "toneBeforeDownloadPath";
     
-    //private static final String KEY_SELECTED_TONE_DOWNLOAD_STARTED = "toneDownloadStartedPath";
+    private static final String KEY_SELECTED_TONE_BEFORE_DOWNLOAD_DEFAULT_VALUE = "C:\\Windows\\Media\\Windows Logon.wav";
 
     private static final String KEY_ENABLE_TONE_AFTER_DOWNLOAD = "toneAfterDownload";
 
     private static final boolean KEY_ENABLE_TONE_AFTER_DOWNLOAD_DEFAULT_VALUE = true;
     
-    //private static final String KEY_SELECTED_TONE_AFTER_DOWNLOAD = "toneAfterDownloadPath";
+    private static final String KEY_SELECTED_TONE_AFTER_DOWNLOAD = "toneAfterDownloadPath";
+    
+    private static final String KEY_SELECTED_TONE_AFTER_DOWNLOAD_DEFAULT_VALUE = "C:\\Windows\\Media\\Windows Background.wav";
 
     private JSONObject json;
 
@@ -428,17 +424,24 @@ public class Config {
     public boolean isEnableToneBeforeDownload(){
         return json.getBoolean(KEY_ENABLE_TONE_BEFORE_DOWNLOAD);
     }
-    
-    public void setEnableToneDownloadStarted(boolean enabled){
-        json.put(KEY_ENABLE_TONE_DOWNLOAD_STARTED, enabled);
+    public String getToneBeforeDownloadPath() {
+        return json.getString(KEY_SELECTED_TONE_BEFORE_DOWNLOAD);
     }
     
-    public boolean isEnableToneDownloadStarted(){
-        return json.getBoolean(KEY_ENABLE_TONE_DOWNLOAD_STARTED);
+    public void setToneBeforeDownloadPath(String path) {
+        json.put(KEY_SELECTED_TONE_BEFORE_DOWNLOAD, path);
     }
     
     public void setEnableToneAfterDownload(boolean enabled){
         json.put(KEY_ENABLE_TONE_AFTER_DOWNLOAD, enabled);
+    }
+    
+    public String getToneAfterDownloadPath() {
+        return json.getString(KEY_SELECTED_TONE_AFTER_DOWNLOAD);
+    }
+    
+    public void setToneAfterDownloadPath(String path) {
+        json.put(KEY_SELECTED_TONE_AFTER_DOWNLOAD, path);
     }
     
     public boolean isEnableToneAfterDownload(){
@@ -477,9 +480,11 @@ public class Config {
         modified |= ifNullPutValue(json, KEY_PLUGIN_SUMS, new JSONArray());
         modified |= ifNullPutValue(json, KEY_ENABLE_TONE_BEFORE_DOWNLOAD,
                 KEY_ENABLE_TONE_BEFORE_DOWNLOAD_DEFAULT_VALUE);
-        modified |= ifNullPutValue(json, KEY_ENABLE_TONE_DOWNLOAD_STARTED,
-                KEY_ENABLE_TONE_DOWNLOAD_STARTED_DEFAULT_VALUE);
+        modified |= ifNullPutValue(json, KEY_SELECTED_TONE_BEFORE_DOWNLOAD,
+                KEY_SELECTED_TONE_BEFORE_DOWNLOAD_DEFAULT_VALUE);
         modified |= ifNullPutValue(json, KEY_ENABLE_TONE_AFTER_DOWNLOAD, KEY_ENABLE_TONE_AFTER_DOWNLOAD_DEFAULT_VALUE);
+        modified |= ifNullPutValue(json, KEY_SELECTED_TONE_AFTER_DOWNLOAD,
+                KEY_SELECTED_TONE_AFTER_DOWNLOAD_DEFAULT_VALUE);
         return modified;
     }
 

@@ -26,7 +26,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.github.mob41.osumer.io.beatmap;
+package com.github.mob41.osumer;
 
 import java.io.File;
 import java.io.IOException;

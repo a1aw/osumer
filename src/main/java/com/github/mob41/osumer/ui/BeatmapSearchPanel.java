@@ -36,6 +36,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.JRadioButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 
 public class BeatmapSearchPanel extends JPanel {
     private JTextField searchFld;
@@ -86,20 +88,29 @@ public class BeatmapSearchPanel extends JPanel {
         btnSearch.setFont(new Font("Tahoma", Font.PLAIN, 12));
         
         JLabel lblSortBy = new JLabel("Sort by:");
+        lblSortBy.setEnabled(false);
         lblSortBy.setFont(new Font("Tahoma", Font.PLAIN, 12));
         
         JComboBox sortByBox = new JComboBox();
+        sortByBox.setEnabled(false);
         sortByBox.setFont(new Font("Tahoma", Font.PLAIN, 12));
         sortByBox.setModel(new DefaultComboBoxModel(new String[] {"Title", "Artist", "Creator", "Difficulty", "Ranked", "Rating", "Plays"}));
         sortByBox.setSelectedIndex(4);
         
         JScrollPane scrollPane = new JScrollPane();
         
-        rdbtnUseOfflineIndexed = new JRadioButton("Use offline indexed database");
-        rdbtnUseOfflineIndexed.setSelected(true);
+        rdbtnUseOfflineIndexed = new JRadioButton("Use offline indexed database (experimental)");
+        rdbtnUseOfflineIndexed.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (rdbtnUseOfflineIndexed.isSelected()) {
+                    JOptionPane.showMessageDialog(BeatmapSearchPanel.this, "This feature is still experimental. Please consider using web search instead.", "Warning", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
         rdbtnUseOfflineIndexed.setFont(new Font("Tahoma", Font.PLAIN, 12));
         
         rdbtnUseOnlineWeb = new JRadioButton("Use online web search");
+        rdbtnUseOnlineWeb.setSelected(true);
         rdbtnUseOnlineWeb.setFont(new Font("Tahoma", Font.PLAIN, 12));
         
         ButtonGroup rdGp = new ButtonGroup();
@@ -205,6 +216,12 @@ public class BeatmapSearchPanel extends JPanel {
     }
 
     private void doSearch() {
+        if (searchFld.getText().isEmpty()) {
+            int option = JOptionPane.showOptionDialog(BeatmapSearchPanel.this, "Please consider not to empty the search field.\nIt might cause a long time to do searching.\nAre you sure to continue?", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null);
+            if (option == JOptionPane.NO_OPTION) {
+                return;
+            }
+        }
         boolean useDb = rdbtnUseOfflineIndexed.isSelected();
         lblResultDesc.setText("Searching string \"" + searchFld.getText() + "\"" + (useDb ? " in offline indexed database..." : " online..."));
         
