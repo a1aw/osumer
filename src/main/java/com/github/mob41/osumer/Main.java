@@ -362,11 +362,9 @@ public class Main {
             System.out.println(config.getDefaultBrowser());
             if (config.getDefaultBrowser() == null || config.getDefaultBrowser().isEmpty()) {
                 System.out.println(config.getDefaultBrowser());
-                JOptionPane
-                        .showMessageDialog(null,
-                                "No default browser path is specified. Please maunally launch the browser the following arguments:\n"
-                                        + argstr,
-                                "osumer - Automatic browser switching", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showInputDialog(null,
+                        "No default browser path is specified. Please maunally launch the browser the following arguments:",
+                        "osumer - Automatic browser switching", JOptionPane.INFORMATION_MESSAGE, null, null, argstr);
                 System.exit(-1);
                 return;
             }
