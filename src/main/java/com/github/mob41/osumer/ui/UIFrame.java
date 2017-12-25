@@ -31,6 +31,7 @@ package com.github.mob41.osumer.ui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
@@ -46,6 +47,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Calendar;
 
 import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
@@ -77,13 +79,19 @@ import javax.swing.filechooser.FileFilter;
 
 import com.github.mob41.organdebug.exceptions.DebuggableException;
 import com.github.mob41.osumer.Config;
+import com.github.mob41.osumer.exceptions.NoBuildsForVersionException;
+import com.github.mob41.osumer.exceptions.NoSuchBuildNumberException;
+import com.github.mob41.osumer.exceptions.NoSuchVersionException;
 import com.github.mob41.osumer.io.beatmap.Osumer;
 import com.github.mob41.osumer.io.legacy.URLDownloader;
 import com.github.mob41.osumer.io.queue.Queue;
 import com.github.mob41.osumer.io.queue.QueueAction;
 import com.github.mob41.osumer.io.queue.QueueManager;
 import com.github.mob41.osumer.io.queue.actions.BeatmapImportAction;
+import com.github.mob41.osumer.io.queue.actions.UpdaterRunAction;
 import com.github.mob41.osumer.sock.SockThread;
+import com.github.mob41.osumer.updater.UpdateInfo;
+import com.github.mob41.osumer.updater.Updater;
 import com.github.mob41.osums.io.beatmap.OsuBeatmap;
 import com.github.mob41.osums.io.beatmap.OsuDownloader;
 import com.github.mob41.osums.io.beatmap.Osums;
@@ -99,6 +107,7 @@ public class UIFrame extends JFrame {
     private static final long serialVersionUID = -4742856302707419966L;
     private boolean daemonMode = false;
     private final QueueManager mgr;
+    private final Updater updater;
     private final Osums osu;
     private final SockThread sockThread;
     private final Config config;
@@ -113,6 +122,8 @@ public class UIFrame extends JFrame {
     private JTable table;
     private JTextField beatmapField;
     private JCheckBox chckbxShowBeatmapPreview;
+    
+    private boolean checkingUpdate = false;
 
     /**
      * Create the frame.
@@ -136,6 +147,7 @@ public class UIFrame extends JFrame {
         this.mgr = mgr;
         this.config = config;
         this.osu = new Osums();
+        this.updater = new Updater(config);
 
         mgr.startQueuing();
 
@@ -166,6 +178,7 @@ public class UIFrame extends JFrame {
         mntmPreferences.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 PreferenceDialog dialog = new PreferenceDialog(config, UIFrame.this);
+                dialog.setLocationRelativeTo(UIFrame.this);
                 dialog.setModal(true);
                 dialog.setVisible(true);
             }
@@ -198,6 +211,17 @@ public class UIFrame extends JFrame {
                 return;
             }
         });
+        
+        JMenuItem mntmCheckForUpdates = new JMenuItem("Check for updates");
+        mntmCheckForUpdates.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                checkUpdate();
+            }
+        });
+        mnOsumer2.add(mntmCheckForUpdates);
+        
+        JSeparator separator_1 = new JSeparator();
+        mnOsumer2.add(separator_1);
         mnOsumer2.add(mntmExit);
 
         JMenu mnQueue = new JMenu("Queue");
@@ -243,6 +267,12 @@ public class UIFrame extends JFrame {
         });
         mnQueue.add(mntmEditQueues);
         mnQueue.add(mntmRefreshQueueList);
+        
+        JMenu mnAbout = new JMenu("About");
+        menuBar.add(mnAbout);
+        
+        JMenuItem mntmGithubProject = new JMenuItem("GitHub Project");
+        mnAbout.add(mntmGithubProject);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
@@ -254,40 +284,61 @@ public class UIFrame extends JFrame {
         lblTitle.setVerticalAlignment(SwingConstants.BOTTOM);
         lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 27));
 
-        JLabel lblSubtitle = new JLabel("The easiest, express way to obtain beatmaps - Checking for updates...");
-        lblSubtitle.setFont(new Font("Tahoma", Font.PLAIN, 12));
-        lblSubtitle.setVerticalAlignment(SwingConstants.TOP);
-
         tab = new JTabbedPane(JTabbedPane.TOP);
 
         JLabel lblCopyright = new JLabel("Copyright (c) 2016-2017 Anthony Law. Licensed under MIT License.");
         lblCopyright.setFont(new Font("Tahoma", Font.PLAIN, 12));
         lblCopyright.setHorizontalAlignment(SwingConstants.CENTER);
+        
+        JLabel label = new JLabel("");
+        
+        JLabel lblTheEasiestExpress = new JLabel("The easiest, express way to obtain beatmaps");
+        lblTheEasiestExpress.setHorizontalAlignment(SwingConstants.LEFT);
+        lblTheEasiestExpress.setFont(new Font("Tahoma", Font.PLAIN, 12));
+        
+        lblUpdateStatus = new JLabel("");
+        lblUpdateStatus.setHorizontalAlignment(SwingConstants.RIGHT);
+        lblUpdateStatus.setFont(new Font("Tahoma", Font.PLAIN, 12));
         GroupLayout gl_contentPane = new GroupLayout(contentPane);
-        gl_contentPane.setHorizontalGroup(gl_contentPane.createParallelGroup(Alignment.LEADING).addGroup(gl_contentPane
-                .createSequentialGroup().addContainerGap()
-                .addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
-                        .addGroup(gl_contentPane.createSequentialGroup().addComponent(tab).addContainerGap())
-                        .addGroup(gl_contentPane.createSequentialGroup().addComponent(lblImg)
-                                .addPreferredGap(ComponentPlacement.RELATED).addGroup(
-                                        gl_contentPane.createParallelGroup(Alignment.LEADING)
-                                                .addGroup(gl_contentPane.createSequentialGroup().addComponent(lblTitle)
-                                                        .addContainerGap())
-                                                .addComponent(lblSubtitle, GroupLayout.DEFAULT_SIZE, 690,
-                                                        Short.MAX_VALUE)))
+        gl_contentPane.setHorizontalGroup(
+            gl_contentPane.createParallelGroup(Alignment.LEADING)
+                .addGroup(gl_contentPane.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+                        .addComponent(tab)
                         .addGroup(gl_contentPane.createSequentialGroup()
-                                .addComponent(lblCopyright, GroupLayout.DEFAULT_SIZE, 750, Short.MAX_VALUE)
-                                .addContainerGap()))));
-        gl_contentPane.setVerticalGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-                .addGroup(gl_contentPane.createSequentialGroup().addContainerGap()
-                        .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING, false)
-                                .addGroup(gl_contentPane.createSequentialGroup().addComponent(lblTitle)
-                                        .addPreferredGap(ComponentPlacement.RELATED).addComponent(lblSubtitle,
-                                                GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addComponent(lblImg))
-                        .addPreferredGap(ComponentPlacement.RELATED)
-                        .addComponent(tab, GroupLayout.PREFERRED_SIZE, 366, Short.MAX_VALUE)
-                        .addPreferredGap(ComponentPlacement.UNRELATED).addComponent(lblCopyright)));
+                            .addComponent(lblImg)
+                            .addPreferredGap(ComponentPlacement.RELATED)
+                            .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+                                .addGroup(gl_contentPane.createSequentialGroup()
+                                    .addComponent(lblTheEasiestExpress)
+                                    .addPreferredGap(ComponentPlacement.RELATED)
+                                    .addComponent(lblUpdateStatus, GroupLayout.DEFAULT_SIZE, 436, Short.MAX_VALUE))
+                                .addGroup(gl_contentPane.createSequentialGroup()
+                                    .addGap(255)
+                                    .addComponent(label))
+                                .addComponent(lblTitle, GroupLayout.DEFAULT_SIZE, 691, Short.MAX_VALUE)))
+                        .addComponent(lblCopyright, GroupLayout.DEFAULT_SIZE, 761, Short.MAX_VALUE))
+                    .addGap(0))
+        );
+        gl_contentPane.setVerticalGroup(
+            gl_contentPane.createParallelGroup(Alignment.LEADING)
+                .addGroup(gl_contentPane.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+                        .addGroup(gl_contentPane.createSequentialGroup()
+                            .addComponent(lblTitle)
+                            .addPreferredGap(ComponentPlacement.RELATED)
+                            .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING, false)
+                                .addComponent(lblUpdateStatus, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(lblTheEasiestExpress, GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE)
+                                .addComponent(label)))
+                        .addComponent(lblImg))
+                    .addPreferredGap(ComponentPlacement.RELATED)
+                    .addComponent(tab, GroupLayout.PREFERRED_SIZE, 366, Short.MAX_VALUE)
+                    .addPreferredGap(ComponentPlacement.UNRELATED)
+                    .addComponent(lblCopyright))
+        );
 
         JPanel panel = new JPanel();
         tab.addTab("Quick start", null, panel, null);
@@ -396,6 +447,7 @@ public class UIFrame extends JFrame {
         btnOsumerPreferences.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 PreferenceDialog dialog = new PreferenceDialog(config, UIFrame.this);
+                dialog.setLocationRelativeTo(UIFrame.this);
                 dialog.setModal(true);
                 dialog.setVisible(true);
             }
@@ -421,7 +473,7 @@ public class UIFrame extends JFrame {
             gl_panel.createParallelGroup(Alignment.LEADING)
                 .addGroup(gl_panel.createSequentialGroup()
                     .addContainerGap()
-                    .addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
+                    .addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
                         .addGroup(gl_panel.createSequentialGroup()
                             .addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
                                 .addGroup(gl_panel.createSequentialGroup()
@@ -433,18 +485,18 @@ public class UIFrame extends JFrame {
                                     .addPreferredGap(ComponentPlacement.RELATED)
                                     .addComponent(btnSelectFile))
                                 .addComponent(lblSpecifyYourDesired, GroupLayout.DEFAULT_SIZE, 736, Short.MAX_VALUE)
-                                .addGroup(gl_panel.createSequentialGroup()
+                                .addGroup(Alignment.TRAILING, gl_panel.createSequentialGroup()
                                     .addComponent(lblBeatmapUrl)
                                     .addPreferredGap(ComponentPlacement.RELATED)
-                                    .addComponent(beatmapField, GroupLayout.PREFERRED_SIZE, 441, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(beatmapField, GroupLayout.DEFAULT_SIZE, 441, Short.MAX_VALUE)
                                     .addPreferredGap(ComponentPlacement.RELATED)
-                                    .addComponent(btnAddToQueue, GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE))
+                                    .addComponent(btnAddToQueue, GroupLayout.PREFERRED_SIZE, 151, GroupLayout.PREFERRED_SIZE))
                                 .addComponent(lblNewWebpageUrls, GroupLayout.DEFAULT_SIZE, 736, Short.MAX_VALUE)
                                 .addComponent(lblYouWillBe, GroupLayout.DEFAULT_SIZE, 736, Short.MAX_VALUE)
                                 .addComponent(rdbtnDownloadAndImport, GroupLayout.DEFAULT_SIZE, 736, Short.MAX_VALUE)
                                 .addComponent(chckbxShowBeatmapPreview, GroupLayout.DEFAULT_SIZE, 736, Short.MAX_VALUE))
                             .addContainerGap())
-                        .addGroup(Alignment.TRAILING, gl_panel.createSequentialGroup()
+                        .addGroup(gl_panel.createSequentialGroup()
                             .addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
                                 .addComponent(btnOsumerPreferences, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
                                 .addComponent(btnDownloadAList, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -542,12 +594,11 @@ public class UIFrame extends JFrame {
         this.sockThread = new SockThread(this);
         sockThread.start();
         
-        
-        new Thread(){
-            public void run(){
-                
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                checkUpdate();
             }
-        }.start();
+        });
     }
     
     public Config getConfig() {
@@ -573,6 +624,7 @@ public class UIFrame extends JFrame {
     private JRadioButton rdbtnDownloadAndImport;
     private JRadioButton rdbtnDownloadToFile;
     private JRadioButton rdbtnDownloadToFolder;
+    private JLabel lblUpdateStatus;
 
     public boolean addBtQueue(String url, boolean preview) {
         return addBtQueue(url, preview, true, null, null);
@@ -757,6 +809,173 @@ public class UIFrame extends JFrame {
         }
 
         return stillDwn;
+    }
+
+    private UpdateInfo getUpdateInfoByConfig() throws DebuggableException {
+        String algo = config.getCheckUpdateAlgo();
+        if (algo.equals(Config.CHECK_UPDATE_ALGO_PER_VER_PER_BRANCH)) {
+            return updater.getPerVersionPerBranchLatestVersion();
+        } else if (algo.equals(Config.CHECK_UPDATE_ALGO_LATEST_VER_PER_BRANCH)) {
+            return updater.getLatestVersion();
+        } else { //TODO: Implement other algo
+            return updater.getLatestVersion();
+        }
+    }
+    
+    private void checkUpdate() {
+        if (checkingUpdate) {
+            return;
+        }
+        
+        checkingUpdate = true;
+        Thread thread = new Thread() {
+            public void run() {
+                lblUpdateStatus.setForeground(Color.BLACK);
+                lblUpdateStatus.setText("Checking for updates...");
+                
+                UpdateInfo verInfo = null;
+                try {
+                    verInfo = getUpdateInfoByConfig();
+                } catch (NoBuildsForVersionException e){
+                    lblUpdateStatus.setForeground(Color.RED);
+                    lblUpdateStatus.setText("No builds available for the new version. See dump.");
+                    checkingUpdate = false;
+                    return;
+                } catch (NoSuchVersionException e){
+                    lblUpdateStatus.setForeground(Color.RED);
+                    lblUpdateStatus.setText("No current version in the selected branch. See dump.");
+                    JOptionPane.showMessageDialog(UIFrame.this, "We don't have version " + Osumer.OSUMER_VERSION + " in the current update branch\n\nPlease try another update branch (snapshot, beta, stable).", "Version not available", JOptionPane.INFORMATION_MESSAGE);
+                    checkingUpdate = false;
+                    return;
+                } catch (NoSuchBuildNumberException e){
+                    lblUpdateStatus.setForeground(Color.RED);
+                    lblUpdateStatus.setText("This version has a invalid build number. See dump");
+                    JOptionPane.showMessageDialog(UIFrame.this, 
+                            "We don't have build number greater or equal to " + Osumer.OSUMER_BUILD_NUM + " in version " + Osumer.OSUMER_VERSION + ".\n" +
+                            "If you are using a modified/development osumer,\n"
+                            + " you can just ignore this message.\n" +
+                            "If not, this might be the versions.json in GitHub goes wrong,\n"
+                            + " post a new issue about this.", "Build not available", JOptionPane.WARNING_MESSAGE);
+                    checkingUpdate = false;
+                    return;
+                } catch (DebuggableException e){
+                    e.printStackTrace();
+                    lblUpdateStatus.setForeground(Color.RED);
+                    lblUpdateStatus.setText("Could not connect to update server.");
+                    JOptionPane.showMessageDialog(UIFrame.this, "Could not connect to update server.", "Error", JOptionPane.ERROR_MESSAGE);
+                    checkingUpdate = false;
+                    return;
+                }
+                
+                if (verInfo == null) {
+                    lblUpdateStatus.setForeground(Color.RED);
+                    lblUpdateStatus.setText("Could not obtain update info.");
+                    JOptionPane.showMessageDialog(UIFrame.this, "Could not obtain update info.", "Error", JOptionPane.ERROR_MESSAGE);
+                    checkingUpdate = false;
+                    return;
+                }
+                
+                if (verInfo.isThisVersion()) {
+                    lblUpdateStatus.setForeground(Color.BLACK);
+                    lblUpdateStatus.setText("You are running the latest version of osumer"
+                            + " (" + verInfo.getVersion() + "-" + Updater.getBranchStr(verInfo.getBranch()) + "-" + verInfo.getBuildNum() + ")");
+                    checkingUpdate = false;
+                    return;
+                }
+                
+                lblUpdateStatus.setForeground(new Color(0,153,0));
+                lblUpdateStatus.setText(
+                        (verInfo.isUpgradedVersion() ? "Upgrade" : "Update") +
+                        " available! New version: " + verInfo.getVersion() +
+                        "-" + Updater.getBranchStr(verInfo.getBranch()) +
+                        "-b" + verInfo.getBuildNum());
+                
+                int option;
+                String desc = verInfo.getDescription();
+                if (desc == null){
+                    option = JOptionPane.showOptionDialog(UIFrame.this,
+                            "New " +
+                            (verInfo.isUpgradedVersion() ? "upgrade" : "update") +
+                            " available! New version:\n" + verInfo.getVersion() +
+                            "-" + Updater.getBranchStr(verInfo.getBranch()) +
+                            "-b" + verInfo.getBuildNum() + "\n\n" +
+                            "Do you want to update it now?", "Update available", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, JOptionPane.NO_OPTION);
+                } else {
+                    option = JOptionPane.showOptionDialog(UIFrame.this,
+                            "New " +
+                            (verInfo.isUpgradedVersion() ? "upgrade" : "update") +
+                            " available! New version:\n" + verInfo.getVersion() +
+                            "-" + Updater.getBranchStr(verInfo.getBranch()) +
+                            "-b" + verInfo.getBuildNum() + "\n\n" +
+                            "Do you want to update it now?", "Update available", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Yes", "No", "Description/Changelog"}, JOptionPane.NO_OPTION);
+                    
+                    if (option == 2){
+                        option = JOptionPane.showOptionDialog(UIFrame.this, new TextPanel(desc), "Update description/change-log", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, 0);
+                    }
+                }
+                
+                if (option == JOptionPane.YES_OPTION){
+                    /*
+                    try {
+                        Desktop.getDesktop().browse(new URI(verInfo.getWebLink()));
+                    } catch (IOException | URISyntaxException e) {
+                        DebugDump dump = new DebugDump(
+                                verInfo.getWebLink(),
+                                "Show option dialog of updating osumer or not",
+                                "Set checkingUpdate to false",
+                                "(End of function / thread)",
+                                "Error when opening the web page",
+                                false,
+                                e);
+                        DumpManager.getInstance().addDump(dump);
+                        DebugDump.showDebugDialog(dump);
+                    }
+                    */
+                    try {
+                        String updaterLink = Updater.getUpdaterLink();
+                        
+                        if (updaterLink == null){
+                            System.out.println("No latest updater .exe defined! Falling back to legacy updater!");
+                            updaterLink = Updater.LEGACY_UPDATER_JAR;
+                        }
+                        
+                        URL url;
+                        try {
+                            url = new URL(updaterLink);
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                            JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                        
+                        final String folder = System.getProperty("java.io.tmpdir");
+                        final String fileName = "osumer_updater_" + Calendar.getInstance().getTimeInMillis() + ".exe";
+                        
+                        mgr.addQueue(new Queue(
+                                "osumer Updater",
+                                new URLDownloader(folder, fileName, url),
+                                null,
+                                null,
+                                new QueueAction[] {
+                                        new UpdaterRunAction(folder + fileName)
+                                })
+                         );
+                        tab.setSelectedIndex(1);
+                        new Thread() {
+                            public void run() {
+                                JOptionPane.showMessageDialog(UIFrame.this, "The web updater will be downloaded and started very soon.", "Notice", JOptionPane.INFORMATION_MESSAGE);
+                            }
+                        }.start();
+                    } catch (DebuggableException e){
+                        e.printStackTrace();
+                        JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+                        checkingUpdate = false;
+                    }
+                }
+                checkingUpdate = false;
+            }
+        };
+        thread.start();
     }
 
     private static void addPopup(Component component, final JPopupMenu popup) {

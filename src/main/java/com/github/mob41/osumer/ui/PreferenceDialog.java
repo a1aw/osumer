@@ -77,6 +77,9 @@ import org.json.JSONObject;
 
 import com.github.mob41.organdebug.exceptions.DebuggableException;
 import com.github.mob41.osumer.Config;
+import com.github.mob41.osumer.exceptions.NoBuildsForVersionException;
+import com.github.mob41.osumer.exceptions.NoSuchBuildNumberException;
+import com.github.mob41.osumer.exceptions.NoSuchVersionException;
 import com.github.mob41.osumer.exceptions.OsuException;
 import com.github.mob41.osumer.io.Installer;
 import com.github.mob41.osumer.io.beatmap.Osumer;
@@ -85,6 +88,7 @@ import com.github.mob41.osumer.io.queue.Queue;
 import com.github.mob41.osumer.io.queue.QueueAction;
 import com.github.mob41.osumer.io.queue.QueueManager;
 import com.github.mob41.osumer.io.queue.actions.UpdaterRunAction;
+import com.github.mob41.osumer.updater.UpdateInfo;
 import com.github.mob41.osumer.updater.Updater;
 import javax.swing.JTextField;
 import java.awt.event.ItemListener;
@@ -347,7 +351,7 @@ public class PreferenceDialog extends JDialog {
                     public void actionPerformed(ActionEvent arg0) {
                         boolean installed = Installer.isInstalled();
                         
-                        if (true || !installed) {
+                        if (!installed) {
                             int option = JOptionPane.showOptionDialog(PreferenceDialog.this, "Are you sure to install?", "Install osumerExpress", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 1);
                             
                             if (option == JOptionPane.CLOSED_OPTION || option == JOptionPane.NO_OPTION) {
@@ -798,6 +802,147 @@ public class PreferenceDialog extends JDialog {
             chckbxAutoPatches.setEnabled(false);
 
             JButton btnCheckUpdateNow = new JButton("Check update now");
+            btnCheckUpdateNow.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    ProgressDialog dialog = new ProgressDialog();
+                    dialog.setLocationRelativeTo(PreferenceDialog.this);
+                    
+                    Thread thread = new Thread() {
+                        public void run() {
+                            dialog.getLabel().setText("Status: Checking for updates...");
+                            dialog.getProgressBar().setIndeterminate(true);
+                            
+                            UpdateInfo verInfo = null;
+                            try {
+                                verInfo = getUpdateInfoByConfig();
+                            } catch (NoBuildsForVersionException e){
+                                dialog.dispose();
+                                JOptionPane.showMessageDialog(PreferenceDialog.this, "No builds availiable for the new version. See dump for more details", "Error", JOptionPane.ERROR_MESSAGE);
+                                return;
+                            } catch (NoSuchVersionException e){
+                                dialog.dispose();
+                                JOptionPane.showMessageDialog(PreferenceDialog.this, "We don't have version " + Osumer.OSUMER_VERSION + " in the current update branch\n\nPlease try another update branch (snapshot, beta, stable).", "Version not available", JOptionPane.INFORMATION_MESSAGE);
+                                return;
+                            } catch (NoSuchBuildNumberException e){
+                                dialog.dispose();
+                                JOptionPane.showMessageDialog(PreferenceDialog.this, 
+                                        "We don't have build number greater or equal to " + Osumer.OSUMER_BUILD_NUM + " in version " + Osumer.OSUMER_VERSION + ".\n" +
+                                        "If you are using a modified/development osumer,\n"
+                                        + " you can just ignore this message.\n" +
+                                        "If not, this might be the versions.json in GitHub goes wrong,\n"
+                                        + " post a new issue about this.", "Build not available", JOptionPane.WARNING_MESSAGE);
+                                return;
+                            } catch (DebuggableException e){
+                                dialog.dispose();
+                                JOptionPane.showMessageDialog(PreferenceDialog.this, "Could not connect to update server.", "Error", JOptionPane.ERROR_MESSAGE);
+                                return;
+                            }
+                            
+                            if (verInfo == null) {
+                                dialog.dispose();
+                                JOptionPane.showMessageDialog(PreferenceDialog.this, "Could not obtain update info.", "Error", JOptionPane.ERROR_MESSAGE);
+                                return;
+                            }
+                            
+                            dialog.dispose();
+                            
+                            if (verInfo.isThisVersion()) {
+                                JOptionPane.showMessageDialog(PreferenceDialog.this, "You are running the latest version of osumer"
+                                        + " (" + verInfo.getVersion() + "-" + Updater.getBranchStr(verInfo.getBranch()) + "-" + verInfo.getBuildNum() + ")", "Info", JOptionPane.INFORMATION_MESSAGE);
+                                return;
+                            }
+                            
+                            int option;
+                            String desc = verInfo.getDescription();
+                            if (desc == null){
+                                option = JOptionPane.showOptionDialog(PreferenceDialog.this,
+                                        "New " +
+                                        (verInfo.isUpgradedVersion() ? "upgrade" : "update") +
+                                        " available! New version:\n" + verInfo.getVersion() +
+                                        "-" + Updater.getBranchStr(verInfo.getBranch()) +
+                                        "-b" + verInfo.getBuildNum() + "\n\n" +
+                                        "Do you want to update it now?", "Update available", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, JOptionPane.NO_OPTION);
+                            } else {
+                                option = JOptionPane.showOptionDialog(PreferenceDialog.this,
+                                        "New " +
+                                        (verInfo.isUpgradedVersion() ? "upgrade" : "update") +
+                                        " available! New version:\n" + verInfo.getVersion() +
+                                        "-" + Updater.getBranchStr(verInfo.getBranch()) +
+                                        "-b" + verInfo.getBuildNum() + "\n\n" +
+                                        "Do you want to update it now?", "Update available", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Yes", "No", "Description/Changelog"}, JOptionPane.NO_OPTION);
+                                
+                                if (option == 2){
+                                    option = JOptionPane.showOptionDialog(PreferenceDialog.this, new TextPanel(desc), "Update description/change-log", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, 0);
+                                }
+                            }
+                            
+                            if (option == JOptionPane.YES_OPTION){
+                                /*
+                                try {
+                                    Desktop.getDesktop().browse(new URI(verInfo.getWebLink()));
+                                } catch (IOException | URISyntaxException e) {
+                                    DebugDump dump = new DebugDump(
+                                            verInfo.getWebLink(),
+                                            "Show option dialog of updating osumer or not",
+                                            "Set checkingUpdate to false",
+                                            "(End of function / thread)",
+                                            "Error when opening the web page",
+                                            false,
+                                            e);
+                                    DumpManager.getInstance().addDump(dump);
+                                    DebugDump.showDebugDialog(dump);
+                                }
+                                */
+                                try {
+                                    String updaterLink = Updater.getUpdaterLink();
+                                    
+                                    if (updaterLink == null){
+                                        System.out.println("No latest updater .exe defined! Falling back to legacy updater!");
+                                        updaterLink = Updater.LEGACY_UPDATER_JAR;
+                                    }
+                                    
+                                    URL url;
+                                    try {
+                                        url = new URL(updaterLink);
+                                    } catch (MalformedURLException e) {
+                                        e.printStackTrace();
+                                        JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+                                        return;
+                                    }
+                                    
+                                    final String folder = System.getProperty("java.io.tmpdir");
+                                    final String fileName = "osumer_updater_" + Calendar.getInstance().getTimeInMillis() + ".exe";
+                                    
+                                    QueueManager mgr = uiFrame.getQueueManager();
+                                    mgr.addQueue(new Queue(
+                                            "osumer Updater",
+                                            new URLDownloader(folder, fileName, url),
+                                            null,
+                                            null,
+                                            new QueueAction[] {
+                                                    new UpdaterRunAction(folder + fileName)
+                                            })
+                                     );
+                                    uiFrame.getTab().setSelectedIndex(1);
+                                    new Thread() {
+                                        public void run() {
+                                            JOptionPane.showMessageDialog(uiFrame, "The web updater will be downloaded and started very soon.", "Notice", JOptionPane.INFORMATION_MESSAGE);
+                                        }
+                                    }.start();
+                                    dispose();
+                                } catch (DebuggableException e){
+                                    e.printStackTrace();
+                                    JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+                                }
+                            }
+                        }
+                    };
+                    thread.start();
+                    
+                    dialog.setModal(true);
+                    dialog.setVisible(true);
+                }
+            });
 
             JPanel panel_5 = new JPanel();
             panel_5.setBorder(
@@ -935,11 +1080,9 @@ public class PreferenceDialog extends JDialog {
             panel_5.setLayout(gl_panel_5);
 
             rdbtnPerVersion = new JRadioButton("Per version in selected branch");
-            rdbtnPerVersion.setEnabled(false);
             panel_4.add(rdbtnPerVersion);
 
             rdbtnLatestVersion = new JRadioButton("Latest version (per branch)");
-            rdbtnLatestVersion.setEnabled(false);
             panel_4.add(rdbtnLatestVersion);
 
             rdbtnLatestVersionoverall = new JRadioButton("Latest version (overall)");
@@ -957,15 +1100,12 @@ public class PreferenceDialog extends JDialog {
             updateCompareAlgoBtnGroup.add(rdbtnStablity);
 
             rdbtnStable = new JRadioButton("Stable");
-            rdbtnStable.setEnabled(false);
             panel_3.add(rdbtnStable);
 
             rdbtnBeta = new JRadioButton("Beta");
-            rdbtnBeta.setEnabled(false);
             panel_3.add(rdbtnBeta);
 
             rdbtnSnapshot = new JRadioButton("Snapshot");
-            rdbtnSnapshot.setEnabled(false);
             panel_3.add(rdbtnSnapshot);
 
             ButtonGroup updateBranchBtnGroup = new ButtonGroup();
@@ -1154,7 +1294,18 @@ public class PreferenceDialog extends JDialog {
         }
         updateConfigUi();
     }
-    
+
+
+    private UpdateInfo getUpdateInfoByConfig() throws DebuggableException {
+        String algo = config.getCheckUpdateAlgo();
+        if (algo.equals(Config.CHECK_UPDATE_ALGO_PER_VER_PER_BRANCH)) {
+            return updater.getPerVersionPerBranchLatestVersion();
+        } else if (algo.equals(Config.CHECK_UPDATE_ALGO_LATEST_VER_PER_BRANCH)) {
+            return updater.getLatestVersion();
+        } else { //TODO: Implement other algo
+            return updater.getLatestVersion();
+        }
+    }
     
     private void updateConfigUi(){
         //Main Panel
