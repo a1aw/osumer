@@ -7,14 +7,14 @@ Put a star if you like this software! I would be happy to continue developing th
 
 ## v2 has released
 
-Experimental Builds of osumer v2 has been released at https://github.com/mob41/mob41/releases/latest . And to all osumer clients with updater functionality. Please do not hesitate trying it with new features!
+Experimental Builds of osumer v2 has been released at https://github.com/mob41/osumer/releases/latest . And to all osumer clients with updater functionality. Please do not hesitate trying it with new features!
 
 Tutorials (still building) can be found at https://github.com/mob41/osumer/wiki/osumer-tutorial .
 
 ## Disclaimer
 This software does not contain malicious code that will send username and password to another server other than osu!'s login server. You can feel free to look through the code. If you still feel uncomfortable with this software, you can simply stop using it. Thank you!
 
-The application only sends the ```username``` and ```password``` parameters to ```https://osu.ppy.sh/forum/ucp.php?mode=login``` in [Osu.java](https://github.com/mob41/osumer/blob/master/src/main/java/com/github/mob41/osumer/io/Osu.java) for logging in to osu! forum. And saves the username and password specified in the user interface to local configuration in [Config.java](https://github.com/mob41/osumer/blob/master/src/main/java/com/github/mob41/osumer/Config.java). Unless the data are sniffed by a hacker or your friends want to play tricks on you, the data is not sent to anywhere other than osu! login server. (alright also sent to, proxies, firewalls, routers, switches, DNS servers, etc.)
+The application only sends the ```username``` and ```password``` parameters to ```https://osu.ppy.sh/forum/ucp.php?mode=login``` in [Osu.java](https://github.com/mob41/osums-api/blob/master/src/main/java/com/github/mob41/osums/io/beatmap/Osums.java) for logging in to osu! forum. And saves the username and password specified in the user interface to local configuration in [Config.java](https://github.com/mob41/osumer/blob/master/src/main/java/com/github/mob41/osumer/Config.java). Unless the data are sniffed by a hacker or your friends want to play tricks on you, the data is not sent to anywhere other than osu! login server. (alright also sent to, proxies, firewalls, routers, switches, DNS servers, etc.)
 
 By using this software, I take no responsibility here. Use in your own risk.
 

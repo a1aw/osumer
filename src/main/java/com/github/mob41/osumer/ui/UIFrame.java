@@ -414,13 +414,8 @@ public class UIFrame extends JFrame {
         lblSpecifyYourDesired.setFont(new Font("Tahoma", Font.PLAIN, 12));
 
         JLabel lblNewWebpageUrls = new JLabel(
-                "New webpage URLs (e.g. http://new.ppy.sh/) are currently not supported.");
+                "New web links with more than 6 digits (e.g. https://osu.ppy.sh/b/1483372) are currently not supported.");
         lblNewWebpageUrls.setFont(new Font("Tahoma", Font.PLAIN, 12));
-
-        JLabel lblYouWillBe = new JLabel(
-                "WARNING: You haven't setup an osu! account for beatmap downloading. Go to \"Preferences\" to configure.");
-        lblYouWillBe.setForeground(Color.RED);
-        lblYouWillBe.setFont(new Font("Tahoma", Font.BOLD, 12));
         
         ButtonGroup dwnSelectionBtnGp = new ButtonGroup();
 
@@ -458,27 +453,29 @@ public class UIFrame extends JFrame {
                 .addGroup(gl_panel.createSequentialGroup()
                     .addContainerGap()
                     .addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-                        .addComponent(panel_1, GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
-                        .addGroup(gl_panel.createSequentialGroup()
-                            .addComponent(chckbxShowBeatmapPreview, GroupLayout.DEFAULT_SIZE, 794, Short.MAX_VALUE)
-                            .addContainerGap())
                         .addGroup(Alignment.TRAILING, gl_panel.createSequentialGroup()
                             .addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
-                                .addComponent(lblSpecifyYourDesired, GroupLayout.DEFAULT_SIZE, 790, Short.MAX_VALUE)
+                                .addComponent(lblSpecifyYourDesired, GroupLayout.DEFAULT_SIZE, 822, Short.MAX_VALUE)
                                 .addGroup(gl_panel.createSequentialGroup()
                                     .addComponent(lblBeatmapUrl)
                                     .addPreferredGap(ComponentPlacement.RELATED)
-                                    .addComponent(beatmapField, GroupLayout.DEFAULT_SIZE, 495, Short.MAX_VALUE)
+                                    .addComponent(beatmapField, GroupLayout.DEFAULT_SIZE, 527, Short.MAX_VALUE)
                                     .addPreferredGap(ComponentPlacement.RELATED)
                                     .addComponent(btnAddToQueue, GroupLayout.PREFERRED_SIZE, 151, GroupLayout.PREFERRED_SIZE))
-                                .addComponent(lblNewWebpageUrls, GroupLayout.DEFAULT_SIZE, 790, Short.MAX_VALUE)
-                                .addComponent(lblYouWillBe, GroupLayout.DEFAULT_SIZE, 790, Short.MAX_VALUE))
+                                .addComponent(lblNewWebpageUrls, GroupLayout.DEFAULT_SIZE, 822, Short.MAX_VALUE))
                             .addContainerGap())
                         .addGroup(Alignment.TRAILING, gl_panel.createSequentialGroup()
                             .addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
                                 .addComponent(btnDownloadAList, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 822, Short.MAX_VALUE)
                                 .addComponent(btnOsumerPreferences, GroupLayout.DEFAULT_SIZE, 822, Short.MAX_VALUE))
+                            .addContainerGap())
+                        .addGroup(gl_panel.createSequentialGroup()
+                            .addComponent(panel_1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addContainerGap())))
+                .addGroup(Alignment.TRAILING, gl_panel.createSequentialGroup()
+                    .addGap(10)
+                    .addComponent(chckbxShowBeatmapPreview, GroupLayout.DEFAULT_SIZE, 826, Short.MAX_VALUE)
+                    .addContainerGap())
         );
         gl_panel.setVerticalGroup(
             gl_panel.createParallelGroup(Alignment.LEADING)
@@ -493,12 +490,10 @@ public class UIFrame extends JFrame {
                     .addPreferredGap(ComponentPlacement.RELATED)
                     .addComponent(lblNewWebpageUrls)
                     .addPreferredGap(ComponentPlacement.RELATED)
-                    .addComponent(lblYouWillBe)
-                    .addPreferredGap(ComponentPlacement.RELATED)
                     .addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(ComponentPlacement.UNRELATED)
+                    .addPreferredGap(ComponentPlacement.RELATED)
                     .addComponent(chckbxShowBeatmapPreview)
-                    .addPreferredGap(ComponentPlacement.UNRELATED)
+                    .addGap(33)
                     .addComponent(btnOsumerPreferences)
                     .addPreferredGap(ComponentPlacement.RELATED)
                     .addComponent(btnDownloadAList, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
