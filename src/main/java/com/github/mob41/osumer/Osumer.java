@@ -39,7 +39,7 @@ public class Osumer {
 
     public static final String OSUMER_BRANCH = "snapshot";
 
-    public static final int OSUMER_BUILD_NUM = 2;
+    public static final int OSUMER_BUILD_NUM = 3;
 
     private Osumer() {
     
