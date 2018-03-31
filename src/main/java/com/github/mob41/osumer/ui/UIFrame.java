@@ -160,6 +160,27 @@ public class UIFrame extends JFrame {
         this.osu = new Osums();
         this.updater = new Updater(config);
 
+        setLocationRelativeTo(null);
+        
+        //TODO: Remove this once new parser implemented
+        if (!config.isLegacyDisableOldSiteBeatmapRedirectingStartupNotification() || !config.isLegacyEnableOldSiteBeatmapRedirecting()) {
+            //Blocking thread if not enabled
+            
+            Legacy_OldSiteParsingDialog dialog = new Legacy_OldSiteParsingDialog();
+            dialog.setLocationRelativeTo(this);
+            if (!config.isLegacyEnableOldSiteBeatmapRedirecting()) {
+                dialog.setModal(true);
+                dialog.setVisible(true);
+            } else {
+                new Thread() {
+                    public void run() {
+                        dialog.setModal(true);
+                        dialog.setVisible(true);
+                    }
+                }.start();
+            }
+        }
+
         mgr.startQueuing();
 
         setTitle("osumer");
@@ -183,6 +204,15 @@ public class UIFrame extends JFrame {
                 dialog.setVisible(true);
             }
         });
+        
+        JMenuItem mntmGcCall = new JMenuItem("GC Call");
+        mntmGcCall.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.gc();
+                Runtime.getRuntime().gc();
+            }
+        });
+        mnOsumer2.add(mntmGcCall);
         mnOsumer2.add(mntmViewDumps);
 
         JMenuItem mntmPreferences = new JMenuItem("Preferences");
@@ -881,10 +911,12 @@ public class UIFrame extends JFrame {
                     pbd.dispose();
                     return;
                 }
+                
+                String modUrl = url.replace("osu.ppy.sh", "old.ppy.sh");
 
                 pbd.getLabel().setText("Status: Obtaining beatmap information...");
                 try {
-                    map = osu.getBeatmapInfo(url);
+                    map = osu.getBeatmapInfo(modUrl);
                 } catch (DebuggableException e) {
                     e.printStackTrace();
                     JOptionPane.showMessageDialog(UIFrame.this,

@@ -167,6 +167,8 @@ public class PreferenceDialog extends JDialog {
     private JLabel lblFileToneAfter;
     private JButton btnSelectToneBefore;
     private JButton btnSelectToneAfter;
+    private JCheckBox chckbxEnableRedirectTo;
+    private JCheckBox chckbxDisableStartupNotification;
     
     /**
      * Create the dialog.
@@ -1419,6 +1421,62 @@ public class PreferenceDialog extends JDialog {
             );
             soundTonePanel.setLayout(gl_soundTonePanel);
             miscPanel.setLayout(gl_miscPanel);
+            
+            JPanel panel_6 = new JPanel();
+            tab.addTab("(*) Legacy Old-site Beatmap", null, panel_6, null);
+            
+            JLabel lblThisIsAn = new JLabel("This is an emergency update for legacy reading and downloading old-site beatmap urls.");
+            
+            JLabel lblTheNewsiteWebpage = new JLabel("The new-site web-page parser is not implemented in this version.");
+            
+            chckbxEnableRedirectTo = new JCheckBox("Enable redirect to old-site automatically (Legacy)");
+            chckbxEnableRedirectTo.setFont(new Font("Tahoma", Font.PLAIN, 14));
+            chckbxEnableRedirectTo.setHorizontalAlignment(SwingConstants.CENTER);
+            
+            JLabel lblPleaseEnableThe = new JLabel("Please enable the following option to temporarily fix the problem.");
+            lblPleaseEnableThe.setFont(new Font("Tahoma", Font.BOLD, 14));
+            lblPleaseEnableThe.setHorizontalAlignment(SwingConstants.CENTER);
+            
+            chckbxDisableStartupNotification = new JCheckBox("Disable startup notification, warning");
+            
+            JLabel lblThisOptionWill = new JLabel("This option will be automatically DISABLED when the parser is implemented in next version.");
+            lblThisOptionWill.setHorizontalAlignment(SwingConstants.CENTER);
+            GroupLayout gl_panel_6 = new GroupLayout(panel_6);
+            gl_panel_6.setHorizontalGroup(
+                gl_panel_6.createParallelGroup(Alignment.LEADING)
+                    .addGroup(gl_panel_6.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(gl_panel_6.createParallelGroup(Alignment.LEADING)
+                            .addGroup(gl_panel_6.createSequentialGroup()
+                                .addGroup(gl_panel_6.createParallelGroup(Alignment.TRAILING)
+                                    .addComponent(lblThisOptionWill, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
+                                    .addComponent(lblTheNewsiteWebpage, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
+                                    .addComponent(lblThisIsAn, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
+                                    .addComponent(lblPleaseEnableThe, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
+                                    .addComponent(chckbxEnableRedirectTo, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE))
+                                .addContainerGap())
+                            .addGroup(gl_panel_6.createSequentialGroup()
+                                .addComponent(chckbxDisableStartupNotification, GroupLayout.DEFAULT_SIZE, 756, Short.MAX_VALUE)
+                                .addGap(18))))
+            );
+            gl_panel_6.setVerticalGroup(
+                gl_panel_6.createParallelGroup(Alignment.LEADING)
+                    .addGroup(gl_panel_6.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(lblThisIsAn)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(lblTheNewsiteWebpage)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(lblPleaseEnableThe)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(chckbxEnableRedirectTo)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(lblThisOptionWill)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(chckbxDisableStartupNotification)
+                        .addContainerGap(299, Short.MAX_VALUE))
+            );
+            panel_6.setLayout(gl_panel_6);
         }
         {
             JPanel buttonPane = new JPanel();
@@ -1681,6 +1739,10 @@ public class PreferenceDialog extends JDialog {
         toneBeforeField.setText(config.getToneBeforeDownloadPath());
         chckbxToneAfterDwn.setSelected(config.isEnableToneAfterDownload());
         toneAfterField.setText(config.getToneAfterDownloadPath());
+        
+        //(*) Legacy Old-site Beatmap
+        chckbxEnableRedirectTo.setSelected(config.isLegacyEnableOldSiteBeatmapRedirecting());
+        chckbxDisableStartupNotification.setSelected(config.isLegacyDisableOldSiteBeatmapRedirectingStartupNotification());
     }
     
     private void applyChanges(){
@@ -1769,6 +1831,10 @@ public class PreferenceDialog extends JDialog {
         config.setToneBeforeDownloadPath(toneBeforeField.getText());
         config.setEnableToneAfterDownload(chckbxToneAfterDwn.isSelected());
         config.setToneAfterDownloadPath(toneAfterField.getText());
+        
+        //(*) Legacy Old-site Beatmap
+        config.setLegacyEnableOldSiteBeatmapRedirecting(chckbxEnableRedirectTo.isSelected());
+        config.setLegacyDisableOldSiteBeatmapRedirectingStartupNotification(chckbxDisableStartupNotification.isSelected());
         
         try {
             config.write();

@@ -302,7 +302,8 @@ public class BeatmapSearchPanel extends JPanel {
                         }
                         
                         if (osums.isLoggedIn()) {
-                            maps = osums.getLinksOfBeatmapSearch(dialog.getHandler(), "https://osu.ppy.sh/p/beatmaplist?q=" + searchFld.getText());
+                            //TODO: Change to use NEW Parser
+                            maps = osums.getLinksOfBeatmapSearch(dialog.getHandler(), "https://old.ppy.sh/p/beatmaplist?q=" + searchFld.getText());
                         } else {
                             dialog.dispose();
                             JOptionPane.showMessageDialog(BeatmapSearchPanel.this, "You must be logged into osu! forum to perform online search.", "Error", JOptionPane.ERROR_MESSAGE);

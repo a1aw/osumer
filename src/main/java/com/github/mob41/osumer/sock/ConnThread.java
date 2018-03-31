@@ -80,6 +80,7 @@ public class ConnThread extends Thread {
                     sockThread.getFrame().setAlwaysOnTop(false);
                     writer.println("OK");
                 } else if (line.startsWith("RUN")) {
+                    System.gc();
                     sockThread.getFrame().checkUpdate();
                     
                     String[] args = line.substring(4).split(" ");

@@ -5,6 +5,10 @@ The easiest,express osu! beatmap downloader helper!
 
 Put a star if you like this software! I would be happy to continue developing this software!
 
+## :warning: Legacy Old-site Parsing
+
+Any v2 builds older than ```2.0.0-snapshot-b4``` will not work because of the deprecating of osu!-web old-site. All end users must update to ```2.0.0-snapshot-b4``` to temporarily fix the problem.
+
 ## v2 has released
 
 Experimental Builds of osumer v2 has been released at https://github.com/mob41/osumer/releases/latest . And to all osumer clients with updater functionality. Please do not hesitate trying it with new features!
