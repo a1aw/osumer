@@ -168,6 +168,14 @@ public class Config {
     private static final String KEY_SELECTED_TONE_AFTER_DOWNLOAD = "toneAfterDownloadPath";
     
     private static final String KEY_SELECTED_TONE_AFTER_DOWNLOAD_DEFAULT_VALUE = "C:\\Windows\\Media\\Windows Background.wav";
+    
+    private static final String KEY_LEGACY_ENABLE_OLDSITE_BEATMAP_REDIRECTING = "legacy_enable_oldsite_beatmap_redirecting";
+    
+    private static final boolean KEY_LEGACY_ENABLE_OLDSITE_BEATMAP_REDIRECTING_DEFAULT_VALUE = true;
+    
+    private static final String KEY_LEGACY_DISABLE_OLDSITE_BEATMAP_REDIRECTING_STARTUP_NOTIFICATION = "legacy_disable_oldsite_beatmap_redirecting_startup_notification";
+    
+    private static final boolean KEY_LEGACY_DISABLE_OLDSITE_BEATMAP_REDIRECTING_STARTUP_NOTIFICATION_DEFAULT_VALUE = false;
 
     private JSONObject json;
 
@@ -447,6 +455,22 @@ public class Config {
     public boolean isEnableToneAfterDownload(){
         return json.getBoolean(KEY_ENABLE_TONE_AFTER_DOWNLOAD);
     }
+    
+    public void setLegacyEnableOldSiteBeatmapRedirecting(boolean enabled){
+        json.put(KEY_LEGACY_ENABLE_OLDSITE_BEATMAP_REDIRECTING, enabled);
+    }
+    
+    public boolean isLegacyEnableOldSiteBeatmapRedirecting() {
+        return json.getBoolean(KEY_LEGACY_ENABLE_OLDSITE_BEATMAP_REDIRECTING);
+    }
+    
+    public void setLegacyDisableOldSiteBeatmapRedirectingStartupNotification(boolean enabled){
+        json.put(KEY_LEGACY_DISABLE_OLDSITE_BEATMAP_REDIRECTING_STARTUP_NOTIFICATION, enabled);
+    }
+    
+    public boolean isLegacyDisableOldSiteBeatmapRedirectingStartupNotification() {
+        return json.getBoolean(KEY_LEGACY_DISABLE_OLDSITE_BEATMAP_REDIRECTING_STARTUP_NOTIFICATION);
+    }
 
     private static boolean fillJson(JSONObject json) {
         boolean modified = false;
@@ -485,6 +509,8 @@ public class Config {
         modified |= ifNullPutValue(json, KEY_ENABLE_TONE_AFTER_DOWNLOAD, KEY_ENABLE_TONE_AFTER_DOWNLOAD_DEFAULT_VALUE);
         modified |= ifNullPutValue(json, KEY_SELECTED_TONE_AFTER_DOWNLOAD,
                 KEY_SELECTED_TONE_AFTER_DOWNLOAD_DEFAULT_VALUE);
+        modified |= ifNullPutValue(json, KEY_LEGACY_ENABLE_OLDSITE_BEATMAP_REDIRECTING, KEY_LEGACY_ENABLE_OLDSITE_BEATMAP_REDIRECTING_DEFAULT_VALUE);
+        modified |= ifNullPutValue(json, KEY_LEGACY_DISABLE_OLDSITE_BEATMAP_REDIRECTING_STARTUP_NOTIFICATION, KEY_LEGACY_DISABLE_OLDSITE_BEATMAP_REDIRECTING_STARTUP_NOTIFICATION_DEFAULT_VALUE);
         return modified;
     }
 
