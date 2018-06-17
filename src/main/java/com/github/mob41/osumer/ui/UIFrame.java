@@ -348,7 +348,7 @@ public class UIFrame extends JFrame {
 
         tab = new JTabbedPane(JTabbedPane.TOP);
 
-        JLabel lblCopyright = new JLabel("Copyright (c) 2016-2017 Anthony Law. Licensed under MIT License.");
+        JLabel lblCopyright = new JLabel("Copyright (c) 2016-2018 Anthony Law. Licensed under MIT License.");
         lblCopyright.setFont(new Font("Tahoma", Font.PLAIN, 12));
         lblCopyright.setHorizontalAlignment(SwingConstants.CENTER);
         
@@ -758,8 +758,10 @@ public class UIFrame extends JFrame {
             return false;
         }
         
+        String modBUrl = config.isLegacyEnableOldSiteBeatmapRedirecting() ? url.replace("osu.ppy.sh", "old.ppy.sh") : url;
+        
         try {
-            map = osu.getBeatmapInfo(url);
+            map = osu.getBeatmapInfo(modBUrl);
         } catch (DebuggableException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(UIFrame.this,
@@ -911,8 +913,8 @@ public class UIFrame extends JFrame {
                     pbd.dispose();
                     return;
                 }
-                
-                String modUrl = url.replace("osu.ppy.sh", "old.ppy.sh");
+
+                String modUrl = config.isLegacyEnableOldSiteBeatmapRedirecting() ? url.replace("osu.ppy.sh", "old.ppy.sh") : url;
 
                 pbd.getLabel().setText("Status: Obtaining beatmap information...");
                 try {
