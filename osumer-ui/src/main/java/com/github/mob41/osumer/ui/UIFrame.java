@@ -80,11 +80,12 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
 
 import com.github.mob41.organdebug.exceptions.DebuggableException;
-import com.github.mob41.osumer.Config;
 import com.github.mob41.osumer.Osumer;
+import com.github.mob41.osumer.daemon.Config;
 import com.github.mob41.osumer.exceptions.NoBuildsForVersionException;
 import com.github.mob41.osumer.exceptions.NoSuchBuildNumberException;
 import com.github.mob41.osumer.exceptions.NoSuchVersionException;
+import com.github.mob41.osumer.io.legacy.OsuDownloader;
 import com.github.mob41.osumer.io.legacy.URLDownloader;
 import com.github.mob41.osumer.io.queue.Queue;
 import com.github.mob41.osumer.io.queue.QueueAction;
@@ -98,7 +99,6 @@ import com.github.mob41.osumer.sock.SockThread;
 import com.github.mob41.osumer.updater.UpdateInfo;
 import com.github.mob41.osumer.updater.Updater;
 import com.github.mob41.osums.io.beatmap.OsuBeatmap;
-import com.github.mob41.osums.io.beatmap.OsuDownloader;
 import com.github.mob41.osums.io.beatmap.Osums;
 
 import java.awt.event.KeyAdapter;

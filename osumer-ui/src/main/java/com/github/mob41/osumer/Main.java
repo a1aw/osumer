@@ -51,6 +51,7 @@ import javax.swing.UIManager;
 import com.github.mob41.organdebug.DebugDump;
 import com.github.mob41.organdebug.DumpManager;
 import com.github.mob41.organdebug.exceptions.DebuggableException;
+import com.github.mob41.osumer.daemon.Config;
 import com.github.mob41.osumer.io.Installer;
 import com.github.mob41.osumer.io.queue.QueueManager;
 import com.github.mob41.osumer.sock.SockThread;

@@ -42,9 +42,9 @@ import javax.swing.JOptionPane;
 import javax.tools.JavaCompiler;
 
 import com.github.mob41.osumer.ArgParser;
-import com.github.mob41.osumer.Config;
 import com.github.mob41.osumer.Main;
 import com.github.mob41.osumer.Osumer;
+import com.github.mob41.osumer.daemon.Config;
 import com.github.mob41.osumer.io.Installer;
 import com.github.mob41.osums.io.beatmap.Osums;
 

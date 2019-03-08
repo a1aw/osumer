@@ -50,8 +50,8 @@ import javax.swing.JSeparator;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 
+import com.github.mob41.osumer.io.legacy.Downloader;
 import com.github.mob41.osumer.io.queue.Queue;
-import com.github.mob41.osums.io.Downloader;
 
 public class QueueCell extends JPanel {
     private JProgressBar pb;
