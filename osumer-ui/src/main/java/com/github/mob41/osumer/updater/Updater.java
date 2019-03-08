@@ -43,8 +43,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.github.mob41.organdebug.exceptions.DebuggableException;
-import com.github.mob41.osumer.Config;
 import com.github.mob41.osumer.Osumer;
+import com.github.mob41.osumer.daemon.Config;
 import com.github.mob41.osumer.exceptions.InvalidSourceIntegerException;
 import com.github.mob41.osumer.exceptions.NoBuildsForVersionException;
 import com.github.mob41.osumer.exceptions.NoSuchBuildNumberException;

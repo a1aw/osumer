@@ -16,7 +16,7 @@ import javax.swing.table.DefaultTableModel;
 import org.json.JSONArray;
 
 import com.github.mob41.organdebug.exceptions.DebuggableException;
-import com.github.mob41.osumer.Config;
+import com.github.mob41.osumer.daemon.Config;
 import com.github.mob41.osumer.io.queue.Queue;
 import com.github.mob41.osums.indexing.IndexingProgressHandler;
 import com.github.mob41.osums.indexing.OnlineIndexManager;
