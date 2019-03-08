@@ -6,5 +6,8 @@
   <packaging>pom</packaging>
   <modules>
   	<module>osumer-ui</module>
+  	<module>osumer-daemon</module>
+  	<module>osumer-socket</module>
+  	<module>osumer-installer</module>
   </modules>
 </project>
