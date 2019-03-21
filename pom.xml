@@ -9,5 +9,6 @@
   	<module>osumer-daemon</module>
   	<module>osumer-lib</module>
   	<module>osumer-installer</module>
+  	<module>osumer-launcher</module>
   </modules>
 </project>
