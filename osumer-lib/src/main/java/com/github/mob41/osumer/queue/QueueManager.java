@@ -26,7 +26,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.github.mob41.osumer.daemon;
+package com.github.mob41.osumer.queue;
 
 import java.util.Collections;
 import java.util.List;
@@ -34,7 +34,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.github.mob41.osumer.Configuration;
 import com.github.mob41.osumer.io.Downloader;
-import com.github.mob41.osumer.queue.Queue;
 
 public class QueueManager {
 
