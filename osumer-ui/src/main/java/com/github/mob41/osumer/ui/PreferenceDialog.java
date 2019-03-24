@@ -43,6 +43,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -163,6 +164,8 @@ public class PreferenceDialog extends JDialog {
     private JButton btnSelectToneAfter;
     private JCheckBox chckbxEnableRedirectTo;
     private JCheckBox chckbxDisableStartupNotification;
+
+    private ProgressDialog pbd;
     
     /**
      * Create the dialog.
@@ -1841,5 +1844,30 @@ public class PreferenceDialog extends JDialog {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        
+        pbd = new ProgressDialog();
+
+        //Request daemon to reload
+        new Thread() {
+            public void run() {
+                pbd.getProgressBar().setIndeterminate(true);
+                pbd.getLabel().setText("Status: Reloading daemon configuration...");
+                
+                try {
+                    uiFrame.getDaemon().reloadConfiguration();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(PreferenceDialog.this, "Could not reload daemon configuration, please try restarting the daemon instead:\n" + e.getMessage(), "Daemon RMI Configuration Reload Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+
+                pbd.dispose();
+                pbd = null;
+            }
+        }.start();
+
+        pbd.setLocationRelativeTo(PreferenceDialog.this);
+        pbd.setModal(true);
+        pbd.setVisible(true);
     }
 }

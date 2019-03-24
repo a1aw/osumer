@@ -30,31 +30,33 @@ package com.github.mob41.osumer.ui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.util.List;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
-
-import com.github.mob41.osumer.rmi.IDaemon;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.rmi.RemoteException;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JTable;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+
+import com.github.mob41.osumer.queue.QueueStatus;
+import com.github.mob41.osumer.rmi.IDaemon;
 
 public class EditQueueDialog extends JDialog {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -6212566270673959306L;
     private final JPanel contentPanel = new JPanel();
     private JTable table;
     private DefaultTableModel tableModel;
@@ -147,15 +149,23 @@ public class EditQueueDialog extends JDialog {
 
     private void refresh() {
         btnCancelAndRemove.setEnabled(false);
-        /*
-        List<Queue> queues = mgr.getList();
-        tableModel.setRowCount(0);
-        for (int i = 0; i < queues.size(); i++) {
-            Queue queue = queues.get(i);
-            tableModel.addRow(new String[] { queue.getName(), queue.getDownloader().getFileName(),
-                    ((int) queue.getDownloader().getProgress()) + "%" });
+        
+        QueueStatus[] queues;
+        try {
+            queues = d.getQueues();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Could not connect to daemon to fetch queues data:\n" + e.getMessage(), "Daemon Synchronization Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
         }
-        */
+        tableModel.setRowCount(0);
+        for (int i = 0; i < queues.length; i++) {
+            QueueStatus queue = queues[i];
+            tableModel.addRow(new String[] { queue.getTitle(), queue.getFileName(),
+                    queue.getProgress() + "%" });
+        }
+        
         tableModel.fireTableDataChanged();
     }
 

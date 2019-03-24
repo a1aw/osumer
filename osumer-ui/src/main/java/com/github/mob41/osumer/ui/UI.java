@@ -25,4 +25,9 @@ public class UI extends UnicastRemoteObject implements IUI {
         frame.setAlwaysOnTop(false);
     }
 
+    @Override
+    public void onQueueStatusUpdate() throws RemoteException {
+        
+    }
+
 }

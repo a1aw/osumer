@@ -38,6 +38,8 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
+import com.github.mob41.osumer.queue.QueueStatus;
+
 public class QueueCellEditor extends AbstractCellEditor implements TableCellEditor {
 
     private QueueCell comp;
@@ -53,7 +55,7 @@ public class QueueCellEditor extends AbstractCellEditor implements TableCellEdit
 
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-        //comp.updateData((Queue) value);
+        comp.updateData((QueueStatus) value);
         if (isSelected) {
             comp.setBackground(table.getSelectionBackground());
         } else {

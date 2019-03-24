@@ -28,19 +28,26 @@
  *******************************************************************************/
 package com.github.mob41.osumer.ui;
 
+import java.rmi.RemoteException;
+
+import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
+
+import com.github.mob41.osumer.queue.QueueStatus;
+import com.github.mob41.osumer.rmi.IDaemon;
 
 public class QueueCellTableModel extends AbstractTableModel {
 
-    //private QueueManager mgr;
+    private IDaemon d;
+    
+    private boolean enabled = true;
 
-    public QueueCellTableModel() {
-        //this.mgr = mgr;
+    public QueueCellTableModel(IDaemon d) {
+        this.d = d;
     }
 
     public Class getColumnClass(int columnIndex) {
-        return String.class;
-        //return Queue.class;
+        return QueueStatus.class;
     }
 
     @Override
@@ -55,7 +62,24 @@ public class QueueCellTableModel extends AbstractTableModel {
 
     @Override
     public int getRowCount() {
-        return 0;
+        if (!enabled) {
+            return 0;
+        }
+        QueueStatus[] queues = null;
+        try {
+            queues = d.getQueues();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            enabled = false;
+            JOptionPane.showMessageDialog(null, "Queue Synchronization will be disabled from now on. Please restart the application to re-enable synchronization.\nCould not connect to daemon:\n" + e.getMessage(), "Daemon Queue Synchronization Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+        
+        if (queues == null) {
+            return 0;
+        } else {
+            return queues.length;
+        }
         /*
         if (mgr == null || mgr.getList() == null) {
             return 0;
@@ -66,7 +90,21 @@ public class QueueCellTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int arg0, int arg1) {
-        return null;
+        if (!enabled) {
+            return null;
+        }
+        QueueStatus[] queues = null;
+        try {
+            queues = d.getQueues();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        
+        if (queues == null) {
+            return null;
+        } else {
+            return queues[arg0];
+        }
         /*
         if (mgr == null || mgr.getList() == null) {
             return null;

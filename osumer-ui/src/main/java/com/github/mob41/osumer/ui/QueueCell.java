@@ -36,6 +36,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.rmi.RemoteException;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.GroupLayout;
@@ -49,6 +50,9 @@ import javax.swing.JProgressBar;
 import javax.swing.JSeparator;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
+
+import com.github.mob41.osumer.io.Downloader;
+import com.github.mob41.osumer.queue.QueueStatus;
 
 public class QueueCell extends JPanel {
     private JProgressBar pb;
@@ -154,21 +158,16 @@ public class QueueCell extends JPanel {
 
         // start();
     }
-
     
-    //TODO
-    /*
-    public void updateData(Queue queue) {
-        Downloader dwn = queue.getDownloader();
-
-        lblFilename.setText(dwn.getFileName());
-        lblTitle.setText(queue.getName());
+    public void updateData(QueueStatus status) {
+        lblFilename.setText(status.getFileName());
+        lblTitle.setText(status.getTitle());
 
         lblThumb.setIcon(null);
         lblThumb.setText("Loading thumb...");
         lblStatus.setForeground(Color.BLACK);
 
-        BufferedImage image = queue.getThumb();
+        BufferedImage image = null; //queue.getThumb();
         if (image != null) {
             lblThumb.setText("");
             lblThumb.setIcon(new ImageIcon(image));
@@ -176,13 +175,18 @@ public class QueueCell extends JPanel {
             lblThumb.setText("No thumb");
         }
 
-        int progress = (int) dwn.getProgress();
+        int progress = status.getProgress();
         pb.setValue(progress);
 
-        switch (dwn.getStatus()) {
+        switch (status.getStatus()) {
         case Downloader.DOWNLOADING:
             pb.setIndeterminate(false);
 
+            lblElapsed.setText("Elapsed: " + nanoSecToString(status.getElapsed()));
+            lblEta.setText("ETA: " + nanoSecToString(status.getEta()));
+            lblStatus.setText("Status: Downloading...");
+            
+            /*
             long elapsedTime = System.nanoTime() - queue.getStartTime();
             long allTimeForDownloading = dwn.getDownloaded() != 0 ? (elapsedTime * dwn.getSize() / dwn.getDownloaded())
                     : -1;
@@ -195,6 +199,7 @@ public class QueueCell extends JPanel {
                 lblEta.setText("ETA: " + nanoSecToString(eta));
                 lblStatus.setText("Status: Downloading...");
             }
+            */
             break;
         case Downloader.COMPLETED:
             lblStatus.setForeground(Color.GREEN);
@@ -228,11 +233,8 @@ public class QueueCell extends JPanel {
             lblStatus.setText("Status: Unknown status.");
         }
     }
-    */
-
-    private String nanoSecToString(long ns) {
-        long sec = TimeUnit.NANOSECONDS.toSeconds(ns);
-
+    
+    private String secToString(long sec) {
         long min = 0;
         if (sec >= 60) {
             min = (long) ((float) sec / 60);
@@ -246,6 +248,11 @@ public class QueueCell extends JPanel {
         }
 
         return (hr != 0 ? (hr + " hr(s) ") : "") + (min != 0 ? (min + " min(s) ") : "") + sec + " sec(s)";
+    }
+
+    private String nanoSecToString(long ns) {
+        long sec = TimeUnit.NANOSECONDS.toSeconds(ns);
+        return secToString(sec);
     }
 
     /*
