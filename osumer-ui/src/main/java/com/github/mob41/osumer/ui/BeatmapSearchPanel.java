@@ -1,44 +1,39 @@
 package com.github.mob41.osumer.ui;
 
-import javax.swing.JPanel;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
+
+import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-
-import java.awt.Dialog.ModalityType;
-import java.awt.Dialog;
-import java.awt.Font;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.table.DefaultTableModel;
 
-import org.json.JSONArray;
-
 import com.github.mob41.organdebug.exceptions.DebuggableException;
 import com.github.mob41.osumer.Configuration;
-import com.github.mob41.osums.indexing.IndexingProgressHandler;
 import com.github.mob41.osums.indexing.OnlineIndexManager;
-import com.github.mob41.osums.io.beatmap.OsuBeatmap;
 import com.github.mob41.osums.io.beatmap.Osums;
 import com.github.mob41.osums.io.beatmap.ResultBeatmap;
 
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.ButtonGroup;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.awt.event.ActionEvent;
-import javax.swing.JRadioButton;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
-
 public class BeatmapSearchPanel extends JPanel {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 5382528481143622530L;
     private JTextField searchFld;
     private DefaultTableModel tableModel;
     private JTable table;
@@ -90,10 +85,10 @@ public class BeatmapSearchPanel extends JPanel {
         lblSortBy.setEnabled(false);
         lblSortBy.setFont(new Font("Tahoma", Font.PLAIN, 12));
         
-        JComboBox sortByBox = new JComboBox();
+        JComboBox<String> sortByBox = new JComboBox<String>();
         sortByBox.setEnabled(false);
         sortByBox.setFont(new Font("Tahoma", Font.PLAIN, 12));
-        sortByBox.setModel(new DefaultComboBoxModel(new String[] {"Title", "Artist", "Creator", "Difficulty", "Ranked", "Rating", "Plays"}));
+        sortByBox.setModel(new DefaultComboBoxModel<String>(new String[] {"Title", "Artist", "Creator", "Difficulty", "Ranked", "Rating", "Plays"}));
         sortByBox.setSelectedIndex(4);
         
         JScrollPane scrollPane = new JScrollPane();
@@ -182,6 +177,11 @@ public class BeatmapSearchPanel extends JPanel {
         );
         
         tableModel = new DefaultTableModel(){
+            /**
+             * 
+             */
+            private static final long serialVersionUID = -5611726114479859094L;
+
             @Override
             public Class<?> getColumnClass(int colIndex){
                 return ResultBeatmap.class;
@@ -200,6 +200,7 @@ public class BeatmapSearchPanel extends JPanel {
                     ResultBeatmap map = (ResultBeatmap) table.getValueAt(i, 0);
                     
                     if (frame != null){
+                        frame.addQueue(map.getBeatmapUrl(), true);
                         //frame.addBtQueue(map.getBeatmapUrl(), true);
                     }
                 }

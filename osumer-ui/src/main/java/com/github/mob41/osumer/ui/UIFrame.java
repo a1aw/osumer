@@ -86,6 +86,7 @@ import com.github.mob41.osumer.Osumer;
 import com.github.mob41.osumer.exceptions.NoBuildsForVersionException;
 import com.github.mob41.osumer.exceptions.NoSuchBuildNumberException;
 import com.github.mob41.osumer.exceptions.NoSuchVersionException;
+import com.github.mob41.osumer.queue.QueueStatus;
 import com.github.mob41.osumer.rmi.IDaemon;
 import com.github.mob41.osumer.updater.UpdateInfo;
 import com.github.mob41.osumer.updater.Updater;
@@ -577,11 +578,11 @@ public class UIFrame extends JFrame{
         JScrollPane scrollPane = new JScrollPane();
         queuePanel.add(scrollPane, BorderLayout.CENTER);
 
-        tableModel = new QueueCellTableModel(); //TODO
+        tableModel = new QueueCellTableModel(d); //TODO
 
         table = new JTable(tableModel);
-        //table.setDefaultRenderer(Queue.class, new QueueCellRenderer(tableModel));
-        //table.setDefaultEditor(Queue.class, new QueueCellEditor(tableModel));
+        table.setDefaultRenderer(QueueStatus.class, new QueueCellRenderer(tableModel));
+        table.setDefaultEditor(QueueStatus.class, new QueueCellEditor(tableModel));
         table.setRowHeight(153);
 
         timer = new Timer(100, new ActionListener() {
@@ -642,6 +643,14 @@ public class UIFrame extends JFrame{
         });
     }
     
+    public IDaemon getDaemon() {
+        return d;
+    }
+
+    public void setD(IDaemon d) {
+        this.d = d;
+    }
+
     public Configuration getConfig() {
         return config;
     }
@@ -908,7 +917,7 @@ public class UIFrame extends JFrame{
                 } catch (NoSuchVersionException e){
                     lblUpdateStatus.setForeground(Color.RED);
                     lblUpdateStatus.setText("No current version in the selected branch. See dump.");
-                    JOptionPane.showMessageDialog(UIFrame.this, "We don't have version " + Osumer.OSUMER_VERSION + " in the current update branch\n\nPlease try another update branch (snapshot, beta, stable).", "Version not available", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(UIFrame.this, "We don't have version " + Osumer.OSUMER_VERSION + " in the current update branch\n\nPlease try another update branch (snapshot, beta, stable).", "osumer - Version not available", JOptionPane.INFORMATION_MESSAGE);
                     checkingUpdate = false;
                     return;
                 } catch (NoSuchBuildNumberException e){
@@ -919,14 +928,14 @@ public class UIFrame extends JFrame{
                             "If you are using a modified/development osumer,\n"
                             + " you can just ignore this message.\n" +
                             "If not, this might be the versions.json in GitHub goes wrong,\n"
-                            + " post a new issue about this.", "Build not available", JOptionPane.WARNING_MESSAGE);
+                            + " post a new issue about this.", "osumer - Build not available", JOptionPane.WARNING_MESSAGE);
                     checkingUpdate = false;
                     return;
                 } catch (DebuggableException e){
                     e.printStackTrace();
                     lblUpdateStatus.setForeground(Color.RED);
                     lblUpdateStatus.setText("Could not connect to update server.");
-                    JOptionPane.showMessageDialog(UIFrame.this, "Could not connect to update server.", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(UIFrame.this, "Could not connect to update server.", "osumer - Error", JOptionPane.ERROR_MESSAGE);
                     checkingUpdate = false;
                     return;
                 }
@@ -934,7 +943,7 @@ public class UIFrame extends JFrame{
                 if (verInfo == null) {
                     lblUpdateStatus.setForeground(Color.RED);
                     lblUpdateStatus.setText("Could not obtain update info.");
-                    JOptionPane.showMessageDialog(UIFrame.this, "Could not obtain update info.", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(UIFrame.this, "Could not obtain update info.", "osumer - Error", JOptionPane.ERROR_MESSAGE);
                     checkingUpdate = false;
                     return;
                 }

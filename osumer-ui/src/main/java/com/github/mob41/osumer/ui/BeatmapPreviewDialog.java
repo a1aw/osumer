@@ -37,11 +37,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLEncoder;
 
 import javax.imageio.ImageIO;
 import javax.swing.GroupLayout;
@@ -60,6 +58,10 @@ import com.github.mob41.osums.io.beatmap.OsuBeatmap;
 
 public class BeatmapPreviewDialog extends JDialog {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -6630213706257159964L;
     private final JPanel contentPanel = new JPanel();
     private JTextArea txtrLoadingInformation;
     private boolean selectedYes = false;

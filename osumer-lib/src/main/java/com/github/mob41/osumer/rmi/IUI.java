@@ -9,6 +9,8 @@ import com.github.mob41.osumer.queue.QueueManager;
 
 public interface IUI extends Remote{
     
+    public void onQueueStatusUpdate() throws RemoteException;
+    
     public void wake() throws RemoteException;
     
 }

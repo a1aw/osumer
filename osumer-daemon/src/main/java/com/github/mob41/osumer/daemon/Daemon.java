@@ -14,6 +14,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
@@ -21,10 +22,12 @@ import javax.swing.JOptionPane;
 import com.github.mob41.organdebug.exceptions.DebuggableException;
 import com.github.mob41.osumer.Configuration;
 import com.github.mob41.osumer.Osumer;
+import com.github.mob41.osumer.io.Downloader;
 import com.github.mob41.osumer.io.OsuDownloader;
 import com.github.mob41.osumer.queue.Queue;
 import com.github.mob41.osumer.queue.QueueAction;
 import com.github.mob41.osumer.queue.QueueManager;
+import com.github.mob41.osumer.queue.QueueStatus;
 import com.github.mob41.osumer.queue.actions.AfterSoundAction;
 import com.github.mob41.osumer.queue.actions.BeatmapImportAction;
 import com.github.mob41.osumer.queue.actions.BeforeSoundAction;
@@ -246,6 +249,31 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
     @Override
     public void trayIconDisplayMessage(String caption, String text, MessageType msgType) throws RemoteException {
         trayIcon.displayMessage(caption, text, msgType);
+    }
+
+    @Override
+    public QueueStatus[] getQueues() throws RemoteException {
+        List<Queue> queues = queueManager.getList();
+        QueueStatus[] status = new QueueStatus[queues.size()];
+        
+        Downloader dwn;
+        Queue q;
+        QueueStatus s;
+        
+        for (int i = 0; i < status.length; i++) {
+            q = queues.get(i);
+            dwn = q.getDownloader();
+            
+            long elapsedTime = System.nanoTime() - q.getStartTime();
+            long allTimeForDownloading = dwn.getDownloaded() != 0 ? (elapsedTime * dwn.getSize() / dwn.getDownloaded())
+                    : -1;
+            long eta = allTimeForDownloading - elapsedTime;
+            
+            s = new QueueStatus(q.getName(), dwn.getFileName(), null, (int) dwn.getProgress(), eta, elapsedTime, dwn.getStatus());
+            status[i] = s;
+        }
+        
+        return status;
     }
 
 }
