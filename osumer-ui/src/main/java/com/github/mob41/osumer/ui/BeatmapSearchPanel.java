@@ -16,8 +16,7 @@ import javax.swing.table.DefaultTableModel;
 import org.json.JSONArray;
 
 import com.github.mob41.organdebug.exceptions.DebuggableException;
-import com.github.mob41.osumer.daemon.Config;
-import com.github.mob41.osumer.io.queue.Queue;
+import com.github.mob41.osumer.Configuration;
 import com.github.mob41.osums.indexing.IndexingProgressHandler;
 import com.github.mob41.osums.indexing.OnlineIndexManager;
 import com.github.mob41.osums.io.beatmap.OsuBeatmap;
@@ -201,7 +200,7 @@ public class BeatmapSearchPanel extends JPanel {
                     ResultBeatmap map = (ResultBeatmap) table.getValueAt(i, 0);
                     
                     if (frame != null){
-                        frame.addBtQueue(map.getBeatmapUrl(), true);
+                        //frame.addBtQueue(map.getBeatmapUrl(), true);
                     }
                 }
             }
@@ -282,7 +281,7 @@ public class BeatmapSearchPanel extends JPanel {
                                 JOptionPane.showMessageDialog(BeatmapSearchPanel.this, "Please make another search again.", "Info", JOptionPane.INFORMATION_MESSAGE);
                                 return;
                             } else if (option == JOptionPane.NO_OPTION){
-                                Config config = frame.getConfig();
+                                Configuration config = frame.getConfig();
                                 doUiLogin(config);
                                 
                                 try {
@@ -296,7 +295,7 @@ public class BeatmapSearchPanel extends JPanel {
                             }
                         }
                     } else {
-                        Config config = frame.getConfig();
+                        Configuration config = frame.getConfig();
                         if (!osums.isLoggedIn()) {
                             doUiLogin(config);
                         }
@@ -341,7 +340,7 @@ public class BeatmapSearchPanel extends JPanel {
         dialog.setVisible(true);
     }
     
-    private ProgressDialog doUiLogin(Config config) {
+    private ProgressDialog doUiLogin(Configuration config) {
         ProgressDialog pbd = new ProgressDialog();
         pbd.setTitle("osums Login Client");
         Thread th = new Thread() {

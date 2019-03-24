@@ -110,7 +110,7 @@ public class MultiDownloadDialog extends JDialog {
                                         }
 
                                         dialog.getLabel().setText("Status: osumer is still busy in adding beatmaps >.< (" + (i + 1) + "/" + lines.length + ")");
-                                        frame.addQuietBtQueue(lines[i]);
+                                        //frame.addQuietBtQueue(lines[i]);
                                         added++;
                                     }
                                     dialog.dispose();

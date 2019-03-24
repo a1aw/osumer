@@ -50,9 +50,6 @@ import javax.swing.JSeparator;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 
-import com.github.mob41.osumer.io.legacy.Downloader;
-import com.github.mob41.osumer.io.queue.Queue;
-
 public class QueueCell extends JPanel {
     private JProgressBar pb;
     private JLabel lblEta;
@@ -158,6 +155,9 @@ public class QueueCell extends JPanel {
         // start();
     }
 
+    
+    //TODO
+    /*
     public void updateData(Queue queue) {
         Downloader dwn = queue.getDownloader();
 
@@ -227,46 +227,8 @@ public class QueueCell extends JPanel {
             lblStatus.setForeground(Color.RED);
             lblStatus.setText("Status: Unknown status.");
         }
-        /*
-         * if (this.queue != null){
-         * this.queue.getDownloader().deleteObservers(); }
-         * 
-         * this.queue = queue;
-         * 
-         * Downloader downloader = queue.getDownloader();
-         * downloader.addObserver(new Observer() {
-         * 
-         * @Override public void update(Observable o, Object arg) { switch
-         * (downloader.getStatus()){ case Downloader.DOWNLOADING:
-         * pb.setIndeterminate(false); int progress = (int)
-         * downloader.getProgress(); pb.setValue(progress);
-         * 
-         * long elapsedTime = System.nanoTime() - queue.getStartTime(); long
-         * allTimeForDownloading = downloader.getDownloaded() != 0 ?
-         * (elapsedTime * downloader.getSize() / downloader.getDownloaded()) :
-         * -1;
-         * 
-         * if (allTimeForDownloading == -1){ lblStatus.setText(
-         * "Status: Starting..."); } else { long eta = allTimeForDownloading -
-         * elapsedTime; lblElapsed.setText("Elapsed: " +
-         * nanoSecToString(elapsedTime)); lblEta.setText("ETA: " +
-         * nanoSecToString(eta)); lblStatus.setText("Status: Downloading..."); }
-         * break; case Downloader.COMPLETED:
-         * lblStatus.setForeground(Color.GREEN);
-         * 
-         * lblEta.setText("ETA: ---"); lblStatus.setText("Status: Completed.");
-         * break; case Downloader.ERROR: lblEta.setText("ETA: ---");
-         * lblStatus.setForeground(Color.RED); lblStatus.setText(
-         * "Status: Error occurred while downloading."); break; case
-         * Downloader.PAUSED: lblEta.setText("ETA: ---");
-         * lblStatus.setForeground(Color.BLUE); lblStatus.setText(
-         * "Status: Paused."); break; case Downloader.CANCELLED: lblEta.setText(
-         * "ETA: ---"); lblStatus.setForeground(Color.BLACK); lblStatus.setText(
-         * "Status: Cancelled."); break; default: lblEta.setText("ETA: ---");
-         * lblStatus.setForeground(Color.RED); lblStatus.setText(
-         * "Status: Unknown status."); } } }); queue.start();
-         */
     }
+    */
 
     private String nanoSecToString(long ns) {
         long sec = TimeUnit.NANOSECONDS.toSeconds(ns);

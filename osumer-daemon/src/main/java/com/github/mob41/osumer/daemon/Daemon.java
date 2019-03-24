@@ -155,6 +155,9 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
             return false;
         }
 
+        BufferedImage thumb = null;
+        
+        /*
         URLConnection conn = null;
         try {
             conn = thumbUrl.openConnection();
@@ -166,7 +169,6 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
         conn.setConnectTimeout(5000);
         conn.setReadTimeout(5000);
         
-        BufferedImage thumb;
 
         try {
             thumb = ImageIO.read(conn.getInputStream());
@@ -174,6 +176,7 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
             e.printStackTrace();
             thumb = null;
         }
+        */
         
         URL downloadUrl = null;
         try {

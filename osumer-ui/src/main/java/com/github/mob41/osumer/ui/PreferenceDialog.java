@@ -34,6 +34,8 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -66,12 +68,15 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONArray;
@@ -80,25 +85,14 @@ import org.json.JSONObject;
 import com.github.mob41.organdebug.DebugDump;
 import com.github.mob41.organdebug.DumpManager;
 import com.github.mob41.organdebug.exceptions.DebuggableException;
+import com.github.mob41.osumer.Configuration;
 import com.github.mob41.osumer.Osumer;
-import com.github.mob41.osumer.daemon.Config;
 import com.github.mob41.osumer.exceptions.NoBuildsForVersionException;
 import com.github.mob41.osumer.exceptions.NoSuchBuildNumberException;
 import com.github.mob41.osumer.exceptions.NoSuchVersionException;
-import com.github.mob41.osumer.exceptions.OsuException;
-import com.github.mob41.osumer.io.Installer;
-import com.github.mob41.osumer.io.legacy.URLDownloader;
-import com.github.mob41.osumer.io.queue.Queue;
-import com.github.mob41.osumer.io.queue.QueueAction;
-import com.github.mob41.osumer.io.queue.QueueManager;
-import com.github.mob41.osumer.io.queue.actions.UpdaterRunAction;
+import com.github.mob41.osumer.installer.Installer;
 import com.github.mob41.osumer.updater.UpdateInfo;
 import com.github.mob41.osumer.updater.Updater;
-import javax.swing.JTextField;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
 
 public class PreferenceDialog extends JDialog {
 
@@ -108,7 +102,7 @@ public class PreferenceDialog extends JDialog {
     private static final long serialVersionUID = 3143276952707175093L;
     
     private final Installer installer;
-    private final Config config;
+    private final Configuration config;
     private final UIManager.LookAndFeelInfo[] infos;
     private final JPanel contentPanel = new JPanel();
     private final DefaultListModel<String> serverProrityListModel;
@@ -173,7 +167,7 @@ public class PreferenceDialog extends JDialog {
     /**
      * Create the dialog.
      */
-    public PreferenceDialog(Config config, UIFrame uiFrame) {
+    public PreferenceDialog(Configuration config, UIFrame uiFrame) {
         this.config = config;
         this.updater = new Updater(config);
         this.installer = new Installer();
@@ -441,6 +435,8 @@ public class PreferenceDialog extends JDialog {
                                     final String folder = System.getProperty("java.io.tmpdir");
                                     final String fileName = "osumer_updater_" + Calendar.getInstance().getTimeInMillis() + ".exe";
                                     
+                                    //TODO
+                                    /*
                                     QueueManager mgr = uiFrame.getQueueManager();
                                     mgr.addQueue(new Queue(
                                             "osumer Updater",
@@ -457,6 +453,7 @@ public class PreferenceDialog extends JDialog {
                                             JOptionPane.showMessageDialog(uiFrame, "The web updater will be downloaded and started very soon.", "Notice", JOptionPane.INFORMATION_MESSAGE);
                                         }
                                     }.start();
+                                    */
                                     dispose();
                                 } catch (DebuggableException e){
                                     e.printStackTrace();
@@ -981,6 +978,8 @@ public class PreferenceDialog extends JDialog {
                                     final String folder = System.getProperty("java.io.tmpdir");
                                     final String fileName = "osumer_updater_" + Calendar.getInstance().getTimeInMillis() + ".exe";
                                     
+                                    //TODO
+                                    /*
                                     QueueManager mgr = uiFrame.getQueueManager();
                                     mgr.addQueue(new Queue(
                                             "osumer Updater",
@@ -997,6 +996,7 @@ public class PreferenceDialog extends JDialog {
                                             JOptionPane.showMessageDialog(uiFrame, "The web updater will be downloaded and started very soon.", "Notice", JOptionPane.INFORMATION_MESSAGE);
                                         }
                                     }.start();
+                                    */
                                     dispose();
                                 } catch (DebuggableException e){
                                     e.printStackTrace();
@@ -1518,9 +1518,9 @@ public class PreferenceDialog extends JDialog {
 
     private UpdateInfo getUpdateInfoByConfig() throws DebuggableException {
         String algo = config.getCheckUpdateAlgo();
-        if (algo.equals(Config.CHECK_UPDATE_ALGO_PER_VER_PER_BRANCH)) {
+        if (algo.equals(Configuration.CHECK_UPDATE_ALGO_PER_VER_PER_BRANCH)) {
             return updater.getPerVersionPerBranchLatestVersion();
-        } else if (algo.equals(Config.CHECK_UPDATE_ALGO_LATEST_VER_PER_BRANCH)) {
+        } else if (algo.equals(Configuration.CHECK_UPDATE_ALGO_LATEST_VER_PER_BRANCH)) {
             return updater.getLatestVersion();
         } else { //TODO: Implement other algo
             return updater.getLatestVersion();
@@ -1632,29 +1632,29 @@ public class PreferenceDialog extends JDialog {
         
         String updateFreq = config.getCheckUpdateFreq();
         
-        if (!updateFreq.equals(Config.CHECK_UPDATE_FREQ_EVERY_STARTUP) &&
-            !updateFreq.equals(Config.CHECK_UPDATE_FREQ_EVERY_ACT) &&
-            !updateFreq.equals(Config.CHECK_UPDATE_FREQ_NEVER)){
-            updateFreq = Config.CHECK_UPDATE_FREQ_EVERY_ACT;
+        if (!updateFreq.equals(Configuration.CHECK_UPDATE_FREQ_EVERY_STARTUP) &&
+            !updateFreq.equals(Configuration.CHECK_UPDATE_FREQ_EVERY_ACT) &&
+            !updateFreq.equals(Configuration.CHECK_UPDATE_FREQ_NEVER)){
+            updateFreq = Configuration.CHECK_UPDATE_FREQ_EVERY_ACT;
         }
         
-        rdbtnEveryStartup.setSelected(updateFreq.equals(Config.CHECK_UPDATE_FREQ_EVERY_STARTUP)); //TDOO Change to constant
-        rdbtnEveryAct.setSelected(updateFreq.equals(Config.CHECK_UPDATE_FREQ_EVERY_ACT));
-        rdbtnNever.setSelected(updateFreq.equals(Config.CHECK_UPDATE_FREQ_NEVER));
+        rdbtnEveryStartup.setSelected(updateFreq.equals(Configuration.CHECK_UPDATE_FREQ_EVERY_STARTUP)); //TDOO Change to constant
+        rdbtnEveryAct.setSelected(updateFreq.equals(Configuration.CHECK_UPDATE_FREQ_EVERY_ACT));
+        rdbtnNever.setSelected(updateFreq.equals(Configuration.CHECK_UPDATE_FREQ_NEVER));
         
         String updateAlgo = config.getCheckUpdateAlgo();
         
-        if (!updateAlgo.equals(Config.CHECK_UPDATE_ALGO_PER_VER_PER_BRANCH) &&
-                !updateAlgo.equals(Config.CHECK_UPDATE_ALGO_LATEST_VER_PER_BRANCH) &&
-                !updateAlgo.equals(Config.CHECK_UPDATE_ALGO_LATEST_VER_OVERALL) &&
-                !updateAlgo.equals(Config.CHECK_UPDATE_ALGO_STABLITY)){
-            updateAlgo = Config.CHECK_UPDATE_ALGO_LATEST_VER_PER_BRANCH;
+        if (!updateAlgo.equals(Configuration.CHECK_UPDATE_ALGO_PER_VER_PER_BRANCH) &&
+                !updateAlgo.equals(Configuration.CHECK_UPDATE_ALGO_LATEST_VER_PER_BRANCH) &&
+                !updateAlgo.equals(Configuration.CHECK_UPDATE_ALGO_LATEST_VER_OVERALL) &&
+                !updateAlgo.equals(Configuration.CHECK_UPDATE_ALGO_STABLITY)){
+            updateAlgo = Configuration.CHECK_UPDATE_ALGO_LATEST_VER_PER_BRANCH;
         }
         
-        rdbtnPerVersion.setSelected(updateAlgo.equals(Config.CHECK_UPDATE_ALGO_PER_VER_PER_BRANCH));
-        rdbtnLatestVersion.setSelected(updateAlgo.equals(Config.CHECK_UPDATE_ALGO_LATEST_VER_PER_BRANCH));
-        rdbtnLatestVersionoverall.setSelected(updateAlgo.equals(Config.CHECK_UPDATE_ALGO_LATEST_VER_OVERALL));
-        rdbtnStablity.setSelected(updateAlgo.equals(Config.CHECK_UPDATE_ALGO_STABLITY));
+        rdbtnPerVersion.setSelected(updateAlgo.equals(Configuration.CHECK_UPDATE_ALGO_PER_VER_PER_BRANCH));
+        rdbtnLatestVersion.setSelected(updateAlgo.equals(Configuration.CHECK_UPDATE_ALGO_LATEST_VER_PER_BRANCH));
+        rdbtnLatestVersionoverall.setSelected(updateAlgo.equals(Configuration.CHECK_UPDATE_ALGO_LATEST_VER_OVERALL));
+        rdbtnStablity.setSelected(updateAlgo.equals(Configuration.CHECK_UPDATE_ALGO_STABLITY));
         
         chckbxAutoCriticalUpdate.setSelected(config.isAutoAcceptCriticalUpdates());
         chckbxAutoPatches.setSelected(config.isAutoDownloadApplyPatches());
@@ -1792,27 +1792,27 @@ public class PreferenceDialog extends JDialog {
         
         String checkFreq = null;
         if (rdbtnEveryStartup.isSelected()){
-            checkFreq = Config.CHECK_UPDATE_FREQ_EVERY_STARTUP;
+            checkFreq = Configuration.CHECK_UPDATE_FREQ_EVERY_STARTUP;
         } else if (rdbtnEveryAct.isSelected()){
-            checkFreq = Config.CHECK_UPDATE_FREQ_EVERY_ACT;
+            checkFreq = Configuration.CHECK_UPDATE_FREQ_EVERY_ACT;
         } else if (rdbtnNever.isSelected()){
-            checkFreq = Config.CHECK_UPDATE_FREQ_NEVER;
+            checkFreq = Configuration.CHECK_UPDATE_FREQ_NEVER;
         } else { //Default
-            checkFreq = Config.CHECK_UPDATE_FREQ_EVERY_ACT;
+            checkFreq = Configuration.CHECK_UPDATE_FREQ_EVERY_ACT;
         }
         config.setCheckUpdateFreq(checkFreq);
         
         String checkAlgo = null;
         if (rdbtnPerVersion.isSelected()){
-            checkAlgo = Config.CHECK_UPDATE_ALGO_PER_VER_PER_BRANCH;
+            checkAlgo = Configuration.CHECK_UPDATE_ALGO_PER_VER_PER_BRANCH;
         } else if (rdbtnLatestVersion.isSelected()){
-            checkAlgo = Config.CHECK_UPDATE_ALGO_LATEST_VER_PER_BRANCH;
+            checkAlgo = Configuration.CHECK_UPDATE_ALGO_LATEST_VER_PER_BRANCH;
         } else if (rdbtnLatestVersionoverall.isSelected()){
-            checkAlgo = Config.CHECK_UPDATE_ALGO_LATEST_VER_OVERALL;
+            checkAlgo = Configuration.CHECK_UPDATE_ALGO_LATEST_VER_OVERALL;
         } else if (rdbtnStablity.isSelected()){
-            checkAlgo = Config.CHECK_UPDATE_ALGO_STABLITY;
+            checkAlgo = Configuration.CHECK_UPDATE_ALGO_STABLITY;
         } else { //Default
-            checkAlgo = Config.CHECK_UPDATE_ALGO_LATEST_VER_PER_BRANCH;
+            checkAlgo = Configuration.CHECK_UPDATE_ALGO_LATEST_VER_PER_BRANCH;
         }
         config.setCheckUpdateAlgo(checkAlgo);
         

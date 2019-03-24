@@ -35,9 +35,10 @@ import java.awt.Desktop;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Toolkit;
-import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -46,12 +47,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.Calendar;
 
-import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -77,49 +75,30 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
-import javax.swing.filechooser.FileFilter;
+import javax.swing.border.TitledBorder;
 
 import com.github.mob41.organdebug.exceptions.DebuggableException;
+import com.github.mob41.osumer.Configuration;
 import com.github.mob41.osumer.Osumer;
-import com.github.mob41.osumer.daemon.Config;
+import com.github.mob41.osumer.daemon.IDaemon;
 import com.github.mob41.osumer.exceptions.NoBuildsForVersionException;
 import com.github.mob41.osumer.exceptions.NoSuchBuildNumberException;
 import com.github.mob41.osumer.exceptions.NoSuchVersionException;
-import com.github.mob41.osumer.io.legacy.OsuDownloader;
-import com.github.mob41.osumer.io.legacy.URLDownloader;
-import com.github.mob41.osumer.io.queue.Queue;
-import com.github.mob41.osumer.io.queue.QueueAction;
-import com.github.mob41.osumer.io.queue.QueueManager;
-import com.github.mob41.osumer.io.queue.actions.AfterSoundAction;
-import com.github.mob41.osumer.io.queue.actions.BeatmapImportAction;
-import com.github.mob41.osumer.io.queue.actions.BeforeSoundAction;
-import com.github.mob41.osumer.io.queue.actions.CustomImportAction;
-import com.github.mob41.osumer.io.queue.actions.UpdaterRunAction;
-import com.github.mob41.osumer.sock.SockThread;
 import com.github.mob41.osumer.updater.UpdateInfo;
 import com.github.mob41.osumer.updater.Updater;
 import com.github.mob41.osums.io.beatmap.OsuBeatmap;
 import com.github.mob41.osums.io.beatmap.Osums;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import javax.swing.border.TitledBorder;
-import java.awt.FlowLayout;
-import javax.swing.BoxLayout;
-
-public class UIFrame extends JFrame {
+public class UIFrame extends JFrame{
 
     /**
      * 
      */
     private static final long serialVersionUID = -4742856302707419966L;
-    private boolean daemonMode = false;
-    private final QueueManager mgr;
+    
     private final Updater updater;
     private final Osums osu;
-    private final SockThread sockThread;
-    private final Config config;
-    private final TrayIcon icon;
+    private final Configuration config;
     private final Timer timer;
     
     private File selectedFile = null;
@@ -135,19 +114,19 @@ public class UIFrame extends JFrame {
     
     private String targetFile = "";
     private String targetFolder = "";
+    
+    private IDaemon d;
 
     /**
      * Create the frame.
      */
-    public UIFrame(Config config, QueueManager mgr, TrayIcon icon) {
-        this.icon = icon;
+    public UIFrame(Configuration config, IDaemon d) {
         
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent arg0) {
-                if (daemonMode) {
+                if (false) {
                     setVisible(false);
-                    icon.displayMessage("osumer2", "osumer2 is now running in background.", TrayIcon.MessageType.INFO);
                 } else {
                     dispose();
                     System.exit(0);
@@ -155,7 +134,7 @@ public class UIFrame extends JFrame {
                 }
             }
         });
-        this.mgr = mgr;
+        this.d = d;
         this.config = config;
         this.osu = new Osums();
         this.updater = new Updater(config);
@@ -180,8 +159,6 @@ public class UIFrame extends JFrame {
                 }.start();
             }
         }
-
-        mgr.startQueuing();
 
         setTitle("osumer");
         setIconImage(Toolkit.getDefaultToolkit()
@@ -244,6 +221,7 @@ public class UIFrame extends JFrame {
         JMenuItem mntmExit = new JMenuItem("Exit");
         mntmExit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
+                /*
                 if (daemonMode) {
                     int option = JOptionPane.showOptionDialog(UIFrame.this,
                             "This application is running in daemon mode.\nExiting might slow down the osumerExpress background download speed.\n\nAre you sure? Or you may prefer running in background.",
@@ -258,6 +236,7 @@ public class UIFrame extends JFrame {
                         return;
                     }
                 }
+                */
 
                 dispose();
                 System.exit(0);
@@ -287,33 +266,10 @@ public class UIFrame extends JFrame {
             }
         });
 
-        JMenuItem mntmAddLegacyQueue = new JMenuItem("Add legacy queue");
-        mntmAddLegacyQueue.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String input = JOptionPane.showInputDialog("Specify URL to download:");
-
-                URL url = null;
-                try {
-                    url = new URL(input);
-                } catch (MalformedURLException e1) {
-                    e1.printStackTrace();
-                    JOptionPane.showMessageDialog(UIFrame.this, "Error: Invalid URL", "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                mgr.addQueue(new Queue("Legacy download",
-                        new URLDownloader("C:\\Users\\Anthony\\Desktop\\Unknown", "legacy.test", url), null, null,
-                        null));
-                tableModel.fireTableDataChanged();
-            }
-        });
-        mnQueue.add(mntmAddLegacyQueue);
-
         JMenuItem mntmEditQueues = new JMenuItem("Edit queues");
         mntmEditQueues.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                EditQueueDialog dialog = new EditQueueDialog(mgr);
+                EditQueueDialog dialog = new EditQueueDialog(d);
                 dialog.setModal(true);
                 dialog.setVisible(true);
             }
@@ -433,7 +389,9 @@ public class UIFrame extends JFrame {
                     JOptionPane.showMessageDialog(UIFrame.this, "Please enter a valid song/beatmap URL.", "Error", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
-                addBtQueue(beatmapField.getText(), chckbxShowBeatmapPreview.isSelected());
+                System.out.println("TODO: Unimplemented addBtQueue()");
+                //TODO
+                //addBtQueue(beatmapField.getText(), chckbxShowBeatmapPreview.isSelected());
             }
 
         });
@@ -622,11 +580,11 @@ public class UIFrame extends JFrame {
         JScrollPane scrollPane = new JScrollPane();
         queuePanel.add(scrollPane, BorderLayout.CENTER);
 
-        tableModel = new QueueCellTableModel(mgr);
+        tableModel = new QueueCellTableModel(); //TODO
 
         table = new JTable(tableModel);
-        table.setDefaultRenderer(Queue.class, new QueueCellRenderer(tableModel));
-        table.setDefaultEditor(Queue.class, new QueueCellEditor(tableModel));
+        //table.setDefaultRenderer(Queue.class, new QueueCellRenderer(tableModel));
+        //table.setDefaultEditor(Queue.class, new QueueCellEditor(tableModel));
         table.setRowHeight(153);
 
         timer = new Timer(100, new ActionListener() {
@@ -656,8 +614,8 @@ public class UIFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 int index = table.getSelectedRow();
                 if (index != -1) {
-                    Queue queue = (Queue) table.getValueAt(index, 0);
-                    mgr.removeQueue(queue);
+                    //Queue queue = (Queue) table.getValueAt(index, 0);
+                    //mgr.removeQueue(queue);
                     tableModel.fireTableDataChanged();
                 }
             }
@@ -673,9 +631,6 @@ public class UIFrame extends JFrame {
         tab.setEnabledAt(2, false);
         
         tab.add("Search beatmaps", new BeatmapSearchPanel(this, osu));
-
-        this.sockThread = new SockThread(this);
-        sockThread.start();
         
         EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -690,7 +645,7 @@ public class UIFrame extends JFrame {
         });
     }
     
-    public Config getConfig() {
+    public Configuration getConfig() {
         return config;
     }
 
@@ -700,10 +655,6 @@ public class UIFrame extends JFrame {
     
     public JTabbedPane getTab() {
         return tab;
-    }
-
-    public QueueManager getQueueManager() {
-        return mgr;
     }
 
     private OsuBeatmap map = null;
@@ -717,6 +668,7 @@ public class UIFrame extends JFrame {
     private JRadioButton rdbtnDownloadToFile;
     private JRadioButton rdbtnDownloadToFolder;
 
+    /*
     public boolean addBtQueue(String url, boolean preview) {
         return addBtQueue(url, preview, true, null, null);
     }
@@ -1079,12 +1031,13 @@ public class UIFrame extends JFrame {
 
         return stillDwn;
     }
+    */
 
     private UpdateInfo getUpdateInfoByConfig() throws DebuggableException {
         String algo = config.getCheckUpdateAlgo();
-        if (algo.equals(Config.CHECK_UPDATE_ALGO_PER_VER_PER_BRANCH)) {
+        if (algo.equals(Configuration.CHECK_UPDATE_ALGO_PER_VER_PER_BRANCH)) {
             return updater.getPerVersionPerBranchLatestVersion();
-        } else if (algo.equals(Config.CHECK_UPDATE_ALGO_LATEST_VER_PER_BRANCH)) {
+        } else if (algo.equals(Configuration.CHECK_UPDATE_ALGO_LATEST_VER_PER_BRANCH)) {
             return updater.getLatestVersion();
         } else { //TODO: Implement other algo
             return updater.getLatestVersion();
@@ -1220,6 +1173,7 @@ public class UIFrame extends JFrame {
                         final String folder = System.getProperty("java.io.tmpdir");
                         final String fileName = "osumer_updater_" + Calendar.getInstance().getTimeInMillis() + ".exe";
                         
+                        /*
                         mgr.addQueue(new Queue(
                                 "osumer Updater",
                                 new URLDownloader(folder, fileName, url),
@@ -1235,6 +1189,7 @@ public class UIFrame extends JFrame {
                                 JOptionPane.showMessageDialog(UIFrame.this, "The web updater will be downloaded and started very soon.", "Notice", JOptionPane.INFORMATION_MESSAGE);
                             }
                         }.start();
+                        */
                     } catch (DebuggableException e){
                         e.printStackTrace();
                         JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
@@ -1265,13 +1220,5 @@ public class UIFrame extends JFrame {
                 popup.show(e.getComponent(), e.getX(), e.getY());
             }
         });
-    }
-
-    public boolean isDaemonMode() {
-        return daemonMode;
-    }
-
-    public void setDaemonMode(boolean daemonMode) {
-        this.daemonMode = daemonMode;
     }
 }

@@ -33,7 +33,6 @@ import java.awt.Component;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
-import com.github.mob41.osumer.io.queue.Queue;
 import com.github.mob41.osums.io.beatmap.ResultBeatmap;
 
 public class ResultBeatmapCellRenderer implements TableCellRenderer {
