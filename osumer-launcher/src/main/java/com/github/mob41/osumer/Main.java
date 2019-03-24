@@ -42,8 +42,8 @@ import javax.swing.UIManager;
 import com.github.mob41.organdebug.DebugDump;
 import com.github.mob41.organdebug.DumpManager;
 import com.github.mob41.organdebug.exceptions.DebuggableException;
-import com.github.mob41.osumer.daemon.IDaemon;
 import com.github.mob41.osumer.installer.Installer;
+import com.github.mob41.osumer.rmi.IDaemon;
 import com.github.mob41.osums.io.beatmap.Osums;
 
 public class Main {
@@ -64,15 +64,6 @@ public class Main {
             System.out.println("TODO: Unimplemented: Version reading via Arguments");
             //System.out.println(Osumer.OSUMER_VERSION + "-" + Osumer.OSUMER_BRANCH + "-" + Osumer.OSUMER_BUILD_NUM);
             return;
-        }
-
-        //TODO: Still make it here?
-        if (!GraphicsEnvironment.isHeadless()) {
-            try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
 
         //TODO: Print the INTRO if in cmd mode

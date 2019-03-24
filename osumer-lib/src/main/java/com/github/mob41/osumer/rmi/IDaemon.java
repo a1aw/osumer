@@ -1,5 +1,6 @@
-package com.github.mob41.osumer.daemon;
+package com.github.mob41.osumer.rmi;
 
+import java.awt.TrayIcon.MessageType;
 import java.io.IOException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -12,6 +13,8 @@ public interface IDaemon extends Remote{
     public boolean addQueue(String url) throws RemoteException;
     
     public boolean addQueue(String url, int downloadAction, String targetFileOrFolder) throws RemoteException;
+    
+    public void trayIconDisplayMessage(String caption, String text, MessageType msgType) throws RemoteException;
     
     public void reloadConfiguration() throws RemoteException, IOException;
     

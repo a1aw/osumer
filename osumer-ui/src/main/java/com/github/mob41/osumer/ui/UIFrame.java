@@ -48,8 +48,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
+import java.rmi.RemoteException;
 import java.util.Calendar;
 
+import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -80,10 +83,10 @@ import javax.swing.border.TitledBorder;
 import com.github.mob41.organdebug.exceptions.DebuggableException;
 import com.github.mob41.osumer.Configuration;
 import com.github.mob41.osumer.Osumer;
-import com.github.mob41.osumer.daemon.IDaemon;
 import com.github.mob41.osumer.exceptions.NoBuildsForVersionException;
 import com.github.mob41.osumer.exceptions.NoSuchBuildNumberException;
 import com.github.mob41.osumer.exceptions.NoSuchVersionException;
+import com.github.mob41.osumer.rmi.IDaemon;
 import com.github.mob41.osumer.updater.UpdateInfo;
 import com.github.mob41.osumer.updater.Updater;
 import com.github.mob41.osums.io.beatmap.OsuBeatmap;
@@ -125,13 +128,9 @@ public class UIFrame extends JFrame{
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent arg0) {
-                if (false) {
-                    setVisible(false);
-                } else {
-                    dispose();
-                    System.exit(0);
-                    return;
-                }
+                dispose();
+                System.exit(0);
+                return;
             }
         });
         this.d = d;
@@ -389,9 +388,7 @@ public class UIFrame extends JFrame{
                     JOptionPane.showMessageDialog(UIFrame.this, "Please enter a valid song/beatmap URL.", "Error", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
-                System.out.println("TODO: Unimplemented addBtQueue()");
-                //TODO
-                //addBtQueue(beatmapField.getText(), chckbxShowBeatmapPreview.isSelected());
+                addQueue(beatmapField.getText(), chckbxShowBeatmapPreview.isSelected());
             }
 
         });
@@ -668,243 +665,102 @@ public class UIFrame extends JFrame{
     private JRadioButton rdbtnDownloadToFile;
     private JRadioButton rdbtnDownloadToFolder;
 
-    /*
-    public boolean addBtQueue(String url, boolean preview) {
-        return addBtQueue(url, preview, true, null, null);
-    }
     
-    public boolean addQuietBtQueue(String url) {
-        if (config.getCheckUpdateFreq() == Config.CHECK_UPDATE_FREQ_EVERY_ACT) {
-            checkUpdate();
-        }
-        
-        String user = config.getUser();
-        String pass = config.getPass();
-
-        if (user == null || user.isEmpty() || pass == null || pass.isEmpty()) {
-            LoginPanel loginPanel = new LoginPanel();
-            int option = JOptionPane.showOptionDialog(UIFrame.this, loginPanel, "Login to osu!",
-                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null,
-                    JOptionPane.CANCEL_OPTION);
-
-            if (option == JOptionPane.OK_OPTION) {
-                if (loginPanel.getUsername().isEmpty() || loginPanel.getPassword().isEmpty()) {
-                    JOptionPane.showMessageDialog(UIFrame.this, "Username or password cannot be empty.",
-                            "Error", JOptionPane.ERROR_MESSAGE);
-                    return false;
-                }
-
-                user = loginPanel.getUsername();
-                pass = loginPanel.getPassword();
-            } else {
-                return false;
-            }
-        }
-        
-        try {
-            osu.login(user, pass);
-        } catch (DebuggableException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(UIFrame.this, "Error logging in:\n" + e.getDump().getMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-        
-        String modBUrl = config.isLegacyEnableOldSiteBeatmapRedirecting() ? url.replace("osu.ppy.sh", "old.ppy.sh") : url;
-        
-        try {
-            map = osu.getBeatmapInfo(modBUrl);
-        } catch (DebuggableException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(UIFrame.this,
-                    "Error getting beatmap info:\n" + e.getDump().getMessage(), "Error",
-                    JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-        
-        String modUrl = map.getThumbUrl();
-        URL thumbUrl = null;
-        try {
-            thumbUrl = new URL("http:" + modUrl);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return false;
-        }
-
-        URLConnection conn = null;
-        try {
-            conn = thumbUrl.openConnection();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-
-        conn.setConnectTimeout(5000);
-        conn.setReadTimeout(5000);
-
-        try {
-            thumb = ImageIO.read(conn.getInputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-            thumb = null;
-        }
-        
-        URL downloadUrl = null;
-        try {
-            downloadUrl = new URL("http://osu.ppy.sh" + map.getDwnUrl());
-        } catch (MalformedURLException e1) {
-            e1.printStackTrace();
-            JOptionPane.showMessageDialog(UIFrame.this, "Error validating download URL:\n" + e1, "Error",
-                    JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-        String tmpdir = System.getProperty("java.io.tmpdir");
-
-        final String mapName = map.getName();
-        OsuDownloader dwn = new OsuDownloader(tmpdir,
-                map.getDwnUrl().substring(3, map.getDwnUrl().length()) + " " + map.getName(), osu, downloadUrl);
-        
-        QueueAction importAction;
-        if (rdbtnUseDefaultSettings.isSelected()) {
-            importAction = new BeatmapImportAction(config);
-        } else {
-            int action = -1;
-            String targetFileOrFolder = null;
-            
-            if (rdbtnDownloadAndImport.isSelected()) {
-                action = 0;
-            } else if (rdbtnDownloadToOsu.isSelected()) {
-                action = 1;
-            } else if (rdbtnDownloadToFile.isSelected()) {
-                action = 2;
-                targetFileOrFolder = targetFile;
-            } else if (rdbtnDownloadToFolder.isSelected()) {
-                action = 3;
-                targetFileOrFolder = targetFolder;
-            }
-            
-            importAction = new CustomImportAction(action, targetFileOrFolder);
-        }
-
-        QueueAction[] beforeActions = new QueueAction[] {
-                new BeforeSoundAction(config)
-        };
-        
-        QueueAction[] afterActions = new QueueAction[] { 
-                new AfterSoundAction(config),
-                new QueueAction(){
-
-                    @Override
-                    public void run(Queue queue) {
-                        icon.displayMessage("Download completed for \"" + mapName + "\"", "This osumer queue has completed downloading.", TrayIcon.MessageType.INFO);
-                    }
-                    
-                },
-                importAction
-        };
-        
-        boolean added = mgr.addQueue(new Queue(map.getName(), dwn, thumb, beforeActions, afterActions));
-        
-        if (added){
-            icon.displayMessage("Downloading \"" + mapName + "\"", "osumerExpress is downloading the requested beatmap!", TrayIcon.MessageType.INFO);
-        } else {
-            icon.displayMessage("Could not add \"" + mapName + "\" to queue", "It has already in queue/downloading or completed.", TrayIcon.MessageType.INFO);
-        }
-        
-        tableModel.fireTableDataChanged();
-        
-        return true;
+    public boolean addQueue(String url, boolean preview) {
+        return addQueue(url, preview, true);
     }
 
-    public boolean addBtQueue(String url, boolean preview, boolean changeTab, QueueAction[] beforeActions, QueueAction[] afterActions) {
-        if (config.getCheckUpdateFreq() == Config.CHECK_UPDATE_FREQ_EVERY_ACT) {
+    public boolean addQueue(String url, boolean preview, boolean changeTab) {
+        if (config.getCheckUpdateFreq() == Configuration.CHECK_UPDATE_FREQ_EVERY_ACT) {
             checkUpdate();
         }
-        
-        map = null;
-        thumb = null;
-        pbd = new ProgressDialog();
+        //Show Beatmap Preview Dialog
+        boolean stillDwn = true;
+        if (preview) {
+            map = null;
+            thumb = null;
+            pbd = new ProgressDialog();
 
-        new Thread() {
-            public void run() {
-                pbd.getProgressBar().setIndeterminate(true);
-                pbd.getLabel().setText("Status: Getting configuration...");
-                String user = config.getUser();
-                String pass = config.getPass();
+            //Do Login
+            new Thread() {
+                public void run() {
+                    pbd.getProgressBar().setIndeterminate(true);
+                    pbd.getLabel().setText("Status: Getting configuration...");
+                    String user = config.getUser();
+                    String pass = config.getPass();
 
-                if (user == null || user.isEmpty() || pass == null || pass.isEmpty()) {
-                    pbd.getLabel().setText("Status: Prompting username and password...");
-                    LoginPanel loginPanel = new LoginPanel();
-                    int option = JOptionPane.showOptionDialog(UIFrame.this, loginPanel, "Login to osu!",
-                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null,
-                            JOptionPane.CANCEL_OPTION);
+                    if (user == null || user.isEmpty() || pass == null || pass.isEmpty()) {
+                        pbd.getLabel().setText("Status: Prompting username and password...");
+                        LoginPanel loginPanel = new LoginPanel();
+                        int option = JOptionPane.showOptionDialog(UIFrame.this, loginPanel, "Login to osu!",
+                                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null,
+                                JOptionPane.CANCEL_OPTION);
 
-                    if (option == JOptionPane.OK_OPTION) {
-                        if (loginPanel.getUsername().isEmpty() || loginPanel.getPassword().isEmpty()) {
-                            JOptionPane.showMessageDialog(UIFrame.this, "Username or password cannot be empty.",
-                                    "Error", JOptionPane.ERROR_MESSAGE);
+                        if (option == JOptionPane.OK_OPTION) {
+                            if (loginPanel.getUsername().isEmpty() || loginPanel.getPassword().isEmpty()) {
+                                JOptionPane.showMessageDialog(UIFrame.this, "Username or password cannot be empty.",
+                                        "Error", JOptionPane.ERROR_MESSAGE);
+                                pbd.dispose();
+                                return;
+                            }
+
+                            user = loginPanel.getUsername();
+                            pass = loginPanel.getPassword();
+                        } else {
                             pbd.dispose();
                             return;
                         }
+                    }
 
-                        user = loginPanel.getUsername();
-                        pass = loginPanel.getPassword();
-                    } else {
+                    pbd.getLabel().setText("Status: Logging in...");
+                    try {
+                        osu.login(user, pass);
+                    } catch (DebuggableException e) {
+                        e.printStackTrace();
+                        JOptionPane.showMessageDialog(UIFrame.this, "Error logging in:\n" + e.getDump().getMessage(),
+                                "Error", JOptionPane.ERROR_MESSAGE);
                         pbd.dispose();
                         return;
                     }
-                }
 
-                pbd.getLabel().setText("Status: Logging in...");
-                try {
-                    osu.login(user, pass);
-                } catch (DebuggableException e) {
-                    e.printStackTrace();
-                    JOptionPane.showMessageDialog(UIFrame.this, "Error logging in:\n" + e.getDump().getMessage(),
-                            "Error", JOptionPane.ERROR_MESSAGE);
+                    String modUrl = config.isLegacyEnableOldSiteBeatmapRedirecting() ? url.replace("osu.ppy.sh", "old.ppy.sh") : url;
+
+                    pbd.getLabel().setText("Status: Obtaining beatmap information...");
+                    try {
+                        map = osu.getBeatmapInfo(modUrl);
+                    } catch (DebuggableException e) {
+                        e.printStackTrace();
+                        JOptionPane.showMessageDialog(UIFrame.this,
+                                "Error getting beatmap info:\n" + e.getDump().getMessage(), "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        pbd.dispose();
+                        return;
+                    }
+
                     pbd.dispose();
-                    return;
+                    pbd = null;
                 }
+            }.start();
 
-                String modUrl = config.isLegacyEnableOldSiteBeatmapRedirecting() ? url.replace("osu.ppy.sh", "old.ppy.sh") : url;
+            pbd.setLocationRelativeTo(UIFrame.this);
+            pbd.setModal(true);
+            pbd.setVisible(true);
 
-                pbd.getLabel().setText("Status: Obtaining beatmap information...");
-                try {
-                    map = osu.getBeatmapInfo(modUrl);
-                } catch (DebuggableException e) {
-                    e.printStackTrace();
-                    JOptionPane.showMessageDialog(UIFrame.this,
-                            "Error getting beatmap info:\n" + e.getDump().getMessage(), "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                    pbd.dispose();
-                    return;
-                }
-
-                pbd.dispose();
-                pbd = null;
+            if (map == null) {
+                return false;
             }
-        }.start();
-
-        pbd.setLocationRelativeTo(UIFrame.this);
-        pbd.setModal(true);
-        pbd.setVisible(true);
-
-        if (map == null) {
-            return false;
-        }
-
-        boolean stillDwn = true;
-
-        if (preview) {
+            
             BeatmapPreviewDialog bpd = new BeatmapPreviewDialog(map);
             bpd.setLocationRelativeTo(UIFrame.this);
             bpd.setModal(true);
             bpd.setVisible(true);
 
             stillDwn = bpd.isSelectedYes();
-            thumb = bpd.getDownloadedImage();
+            //thumb = bpd.getDownloadedImage();
         }
 
+        /*
+        //Download Thumb is still not downloaded
         if (thumb == null) {
             pbd = new ProgressDialog();
 
@@ -952,87 +808,73 @@ public class UIFrame extends JFrame{
             pbd.setModal(true);
             pbd.setVisible(true);
         }
+        */
 
+        //Download if requested
         if (stillDwn) {
-            URL downloadUrl = null;
-            try {
-                downloadUrl = new URL("http://osu.ppy.sh" + map.getDwnUrl());
-            } catch (MalformedURLException e1) {
-                e1.printStackTrace();
-                JOptionPane.showMessageDialog(UIFrame.this, "Error validating download URL:\n" + e1, "Error",
-                        JOptionPane.ERROR_MESSAGE);
-                return false;
-            }
-            String tmpdir = System.getProperty("java.io.tmpdir");
+            //TODO: Do table model sync with daemon
 
-            final String mapName = map.getName();
-            OsuDownloader dwn = new OsuDownloader(tmpdir,
-                    map.getDwnUrl().substring(3, map.getDwnUrl().length()) + " " + map.getName(), osu, downloadUrl);
+            int downloadAction = -1;
+            String targetFileOrFolder = null;
             
-            QueueAction importAction;
             if (rdbtnUseDefaultSettings.isSelected()) {
-                importAction = new BeatmapImportAction(config);
-            } else {
-                int action = -1;
-                String targetFileOrFolder = null;
-                
-                if (rdbtnDownloadAndImport.isSelected()) {
-                    action = 0;
-                } else if (rdbtnDownloadToOsu.isSelected()) {
-                    action = 1;
-                } else if (rdbtnDownloadToFile.isSelected()) {
-                    action = 2;
-                    targetFileOrFolder = targetFile;
-                } else if (rdbtnDownloadToFolder.isSelected()) {
-                    action = 3;
-                    targetFileOrFolder = targetFolder;
+                downloadAction = -1;
+            } else if (rdbtnDownloadAndImport.isSelected()) {
+                downloadAction = 0;
+            } else if (rdbtnDownloadToOsu.isSelected()) {
+                downloadAction = 1;
+            } else if (rdbtnDownloadToFile.isSelected()) {
+                downloadAction = 2;
+                targetFileOrFolder = targetFile;
+            } else if (rdbtnDownloadToFolder.isSelected()) {
+                downloadAction = 3;
+                targetFileOrFolder = targetFolder;
+            }
+            
+            final int _downloadAction = downloadAction;
+            final String _targetFileOrFolder = targetFileOrFolder;
+
+            pbd = new ProgressDialog();
+            new Thread() {
+                public void run() {
+                    pbd.getProgressBar().setIndeterminate(true);
+                    pbd.getLabel().setText("Status: Requesting daemon...");
+
+                    boolean success = false;
+                    try {
+                        success = d.addQueue(url, _downloadAction, _targetFileOrFolder);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                    
+                    System.out.println("Add success: " + success);
+
+                    pbd.dispose();
                 }
-                
-                importAction = new CustomImportAction(action, targetFileOrFolder);
-            }
-            
-            if (beforeActions == null) {
-                beforeActions = new QueueAction[] {
-                        new BeforeSoundAction(config)
-                };
-            }
-            
-            if (afterActions == null){
-                afterActions = new QueueAction[] { 
-                        new AfterSoundAction(config),
-                        new QueueAction(){
+            }.start();
 
-                            @Override
-                            public void run(Queue queue) {
-                                icon.displayMessage("Download completed for \"" + mapName + "\"", "This osumer queue has completed downloading.", TrayIcon.MessageType.INFO);
-                            }
-                            
-                        },
-                        importAction
-                };
-            }
+            pbd.setLocationRelativeTo(UIFrame.this);
+            pbd.setModal(true);
+            pbd.setVisible(true);
             
-            boolean added = mgr.addQueue(new Queue(map.getName(), dwn, thumb, beforeActions, afterActions));
-            
-            if (added){
-                icon.displayMessage("Downloading \"" + mapName + "\"", "osumerExpress is downloading the requested beatmap!", TrayIcon.MessageType.INFO);
-            } else {
-                icon.displayMessage("Could not add \"" + mapName + "\" to queue", "It has already in queue/downloading or completed.", TrayIcon.MessageType.INFO);
-            }
-            
-            tableModel.fireTableDataChanged();
-
             if (changeTab) {
                 tab.setSelectedIndex(1);
             }
-        } else {
-            icon.displayMessage("Could not download \"" + url + "\"", "Error occurred when finding beatmap. Start UI to see details.", TrayIcon.MessageType.INFO);
         }
 
         return stillDwn;
     }
-    */
-
+    
+    public boolean addQuietQueue(String url) {
+        boolean success = false;
+        try {
+            success = d.addQueue(url, -1, null);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        return success;
+    }
+    
     private UpdateInfo getUpdateInfoByConfig() throws DebuggableException {
         String algo = config.getCheckUpdateAlgo();
         if (algo.equals(Configuration.CHECK_UPDATE_ALGO_PER_VER_PER_BRANCH)) {

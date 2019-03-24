@@ -4,6 +4,7 @@ import java.awt.AWTException;
 import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
+import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -19,6 +20,7 @@ import javax.swing.JOptionPane;
 
 import com.github.mob41.organdebug.exceptions.DebuggableException;
 import com.github.mob41.osumer.Configuration;
+import com.github.mob41.osumer.Osumer;
 import com.github.mob41.osumer.io.OsuDownloader;
 import com.github.mob41.osumer.queue.Queue;
 import com.github.mob41.osumer.queue.QueueAction;
@@ -27,6 +29,7 @@ import com.github.mob41.osumer.queue.actions.AfterSoundAction;
 import com.github.mob41.osumer.queue.actions.BeatmapImportAction;
 import com.github.mob41.osumer.queue.actions.BeforeSoundAction;
 import com.github.mob41.osumer.queue.actions.CustomImportAction;
+import com.github.mob41.osumer.rmi.IDaemon;
 import com.github.mob41.osums.io.beatmap.OsuBeatmap;
 import com.github.mob41.osums.io.beatmap.Osums;
 
@@ -69,7 +72,8 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
             }
 
         });
-        trayIcon.setToolTip("osumer2");
+        String key = Osumer.OSUMER_VERSION + "-" + Osumer.OSUMER_BRANCH + "-b" + Osumer.OSUMER_BUILD_NUM;
+        trayIcon.setToolTip("osumer2 (" + key + ")");
         
         SystemTray tray = SystemTray.getSystemTray();
 
@@ -237,6 +241,11 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
         } catch (IOException e) {
             throw e;
         }
+    }
+
+    @Override
+    public void trayIconDisplayMessage(String caption, String text, MessageType msgType) throws RemoteException {
+        trayIcon.displayMessage(caption, text, msgType);
     }
 
 }

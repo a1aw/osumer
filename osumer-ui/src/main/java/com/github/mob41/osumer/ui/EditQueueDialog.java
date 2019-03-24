@@ -38,7 +38,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-import com.github.mob41.osumer.daemon.IDaemon;
+import com.github.mob41.osumer.rmi.IDaemon;
+
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JScrollPane;
