@@ -31,11 +31,15 @@ package com.github.mob41.osumer;
 import java.awt.GraphicsEnvironment;
 import java.io.IOException;
 import java.rmi.Naming;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
 
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 
-import com.github.mob41.osumer.daemon.IDaemon;
-import com.github.mob41.osumer.daemon.IUI;
+import com.github.mob41.osumer.rmi.IDaemon;
+import com.github.mob41.osumer.rmi.IUI;
+import com.github.mob41.osumer.ui.UI;
 import com.github.mob41.osumer.ui.UIFrame;
 
 public class Main {
@@ -88,9 +92,14 @@ public class Main {
         }
         
         if (ui == null) {
+            if (GraphicsEnvironment.isHeadless()) {
+                System.err.println("osumer-ui requires a graphics environment to launch its user interface.");
+                System.exit(-1);
+                return;
+            }
+            
             IDaemon d = null;
             try {
-                long startTime = System.currentTimeMillis();
                 d = (IDaemon) Naming.lookup("rmi://localhost:" + daemonSuffix); //Contact the daemon via RMI
             } catch (Exception e) {
                 e.printStackTrace();
@@ -98,6 +107,54 @@ public class Main {
                 String msg = 
                         "Could not connect to daemon! Please ensure osumer-daemon is running properly.\n" +
                         "Instead of starting directly with \"osumer-ui.exe\", please use \"osumer.exe\" to launch osumer.";
+                System.err.println(msg);
+
+                JOptionPane.showMessageDialog(null, msg, 
+                        "osumer RMI Connection Error",
+                        JOptionPane.ERROR_MESSAGE);
+
+                System.exit(-1);
+                return;
+            }
+            
+            try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            
+            try {
+                LocateRegistry.createRegistry(RMI_UI_PORT);
+
+                UIFrame frame = new UIFrame(config, d);
+                ui = new UI(frame);
+                
+                Naming.bind("rmi://localhost:" + uiSuffix, ui);
+                
+                frame.setVisible(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+                
+                String msg = 
+                        "Could not register UI RMI registry on port " + RMI_UI_PORT + ":\n" +
+                        e.getMessage();
+                System.err.println(msg);
+
+                JOptionPane.showMessageDialog(null, msg, 
+                        "osumer RMI Initialization Error",
+                        JOptionPane.ERROR_MESSAGE);
+                
+                System.exit(-1);
+                return;
+            }
+        } else {
+            try {
+                ui.wake();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+                String msg = 
+                        "Unable to wake up the UI:\n" +
+                        e.getMessage();
                 System.err.println(msg);
 
                 if (!GraphicsEnvironment.isHeadless()) {
@@ -109,11 +166,6 @@ public class Main {
                 System.exit(-1);
                 return;
             }
-            
-            UIFrame frame = new UIFrame(config, d);
-            frame.setVisible(true);
-        } else {
-            //ui.wake();
         }
     }
 
