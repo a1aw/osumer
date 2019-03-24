@@ -38,9 +38,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-import com.github.mob41.osumer.io.queue.Queue;
-import com.github.mob41.osumer.io.queue.QueueManager;
-
+import com.github.mob41.osumer.daemon.IDaemon;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JScrollPane;
@@ -59,14 +57,14 @@ public class EditQueueDialog extends JDialog {
     private final JPanel contentPanel = new JPanel();
     private JTable table;
     private DefaultTableModel tableModel;
-    private QueueManager mgr;
+    private IDaemon d;
     private JButton btnCancelAndRemove;
 
     /**
      * Create the dialog.
      */
-    public EditQueueDialog(QueueManager mgr) {
-        this.mgr = mgr;
+    public EditQueueDialog(IDaemon d) {
+        this.d = d;
         setBounds(100, 100, 464, 326);
         getContentPane().setLayout(new BorderLayout());
         contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -77,12 +75,14 @@ public class EditQueueDialog extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 int index = table.getSelectedRow();
                 if (index != -1) {
+                    /*
                     String name = (String) table.getValueAt(index, 0);
                     Queue queue = mgr.getQueue(name);
 
                     if (queue != null) {
                         mgr.removeQueue(queue);
                     }
+                    */
                     refresh();
                 } else {
                     btnCancelAndRemove.setEnabled(false);
@@ -146,6 +146,7 @@ public class EditQueueDialog extends JDialog {
 
     private void refresh() {
         btnCancelAndRemove.setEnabled(false);
+        /*
         List<Queue> queues = mgr.getList();
         tableModel.setRowCount(0);
         for (int i = 0; i < queues.size(); i++) {
@@ -153,6 +154,7 @@ public class EditQueueDialog extends JDialog {
             tableModel.addRow(new String[] { queue.getName(), queue.getDownloader().getFileName(),
                     ((int) queue.getDownloader().getProgress()) + "%" });
         }
+        */
         tableModel.fireTableDataChanged();
     }
 

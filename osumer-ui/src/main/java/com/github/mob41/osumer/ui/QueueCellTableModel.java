@@ -30,19 +30,17 @@ package com.github.mob41.osumer.ui;
 
 import javax.swing.table.AbstractTableModel;
 
-import com.github.mob41.osumer.io.queue.Queue;
-import com.github.mob41.osumer.io.queue.QueueManager;
-
 public class QueueCellTableModel extends AbstractTableModel {
 
-    private QueueManager mgr;
+    //private QueueManager mgr;
 
-    public QueueCellTableModel(QueueManager mgr) {
-        this.mgr = mgr;
+    public QueueCellTableModel() {
+        //this.mgr = mgr;
     }
 
     public Class getColumnClass(int columnIndex) {
-        return Queue.class;
+        return String.class;
+        //return Queue.class;
     }
 
     @Override
@@ -57,18 +55,24 @@ public class QueueCellTableModel extends AbstractTableModel {
 
     @Override
     public int getRowCount() {
+        return 0;
+        /*
         if (mgr == null || mgr.getList() == null) {
             return 0;
         }
         return mgr.getList().size();
+        */
     }
 
     @Override
     public Object getValueAt(int arg0, int arg1) {
+        return null;
+        /*
         if (mgr == null || mgr.getList() == null) {
             return null;
         }
         return mgr.getList().get(arg0);
+        */
     }
 
 }

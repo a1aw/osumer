@@ -28,38 +28,15 @@
  *******************************************************************************/
 package com.github.mob41.osumer;
 
-import java.awt.AWTException;
 import java.awt.GraphicsEnvironment;
-import java.awt.SystemTray;
-import java.awt.Toolkit;
-import java.awt.TrayIcon;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.Socket;
-import java.net.URL;
+import java.rmi.Naming;
 
 import javax.swing.JOptionPane;
-import javax.swing.UIManager;
 
-import com.github.mob41.organdebug.DebugDump;
-import com.github.mob41.organdebug.DumpManager;
-import com.github.mob41.organdebug.exceptions.DebuggableException;
-import com.github.mob41.osumer.daemon.Config;
-import com.github.mob41.osumer.io.Installer;
-import com.github.mob41.osumer.io.queue.QueueManager;
-import com.github.mob41.osumer.sock.SockThread;
-import com.github.mob41.osumer.ui.ErrorDumpDialog;
+import com.github.mob41.osumer.daemon.IDaemon;
+import com.github.mob41.osumer.daemon.IUI;
 import com.github.mob41.osumer.ui.UIFrame;
-import com.github.mob41.osums.io.beatmap.Osums;
-
-import javafx.embed.swing.JFXPanel;
 
 public class Main {
 
@@ -69,113 +46,22 @@ public class Main {
             + "username and password to another server other than\n"
             + "osu!'s login server. This is a Open Source software.\n"
             + "You can feel free to look through the code. If you still\n"
-            + "feel uncomfortable with this software, you can simply\n" + "stop using it. Thank you!\n";;
+            + "feel uncomfortable with this software, you can simply\n" + "stop using it. Thank you!\n";
+    
+    private static final int RMI_DAEMON_PORT = 46726;
+    
+    private static final int RMI_UI_PORT = 46727;
+
+    private static final String RMI_DAEMON_PATH = "daemon";
+    
+    private static final String RMI_UI_PATH = "ui";
 
     public static void main(String[] args) {
-        ArgParser ap = new ArgParser(args);
-
-        if (ap.isVersionFlag()) {
-            System.out.println(Osumer.OSUMER_VERSION + "-" + Osumer.OSUMER_BRANCH + "-" + Osumer.OSUMER_BUILD_NUM);
-            return;
-        }
-
-        if (!GraphicsEnvironment.isHeadless()) {
-            try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        // System.out.println(INTRO);
-        // These are called by Windows when setting Default Programs
-        if (ap.isHideIconsFlag() || ap.isShowIconsFlag() || ap.isReinstallFlag() || ap.isInstallFlag()
-                || ap.isUninstallFlag()) {
-            Installer installer = new Installer();
-
-            if (ap.isHideIconsFlag()) {
-                installer.hideIcons();
-
-            } else if (ap.isShowIconsFlag()) {
-                installer.showIcons();
-
-            } else if (ap.isReinstallFlag()) {
-                installer.reinstall();
-
-            } else if (ap.isInstallFlag()) {
-                if (!ap.isQuietFlag() && !ap.isForceFlag()) {
-                    int option = JOptionPane.showOptionDialog(null,
-                            "You are installing osumer " + Osumer.OSUMER_VERSION + "-" + Osumer.OSUMER_BRANCH + "-"
-                                    + Osumer.OSUMER_BUILD_NUM + ".\n" + "Are you sure?",
-                            "Installing osumer", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null,
-                            JOptionPane.NO_OPTION);
-
-                    if (option != JOptionPane.YES_OPTION) {
-                        return;
-                    }
-                }
-
-                try {
-                    long startTime = System.currentTimeMillis();
-                    installer.install();
-
-                    if (!(ap.isQuietFlag() && ap.isForceFlag())) {
-                        System.out.println("Info@U$\nInstallation success within "
-                                + (System.currentTimeMillis() - startTime) + " ms\nInfo@D$");
-                    }
-                } catch (DebuggableException e) {
-                    if (!ap.isNoUiFlag() && !GraphicsEnvironment.isHeadless()) {
-                        ErrorDumpDialog dialog = new ErrorDumpDialog(e.getDump());
-                        dialog.setModal(true);
-                        dialog.setVisible(true);
-                    }
-
-                    if (!(ap.isQuietFlag() && ap.isForceFlag())) {
-                        System.out.println("Error@U$\n" + e.getDump().toString() + "Error@D$");
-                    }
-                }
-            } else if (ap.isUninstallFlag()) {
-                if (!ap.isQuietFlag() && !ap.isForceFlag()) {
-                    int option = JOptionPane.showOptionDialog(null,
-                            "You are uninstalling osumer " + Osumer.OSUMER_VERSION + "-" + Osumer.OSUMER_BRANCH + "-"
-                                    + Osumer.OSUMER_BUILD_NUM + ".\n" + "Are you sure?",
-                            "Uninstalling osumer", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null,
-                            JOptionPane.NO_OPTION);
-
-                    if (option != JOptionPane.YES_OPTION) {
-                        return;
-                    }
-                }
-
-                try {
-                    long startTime = System.currentTimeMillis();
-                    installer.uninstall();
-
-                    if (!(ap.isQuietFlag() && ap.isForceFlag())) {
-                        System.out.println("Info@U$\nUninstallation success within "
-                                + (System.currentTimeMillis() - startTime) + " ms\nInfo@D$");
-                    }
-                } catch (DebuggableException e) {
-                    if (!ap.isNoUiFlag() && !GraphicsEnvironment.isHeadless()) {
-                        ErrorDumpDialog dialog = new ErrorDumpDialog(e.getDump());
-                        dialog.setModal(true);
-                        dialog.setVisible(true);
-                    }
-
-                    if (!(ap.isQuietFlag() && ap.isForceFlag())) {
-                        System.out.println("Error@U$\n" + e.getDump().toString() + "Error@D$");
-                    }
-                }
-            }
-
-            System.exit(0);
-            return;
-        }
+        //Arg is handled by osumer-launcher
 
         String configPath = Osumer.isWindows() ? System.getenv("localappdata") + "\\osumerExpress" : "";
 
-        Config config = new Config(configPath, Config.DEFAULT_DATA_FILE_NAME);
-        // QueueManager mgr = new QueueManager();
+        Configuration config = new Configuration(configPath, Configuration.DEFAULT_DATA_FILE_NAME);
 
         try {
             config.load();
@@ -192,236 +78,42 @@ public class Main {
             return;
         }
 
-        if (args != null && args.length > 0) {
-            if (!config.isOEEnabled()) {
-                System.out.println("osumerExpress is disabled.");
-                runBrowser(config, args);
-
-                System.exit(0);
-                return;
-            }
-
-            runUi(config, args, ap);
-        } else {
-            if (GraphicsEnvironment.isHeadless()) {
-                System.out.println(
-                        "Error: Arguments are required to use this application. Otherwise, a graphics environment is required to show the downloader UI.");
-                System.exit(0);
-                return;
-            }
-
-            if (config.isSwitchToBrowserIfWithoutUiArg()) {
-                runBrowser(config, args);
-            } else {
-                runUi(config, args, ap);
-            }
-        }
-    }
-
-    private static void runUi(Config config, String[] args, ArgParser ap) {
-        if (!SockThread.testPortFree(SockThread.PORT)) { // Call background
-                                                         // osumer to work
-            try {
-                Socket socket = new Socket(InetAddress.getLoopbackAddress().getHostName(), SockThread.PORT);
-                socket.setSoTimeout(5000);
-
-                PrintWriter writer = new PrintWriter(socket.getOutputStream());
-                writer.println("RUN " + buildArgStr(args));
-                writer.flush();
-
-                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                String line = reader.readLine();
-                if (line == null || !line.equals("OK")) {
-                    reader.close();
-                    socket.close();
-
-                    System.out.println("Not OK: " + line);
-                    DebugDump dump = new DebugDump(null, null,
-                            "Asking BG osumer to run with args: \"" + buildArgStr(args) + "\"", null, false,
-                            "Could not start up BG osumer sucessfully. Destination did not response \"OK\": " + line);
-                    DumpManager.getInstance().addDump(dump);
-                    ErrorDumpDialog dialog = new ErrorDumpDialog(dump);
-                    dialog.setModal(true);
-                    dialog.setVisible(true);
-                    return;
-                }
-                reader.close();
-                socket.close();
-
-                System.exit(0);
-                return;
-            } catch (IOException e) {
-                e.printStackTrace();
-                DebugDump dump = new DebugDump(null, null, "Opening connection to BG osumer socket", null,
-                        "Could not open socket at 46725 for BG call. Not osumer running at that port?", false, e);
-                DumpManager.getInstance().addDump(dump);
-                ErrorDumpDialog dialog = new ErrorDumpDialog(dump);
-                dialog.setModal(true);
-                dialog.setVisible(true);
-                System.exit(-1);
-                return;
-            }
-        } else {
-            String urlStr = null;
-            for (int i = 0; i < args.length; i++) {
-                if (Osums.isVaildBeatMapUrl(args[i])) {
-                    urlStr = args[i];
-                    break;
-                }
-            }
-
-            boolean runUi = true;
-            if (args.length > 0 && urlStr == null && !ap.isDaemonFlag()) {
-                if (config.isSwitchToBrowserIfWithoutUiArg()) {
-                    System.out.println(
-                            "Configuration specified that switch to browser if an \"-ui\" arugment wasn't specified.");
-
-                    if (runUi = ap.isUiFlag() && !ap.isNoUiFlag()) {
-                        System.out.println("An \"-ui\" argument was specified. Launching UI.");
-                    } else {
-                        System.out
-                                .println("An \"-ui\" argument wasn't specified. Opening the default browser instead.");
-                        runBrowser(config, args);
-                        return;
-                    }
-                } else {
-                    System.out.println("Non-beatmap URL detected.");
-
-                    if (!config.isAutoSwitchBrowser()) {
-                        System.out.println("Auto switch to default browser is off. Nothing to do with such URL.");
-                        return;
-                    } else {
-                        System.out.println("Switching to default browser with the URL.");
-                        runBrowser(config, args);
-                    }
-                }
-            }
-            //Initialize JFX toolkit
-            new JFXPanel();
-
-            TrayIcon icon = new TrayIcon(Toolkit.getDefaultToolkit()
-                    .getImage(UIFrame.class.getResource("/com/github/mob41/osumer/ui/osumerIcon_16px.png")));
-            UIFrame frame = new UIFrame(config, new QueueManager(config), icon);
-
-            if (ap.isDaemonFlag()) {
-                if (!SystemTray.isSupported()) {
-                    JOptionPane.showMessageDialog(null,
-                            "Your operating system does not support System Tray.\nAs a result, you are not able to start osumer from the tray.",
-                            "Warning", JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-                frame.setDaemonMode(true);
-
-                SystemTray tray = SystemTray.getSystemTray();
-
-                icon.addActionListener(new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent arg0) {
-                        frame.setVisible(!frame.isVisible());
-
-                        if (!frame.isVisible()) {
-                            icon.displayMessage("osumer2", "osumer2 is now running in background.",
-                                    TrayIcon.MessageType.INFO);
-                        }
-                    }
-
-                });
-                icon.setToolTip("osumer2");
-
-                try {
-                    tray.add(icon);
-                    icon.displayMessage("osumer2", "osumer2 is now running in background.", TrayIcon.MessageType.INFO);
-                } catch (AWTException e) {
-                    e.printStackTrace();
-                    JOptionPane.showMessageDialog(null,
-                            "Error when adding tray icon: " + e
-                                    + "\nAs a result, you are not able to start osumer from the tray.",
-                            "Warning", JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-            } else {
-                frame.setVisible(true);
-
-                new Thread() {
-                    public void run() {
-                        JOptionPane.showMessageDialog(frame,
-                                "The osumer2 daemon (background process) is not running.\nThis might slow down further osumerExpress downloads.\nNow this process is listening for more queues till it is stopped.\n\nPlease check \"Help\" for more details.",
-                                "Warning", JOptionPane.WARNING_MESSAGE);
-                    }
-                }.start();
-            }
-
-            if (urlStr != null) {
-                frame.addBtQueue(urlStr, false);
-            }
-        }
-    }
-
-    public static void runBrowser(Config config, String[] args) {
-        String argstr = buildArgStr(args);
-        // Run the default browser application
-        if (!GraphicsEnvironment.isHeadless() && Osumer.isWindows()) {
-
-            System.out.println(config.getDefaultBrowser());
-            if (config.getDefaultBrowser() == null || config.getDefaultBrowser().isEmpty()) {
-                System.out.println(config.getDefaultBrowser());
-                JOptionPane.showInputDialog(null,
-                        "No default browser path is specified. Please maunally launch the browser the following arguments:",
-                        "osumer - Automatic browser switching", JOptionPane.INFORMATION_MESSAGE, null, null, argstr);
-                System.exit(-1);
-                return;
-            }
-
-            String browserPath = Installer.getBrowserExePath(config.getDefaultBrowser());
-            System.out.println(browserPath);
-            if (browserPath == null) {
-                JOptionPane.showMessageDialog(null,
-                        "Cannot read browser executable path in registry.\nCannot start default browser application for:\n"
-                                + argstr,
-                        "Configuration Error", JOptionPane.ERROR_MESSAGE);
-                System.exit(-1);
-                return;
-            }
-
-            File file = new File(browserPath.replaceAll("\"", ""));
-            if (!file.exists()) {
-                JOptionPane.showMessageDialog(null,
-                        "The specified browser application does not exist.\nCannot start default browser application for:\n"
-                                + argstr,
-                        "Configuration Error", JOptionPane.ERROR_MESSAGE);
-                System.exit(-1);
-                return;
-            }
-
-            try {
-                Runtime.getRuntime().exec(browserPath + " " + argstr);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            System.exit(0);
-            return;
-        }
-    }
-
-    private static String buildArgStr(String[] args) {
-        String out = "";
-        for (int i = 0; i < args.length; i++) {
-            out += args[i];
-            if (i != args.length - 1) {
-                out += " ";
-            }
-        }
-        return out;
-    }
-
-    private static boolean isUrl(String url) {
+        String uiSuffix = RMI_UI_PORT + "/" + RMI_UI_PATH;
+        String daemonSuffix = RMI_DAEMON_PORT + "/" + RMI_DAEMON_PATH;
+        IUI ui = null;
         try {
-            new URL(url);
-            return true;
-        } catch (MalformedURLException e) {
-            return false;
+            ui = (IUI) Naming.lookup("rmi://localhost:" + uiSuffix); //Find any running UI
+        } catch (Exception e) {
+            //e.printStackTrace();
+        }
+        
+        if (ui == null) {
+            IDaemon d = null;
+            try {
+                long startTime = System.currentTimeMillis();
+                d = (IDaemon) Naming.lookup("rmi://localhost:" + daemonSuffix); //Contact the daemon via RMI
+            } catch (Exception e) {
+                e.printStackTrace();
+                
+                String msg = 
+                        "Could not connect to daemon! Please ensure osumer-daemon is running properly.\n" +
+                        "Instead of starting directly with \"osumer-ui.exe\", please use \"osumer.exe\" to launch osumer.";
+                System.err.println(msg);
+
+                if (!GraphicsEnvironment.isHeadless()) {
+                    JOptionPane.showMessageDialog(null, msg, 
+                            "osumer RMI Connection Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+
+                System.exit(-1);
+                return;
+            }
+            
+            UIFrame frame = new UIFrame(config, d);
+            frame.setVisible(true);
+        } else {
+            //ui.wake();
         }
     }
 
