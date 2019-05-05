@@ -7,9 +7,9 @@ import com.github.mob41.osumer.rmi.IUI;
 
 public class UI extends UnicastRemoteObject implements IUI {
 
-    private final UIFrame frame;
+    private final UIFrame_old frame;
     
-    public UI(UIFrame frame) throws RemoteException {
+    public UI(UIFrame_old frame) throws RemoteException {
         this.frame = frame;
     }
 

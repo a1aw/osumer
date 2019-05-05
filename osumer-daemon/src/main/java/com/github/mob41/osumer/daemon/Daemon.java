@@ -276,4 +276,13 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
         return status;
     }
 
+    @Override
+    public boolean removeQueue(String name) throws RemoteException {
+        Queue queue = queueManager.getQueue(name);
+        if (queue == null) {
+            return false;
+        }
+        return queueManager.removeQueue(queue);
+    }
+
 }

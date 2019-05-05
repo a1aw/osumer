@@ -1,4 +1,4 @@
-package com.github.mob41.osumer.ui;
+package com.github.mob41.osumer.ui.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
+import com.github.mob41.osumer.ui.UIFrame_old;
 import com.github.mob41.osums.io.beatmap.Osums;
 
 import javax.swing.event.ListSelectionEvent;
@@ -33,7 +34,7 @@ public class MultiDownloadDialog extends JDialog {
     /**
      * Create the dialog.
      */
-    public MultiDownloadDialog(UIFrame frame) {
+    public MultiDownloadDialog(UIFrame_old frame) {
         setTitle("Download multiple beatmaps");
         setBounds(100, 100, 459, 379);
         getContentPane().setLayout(new BorderLayout());

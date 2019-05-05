@@ -88,12 +88,20 @@ import com.github.mob41.osumer.exceptions.NoSuchBuildNumberException;
 import com.github.mob41.osumer.exceptions.NoSuchVersionException;
 import com.github.mob41.osumer.queue.QueueStatus;
 import com.github.mob41.osumer.rmi.IDaemon;
+import com.github.mob41.osumer.ui.dialog.BeatmapPreviewDialog;
+import com.github.mob41.osumer.ui.dialog.EditQueueDialog;
+import com.github.mob41.osumer.ui.dialog.GettingStartedDialog;
+import com.github.mob41.osumer.ui.dialog.Legacy_OldSiteParsingDialog;
+import com.github.mob41.osumer.ui.dialog.MultiDownloadDialog;
+import com.github.mob41.osumer.ui.dialog.PreferenceDialog;
+import com.github.mob41.osumer.ui.dialog.ProgressDialog;
+import com.github.mob41.osumer.ui.dialog.ViewDumpDialog;
 import com.github.mob41.osumer.updater.UpdateInfo;
 import com.github.mob41.osumer.updater.Updater;
 import com.github.mob41.osums.io.beatmap.OsuBeatmap;
 import com.github.mob41.osums.io.beatmap.Osums;
 
-public class UIFrame extends JFrame{
+public class UIFrame_old extends JFrame{
 
     /**
      * 
@@ -124,7 +132,7 @@ public class UIFrame extends JFrame{
     /**
      * Create the frame.
      */
-    public UIFrame(Configuration config, IDaemon d) {
+    public UIFrame_old(Configuration config, IDaemon d) {
         
         addWindowListener(new WindowAdapter() {
             @Override
@@ -162,7 +170,7 @@ public class UIFrame extends JFrame{
 
         setTitle("osumer");
         setIconImage(Toolkit.getDefaultToolkit()
-                .getImage(UIFrame.class.getResource("/com/github/mob41/osumer/ui/osumerIcon_32px.png")));
+                .getImage(UIFrame_old.class.getResource("/com/github/mob41/osumer/ui/osumerIcon_32px.png")));
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
         setBounds(100, 100, 883, 578);
@@ -195,8 +203,8 @@ public class UIFrame extends JFrame{
         JMenuItem mntmPreferences = new JMenuItem("Preferences");
         mntmPreferences.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                PreferenceDialog dialog = new PreferenceDialog(config, UIFrame.this);
-                dialog.setLocationRelativeTo(UIFrame.this);
+                PreferenceDialog dialog = new PreferenceDialog(config, UIFrame_old.this);
+                dialog.setLocationRelativeTo(UIFrame_old.this);
                 dialog.setModal(true);
                 dialog.setVisible(true);
             }
@@ -296,7 +304,7 @@ public class UIFrame extends JFrame{
         setContentPane(contentPane);
 
         JLabel lblImg = new JLabel("");
-        lblImg.setIcon(new ImageIcon(UIFrame.class.getResource("/com/github/mob41/osumer/ui/osumerIcon_64px.png")));
+        lblImg.setIcon(new ImageIcon(UIFrame_old.class.getResource("/com/github/mob41/osumer/ui/osumerIcon_64px.png")));
 
         JLabel lblTitle = new JLabel("osumer2");
         lblTitle.setVerticalAlignment(SwingConstants.BOTTOM);
@@ -386,7 +394,7 @@ public class UIFrame extends JFrame{
 
             public void actionPerformed(ActionEvent e) {
                 if (!Osums.isVaildBeatMapUrl(beatmapField.getText())){
-                    JOptionPane.showMessageDialog(UIFrame.this, "Please enter a valid song/beatmap URL.", "Error", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(UIFrame_old.this, "Please enter a valid song/beatmap URL.", "Error", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
                 addQueue(beatmapField.getText(), chckbxShowBeatmapPreview.isSelected());
@@ -408,8 +416,8 @@ public class UIFrame extends JFrame{
         JButton btnOsumerPreferences = new JButton("osumer2 Preferences");
         btnOsumerPreferences.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                PreferenceDialog dialog = new PreferenceDialog(config, UIFrame.this);
-                dialog.setLocationRelativeTo(UIFrame.this);
+                PreferenceDialog dialog = new PreferenceDialog(config, UIFrame_old.this);
+                dialog.setLocationRelativeTo(UIFrame_old.this);
                 dialog.setModal(true);
                 dialog.setVisible(true);
             }
@@ -423,8 +431,8 @@ public class UIFrame extends JFrame{
         JButton btnDownloadAList = new JButton("Download a list of beatmaps");
         btnDownloadAList.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                MultiDownloadDialog d = new MultiDownloadDialog(UIFrame.this);
-                d.setLocationRelativeTo(UIFrame.this);
+                MultiDownloadDialog d = new MultiDownloadDialog(UIFrame_old.this);
+                d.setLocationRelativeTo(UIFrame_old.this);
                 d.setModal(true);
                 d.setVisible(true);
             }
@@ -513,7 +521,7 @@ public class UIFrame extends JFrame{
                 File file = new File(targetFile);
                 c.setSelectedFile(file);
                 
-                int opt = c.showSaveDialog(UIFrame.this);
+                int opt = c.showSaveDialog(UIFrame_old.this);
                 if (opt == JFileChooser.APPROVE_OPTION) {
                     File sf = c.getSelectedFile();
                     targetFile = sf.getAbsolutePath();
@@ -530,7 +538,7 @@ public class UIFrame extends JFrame{
                 File file = new File(targetFolder);
                 c.setSelectedFile(file);
                 
-                int opt = c.showSaveDialog(UIFrame.this);
+                int opt = c.showSaveDialog(UIFrame_old.this);
                 if (opt == JFileChooser.APPROVE_OPTION) {
                     File sf = c.getSelectedFile();
                     targetFolder = sf.getAbsolutePath();
@@ -635,7 +643,7 @@ public class UIFrame extends JFrame{
                 checkUpdate();
                 if (config.isShowGettingStartedOnStartup()) {
                     GettingStartedDialog gsd = new GettingStartedDialog();
-                    gsd.setLocationRelativeTo(UIFrame.this);
+                    gsd.setLocationRelativeTo(UIFrame_old.this);
                     gsd.setModal(true);
                     gsd.setVisible(true);
                 }
@@ -701,13 +709,13 @@ public class UIFrame extends JFrame{
                     if (user == null || user.isEmpty() || pass == null || pass.isEmpty()) {
                         pbd.getLabel().setText("Status: Prompting username and password...");
                         LoginPanel loginPanel = new LoginPanel();
-                        int option = JOptionPane.showOptionDialog(UIFrame.this, loginPanel, "Login to osu!",
+                        int option = JOptionPane.showOptionDialog(UIFrame_old.this, loginPanel, "Login to osu!",
                                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null,
                                 JOptionPane.CANCEL_OPTION);
 
                         if (option == JOptionPane.OK_OPTION) {
                             if (loginPanel.getUsername().isEmpty() || loginPanel.getPassword().isEmpty()) {
-                                JOptionPane.showMessageDialog(UIFrame.this, "Username or password cannot be empty.",
+                                JOptionPane.showMessageDialog(UIFrame_old.this, "Username or password cannot be empty.",
                                         "Error", JOptionPane.ERROR_MESSAGE);
                                 pbd.dispose();
                                 return;
@@ -726,7 +734,7 @@ public class UIFrame extends JFrame{
                         osu.login(user, pass);
                     } catch (DebuggableException e) {
                         e.printStackTrace();
-                        JOptionPane.showMessageDialog(UIFrame.this, "Error logging in:\n" + e.getDump().getMessage(),
+                        JOptionPane.showMessageDialog(UIFrame_old.this, "Error logging in:\n" + e.getDump().getMessage(),
                                 "Error", JOptionPane.ERROR_MESSAGE);
                         pbd.dispose();
                         return;
@@ -739,7 +747,7 @@ public class UIFrame extends JFrame{
                         map = osu.getBeatmapInfo(modUrl);
                     } catch (DebuggableException e) {
                         e.printStackTrace();
-                        JOptionPane.showMessageDialog(UIFrame.this,
+                        JOptionPane.showMessageDialog(UIFrame_old.this,
                                 "Error getting beatmap info:\n" + e.getDump().getMessage(), "Error",
                                 JOptionPane.ERROR_MESSAGE);
                         pbd.dispose();
@@ -751,7 +759,7 @@ public class UIFrame extends JFrame{
                 }
             }.start();
 
-            pbd.setLocationRelativeTo(UIFrame.this);
+            pbd.setLocationRelativeTo(UIFrame_old.this);
             pbd.setModal(true);
             pbd.setVisible(true);
 
@@ -760,7 +768,7 @@ public class UIFrame extends JFrame{
             }
             
             BeatmapPreviewDialog bpd = new BeatmapPreviewDialog(map);
-            bpd.setLocationRelativeTo(UIFrame.this);
+            bpd.setLocationRelativeTo(UIFrame_old.this);
             bpd.setModal(true);
             bpd.setVisible(true);
 
@@ -862,7 +870,7 @@ public class UIFrame extends JFrame{
                 }
             }.start();
 
-            pbd.setLocationRelativeTo(UIFrame.this);
+            pbd.setLocationRelativeTo(UIFrame_old.this);
             pbd.setModal(true);
             pbd.setVisible(true);
             
@@ -917,13 +925,13 @@ public class UIFrame extends JFrame{
                 } catch (NoSuchVersionException e){
                     lblUpdateStatus.setForeground(Color.RED);
                     lblUpdateStatus.setText("No current version in the selected branch. See dump.");
-                    JOptionPane.showMessageDialog(UIFrame.this, "We don't have version " + Osumer.OSUMER_VERSION + " in the current update branch\n\nPlease try another update branch (snapshot, beta, stable).", "osumer - Version not available", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(UIFrame_old.this, "We don't have version " + Osumer.OSUMER_VERSION + " in the current update branch\n\nPlease try another update branch (snapshot, beta, stable).", "osumer - Version not available", JOptionPane.INFORMATION_MESSAGE);
                     checkingUpdate = false;
                     return;
                 } catch (NoSuchBuildNumberException e){
                     lblUpdateStatus.setForeground(Color.RED);
                     lblUpdateStatus.setText("This version has a invalid build number. See dump");
-                    JOptionPane.showMessageDialog(UIFrame.this, 
+                    JOptionPane.showMessageDialog(UIFrame_old.this, 
                             "We don't have build number greater or equal to " + Osumer.OSUMER_BUILD_NUM + " in version " + Osumer.OSUMER_VERSION + ".\n" +
                             "If you are using a modified/development osumer,\n"
                             + " you can just ignore this message.\n" +
@@ -935,7 +943,7 @@ public class UIFrame extends JFrame{
                     e.printStackTrace();
                     lblUpdateStatus.setForeground(Color.RED);
                     lblUpdateStatus.setText("Could not connect to update server.");
-                    JOptionPane.showMessageDialog(UIFrame.this, "Could not connect to update server.", "osumer - Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(UIFrame_old.this, "Could not connect to update server.", "osumer - Error", JOptionPane.ERROR_MESSAGE);
                     checkingUpdate = false;
                     return;
                 }
@@ -943,7 +951,7 @@ public class UIFrame extends JFrame{
                 if (verInfo == null) {
                     lblUpdateStatus.setForeground(Color.RED);
                     lblUpdateStatus.setText("Could not obtain update info.");
-                    JOptionPane.showMessageDialog(UIFrame.this, "Could not obtain update info.", "osumer - Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(UIFrame_old.this, "Could not obtain update info.", "osumer - Error", JOptionPane.ERROR_MESSAGE);
                     checkingUpdate = false;
                     return;
                 }
@@ -966,7 +974,7 @@ public class UIFrame extends JFrame{
                 int option;
                 String desc = verInfo.getDescription();
                 if (desc == null){
-                    option = JOptionPane.showOptionDialog(UIFrame.this,
+                    option = JOptionPane.showOptionDialog(UIFrame_old.this,
                             "New " +
                             (verInfo.isUpgradedVersion() ? "upgrade" : "update") +
                             " available! New version:\n" + verInfo.getVersion() +
@@ -974,7 +982,7 @@ public class UIFrame extends JFrame{
                             "-b" + verInfo.getBuildNum() + "\n\n" +
                             "Do you want to update it now?", "Update available", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, JOptionPane.NO_OPTION);
                 } else {
-                    option = JOptionPane.showOptionDialog(UIFrame.this,
+                    option = JOptionPane.showOptionDialog(UIFrame_old.this,
                             "New " +
                             (verInfo.isUpgradedVersion() ? "upgrade" : "update") +
                             " available! New version:\n" + verInfo.getVersion() +
@@ -983,7 +991,7 @@ public class UIFrame extends JFrame{
                             "Do you want to update it now?", "Update available", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Yes", "No", "Description/Changelog"}, JOptionPane.NO_OPTION);
                     
                     if (option == 2){
-                        option = JOptionPane.showOptionDialog(UIFrame.this, new TextPanel(desc), "Update description/change-log", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, 0);
+                        option = JOptionPane.showOptionDialog(UIFrame_old.this, new TextPanel(desc), "Update description/change-log", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, 0);
                     }
                 }
                 

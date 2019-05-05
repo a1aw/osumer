@@ -1,4 +1,4 @@
-package com.github.mob41.osumer.ui;
+package com.github.mob41.osumer.ui.dialog;
 
 import java.awt.Color;
 import java.awt.EventQueue;

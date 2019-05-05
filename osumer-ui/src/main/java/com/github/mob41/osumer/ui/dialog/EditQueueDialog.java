@@ -26,7 +26,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.github.mob41.osumer.ui;
+package com.github.mob41.osumer.ui.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -76,16 +76,18 @@ public class EditQueueDialog extends JDialog {
         btnCancelAndRemove = new JButton("Cancel and remove queue");
         btnCancelAndRemove.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int index = table.getSelectedRow();
-                if (index != -1) {
-                    /*
-                    String name = (String) table.getValueAt(index, 0);
-                    Queue queue = mgr.getQueue(name);
-
-                    if (queue != null) {
-                        mgr.removeQueue(queue);
+                int[] indexes = table.getSelectedRows();
+                if (indexes != null && indexes.length > 0) {
+                    for (int i = 0; i < indexes.length; i++) {
+                        String name = (String) table.getValueAt(indexes[i], 0);
+                        try {
+                            d.removeQueue(name);
+                        } catch (RemoteException e1) {
+                            e1.printStackTrace();
+                            JOptionPane.showMessageDialog(EditQueueDialog.this, "Could not connect to daemon to remove queue:\n" + e1.getMessage(), "osumer Daemon RMI Error",
+                                    JOptionPane.ERROR_MESSAGE);
+                        }
                     }
-                    */
                     refresh();
                 } else {
                     btnCancelAndRemove.setEnabled(false);
@@ -155,7 +157,7 @@ public class EditQueueDialog extends JDialog {
             queues = d.getQueues();
         } catch (RemoteException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Could not connect to daemon to fetch queues data:\n" + e.getMessage(), "Daemon Synchronization Error",
+            JOptionPane.showMessageDialog(EditQueueDialog.this, "Could not connect to daemon to fetch queues data:\n" + e.getMessage(), "Daemon Synchronization Error",
                     JOptionPane.ERROR_MESSAGE);
             return;
         }

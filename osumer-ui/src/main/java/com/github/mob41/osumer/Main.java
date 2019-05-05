@@ -40,7 +40,7 @@ import javax.swing.UIManager;
 import com.github.mob41.osumer.rmi.IDaemon;
 import com.github.mob41.osumer.rmi.IUI;
 import com.github.mob41.osumer.ui.UI;
-import com.github.mob41.osumer.ui.UIFrame;
+import com.github.mob41.osumer.ui.UIFrame_old;
 
 public class Main {
 
@@ -126,7 +126,7 @@ public class Main {
             try {
                 LocateRegistry.createRegistry(RMI_UI_PORT);
 
-                UIFrame frame = new UIFrame(config, d);
+                UIFrame_old frame = new UIFrame_old(config, d);
                 ui = new UI(frame);
                 
                 Naming.bind("rmi://localhost:" + uiSuffix, ui);
