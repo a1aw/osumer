@@ -203,31 +203,37 @@ public class QueueCell extends JPanel {
             break;
         case Downloader.COMPLETED:
             lblStatus.setForeground(Color.GREEN);
-
+            
+            lblElapsed.setText("Elapsed: ---");
             lblEta.setText("ETA: ---");
             lblStatus.setText("Status: Completed.");
             break;
         case Downloader.ERROR:
+            lblElapsed.setText("Elapsed: ---");
             lblEta.setText("ETA: ---");
             lblStatus.setForeground(Color.RED);
             lblStatus.setText("Status: Error occurred while downloading.");
             break;
         case Downloader.PAUSED:
+            lblElapsed.setText("Elapsed: ---");
             lblEta.setText("ETA: ---");
             lblStatus.setForeground(Color.BLUE);
             lblStatus.setText("Status: Paused.");
             break;
         case Downloader.CANCELLED:
+            lblElapsed.setText("Elapsed: ---");
             lblEta.setText("ETA: ---");
             lblStatus.setForeground(Color.BLACK);
             lblStatus.setText("Status: Cancelled.");
             break;
         case -1:
+            lblElapsed.setText("Elapsed: ---");
             lblEta.setText("ETA: ---");
             lblStatus.setForeground(Color.BLACK);
             lblStatus.setText("Status: Waiting for queuing...");
             break;
         default:
+            lblElapsed.setText("Elapsed: ---");
             lblEta.setText("ETA: ---");
             lblStatus.setForeground(Color.RED);
             lblStatus.setText("Status: Unknown status.");
@@ -237,13 +243,13 @@ public class QueueCell extends JPanel {
     private String secToString(long sec) {
         long min = 0;
         if (sec >= 60) {
-            min = (long) ((float) sec / 60);
+            min = (long) (sec / 60.0);
             sec -= min * 60;
         }
 
         long hr = 0;
         if (min >= 60) {
-            hr = (long) ((float) min / 60);
+            hr = (long) (min / 60.0);
             min -= hr * 60;
         }
 

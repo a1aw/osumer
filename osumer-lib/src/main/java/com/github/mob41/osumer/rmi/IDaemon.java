@@ -15,6 +15,8 @@ public interface IDaemon extends Remote{
     
     public boolean addQueue(String url, int downloadAction, String targetFileOrFolder) throws RemoteException;
     
+    public boolean removeQueue(String name) throws RemoteException;
+    
     public QueueStatus[] getQueues() throws RemoteException;
     
     public void trayIconDisplayMessage(String caption, String text, MessageType msgType) throws RemoteException;

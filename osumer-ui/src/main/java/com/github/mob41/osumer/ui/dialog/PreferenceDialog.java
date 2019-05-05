@@ -26,7 +26,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.github.mob41.osumer.ui;
+package com.github.mob41.osumer.ui.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -92,6 +92,8 @@ import com.github.mob41.osumer.exceptions.NoBuildsForVersionException;
 import com.github.mob41.osumer.exceptions.NoSuchBuildNumberException;
 import com.github.mob41.osumer.exceptions.NoSuchVersionException;
 import com.github.mob41.osumer.installer.Installer;
+import com.github.mob41.osumer.ui.TextPanel;
+import com.github.mob41.osumer.ui.UIFrame_old;
 import com.github.mob41.osumer.updater.UpdateInfo;
 import com.github.mob41.osumer.updater.Updater;
 
@@ -148,7 +150,7 @@ public class PreferenceDialog extends JDialog {
     private JLabel lblStatusValue;
     private JButton btnInstallOsumerexpress;
 
-    private UIFrame uiFrame;
+    private UIFrame_old uiFrame;
     private JTextField downloadFolderField;
     private JRadioButton rdbtnPutDownloadsTo_1;
     private JRadioButton rdbtnPutDownloadsTo;
@@ -170,7 +172,7 @@ public class PreferenceDialog extends JDialog {
     /**
      * Create the dialog.
      */
-    public PreferenceDialog(Configuration config, UIFrame uiFrame) {
+    public PreferenceDialog(Configuration config, UIFrame_old uiFrame) {
         this.config = config;
         this.updater = new Updater(config);
         this.installer = new Installer();
