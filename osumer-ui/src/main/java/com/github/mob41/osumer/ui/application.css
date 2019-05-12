@@ -1,0 +1,7 @@
+.text-field {
+	-fx-skin: null; /* To fix the annoying TextFieldSkin NullPointerException temporary */
+}
+
+.hyperlink:visited {
+	-fx-text-fill: -fx-accent;
+}

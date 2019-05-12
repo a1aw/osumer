@@ -1,4 +1,4 @@
-package com.github.mob41.osumer.ui;
+package com.github.mob41.osumer.ui.old;
 
 import javax.swing.JPanel;
 import javax.imageio.ImageIO;

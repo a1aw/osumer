@@ -4,30 +4,24 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 import com.github.mob41.osumer.rmi.IUI;
+import com.github.mob41.osumer.ui.old.UIFrame_old;
 
 public class UI extends UnicastRemoteObject implements IUI {
 
-    private final UIFrame_old frame;
+    private final AppMain appMain;
     
-    public UI(UIFrame_old frame) throws RemoteException {
-        this.frame = frame;
+    public UI(AppMain appMain) throws RemoteException {
+    	this.appMain = appMain;
     }
 
     @Override
     public void wake() throws RemoteException {
-        //TODO Use configuration
-        frame.checkUpdate();
-        
-        frame.setVisible(true);
-        frame.setLocationRelativeTo(null);
-        frame.setAlwaysOnTop(true);
-        frame.requestFocus();
-        frame.setAlwaysOnTop(false);
+    	appMain.wake();
     }
 
     @Override
     public void onQueueStatusUpdate() throws RemoteException {
-        
+        appMain.onQueueStatusUpdate();
     }
 
 }

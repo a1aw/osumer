@@ -40,7 +40,7 @@ public class Queue {
 
     private final String name;
 
-    private final BufferedImage thumb;
+    private final String thumbUrl;
 
     private long startTime = 0;
 
@@ -48,11 +48,11 @@ public class Queue {
 
     private final QueueAction[] afterActions;
 
-    public Queue(String name, Downloader downloader, BufferedImage thumb, QueueAction[] beforeActions,
+    public Queue(String name, Downloader downloader, String thumbUrl, QueueAction[] beforeActions,
             QueueAction[] afterActions) {
         this.downloader = downloader;
         this.name = name;
-        this.thumb = thumb;
+        this.thumbUrl = thumbUrl;
         this.beforeActions = beforeActions;
         this.afterActions = afterActions;
     }
@@ -91,7 +91,7 @@ public class Queue {
         setStartTime(System.nanoTime());
         downloader.download();
 
-        downloader.deleteObservers();
+        //downloader.deleteObservers();
         downloader.addObserver(new Observer() {
 
             @Override
@@ -118,8 +118,8 @@ public class Queue {
         downloader.deleteObservers();
     }
 
-    public BufferedImage getThumb() {
-        return thumb;
+    public String getThumbUrl() {
+    	return thumbUrl;
     }
 
     public long getStartTime() {

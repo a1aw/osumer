@@ -14,7 +14,10 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
@@ -33,6 +36,7 @@ import com.github.mob41.osumer.queue.actions.BeatmapImportAction;
 import com.github.mob41.osumer.queue.actions.BeforeSoundAction;
 import com.github.mob41.osumer.queue.actions.CustomImportAction;
 import com.github.mob41.osumer.rmi.IDaemon;
+import com.github.mob41.osumer.rmi.IUI;
 import com.github.mob41.osums.io.beatmap.OsuBeatmap;
 import com.github.mob41.osums.io.beatmap.Osums;
 
@@ -50,11 +54,14 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
     private final Osums osums;
     
     private final TrayIcon trayIcon;
+    
+    private final List<IUI> uis;
 
     protected Daemon(Configuration config) throws RemoteException {
         this.config = config;
         queueManager = new QueueManager(config);
         osums = new Osums();
+        uis = new ArrayList<IUI>();
         
         trayIcon = new TrayIcon(Toolkit.getDefaultToolkit()
                 .getImage(Daemon.class.getResource("/com/github/mob41/osumer/daemon/trayIcon.png")));
@@ -99,6 +106,7 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
     
     @Override
     public boolean addQueue(String url, int downloadAction, String targetFileOrFolder) throws RemoteException {
+    	System.out.println("Requested to use " + url);
         if (config.getCheckUpdateFreq() == Configuration.CHECK_UPDATE_FREQ_EVERY_ACT) {
             //TODO do check update
             //checkUpdate();
@@ -132,7 +140,8 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
         }
         
         try {
-            osums.login(user, pass);
+        	System.out.println("Login");
+            System.out.println(osums.login(user, pass));
         } catch (DebuggableException e) {
             e.printStackTrace();
             //JOptionPane.showMessageDialog(UIFrame.this, "Error logging in:\n" + e.getDump().getMessage(),
@@ -153,16 +162,7 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
             return false;
         }
         
-        String modUrl = map.getThumbUrl();
-        URL thumbUrl = null;
-        try {
-            thumbUrl = new URL("http:" + modUrl);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return false;
-        }
-
-        BufferedImage thumb = null;
+        String thumbUrl = "http:" + map.getThumbUrl();
         
         /*
         URLConnection conn = null;
@@ -187,7 +187,7 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
         
         URL downloadUrl = null;
         try {
-            downloadUrl = new URL("http://osu.ppy.sh" + map.getDwnUrl());
+            downloadUrl = new URL("https://osu.ppy.sh" + map.getDwnUrl());
         } catch (MalformedURLException e1) {
             e1.printStackTrace();
             //JOptionPane.showMessageDialog(UIFrame.this, "Error validating download URL:\n" + e1, "Error",
@@ -197,8 +197,14 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
         String tmpdir = System.getProperty("java.io.tmpdir");
 
         final String mapName = map.getName();
-        OsuDownloader dwn = new OsuDownloader(tmpdir,
-                map.getDwnUrl().substring(3, map.getDwnUrl().length()) + " " + map.getName(), osums, downloadUrl);
+        System.out.println("Add download");
+        
+        String fileName = 
+        		map.getDwnUrl().substring(3, map.getDwnUrl().length()) + 
+        		" " + 
+        		map.getName().replaceAll("[^A-Za-z0-9()\\[\\]]", "");
+        
+        OsuDownloader dwn = new OsuDownloader(tmpdir, fileName, osums, downloadUrl);
         
         QueueAction importAction;
         if (downloadAction == -1) {
@@ -224,20 +230,42 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
                 importAction
         };
         
-        boolean added = queueManager.addQueue(new Queue(map.getName(), dwn, thumb, beforeActions, afterActions));
+        boolean added = queueManager.addQueue(new Queue(map.getName(), dwn, thumbUrl, beforeActions, afterActions));
         
         if (added){
             trayIcon.displayMessage("Downloading \"" + mapName + "\"", "osumerExpress is downloading the requested beatmap!", TrayIcon.MessageType.INFO);
+            dwn.addObserver(new Observer() {
+    			
+    			@Override
+    			public void update(Observable o, Object arg) {
+    				requestAllUiUpdateQueues();
+    			}
+    		});
         } else {
             trayIcon.displayMessage("Could not add \"" + mapName + "\" to queue", "It has already in queue/downloading or completed.", TrayIcon.MessageType.INFO);
         }
         
         //tableModel.fireTableDataChanged();
-        
+
+        requestAllUiUpdateQueues();
         return true;
     }
 
-    @Override
+    private void requestAllUiUpdateQueues() {
+		List<IUI> copy = new ArrayList<IUI>(uis);
+		for (IUI ui : copy) {
+			try {
+				ui.onQueueStatusUpdate();
+			} catch (RemoteException e) {
+				e.printStackTrace();
+				if (uis.contains(ui)) {
+					uis.remove(ui);
+				}
+			}
+		}
+	}
+
+	@Override
     public void reloadConfiguration() throws RemoteException, IOException{
         try {
             config.load();
@@ -269,7 +297,7 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
                     : -1;
             long eta = allTimeForDownloading - elapsedTime;
             
-            s = new QueueStatus(q.getName(), dwn.getFileName(), null, (int) dwn.getProgress(), eta, elapsedTime, dwn.getStatus());
+            s = new QueueStatus(q.getName(), dwn.getFileName(), q.getThumbUrl(), (int) dwn.getProgress(), eta, elapsedTime, dwn.getStatus());
             status[i] = s;
         }
         
@@ -282,7 +310,30 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
         if (queue == null) {
             return false;
         }
-        return queueManager.removeQueue(queue);
+        boolean result = queueManager.removeQueue(queue);
+        if (result) {
+            requestAllUiUpdateQueues();
+        }
+        return result;
     }
+
+	@Override
+	public void test() throws RemoteException {
+		System.out.println("testing great!");
+		
+	}
+
+	@Override
+	public void registerUi(IUI ui) throws RemoteException {
+		System.out.println("Registered");
+		uis.add(ui);
+	}
+
+	@Override
+	public void unregisterUi(IUI ui) throws RemoteException {
+		if (uis.contains(ui)) {
+			uis.remove(ui);
+		}
+	}
 
 }

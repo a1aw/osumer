@@ -1,4 +1,4 @@
-package com.github.mob41.osumer.ui.dialog;
+package com.github.mob41.osumer.ui.old.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;

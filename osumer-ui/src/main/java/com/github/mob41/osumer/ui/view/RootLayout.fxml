@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.mob41.osumer.ui.MainController">
+   <top>
+      <MenuBar BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+                  <MenuItem fx:id="preferencesMenuItem" mnemonicParsing="false" text="Preferences" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" text="Check for updates" />
+                  <Menu mnemonicParsing="false" text="Debug">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="View dumps" />
+                      <MenuItem mnemonicParsing="false" text="Locate configuration" />
+                    </items>
+                  </Menu>
+                  <SeparatorMenuItem mnemonicParsing="false" />
+              <MenuItem mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+                  <MenuItem mnemonicParsing="false" text="Documentation" />
+                  <MenuItem mnemonicParsing="false" text="Post an issue" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+   <center>
+      <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <center>
+            <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+              <tabs>
+                <Tab text="Quick Start">
+                     <content>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <VBox minHeight="-Infinity" minWidth="-Infinity" prefHeight="94.0" prefWidth="600.0">
+                                 <children>
+                                    <BorderPane>
+                                       <center>
+                                          <TextField fx:id="beatmapUrlText" BorderPane.alignment="CENTER">
+                                             <BorderPane.margin>
+                                                <Insets />
+                                             </BorderPane.margin>
+                                          </TextField>
+                                       </center>
+                                       <left>
+                                          <Label text="Beatmap Link/ID:" BorderPane.alignment="CENTER">
+                                             <BorderPane.margin>
+                                                <Insets left="16.0" right="8.0" />
+                                             </BorderPane.margin>
+                                             <font>
+                                                <Font size="17.0" />
+                                             </font>
+                                          </Label>
+                                       </left>
+                                       <VBox.margin>
+                                          <Insets />
+                                       </VBox.margin>
+                                       <right>
+                                          <Button fx:id="beatmapDwnBtn" mnemonicParsing="false" text="Download" BorderPane.alignment="CENTER">
+                                             <BorderPane.margin>
+                                                <Insets bottom="8.0" left="8.0" right="16.0" top="8.0" />
+                                             </BorderPane.margin>
+                                          </Button>
+                                       </right>
+                                    </BorderPane>
+                                    <Label text="Specify a beatmap link or ID to start downloading. (e.g. 320118 or https://osu.ppy.sh/s/320118/)">
+                                       <VBox.margin>
+                                          <Insets bottom="16.0" left="16.0" right="16.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                 </children>
+                              </VBox>
+                              <Accordion>
+                                <panes>
+                                  <TitledPane animated="false" text="Beatmap Import Settings">
+                                       <content>
+                                          <GridPane>
+                                            <columnConstraints>
+                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="398.0" minWidth="10.0" prefWidth="326.0" />
+                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="287.0" minWidth="10.0" prefWidth="254.0" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                            </rowConstraints>
+                                             <children>
+                                                <RadioButton fx:id="rdBtnUseDefault" mnemonicParsing="false" selected="true" text="Use default settings in Preferences">
+                                                   <toggleGroup>
+                                                      <ToggleGroup fx:id="beatmapImportSettings" />
+                                                   </toggleGroup>
+                                                </RadioButton>
+                                                <RadioButton fx:id="rdBtnDwnImport" mnemonicParsing="false" text="Download and Import (Recommended)" toggleGroup="$beatmapImportSettings" GridPane.rowIndex="1" />
+                                                <RadioButton fx:id="rdBtnDwnOsuSong" mnemonicParsing="false" text="Download to osu! Song folder (Press F5 in osu! to load)" toggleGroup="$beatmapImportSettings" GridPane.rowIndex="2" />
+                                                <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                   <children>
+                                                      <RadioButton fx:id="rdBtnDwnFile" mnemonicParsing="false" text="Download to file..." toggleGroup="$beatmapImportSettings" />
+                                                      <Hyperlink text="Select..." />
+                                                   </children>
+                                                </HBox>
+                                                <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnIndex="1">
+                                                   <children>
+                                                      <RadioButton fx:id="rdBtnDwnFolder" mnemonicParsing="false" text="Download to folder..." toggleGroup="$beatmapImportSettings" />
+                                                      <Hyperlink text="Select..." />
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </GridPane>
+                                       </content>
+                                  </TitledPane>
+                                    <TitledPane animated="false" text="Miscellaneous">
+                                       <content>
+                                          <VBox prefHeight="200.0" prefWidth="100.0">
+                                             <children>
+                                                <CheckBox fx:id="showPreviewCheckbox" mnemonicParsing="false" selected="true" text="Show beatmap preview" />
+                                             </children>
+                                          </VBox>
+                                       </content>
+                                    </TitledPane>
+                                </panes>
+                              </Accordion>
+                           </children>
+                        </VBox>
+                     </content>
+                </Tab>
+                <Tab text="Queues">
+                     <content>
+                        <ScrollPane prefHeight="200.0" prefWidth="200.0">
+                           <content>
+                              <VBox fx:id="queuesBox" />
+                           </content>
+                        </ScrollPane>
+                     </content>
+                </Tab>
+              </tabs>
+            </TabPane>
+         </center>
+         <top>
+            <GridPane BorderPane.alignment="CENTER">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <FlowPane prefWidth="259.0">
+                     <children>
+                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                           <FlowPane.margin>
+                              <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                           </FlowPane.margin>
+                           <image>
+                              <Image url="@../image/osumerIcon_32px.png" />
+                           </image>
+                        </ImageView>
+                        <Label text="osumer">
+                           <font>
+                              <Font name="Tahoma" size="24.0" />
+                           </font>
+                           <textFill>
+                              <LinearGradient endX="1.0" endY="1.0">
+                                 <stops>
+                                    <Stop color="#ff1b00" />
+                                    <Stop color="#ff9500" offset="1.0" />
+                                 </stops>
+                              </LinearGradient>
+                           </textFill>
+                        </Label>
+                        <Label text="2" textFill="RED">
+                           <font>
+                              <Font size="27.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </FlowPane>
+                  <Label fx:id="updateText" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="296.0" text="Checking for updates..." GridPane.columnIndex="1" />
+               </children>
+               <BorderPane.margin>
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+               </BorderPane.margin>
+            </GridPane>
+         </top>
+      </BorderPane>
+   </center>
+</BorderPane>

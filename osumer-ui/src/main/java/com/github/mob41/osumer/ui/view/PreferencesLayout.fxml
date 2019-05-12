@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="480.0" prefWidth="840.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.mob41.osumer.ui.PreferencesController">
+   <center>
+      <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+        <tabs>
+          <Tab text="Main">
+               <content>
+                  <VBox spacing="16.0">
+                     <children>
+                        <TitledPane collapsible="false" prefWidth="718.0" text="Getting Started">
+                           <content>
+                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="766.0" spacing="8.0">
+                                 <children>
+                                    <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                                       <children>
+                                          <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../image/osumerIcon_32px.png" />
+                                             </image>
+                                          </ImageView>
+                                          <Label text="osumer">
+                                 				<textFill>
+                                    				<LinearGradient endX="1.0" endY="1.0">
+                                       				<stops>
+                                          				<Stop color="#ff1b00" />
+                                          				<Stop color="#ff9500" offset="1.0" />
+                                       				</stops>
+                                    				</LinearGradient>
+                                 				</textFill>
+                                             <font>
+                                                <Font size="27.0" />
+                                             </font>
+                                             <HBox.margin>
+                                                <Insets left="8.0" />
+                                             </HBox.margin>
+                                          </Label>
+                                          <Label text="2" textFill="RED">
+                                             <font>
+                                                <Font size="31.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </HBox>
+                                    <CheckBox fx:id="showGettingStartedStartupCheckbox" mnemonicParsing="false" text="Show getting started on startup" />
+                                 </children>
+                              </VBox>
+                           </content>
+                        </TitledPane>
+                        <TitledPane collapsible="false" prefHeight="81.0" prefWidth="766.0" text="Skin">
+                           <content>
+                              <HBox alignment="CENTER" spacing="16.0">
+                                 <children>
+                                    <RadioButton fx:id="rdBtnSkinLight" mnemonicParsing="false" text="Light">
+                                       <toggleGroup>
+                                          <ToggleGroup fx:id="skinGp" />
+                                       </toggleGroup>
+                                    </RadioButton>
+                                    <RadioButton fx:id="rdBtnSkinDark" mnemonicParsing="false" selected="true" text="Dark" toggleGroup="$skinGp" />
+                                 </children>
+                              </HBox>
+                           </content>
+                        </TitledPane>
+                     </children>
+                     <padding>
+                        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+                     </padding>
+                  </VBox>
+               </content>
+          </Tab>
+          <Tab text="osumerExpress">
+               <content>
+                  <VBox spacing="16.0">
+                     <padding>
+                        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+                     </padding>
+                     <children>
+                        <HBox alignment="CENTER" prefWidth="766.0" spacing="16.0">
+                           <children>
+                              <TitledPane collapsible="false" prefHeight="150.0" prefWidth="350.0" text="Server Priority">
+                                 <content>
+                                    <HBox alignment="CENTER" prefWidth="350.0">
+                                       <children>
+                                          <VBox alignment="CENTER" spacing="8.0">
+                                             <padding>
+                                                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                                             </padding>
+                                             <children>
+                                                <Hyperlink text="Add" />
+                                                <Hyperlink text="Rmv" />
+                                             </children>
+                                          </VBox>
+                                          <ScrollPane hbarPolicy="NEVER" prefWidth="200.0">
+                                             <content>
+                                                <ListView prefWidth="200.0" />
+                                             </content>
+                                          </ScrollPane>
+                                          <VBox alignment="CENTER" spacing="8.0">
+                                             <padding>
+                                                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                                             </padding>
+                                             <children>
+                                                <Hyperlink text="Up" />
+                                                <Hyperlink text="Dwn" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </HBox>
+                                 </content></TitledPane>
+                              <TitledPane collapsible="false" prefHeight="150.0" prefWidth="350.0" text="osu! Account Credentials">
+                                 <content>
+                                    <VBox prefWidth="350.0" spacing="8.0">
+                                       <padding>
+                                          <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                                       </padding>
+                                       <children>
+                                          <Label fx:id="credentialsStatus" text="No credentials saved." textFill="WHITE" />
+                                          <Button fx:id="addCredentialsBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Add/Change Credentials" />
+                                          <Button fx:id="removeCredentialsBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Remove Credentials" />
+                                       </children>
+                                    </VBox>
+                                 </content></TitledPane>
+                           </children>
+                        </HBox>
+                        <TitledPane collapsible="false" prefHeight="91.0" prefWidth="766.0" text="Settings">
+                           <content>
+                              <VBox spacing="8.0">
+                                 <children>
+                                    <CheckBox fx:id="disabledOeCheckbox" mnemonicParsing="false" text="Disabled (Forward all URLs to browser directly)" />
+                                    <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="8.0">
+                                       <children>
+                                          <Label text="Browser to forward to:" textFill="WHITE" />
+                                          <ComboBox fx:id="browsersBox" prefHeight="31.0" prefWidth="200.0" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                                 </padding>
+                              </VBox>
+                           </content></TitledPane>
+                     </children>
+                  </VBox>
+               </content>
+          </Tab>
+            <Tab text="Overlay">
+               <content>
+                  <VBox spacing="16.0">
+                     <padding>
+                        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+                     </padding>
+                     <children>
+                        <TitledPane collapsible="false" prefHeight="70.0" prefWidth="766.0" text="osumer2 Overlay">
+                           <content>
+                              <CheckBox fx:id="enableOverlayCheckbox" mnemonicParsing="false" text="Enable overlay in osu!" />
+                           </content></TitledPane>
+                        <TitledPane collapsible="false" prefHeight="99.0" prefWidth="766.0" text="Settings">
+                           <content>
+                              <Button fx:id="startOsuWithOverlayBtn" mnemonicParsing="false" text="Start osu! with overlay (Requires osu! to be closed first)" />
+                           </content></TitledPane>
+                     </children>
+                  </VBox>
+               </content>
+            </Tab>
+            <Tab text="Parser">
+               <content>
+                  <VBox spacing="16.0">
+                     <padding>
+                        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+                     </padding>
+                     <children>
+                        <TitledPane collapsible="false" prefHeight="83.0" prefWidth="766.0" text="Switch between old/new website parser">
+                           <content>
+                              <HBox alignment="CENTER" spacing="16.0">
+                                 <children>
+                                    <RadioButton fx:id="oldParserCheckbox" mnemonicParsing="false" text="Use old parser (since v1, only compatible with old.ppy.sh)">
+                                       <toggleGroup>
+                                          <ToggleGroup fx:id="parserGp" />
+                                       </toggleGroup>
+                                    </RadioButton>
+                                    <RadioButton fx:id="newParserCheckbox" mnemonicParsing="false" selected="true" text="Use new parser (Parses with the latest osu! website)" toggleGroup="$parserGp" />
+                                 </children>
+                              </HBox>
+                           </content></TitledPane>
+                     </children>
+                  </VBox>
+               </content>
+            </Tab>
+            <Tab text="Downloading">
+               <content>
+                  <VBox spacing="16.0">
+                     <padding>
+                        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+                     </padding>
+                     <children>
+                        <TitledPane collapsible="false" text="Beatmap Importing Settings">
+                           <content>
+                              <VBox spacing="8.0">
+                                 <padding>
+                                    <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                                 </padding>
+                                 <children>
+                                    <RadioButton fx:id="rdBtnImportLaunchOsu" mnemonicParsing="false" text="Launch osu! automatically to import beatmap (Default &amp; Recommended)">
+                                       <toggleGroup>
+                                          <ToggleGroup fx:id="importGp" />
+                                       </toggleGroup>
+                                    </RadioButton>
+                                    <RadioButton fx:id="rdBtnImportOsuSongs" mnemonicParsing="false" text="Put downloads to osu! Songs folder (Press F5 in osu! to import)" toggleGroup="$importGp" />
+                                    <RadioButton fx:id="rdBtnImportFolder" mnemonicParsing="false" text="Put downloads to a folder" toggleGroup="$importGp" />
+                                    <HBox alignment="CENTER_LEFT" spacing="8.0">
+                                       <children>
+                                          <Label text="Folder:" textFill="WHITE" />
+                                          <TextField fx:id="importFolderText" />
+                                       </children>
+                                       <VBox.margin>
+                                          <Insets />
+                                       </VBox.margin>
+                                       <padding>
+                                          <Insets left="32.0" right="8.0" />
+                                       </padding>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                           </content></TitledPane>
+                        <TitledPane collapsible="false" prefHeight="121.0" prefWidth="808.0" text="Queuing">
+                           <content>
+                              <VBox prefHeight="11.0" prefWidth="766.0" spacing="8.0">
+                                 <children>
+                                    <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="8.0">
+                                       <children>
+                                          <Label text="Simultaneous Running Queues:" textFill="WHITE" />
+                                          <Spinner fx:id="simRunningQueues" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="8.0">
+                                       <children>
+                                          <Label text="Next Queue Checking Delay:" textFill="WHITE" />
+                                          <Spinner fx:id="nextQueueCheckDelay" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                                 </padding>
+                              </VBox>
+                           </content></TitledPane>
+                     </children>
+                  </VBox>
+               </content>
+            </Tab>
+            <Tab text="Updater">
+               <content>
+                  <VBox spacing="16.0">
+                     <padding>
+                        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+                     </padding>
+                     <children>
+                        <HBox alignment="CENTER" spacing="16.0">
+                           <children>
+                              <TitledPane collapsible="false" prefHeight="71.0" prefWidth="350.0" text="Update Branch">
+                                 <content>
+                                    <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="8.0">
+                                       <children>
+                                          <RadioButton fx:id="rdBtnUpdateStable" mnemonicParsing="false" text="Stable">
+                                             <toggleGroup>
+                                                <ToggleGroup fx:id="updateGp" />
+                                             </toggleGroup>
+                                          </RadioButton>
+                                          <RadioButton fx:id="rdBtnUpdateBeta" mnemonicParsing="false" text="Beta" toggleGroup="$updateGp" />
+                                          <RadioButton fx:id="rdBtnUpdateSnapshot" mnemonicParsing="false" selected="true" text="Snapshot" toggleGroup="$updateGp" />
+                                       </children>
+                                    </HBox>
+                                 </content></TitledPane>
+                              <TitledPane collapsible="false" prefHeight="70.0" prefWidth="350.0" text="Update Checking Frequency">
+                                 <content>
+                                    <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="8.0">
+                                       <children>
+                                          <RadioButton fx:id="rdBtnFreqStartup" mnemonicParsing="false" text="Every startup">
+                                             <toggleGroup>
+                                                <ToggleGroup fx:id="freqGp" />
+                                             </toggleGroup>
+                                          </RadioButton>
+                                          <RadioButton fx:id="rdBtnFreqActivation" mnemonicParsing="false" selected="true" text="Every activation" toggleGroup="$freqGp" />
+                                          <RadioButton fx:id="rdBtnFreqNever" mnemonicParsing="false" text="Never" toggleGroup="$freqGp" />
+                                       </children>
+                                    </HBox>
+                                 </content></TitledPane>
+                           </children>
+                        </HBox>
+                        <TitledPane collapsible="false" prefHeight="70.0" prefWidth="718.0" text="Version Comparison Algorithm">
+                           <content>
+                              <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="8.0">
+                                 <children>
+                                    <RadioButton fx:id="rdBtnAlgoPerVersionBranch" mnemonicParsing="false" text="Per version in selected branch">
+                                       <toggleGroup>
+                                          <ToggleGroup fx:id="versionCompareGp" />
+                                       </toggleGroup>
+                                    </RadioButton>
+                                    <RadioButton fx:id="rdBtnAlgoLatestVerBranch" mnemonicParsing="false" text="Latest version (per branch)" toggleGroup="$versionCompareGp" />
+                                    <RadioButton fx:id="rdBtnAlgoLatestVerOverall" mnemonicParsing="false" text="Latest version (overall)" toggleGroup="$versionCompareGp" />
+                                 </children>
+                              </HBox>
+                           </content></TitledPane>
+                        <TitledPane collapsible="false" prefHeight="109.0" prefWidth="808.0" text="Settings">
+                           <content>
+                              <VBox alignment="CENTER" spacing="8.0">
+                                 <children>
+                                    <HBox alignment="CENTER" spacing="8.0">
+                                       <children>
+                                          <CheckBox fx:id="autoCriticalUpdatesCheckbox" mnemonicParsing="false" text="Automatically accept critical updates" />
+                                          <CheckBox fx:id="autoDownloadApplyPatchesCheckbox" mnemonicParsing="false" text="Automatically download and apply patches" />
+                                       </children>
+                                    </HBox>
+                                    <Button fx:id="checkForUpdatesBtn" mnemonicParsing="false" text="Check for updates now" />
+                                 </children>
+                              </VBox>
+                           </content></TitledPane>
+                     </children>
+                  </VBox>
+               </content>
+            </Tab>
+            <Tab text="Miscellaneous">
+               <content>
+                  <VBox prefHeight="200.0" prefWidth="100.0" spacing="16.0">
+                     <padding>
+                        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+                     </padding>
+                     <children>
+                        <TitledPane collapsible="false" prefHeight="111.0" prefWidth="718.0" text="Sound/Tone">
+                           <content>
+                              <VBox prefHeight="200.0" prefWidth="100.0" spacing="8.0">
+                                 <children>
+                                    <CheckBox fx:id="enableToneBeforeDwnCheckbox" mnemonicParsing="false" text="Enable tone before download" />
+                                    <BorderPane>
+                                       <left>
+                                          <Label fx:id="toneBeforeDwnFileText" text="File:" textFill="WHITE" BorderPane.alignment="CENTER">
+                                             <BorderPane.margin>
+                                                <Insets left="32.0" />
+                                             </BorderPane.margin>
+                                             <padding>
+                                                <Insets right="8.0" />
+                                             </padding>
+                                          </Label>
+                                       </left>
+                                       <center>
+                                          <TextField fx:id="toneBeforeDwnText" BorderPane.alignment="CENTER" />
+                                       </center>
+                                       <right>
+                                          <Button fx:id="toneBeforeDwnSelectBtn" mnemonicParsing="false" text="Select" BorderPane.alignment="CENTER">
+                                             <BorderPane.margin>
+                                                <Insets left="8.0" />
+                                             </BorderPane.margin>
+                                          </Button>
+                                       </right>
+                                    </BorderPane>
+                                    <CheckBox fx:id="enableToneAfterDwnCheckbox" mnemonicParsing="false" text="Enable tone after download" />
+                                    <BorderPane>
+                                       <left>
+                                          <Label fx:id="toneAfterDwnFileText" text="File:" textFill="WHITE" BorderPane.alignment="CENTER">
+                                             <BorderPane.margin>
+                                                <Insets left="32.0" right="8.0" />
+                                             </BorderPane.margin>
+                                          </Label>
+                                       </left>
+                                       <center>
+                                          <TextField fx:id="toneAfterDwnText" BorderPane.alignment="CENTER" />
+                                       </center>
+                                       <right>
+                                          <Button fx:id="toneAfterDwnSelectBtn" mnemonicParsing="false" text="Select" BorderPane.alignment="CENTER">
+                                             <BorderPane.margin>
+                                                <Insets left="8.0" />
+                                             </BorderPane.margin>
+                                          </Button>
+                                       </right>
+                                    </BorderPane>
+                                 </children>
+                              </VBox>
+                           </content></TitledPane>
+                     </children>
+                  </VBox>
+               </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+   </center>
+   <top>
+      <HBox BorderPane.alignment="CENTER">
+         <children>
+            <Label text="Preferences">
+               <font>
+                  <Font size="27.0" />
+               </font>
+            </Label>
+         </children>
+         <BorderPane.margin>
+            <Insets bottom="8.0" left="16.0" right="8.0" top="8.0" />
+         </BorderPane.margin>
+      </HBox>
+   </top>
+   <bottom>
+      <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <items>
+          <Button fx:id="saveBtn" mnemonicParsing="false" text="Save" />
+            <Button fx:id="applyBtn" mnemonicParsing="false" text="Apply" />
+            <Button fx:id="cancelBtn" mnemonicParsing="false" text="Cancel" />
+        </items>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+      </ToolBar>
+   </bottom>
+</BorderPane>
