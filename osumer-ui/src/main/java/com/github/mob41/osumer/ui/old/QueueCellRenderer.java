@@ -26,32 +26,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.github.mob41.osumer.ui;
+package com.github.mob41.osumer.ui.old;
 
 import java.awt.Component;
 
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
-import com.github.mob41.osums.io.beatmap.ResultBeatmap;
+import com.github.mob41.osumer.queue.QueueStatus;
 
-public class ResultBeatmapCellRenderer implements TableCellRenderer {
+public class QueueCellRenderer implements TableCellRenderer {
 
-    private ResultBeatmapCell comp;
+    private QueueCell comp;
 
-    public ResultBeatmapCellRenderer() {
-        comp = new ResultBeatmapCell();
+    public QueueCellRenderer(QueueCellTableModel model) {
+        comp = new QueueCell(model);
     }
 
     @Override
-    public Component getTableCellRendererComponent(JTable arg0, Object arg1, boolean arg2, boolean arg3, int arg4, int arg5) {
-        comp.updateData((ResultBeatmap) arg1);
+    public Component getTableCellRendererComponent(JTable arg0, Object arg1, boolean arg2, boolean arg3, int arg4,
+            int arg5) {
+        comp.updateData((QueueStatus) arg1);
         if (arg2) {
             comp.setBackground(arg0.getSelectionBackground());
         } else {
             comp.setBackground(arg0.getBackground());
         }
         return comp;
+
     }
 
 }

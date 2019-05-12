@@ -1,4 +1,4 @@
-package com.github.mob41.osumer.ui.dialog;
+package com.github.mob41.osumer.ui.old.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
-import com.github.mob41.osumer.ui.UIFrame_old;
+import com.github.mob41.osumer.ui.old.UIFrame_old;
 import com.github.mob41.osums.io.beatmap.Osums;
 
 import javax.swing.event.ListSelectionEvent;

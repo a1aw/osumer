@@ -26,34 +26,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.github.mob41.osumer.ui;
+package com.github.mob41.osumer.ui.old;
 
 import java.awt.Component;
 
+import javax.swing.AbstractCellEditor;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
 import com.github.mob41.osumer.queue.QueueStatus;
 
-public class QueueCellRenderer implements TableCellRenderer {
+public class QueueCellEditor extends AbstractCellEditor implements TableCellEditor {
 
     private QueueCell comp;
 
-    public QueueCellRenderer(QueueCellTableModel model) {
+    public QueueCellEditor(QueueCellTableModel model) {
         comp = new QueueCell(model);
     }
 
     @Override
-    public Component getTableCellRendererComponent(JTable arg0, Object arg1, boolean arg2, boolean arg3, int arg4,
-            int arg5) {
-        comp.updateData((QueueStatus) arg1);
-        if (arg2) {
-            comp.setBackground(arg0.getSelectionBackground());
+    public Object getCellEditorValue() {
+        return null;
+    }
+
+    @Override
+    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+        comp.updateData((QueueStatus) value);
+        if (isSelected) {
+            comp.setBackground(table.getSelectionBackground());
         } else {
-            comp.setBackground(arg0.getBackground());
+            comp.setBackground(table.getBackground());
         }
         return comp;
-
     }
 
 }

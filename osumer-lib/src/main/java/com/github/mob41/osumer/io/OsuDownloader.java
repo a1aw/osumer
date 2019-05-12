@@ -36,6 +36,7 @@ import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
 import com.github.mob41.organdebug.DebugDump;
 import com.github.mob41.organdebug.DumpManager;
@@ -116,6 +117,7 @@ public class OsuDownloader extends Downloader {
     }
 
     private void error() {
+    	System.out.println("Errored!!");
         status = ERROR;
         reportState();
     }
@@ -125,6 +127,7 @@ public class OsuDownloader extends Downloader {
             status = DOWNLOADING;
             Thread thread = new Thread(this);
             thread.start();
+            reportState();
         }
     }
 
@@ -135,6 +138,7 @@ public class OsuDownloader extends Downloader {
 
         try {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            System.out.println("URL: " + url);
 
             conn.setRequestProperty("Range", "bytes=" + downloaded + "-");
 
@@ -145,8 +149,9 @@ public class OsuDownloader extends Downloader {
             }
 
             conn.connect();
-
-            if (conn.getResponseCode() / 100 != 2) {
+            
+            int code = conn.getResponseCode() / 100;
+            if (code < 2 && code > 3) {
                 error();
             }
 
@@ -167,7 +172,6 @@ public class OsuDownloader extends Downloader {
             in = conn.getInputStream();
 
             while (status == DOWNLOADING) {
-
                 byte[] buffer = size - downloaded > MAX_BUFFER_SIZE ? new byte[MAX_BUFFER_SIZE]
                         : new byte[size - downloaded];
                 int read = in.read(buffer);
@@ -185,6 +189,8 @@ public class OsuDownloader extends Downloader {
                 reportState();
             }
         } catch (IOException e) {
+        	System.out.println("Exception!");
+        	e.printStackTrace();
             DumpManager.getInstance().addDump(new DebugDump(null, "(Try&catch try)", "Error reporting and debug dump",
                     "(Try&catch finally)", "Error when downloading", false, e));
             error();

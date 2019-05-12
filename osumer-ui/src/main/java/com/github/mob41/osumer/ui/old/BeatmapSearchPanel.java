@@ -1,4 +1,4 @@
-package com.github.mob41.osumer.ui;
+package com.github.mob41.osumer.ui.old;
 
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -25,9 +25,9 @@ import javax.swing.table.DefaultTableModel;
 
 import com.github.mob41.organdebug.exceptions.DebuggableException;
 import com.github.mob41.osumer.Configuration;
-import com.github.mob41.osumer.ui.dialog.IndexingProgressDialog;
-import com.github.mob41.osumer.ui.dialog.ProgressDialog;
-import com.github.mob41.osumer.ui.dialog.SearchingProgressDialog;
+import com.github.mob41.osumer.ui.old.dialog.IndexingProgressDialog;
+import com.github.mob41.osumer.ui.old.dialog.ProgressDialog;
+import com.github.mob41.osumer.ui.old.dialog.SearchingProgressDialog;
 import com.github.mob41.osums.indexing.OnlineIndexManager;
 import com.github.mob41.osums.io.beatmap.Osums;
 import com.github.mob41.osums.io.beatmap.ResultBeatmap;

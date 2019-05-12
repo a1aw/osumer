@@ -26,40 +26,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.github.mob41.osumer.ui;
+package com.github.mob41.osumer.ui.old;
 
 import java.awt.Component;
 
-import javax.swing.AbstractCellEditor;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTable;
-import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
-import com.github.mob41.osumer.queue.QueueStatus;
+import com.github.mob41.osums.io.beatmap.ResultBeatmap;
 
-public class QueueCellEditor extends AbstractCellEditor implements TableCellEditor {
+public class ResultBeatmapCellRenderer implements TableCellRenderer {
 
-    private QueueCell comp;
+    private ResultBeatmapCell comp;
 
-    public QueueCellEditor(QueueCellTableModel model) {
-        comp = new QueueCell(model);
+    public ResultBeatmapCellRenderer() {
+        comp = new ResultBeatmapCell();
     }
 
     @Override
-    public Object getCellEditorValue() {
-        return null;
-    }
-
-    @Override
-    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-        comp.updateData((QueueStatus) value);
-        if (isSelected) {
-            comp.setBackground(table.getSelectionBackground());
+    public Component getTableCellRendererComponent(JTable arg0, Object arg1, boolean arg2, boolean arg3, int arg4, int arg5) {
+        comp.updateData((ResultBeatmap) arg1);
+        if (arg2) {
+            comp.setBackground(arg0.getSelectionBackground());
         } else {
-            comp.setBackground(table.getBackground());
+            comp.setBackground(arg0.getBackground());
         }
         return comp;
     }

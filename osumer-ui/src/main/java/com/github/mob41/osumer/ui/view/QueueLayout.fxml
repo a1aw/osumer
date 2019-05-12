@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<FlowPane prefHeight="120.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.mob41.osumer.ui.QueueController">
+   <children>
+      <ImageView fx:id="image" disable="true" fitHeight="120.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true" />
+      <BorderPane minHeight="25.0" prefHeight="120.0" prefWidth="440.0">
+         <FlowPane.margin>
+            <Insets />
+         </FlowPane.margin>
+         <center>
+            <BorderPane>
+               <center>
+                  <VBox prefHeight="120.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <Label id="queueTitle" fx:id="title" text="Title">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Label>
+                        <GridPane>
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label id="queueEta" fx:id="remain" text="Remaining Time:" GridPane.rowIndex="1" />
+                              <Label id="queueElapsed" fx:id="elapsed" text="Elapsed Time:" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Label id="queueStatus" fx:id="status" text="Status:" />
+                              <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1">
+                                 <children>
+                                    <Hyperlink id="queueStartLink" fx:id="startLink" disable="true" text="Start" />
+                                    <Hyperlink id="queuePauseLink" fx:id="pauseLink" disable="true" text="Pause" />
+                                    <Hyperlink id="queueStopLink" fx:id="stopLink" disable="true" text="Stop" />
+                                    <Hyperlink id="queueCancelLink" fx:id="cancelLink" disable="true" text="Cancel" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </GridPane>
+                     </children>
+                  </VBox>
+               </center>
+               <padding>
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+               </padding>
+               <bottom>
+                  <ProgressBar fx:id="progressBar" minHeight="25.0" prefHeight="25.0" prefWidth="411.0" progress="0.0" BorderPane.alignment="CENTER" />
+               </bottom>
+            </BorderPane>
+         </center>
+         <bottom>
+            <Separator prefWidth="200.0" BorderPane.alignment="CENTER" />
+         </bottom>
+      </BorderPane>
+   </children>
+</FlowPane>

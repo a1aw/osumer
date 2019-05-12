@@ -26,7 +26,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.github.mob41.osumer.ui;
+package com.github.mob41.osumer.ui.old;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -88,14 +88,14 @@ import com.github.mob41.osumer.exceptions.NoSuchBuildNumberException;
 import com.github.mob41.osumer.exceptions.NoSuchVersionException;
 import com.github.mob41.osumer.queue.QueueStatus;
 import com.github.mob41.osumer.rmi.IDaemon;
-import com.github.mob41.osumer.ui.dialog.BeatmapPreviewDialog;
-import com.github.mob41.osumer.ui.dialog.EditQueueDialog;
-import com.github.mob41.osumer.ui.dialog.GettingStartedDialog;
-import com.github.mob41.osumer.ui.dialog.Legacy_OldSiteParsingDialog;
-import com.github.mob41.osumer.ui.dialog.MultiDownloadDialog;
-import com.github.mob41.osumer.ui.dialog.PreferenceDialog;
-import com.github.mob41.osumer.ui.dialog.ProgressDialog;
-import com.github.mob41.osumer.ui.dialog.ViewDumpDialog;
+import com.github.mob41.osumer.ui.old.dialog.BeatmapPreviewDialog;
+import com.github.mob41.osumer.ui.old.dialog.EditQueueDialog;
+import com.github.mob41.osumer.ui.old.dialog.GettingStartedDialog;
+import com.github.mob41.osumer.ui.old.dialog.Legacy_OldSiteParsingDialog;
+import com.github.mob41.osumer.ui.old.dialog.MultiDownloadDialog;
+import com.github.mob41.osumer.ui.old.dialog.PreferenceDialog;
+import com.github.mob41.osumer.ui.old.dialog.ProgressDialog;
+import com.github.mob41.osumer.ui.old.dialog.ViewDumpDialog;
 import com.github.mob41.osumer.updater.UpdateInfo;
 import com.github.mob41.osumer.updater.Updater;
 import com.github.mob41.osums.io.beatmap.OsuBeatmap;
@@ -170,7 +170,7 @@ public class UIFrame_old extends JFrame{
 
         setTitle("osumer");
         setIconImage(Toolkit.getDefaultToolkit()
-                .getImage(UIFrame_old.class.getResource("/com/github/mob41/osumer/ui/osumerIcon_32px.png")));
+                .getImage(UIFrame_old.class.getResource("/com/github/mob41/osumer/ui/image/osumerIcon_32px.png")));
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
         setBounds(100, 100, 883, 578);
@@ -304,7 +304,7 @@ public class UIFrame_old extends JFrame{
         setContentPane(contentPane);
 
         JLabel lblImg = new JLabel("");
-        lblImg.setIcon(new ImageIcon(UIFrame_old.class.getResource("/com/github/mob41/osumer/ui/osumerIcon_64px.png")));
+        lblImg.setIcon(new ImageIcon(UIFrame_old.class.getResource("/com/github/mob41/osumer/ui/image/osumerIcon_64px.png")));
 
         JLabel lblTitle = new JLabel("osumer2");
         lblTitle.setVerticalAlignment(SwingConstants.BOTTOM);

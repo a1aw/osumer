@@ -26,7 +26,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.github.mob41.osumer.ui.dialog;
+package com.github.mob41.osumer.ui.old.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -73,7 +73,7 @@ public class BeatmapPreviewDialog extends JDialog {
     public BeatmapPreviewDialog(OsuBeatmap map) {
         setTitle("Beatmap information");
         setIconImage(Toolkit.getDefaultToolkit()
-                .getImage(BeatmapPreviewDialog.class.getResource("/com/github/mob41/osumer/ui/osumerIcon_32px.png")));
+                .getImage(BeatmapPreviewDialog.class.getResource("/com/github/mob41/osumer/ui/image/osumerIcon_32px.png")));
         setBounds(100, 100, 589, 303);
         getContentPane().setLayout(new BorderLayout());
         contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
