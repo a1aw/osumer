@@ -150,12 +150,12 @@ public class UIFrame_old extends JFrame{
         setLocationRelativeTo(null);
         
         //TODO: Remove this once new parser implemented
-        if (!config.isLegacyDisableOldSiteBeatmapRedirectingStartupNotification() || !config.isLegacyEnableOldSiteBeatmapRedirecting()) {
+        if (!config.isUseOldParser()) {
             //Blocking thread if not enabled
             
             Legacy_OldSiteParsingDialog dialog = new Legacy_OldSiteParsingDialog();
             dialog.setLocationRelativeTo(this);
-            if (!config.isLegacyEnableOldSiteBeatmapRedirecting()) {
+            if (!config.isUseOldParser()) {
                 dialog.setModal(true);
                 dialog.setVisible(true);
             } else {
@@ -740,7 +740,7 @@ public class UIFrame_old extends JFrame{
                         return;
                     }
 
-                    String modUrl = config.isLegacyEnableOldSiteBeatmapRedirecting() ? url.replace("osu.ppy.sh", "old.ppy.sh") : url;
+                    String modUrl = config.isUseOldParser() ? url.replace("osu.ppy.sh", "old.ppy.sh") : url;
 
                     pbd.getLabel().setText("Status: Obtaining beatmap information...");
                     try {

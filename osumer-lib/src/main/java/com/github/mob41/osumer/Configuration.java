@@ -65,6 +65,10 @@ public class Configuration {
     private static final String KEY_UPDATE_SOURCE = "updateSource";
 
     private static final int KEY_UPDATE_SOURCE_DEFAULT_VALUE = Osumer.updateSourceStrToInt(Osumer.OSUMER_BRANCH);
+    
+    private static final String KEY_UI_SKIN = "uiSkin";
+    
+    private static final String KEY_UI_SKIN_DEFAULT_VALUE = "dark";
 
     private static final String KEY_DEFAULT_BROWSER = "defaultBrowser";
 
@@ -85,6 +89,10 @@ public class Configuration {
     private static final String KEY_NO_UI_ARG_SWITCH_BROWSER = "switchToBrowserIfWithoutUiArg";
 
     private static final boolean KEY_NO_UI_ARG_SWITCH_BROWSER_DEFAULT_VALUE = false;
+    
+    private static final String KEY_OVERLAY_ENABLED = "overlayEnabled";
+    
+    private static final boolean KEY_OVERLAY_ENABLED_DEFAULT_VALUE = true;
 
     private static final String KEY_AUTO_SWITCH_BROWSER = "autoSwitchBrowser";
 
@@ -171,13 +179,9 @@ public class Configuration {
     
     private static final String KEY_SELECTED_TONE_AFTER_DOWNLOAD_DEFAULT_VALUE = "C:\\Windows\\Media\\Windows Background.wav";
     
-    private static final String KEY_LEGACY_ENABLE_OLDSITE_BEATMAP_REDIRECTING = "legacy_enable_oldsite_beatmap_redirecting";
+    private static final String KEY_USE_OLD_PARSER = "useOldParser";
     
-    private static final boolean KEY_LEGACY_ENABLE_OLDSITE_BEATMAP_REDIRECTING_DEFAULT_VALUE = true;
-    
-    private static final String KEY_LEGACY_DISABLE_OLDSITE_BEATMAP_REDIRECTING_STARTUP_NOTIFICATION = "legacy_disable_oldsite_beatmap_redirecting_startup_notification";
-    
-    private static final boolean KEY_LEGACY_DISABLE_OLDSITE_BEATMAP_REDIRECTING_STARTUP_NOTIFICATION_DEFAULT_VALUE = false;
+    private static final boolean KEY_USE_OLD_PARSER_DEFAULT_VALUE = true;
 
     private JSONObject json;
 
@@ -458,29 +462,39 @@ public class Configuration {
         return json.getBoolean(KEY_ENABLE_TONE_AFTER_DOWNLOAD);
     }
     
-    public void setLegacyEnableOldSiteBeatmapRedirecting(boolean enabled){
-        json.put(KEY_LEGACY_ENABLE_OLDSITE_BEATMAP_REDIRECTING, enabled);
+    public void setUseOldParser(boolean enabled){
+        json.put(KEY_USE_OLD_PARSER, enabled);
     }
     
-    public boolean isLegacyEnableOldSiteBeatmapRedirecting() {
-        return json.getBoolean(KEY_LEGACY_ENABLE_OLDSITE_BEATMAP_REDIRECTING);
+    public boolean isUseOldParser() {
+        return json.getBoolean(KEY_USE_OLD_PARSER);
     }
     
-    public void setLegacyDisableOldSiteBeatmapRedirectingStartupNotification(boolean enabled){
-        json.put(KEY_LEGACY_DISABLE_OLDSITE_BEATMAP_REDIRECTING_STARTUP_NOTIFICATION, enabled);
+    public void setUiSkin(String skin) {
+    	json.put(KEY_UI_SKIN, skin);
     }
     
-    public boolean isLegacyDisableOldSiteBeatmapRedirectingStartupNotification() {
-        return json.getBoolean(KEY_LEGACY_DISABLE_OLDSITE_BEATMAP_REDIRECTING_STARTUP_NOTIFICATION);
+    public String getUiSkin() {
+    	return json.getString(KEY_UI_SKIN);
+    }
+    
+    public void setOverlayEnabled(boolean enabled) {
+    	json.put(KEY_OVERLAY_ENABLED, enabled);
+    }
+    
+    public boolean isOverlayEnabled() {
+    	return json.getBoolean(KEY_OVERLAY_ENABLED);
     }
 
     private static boolean fillJson(JSONObject json) {
         boolean modified = false;
         modified |= ifNullPutValue(json, KEY_UPDATE_SOURCE, KEY_UPDATE_SOURCE_DEFAULT_VALUE);
+        modified |= ifNullPutValue(json, KEY_UI_SKIN, KEY_UI_SKIN_DEFAULT_VALUE);
         modified |= ifNullPutValue(json, KEY_DEFAULT_BROWSER, KEY_DEFAULT_BROWSER_DEFAULT_VALUE);
         modified |= ifNullPutValue(json, KEY_DEFAULT_OPEN_BEATMAP_ACTION, KEY_DEFAULT_OPEN_BEATMAP_ACTION_DEFAULT_VALUE);
         modified |= ifNullPutValue(json, KEY_DEFAULT_BEATMAP_SAVE_LOCATION, KEY_DEFAULT_BEATMAP_SAVE_LOCATION_DEFAULT_VALUE);
         modified |= ifNullPutValue(json, KEY_OE_ENABLED, KEY_OE_ENABLED_DEFAULT_VALUE);
+        modified |= ifNullPutValue(json, KEY_OVERLAY_ENABLED, KEY_OVERLAY_ENABLED_DEFAULT_VALUE);
         modified |= ifNullPutValue(json, KEY_NO_UI_ARG_SWITCH_BROWSER, KEY_NO_UI_ARG_SWITCH_BROWSER_DEFAULT_VALUE);
         modified |= ifNullPutValue(json, KEY_AUTO_SWITCH_BROWSER, KEY_AUTO_SWITCH_BROWSER_DEFAULT_VALUE);
         modified |= ifNullPutValue(json, KEY_GETTING_STARTED_STARTUP, KEY_GETTING_STARTED_STARTUP_DEFAULT_VALUE);
@@ -511,8 +525,7 @@ public class Configuration {
         modified |= ifNullPutValue(json, KEY_ENABLE_TONE_AFTER_DOWNLOAD, KEY_ENABLE_TONE_AFTER_DOWNLOAD_DEFAULT_VALUE);
         modified |= ifNullPutValue(json, KEY_SELECTED_TONE_AFTER_DOWNLOAD,
                 KEY_SELECTED_TONE_AFTER_DOWNLOAD_DEFAULT_VALUE);
-        modified |= ifNullPutValue(json, KEY_LEGACY_ENABLE_OLDSITE_BEATMAP_REDIRECTING, KEY_LEGACY_ENABLE_OLDSITE_BEATMAP_REDIRECTING_DEFAULT_VALUE);
-        modified |= ifNullPutValue(json, KEY_LEGACY_DISABLE_OLDSITE_BEATMAP_REDIRECTING_STARTUP_NOTIFICATION, KEY_LEGACY_DISABLE_OLDSITE_BEATMAP_REDIRECTING_STARTUP_NOTIFICATION_DEFAULT_VALUE);
+        modified |= ifNullPutValue(json, KEY_USE_OLD_PARSER, KEY_USE_OLD_PARSER_DEFAULT_VALUE);
         return modified;
     }
 

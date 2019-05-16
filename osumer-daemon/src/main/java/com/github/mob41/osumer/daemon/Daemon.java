@@ -149,7 +149,7 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
             return false;
         }
         
-        String modBUrl = config.isLegacyEnableOldSiteBeatmapRedirecting() ? url.replace("osu.ppy.sh", "old.ppy.sh") : url;
+        String modBUrl = config.isUseOldParser() ? url.replace("osu.ppy.sh", "old.ppy.sh") : url;
         OsuBeatmap map;
         
         try {
@@ -334,6 +334,11 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
 		if (uis.contains(ui)) {
 			uis.remove(ui);
 		}
+	}
+
+	@Override
+	public void startOsuWithOverlay() throws RemoteException {
+		OsumerOverlay.startWithOverlay();
 	}
 
 }

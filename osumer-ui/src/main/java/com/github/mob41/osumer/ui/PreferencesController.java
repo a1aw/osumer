@@ -1,17 +1,49 @@
 package com.github.mob41.osumer.ui;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.rmi.RemoteException;
+import java.text.NumberFormat;
+import java.text.ParsePosition;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.UnaryOperator;
 
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+
+import com.github.mob41.organdebug.exceptions.DebuggableException;
+import com.github.mob41.osumer.Configuration;
+import com.github.mob41.osumer.installer.Installer;
+import com.github.mob41.osumer.rmi.IDaemon;
+import com.github.mob41.osumer.ui.old.dialog.PreferenceDialog;
+
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
+import javafx.scene.control.Alert.AlertType;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.util.converter.IntegerStringConverter;
 
 public class PreferencesController implements Initializable {
 	
@@ -70,6 +102,9 @@ public class PreferencesController implements Initializable {
 	@FXML
 	private Button startOsuWithOverlayBtn;
 	
+	@FXML
+	private CheckBox autoCloseOsumerAfterOverlayCheckbox;
+	
 	//
 	// Parser
 	//
@@ -101,6 +136,9 @@ public class PreferencesController implements Initializable {
 	
 	@FXML
 	private Spinner<Integer> nextQueueCheckDelay;
+	
+	@FXML
+	private Button dwnFolderSelectBtn;
 	
 	//
 	// Updater
@@ -169,10 +207,472 @@ public class PreferencesController implements Initializable {
 	
 	@FXML
 	private Button toneAfterDwnSelectBtn;
+	
+	private IDaemon d;
 
+	private Configuration config;
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		saveBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				save();
+				Stage stage = (Stage) saveBtn.getScene().getWindow();
+				stage.close();
+			}
+		});
 		
+		applyBtn.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				save();
+			}
+		});
+		
+		cancelBtn.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				Stage stage = (Stage) cancelBtn.getScene().getWindow();
+				stage.close();
+			}
+		});
+		
+		startOsuWithOverlayBtn.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				try {
+					d.startOsuWithOverlay();
+					
+					if (autoCloseOsumerAfterOverlayCheckbox.isSelected()) {
+				        Platform.exit();
+				        System.exit(0);
+					}
+				} catch (RemoteException e) {
+					e.printStackTrace();
+            		Alert alert = new Alert(AlertType.ERROR, "Could not call daemon to start osu!:\n" + e.getMessage(), ButtonType.OK);
+            		alert.showAndWait();
+				}
+			}
+		});
+		
+		toneBeforeDwnSelectBtn.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				Stage stage = (Stage) toneBeforeDwnSelectBtn.getScene().getWindow();
+				
+				FileChooser fileChooser = new FileChooser();
+				
+				File sf = fileChooser.showOpenDialog(stage);
+				
+                if (sf != null) {
+                	if (sf.exists() && sf.isFile()) {
+                        toneBeforeDwnText.setText(sf.getAbsolutePath());
+                	} else {
+                		Alert alert = new Alert(AlertType.ERROR, "You must select a file that exists.", ButtonType.OK);
+                		alert.showAndWait();
+                    }
+                }
+			}
+		});
+		
+		
+		toneAfterDwnSelectBtn.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				Stage stage = (Stage) toneAfterDwnSelectBtn.getScene().getWindow();
+				
+				FileChooser fileChooser = new FileChooser();
+				
+				File sf = fileChooser.showOpenDialog(stage);
+				
+                if (sf != null) {
+                	if (sf.exists() && sf.isFile()) {
+                        toneAfterDwnText.setText(sf.getAbsolutePath());
+                	} else {
+                		Alert alert = new Alert(AlertType.ERROR, "You must select a file that exists.", ButtonType.OK);
+                		alert.showAndWait();
+                    }
+                }
+			}
+		});
+        
+        dwnFolderSelectBtn.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				Stage stage = (Stage) dwnFolderSelectBtn.getScene().getWindow();
+				
+				DirectoryChooser chooser = new DirectoryChooser();
+				
+				File file = new File(importFolderText.getText());
+                if (file.exists() && file.isDirectory()) {
+                	chooser.setInitialDirectory(file);
+                }
+                
+                File sf = chooser.showDialog(stage);
+
+                if (sf != null) {
+                	if (sf.exists() && sf.isDirectory()) {
+                    	importFolderText.setText(sf.getAbsolutePath());
+                	} else {
+                		Alert alert = new Alert(AlertType.ERROR, "You must select a folder that exists.", ButtonType.OK);
+                		alert.showAndWait();
+                    }
+                }
+			}
+		});
+        
+        NumberFormat format = NumberFormat.getIntegerInstance();
+        UnaryOperator<TextFormatter.Change> filter = c -> {
+            if (c.isContentChange()) {
+                ParsePosition parsePosition = new ParsePosition(0);
+                // NumberFormat evaluates the beginning of the text
+                format.parse(c.getControlNewText(), parsePosition);
+                if (parsePosition.getIndex() == 0 ||
+                        parsePosition.getIndex() < c.getControlNewText().length()) {
+                    // reject parsing the complete text failed
+                    return null;
+                }
+            }
+            return c;
+        };
+        
+        TextFormatter<Integer> numFormatter0 = new TextFormatter<Integer>(
+                new IntegerStringConverter(), 0, filter);
+        TextFormatter<Integer> numFormatter1 = new TextFormatter<Integer>(
+                new IntegerStringConverter(), 0, filter);
+        SpinnerValueFactory<Integer> valueFactory0 = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 16, 0);
+        SpinnerValueFactory<Integer> valueFactory1 = new SpinnerValueFactory.IntegerSpinnerValueFactory(50, 30000, 0);
+        simRunningQueues.setValueFactory(valueFactory0);
+        nextQueueCheckDelay.setValueFactory(valueFactory1);
+        simRunningQueues.getEditor().setTextFormatter(numFormatter0);
+        nextQueueCheckDelay.getEditor().setTextFormatter(numFormatter1);
+	}
+	
+	private void save() {
+		setConfig();
+		applyChanges();
+	}
+	
+	private void applyChanges() {
+		FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(AppMain.class.getResource("view/ProgressDialogLayout.fxml"));
+        DialogPane progressPane = null;
+        try {
+			progressPane = (DialogPane) loader.load();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+        ProgressDialogController progressController = loader.getController();
+        
+        progressController.getHeaderText().setText("Applying Changes");
+        progressController.getStatusText().setText("Status: Writing configuration...");
+        progressController.getProgressBar().setProgress(-1);
+        
+        Alert progressDialog = new Alert(AlertType.NONE);
+        progressDialog.initStyle(StageStyle.UTILITY);
+        progressDialog.initModality(Modality.APPLICATION_MODAL);
+        progressDialog.setTitle("");
+        progressDialog.setDialogPane(progressPane);
+        progressDialog.getButtonTypes().add(ButtonType.CANCEL);
+        
+        Thread thread = new Thread() {
+        	public void run() {
+                try {
+                    config.write();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Platform.runLater(new Runnable() {
+						@Override
+						public void run() {
+		                    progressDialog.close();
+		            		Alert alert = new Alert(AlertType.ERROR, "Could not write configuration:\n" + e.getMessage(), ButtonType.OK);
+		            		alert.showAndWait();
+						}
+					});
+                }
+                
+                Platform.runLater(new Runnable() {
+					
+					@Override
+					public void run() {
+		                progressController.getStatusText().setText("Status: Reloading daemon configuration...");
+					}
+				});
+                
+                try {
+        			d.reloadConfiguration();
+        		} catch (Exception e) {
+        			e.printStackTrace();
+                    Platform.runLater(new Runnable() {
+						@Override
+						public void run() {
+		                    progressDialog.close();
+		            		Alert alert = new Alert(AlertType.ERROR, "Could not reload daemon configuration:\n" + e.getMessage(), ButtonType.OK);
+		            		alert.showAndWait();
+						}
+					});
+        		}
+                
+                Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+	                    progressDialog.close();
+					}
+				});
+        	}
+        };
+        thread.start();
+        
+        progressDialog.showAndWait();
+	}
+	
+	private void setConfig() {
+		//
+		// Main
+		//
+		
+		config.setShowGettingStartedOnStartup(showGettingStartedStartupCheckbox.isSelected());
+		config.setUiSkin(rdBtnSkinLight.isSelected() ? "light" : "dark");
+		
+		//
+		// osumerExpress
+		//
+		
+		config.setOEEnabled(!disabledOeCheckbox.isSelected());
+		String selectedItem = browsersBox.getValue();
+        if (!selectedItem.equals("--- Select ---")){
+            config.setDefaultBrowser(selectedItem);
+        }
+        
+        //
+        // Overlay
+        //
+        
+        config.setOverlayEnabled(enableOverlayCheckbox.isSelected());
+        
+        //
+        // Parser
+        //
+        
+        config.setUseOldParser(oldParserCheckbox.isSelected());
+        
+        //
+        // Downloading
+        //
+        
+        int action = 0;
+        if (rdBtnImportLaunchOsu.isSelected()) {
+            action = 0;
+        } else if (rdBtnImportOsuSongs.isSelected()) {
+            action = 1;
+        } else if (rdBtnImportFolder.isSelected()) {
+            action = 2;
+        }
+        config.setDefaultOpenBeatmapAction(action);
+        config.setDefaultBeatmapSaveLocation(importFolderText.getText());
+        
+        config.setMaxThreads(simRunningQueues.getValue());
+        config.setNextCheckDelay(nextQueueCheckDelay.getValue());
+        
+        //
+        // Updater
+        //
+        
+        int updateSource = -1;
+        if (rdBtnUpdateStable.isSelected()){
+            updateSource = 0;
+        } else if (rdBtnUpdateBeta.isSelected()){
+            updateSource = 1;
+        } else if (rdBtnUpdateSnapshot.isSelected()){
+            updateSource = 2;
+        } else { //Default
+            updateSource = 2;
+        }
+        config.setUpdateSource(updateSource);
+        
+        String checkFreq = null;
+        if (rdBtnFreqStartup.isSelected()){
+            checkFreq = Configuration.CHECK_UPDATE_FREQ_EVERY_STARTUP;
+        } else if (rdBtnFreqActivation.isSelected()){
+            checkFreq = Configuration.CHECK_UPDATE_FREQ_EVERY_ACT;
+        } else if (rdBtnFreqNever.isSelected()){
+            checkFreq = Configuration.CHECK_UPDATE_FREQ_NEVER;
+        } else { //Default
+            checkFreq = Configuration.CHECK_UPDATE_FREQ_EVERY_ACT;
+        }
+        config.setCheckUpdateFreq(checkFreq);
+        
+        String checkAlgo = null;
+        if (rdBtnAlgoPerVersionBranch.isSelected()){
+            checkAlgo = Configuration.CHECK_UPDATE_ALGO_PER_VER_PER_BRANCH;
+        } else if (rdBtnAlgoLatestVerBranch.isSelected()){
+            checkAlgo = Configuration.CHECK_UPDATE_ALGO_LATEST_VER_PER_BRANCH;
+        } else if (rdBtnAlgoLatestVerOverall.isSelected()){
+            checkAlgo = Configuration.CHECK_UPDATE_ALGO_LATEST_VER_OVERALL;
+        } else { //Default
+            checkAlgo = Configuration.CHECK_UPDATE_ALGO_LATEST_VER_PER_BRANCH;
+        }
+        config.setCheckUpdateAlgo(checkAlgo);
+        
+        config.setAutoAcceptCriticalUpdates(autoCriticalUpdatesCheckbox.isSelected());
+        config.setAutoDownloadApplyPatches(autoDownloadApplyPatchesCheckbox.isSelected());
+        
+        //
+        // Miscellaneous
+        //
+
+        config.setEnableToneBeforeDownload(enableToneBeforeDwnCheckbox.isSelected());
+        config.setToneBeforeDownloadPath(toneBeforeDwnText.getText());
+        config.setEnableToneAfterDownload(enableToneAfterDwnCheckbox.isSelected());
+        config.setToneAfterDownloadPath(toneAfterDwnText.getText());
+	}
+	
+	public void restore() {
+		//
+		// Main
+		//
+		
+		showGettingStartedStartupCheckbox.setSelected(config.isShowGettingStartedOnStartup());
+		rdBtnSkinLight.setSelected(config.getUiSkin().equals("light"));
+		
+		//
+		// osumerExpress
+		//
+		
+		String user = config.getUser();
+		if (config.isUserPassEncrypted()) {
+			credentialsStatus.setText("Crendentials are currently encrypted. Unlock it to manage.");
+		} else if (user == null || user.isEmpty()) {
+			credentialsStatus.setText("No credentials entered.");
+		} else {
+			credentialsStatus.setText("Username: " + user);
+		}
+		disabledOeCheckbox.setSelected(!config.isOEEnabled());
+		
+        String[] browsers = null;
+        try {
+            browsers = Installer.getAvailableBrowsers();
+        } catch (DebuggableException e) {
+            e.printStackTrace();
+        }
+        List<String> items = browsersBox.getItems();
+        
+        if (browsers == null){
+            browsersBox.setDisable(true);
+            browsers = new String[]{"-!- Could not relieve available browsers, check Debug Dumps. -!-"};
+        } else {
+            int selectedIndex = -1;
+            browsersBox.setDisable(false);
+            final String configBrowser = config.getDefaultBrowser();
+            items.add("--- Select ---");
+            for (int i = 0; i < browsers.length; i++){
+                if (browsers[i].equals(configBrowser)){
+                    selectedIndex = i + 1;
+                }
+                items.add(browsers[i]);
+            }
+            browsersBox.getSelectionModel().clearAndSelect(selectedIndex);
+        }
+        
+        //
+        // Overlay
+        //
+        
+        enableOverlayCheckbox.setSelected(config.isOverlayEnabled());
+        
+        //
+        // Parser
+        //
+        
+        oldParserCheckbox.setSelected(config.isUseOldParser());
+        
+        //
+        // Downloading
+        //
+        
+        int action = config.getDefaultOpenBeatmapAction();
+        if (action < 0 || action > 2) {
+            action = 0;
+            config.setDefaultOpenBeatmapAction(0);
+            try {
+                config.write();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        rdBtnImportLaunchOsu.setSelected(action == 0);
+        rdBtnImportOsuSongs.setSelected(action == 1);
+        rdBtnImportFolder.setSelected(action == 2);
+        importFolderText.setText(config.getDefaultBeatmapSaveLocation());
+        
+        simRunningQueues.getValueFactory().setValue(config.getMaxThreads());
+        nextQueueCheckDelay.getValueFactory().setValue(config.getNextCheckDelay());
+        
+        //
+        // Updater
+        //
+        
+        int configUpdateSource = config.getUpdateSource();
+        if (configUpdateSource < 0 || configUpdateSource > 2){
+            configUpdateSource = 2;
+        }
+        final int updateSource = configUpdateSource;
+        
+        rdBtnUpdateStable.setSelected(updateSource == 0);
+        rdBtnUpdateBeta.setSelected(updateSource == 1);
+        rdBtnUpdateSnapshot.setSelected(updateSource == 2);
+        
+        String updateFreq = config.getCheckUpdateFreq();
+        
+        if (!updateFreq.equals(Configuration.CHECK_UPDATE_FREQ_EVERY_STARTUP) &&
+            !updateFreq.equals(Configuration.CHECK_UPDATE_FREQ_EVERY_ACT) &&
+            !updateFreq.equals(Configuration.CHECK_UPDATE_FREQ_NEVER)){
+            updateFreq = Configuration.CHECK_UPDATE_FREQ_EVERY_ACT;
+        }
+        
+        rdBtnFreqStartup.setSelected(updateFreq.equals(Configuration.CHECK_UPDATE_FREQ_EVERY_STARTUP)); //TDOO Change to constant
+        rdBtnFreqActivation.setSelected(updateFreq.equals(Configuration.CHECK_UPDATE_FREQ_EVERY_ACT));
+        rdBtnFreqNever.setSelected(updateFreq.equals(Configuration.CHECK_UPDATE_FREQ_NEVER));
+        
+        String updateAlgo = config.getCheckUpdateAlgo();
+        
+        if (!updateAlgo.equals(Configuration.CHECK_UPDATE_ALGO_PER_VER_PER_BRANCH) &&
+                !updateAlgo.equals(Configuration.CHECK_UPDATE_ALGO_LATEST_VER_PER_BRANCH) &&
+                !updateAlgo.equals(Configuration.CHECK_UPDATE_ALGO_LATEST_VER_OVERALL) &&
+                !updateAlgo.equals(Configuration.CHECK_UPDATE_ALGO_STABLITY)){
+            updateAlgo = Configuration.CHECK_UPDATE_ALGO_LATEST_VER_PER_BRANCH;
+        }
+        
+        rdBtnAlgoPerVersionBranch.setSelected(updateAlgo.equals(Configuration.CHECK_UPDATE_ALGO_PER_VER_PER_BRANCH));
+        rdBtnAlgoLatestVerBranch.setSelected(updateAlgo.equals(Configuration.CHECK_UPDATE_ALGO_LATEST_VER_PER_BRANCH));
+        rdBtnAlgoLatestVerOverall.setSelected(updateAlgo.equals(Configuration.CHECK_UPDATE_ALGO_LATEST_VER_OVERALL));
+        
+        autoCriticalUpdatesCheckbox.setSelected(config.isAutoAcceptCriticalUpdates());
+        autoDownloadApplyPatchesCheckbox.setSelected(config.isAutoDownloadApplyPatches());
+        
+        //
+        // Miscellaneous
+        //
+
+        enableToneBeforeDwnCheckbox.setSelected(config.isEnableToneBeforeDownload());
+        toneBeforeDwnText.setText(config.getToneBeforeDownloadPath());
+        enableToneAfterDwnCheckbox.setSelected(config.isEnableToneAfterDownload());
+        toneAfterDwnText.setText(config.getToneAfterDownloadPath());
+	}
+
+	public void setD(IDaemon d) {
+		this.d = d;
+	}
+
+	public void setConfig(Configuration config) {
+		this.config = config;
 	}
 
 }

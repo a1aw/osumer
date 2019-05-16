@@ -102,7 +102,7 @@ public class MainController implements Initializable {
 				boolean showPreview = showPreviewCheckbox.isSelected();
 				String idUrl = beatmapUrlText.getText();
 				if (idUrl == null || idUrl.isEmpty()) {
-	        		Alert alert = new Alert(AlertType.WARNING, "Please enter a valid osu! beatmap link.", ButtonType.OK);
+	        		Alert alert = new Alert(AlertType.WARNING, "Please enter a valid osu! beatmap link/ID.", ButtonType.OK);
 	        		alert.showAndWait();
 					return;
 				}
@@ -122,10 +122,15 @@ public class MainController implements Initializable {
 		        } catch (IOException e) {
 		            e.printStackTrace();
 		        }
+		        PreferencesController controller = loader.getController();
+		        controller.setD(d);
+		        controller.setConfig(config);
+		        controller.restore();
 		        
 		        Scene scene = new Scene(borderPane);
-		        
-		        new JMetro(JMetro.Style.DARK).applyTheme(scene);
+
+	            String skin = config.getUiSkin();
+	            new JMetro(skin.equals("light") ? JMetro.Style.LIGHT : JMetro.Style.DARK).applyTheme(scene);
 
 		        Stage stage = new Stage();
 		        stage.setScene(scene);
@@ -330,7 +335,7 @@ public class MainController implements Initializable {
             }
             
             //TODO Remove once new parser implemented
-            final String modUrl = config.isLegacyEnableOldSiteBeatmapRedirecting() ? url.replace("osu.ppy.sh", "old.ppy.sh") : url;
+            final String modUrl = config.isUseOldParser() ? url.replace("osu.ppy.sh", "old.ppy.sh") : url;
         	final String _url = url;
         	
             OsuBeatmap map = null;
