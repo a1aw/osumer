@@ -5,39 +5,24 @@ import java.io.IOException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
-import java.util.List;
-import java.util.Random;
 
-import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 import com.github.mob41.osumer.Configuration;
 import com.github.mob41.osumer.Osumer;
 import com.github.mob41.osumer.rmi.IDaemon;
 import com.github.mob41.osumer.rmi.IUI;
-import com.github.mob41.osumer.ui.old.UIFrame_old;
 import com.github.mob41.osums.io.beatmap.Osums;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import jfxtras.styles.jmetro8.JMetro;
 
@@ -251,7 +236,9 @@ public class AppMain extends Application {
             Scene scene = new Scene(rootLayout);
             primaryStage.setScene(scene);
             primaryStage.show();
-            new JMetro(JMetro.Style.DARK).applyTheme(scene);
+            
+            String skin = config.getUiSkin();
+            new JMetro(skin.equals("light") ? JMetro.Style.LIGHT : JMetro.Style.DARK).applyTheme(scene);
             scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
             
         } catch (IOException e) {

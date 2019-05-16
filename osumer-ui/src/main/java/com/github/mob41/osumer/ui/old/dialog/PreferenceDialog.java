@@ -1746,8 +1746,8 @@ public class PreferenceDialog extends JDialog {
         toneAfterField.setText(config.getToneAfterDownloadPath());
         
         //(*) Legacy Old-site Beatmap
-        chckbxEnableRedirectTo.setSelected(config.isLegacyEnableOldSiteBeatmapRedirecting());
-        chckbxDisableStartupNotification.setSelected(config.isLegacyDisableOldSiteBeatmapRedirectingStartupNotification());
+        chckbxEnableRedirectTo.setSelected(config.isUseOldParser());
+        chckbxDisableStartupNotification.setSelected(config.isUseOldParser());
     }
     
     private void applyChanges(){
@@ -1838,8 +1838,8 @@ public class PreferenceDialog extends JDialog {
         config.setToneAfterDownloadPath(toneAfterField.getText());
         
         //(*) Legacy Old-site Beatmap
-        config.setLegacyEnableOldSiteBeatmapRedirecting(chckbxEnableRedirectTo.isSelected());
-        config.setLegacyDisableOldSiteBeatmapRedirectingStartupNotification(chckbxDisableStartupNotification.isSelected());
+        config.setUseOldParser(chckbxEnableRedirectTo.isSelected());
+        //config.setLegacyDisableOldSiteBeatmapRedirectingStartupNotification(chckbxDisableStartupNotification.isSelected());
         
         try {
             config.write();

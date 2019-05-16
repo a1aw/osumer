@@ -82,6 +82,7 @@
                                        </toggleGroup>
                                     </RadioButton>
                                     <RadioButton fx:id="rdBtnSkinDark" mnemonicParsing="false" selected="true" text="Dark" toggleGroup="$skinGp" />
+                                    <Label text="**Restart the application to take effect." textFill="#8d8d8d" />
                                  </children>
                               </HBox>
                            </content>
@@ -104,7 +105,7 @@
                            <children>
                               <TitledPane collapsible="false" prefHeight="150.0" prefWidth="350.0" text="Server Priority">
                                  <content>
-                                    <HBox alignment="CENTER" prefWidth="350.0">
+                                    <HBox alignment="CENTER" disable="true" prefWidth="350.0">
                                        <children>
                                           <VBox alignment="CENTER" spacing="8.0">
                                              <padding>
@@ -181,7 +182,12 @@
                            </content></TitledPane>
                         <TitledPane collapsible="false" prefHeight="99.0" prefWidth="766.0" text="Settings">
                            <content>
-                              <Button fx:id="startOsuWithOverlayBtn" mnemonicParsing="false" text="Start osu! with overlay (Requires osu! to be closed first)" />
+                              <VBox alignment="CENTER" spacing="8.0">
+                                 <children>
+                                    <Button fx:id="startOsuWithOverlayBtn" mnemonicParsing="false" text="Start osu! with overlay (Requires osu! to be closed first)" />
+                                    <CheckBox fx:id="autoCloseOsumerAfterOverlayCheckbox" mnemonicParsing="false" selected="true" text="Automatically close osumer after starting it" />
+                                 </children>
+                              </VBox>
                            </content></TitledPane>
                      </children>
                   </VBox>
@@ -218,7 +224,7 @@
                         <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
                      </padding>
                      <children>
-                        <TitledPane collapsible="false" text="Beatmap Importing Settings">
+                        <TitledPane collapsible="false" text="Default Beatmap Importing Settings">
                            <content>
                               <VBox spacing="8.0">
                                  <padding>
@@ -232,18 +238,25 @@
                                     </RadioButton>
                                     <RadioButton fx:id="rdBtnImportOsuSongs" mnemonicParsing="false" text="Put downloads to osu! Songs folder (Press F5 in osu! to import)" toggleGroup="$importGp" />
                                     <RadioButton fx:id="rdBtnImportFolder" mnemonicParsing="false" text="Put downloads to a folder" toggleGroup="$importGp" />
-                                    <HBox alignment="CENTER_LEFT" spacing="8.0">
-                                       <children>
-                                          <Label text="Folder:" textFill="WHITE" />
-                                          <TextField fx:id="importFolderText" />
-                                       </children>
-                                       <VBox.margin>
-                                          <Insets />
-                                       </VBox.margin>
-                                       <padding>
-                                          <Insets left="32.0" right="8.0" />
-                                       </padding>
-                                    </HBox>
+                                    <BorderPane>
+                                       <left>
+                                          <Label text="Folder:" textFill="WHITE" BorderPane.alignment="CENTER">
+                                             <BorderPane.margin>
+                                                <Insets left="32.0" right="8.0" />
+                                             </BorderPane.margin>
+                                          </Label>
+                                       </left>
+                                       <center>
+                                          <TextField fx:id="importFolderText" BorderPane.alignment="CENTER" />
+                                       </center>
+                                       <right>
+                                          <Button fx:id="dwnFolderSelectBtn" mnemonicParsing="false" text="Select" BorderPane.alignment="CENTER">
+                                             <BorderPane.margin>
+                                                <Insets left="8.0" />
+                                             </BorderPane.margin>
+                                          </Button>
+                                       </right>
+                                    </BorderPane>
                                  </children>
                               </VBox>
                            </content></TitledPane>
@@ -254,13 +267,13 @@
                                     <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="8.0">
                                        <children>
                                           <Label text="Simultaneous Running Queues:" textFill="WHITE" />
-                                          <Spinner fx:id="simRunningQueues" />
+                                          <Spinner fx:id="simRunningQueues" editable="true" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="8.0">
                                        <children>
                                           <Label text="Next Queue Checking Delay:" textFill="WHITE" />
-                                          <Spinner fx:id="nextQueueCheckDelay" />
+                                          <Spinner fx:id="nextQueueCheckDelay" editable="true" />
                                        </children>
                                     </HBox>
                                  </children>
@@ -346,14 +359,14 @@
             </Tab>
             <Tab text="Miscellaneous">
                <content>
-                  <VBox prefHeight="200.0" prefWidth="100.0" spacing="16.0">
+                  <VBox spacing="16.0">
                      <padding>
                         <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
                      </padding>
                      <children>
-                        <TitledPane collapsible="false" prefHeight="111.0" prefWidth="718.0" text="Sound/Tone">
+                        <TitledPane collapsible="false" text="Sound/Tone">
                            <content>
-                              <VBox prefHeight="200.0" prefWidth="100.0" spacing="8.0">
+                              <VBox spacing="8.0">
                                  <children>
                                     <CheckBox fx:id="enableToneBeforeDwnCheckbox" mnemonicParsing="false" text="Enable tone before download" />
                                     <BorderPane>
