@@ -43,6 +43,7 @@ import com.github.mob41.osumer.debug.DumpManager;
 import com.github.mob41.osumer.debug.WithDumpException;
 import com.github.mob41.osumer.installer.Installer;
 import com.github.mob41.osumer.rmi.IDaemon;
+import com.github.mob41.osumer.rmi.IUI;
 import com.github.mob41.osums.Osums;
 
 public class Main {
@@ -59,9 +60,7 @@ public class Main {
         ArgParser ap = new ArgParser(args);
 
         if (ap.isVersionFlag()) {
-            //TODO: Version via RMI
-            System.out.println("TODO: Unimplemented: Version reading via Arguments");
-            //System.out.println(Osumer.OSUMER_VERSION + "-" + Osumer.OSUMER_BRANCH + "-" + Osumer.OSUMER_BUILD_NUM);
+        	System.out.println(Osumer.OSUMER_VERSION + "-" + Osumer.OSUMER_BRANCH + "-" + Osumer.OSUMER_BUILD_NUM);
             return;
         }
 
@@ -84,7 +83,7 @@ public class Main {
             } else if (ap.isReinstallFlag()) {
                 installer.reinstall();
 
-            } else if (ap.isInstallFlag()) {
+            }/* else if (ap.isInstallFlag()) {
                 if (!ap.isQuietFlag() && !ap.isForceFlag()) {
                     int option = JOptionPane.showOptionDialog(null,
                             "You are installing osumer " + Osumer.OSUMER_VERSION + "-" + Osumer.OSUMER_BRANCH + "-"
@@ -108,11 +107,9 @@ public class Main {
                 } catch (WithDumpException e) {
                     if (!ap.isNoUiFlag() && !GraphicsEnvironment.isHeadless()) {
                         //TODO: Error Dump Dialog Control
-                        /*
                         ErrorDumpDialog dialog = new ErrorDumpDialog(e.getDump());
                         dialog.setModal(true);
                         dialog.setVisible(true);
-                        */
                     }
 
                     if (!(ap.isQuietFlag() && ap.isForceFlag())) {
@@ -143,18 +140,16 @@ public class Main {
                 } catch (WithDumpException e) {
                     if (!ap.isNoUiFlag() && !GraphicsEnvironment.isHeadless()) {
                         //TODO: Error Dump Dialog Control
-                        /*
                         ErrorDumpDialog dialog = new ErrorDumpDialog(e.getDump());
                         dialog.setModal(true);
                         dialog.setVisible(true);
-                        */
                     }
 
                     if (!(ap.isQuietFlag() && ap.isForceFlag())) {
                         System.out.println("Error@U$\n" + e.getDump().toString() + "Error@D$");
                     }
                 }
-            }
+            }*/
 
             System.exit(0);
             return;
@@ -211,10 +206,40 @@ public class Main {
             }
             
             if (d == null) {
-                System.out.println("Failed");
-                //TODO: Launch daemon before continue
-            } else if (urlStr != null) {
-                System.out.println("Add queue : [" + urlStr + "]");
+                try {
+					Runtime.getRuntime().exec("osumer-daemon.exe");
+				} catch (IOException e) {
+					e.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Could not start daemon. Terminating:\n" + e, "osumer launcher Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    System.exit(-1);
+                    return;
+				}
+                
+                int c = 0;
+                while (c < 10) {
+                	try {
+                        d = (IDaemon) Naming.lookup("rmi://localhost:46726/daemon"); //Contact the daemon via RMI
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                	try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						break;
+					}
+                	c++;
+                }
+                
+                if (d == null) {
+                    JOptionPane.showMessageDialog(null, "Could not connect to daemon. Terminating", "osumer launcher Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    System.exit(-1);
+                    return;
+                }
+            }
+            
+            if (urlStr != null) {
                 try {
                     d.addQueue(urlStr);
                     
@@ -239,17 +264,43 @@ public class Main {
                 System.exit(0);
                 return;
             }
-            System.out.println("Connected success");
             runUi(config, args, ap, d);
         }
     }
 
     private static void runUi(Configuration config, String[] args, ArgParser ap, IDaemon d) {
-        //Initialize JFX toolkit
-        //new JFXPanel();
+        try {
+			Runtime.getRuntime().exec("osumer-ui.exe");
+		} catch (IOException e) {
+			e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Could not start UI. Terminating:\n" + e, "osumer launcher Error",
+                    JOptionPane.ERROR_MESSAGE);
+            System.exit(-1);
+            return;
+		}
         
-        //UIFrame frame = new UIFrame(config, d);
-        //frame.setVisible(true);
+        IUI ui = null;
+        int c = 0;
+        while (c < 10) {
+        	try {
+                ui = (IUI) Naming.lookup("rmi://localhost:46727/ui"); //Contact the ui via RMI
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        	try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				break;
+			}
+        	c++;
+        }
+        
+        if (ui == null) {
+            JOptionPane.showMessageDialog(null, "Could not connect to UI. Terminating", "osumer launcher Error",
+                    JOptionPane.ERROR_MESSAGE);
+            System.exit(-1);
+            return;
+        }
     }
 
     public static void runBrowser(Configuration config, String[] args) {

@@ -125,6 +125,9 @@ public class DumpManager {
 	}
 	
 	public static void addDump(DebugDump dump) {
+		if (!init) {
+			throw new IllegalStateException("DumpManager was not initialized before adding this dump!");
+		}
 		try {
 			writeDump(dump);
 		} catch (IOException e) {
@@ -134,6 +137,9 @@ public class DumpManager {
 	}
 	
 	public static void writeDump(DebugDump dump) throws IOException {
+		if (!init) {
+			throw new IllegalStateException("DumpManager was not initialized before writing this dump!");
+		}
         String path = System.getenv("localappdata") + "\\osumerExpress\\dumps";
         File folder = new File(path);
         folder.mkdirs();
