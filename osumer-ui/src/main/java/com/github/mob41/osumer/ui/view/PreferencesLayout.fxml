@@ -209,7 +209,7 @@
                                           <ToggleGroup fx:id="parserGp" />
                                        </toggleGroup>
                                     </RadioButton>
-                                    <RadioButton fx:id="newParserCheckbox" mnemonicParsing="false" selected="true" text="Use new parser (Parses with the latest osu! website)" toggleGroup="$parserGp" />
+                                    <RadioButton fx:id="newParserCheckbox" disable="true" mnemonicParsing="false" text="Use new parser (Parses with the latest osu! website)" toggleGroup="$parserGp" />
                                  </children>
                               </HBox>
                            </content></TitledPane>
@@ -313,13 +313,13 @@
                                  <content>
                                     <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="8.0">
                                        <children>
-                                          <RadioButton fx:id="rdBtnFreqStartup" mnemonicParsing="false" text="Every startup">
+                                          <RadioButton fx:id="rdBtnFreqStartup" disable="true" mnemonicParsing="false" text="Every startup">
                                              <toggleGroup>
                                                 <ToggleGroup fx:id="freqGp" />
                                              </toggleGroup>
                                           </RadioButton>
                                           <RadioButton fx:id="rdBtnFreqActivation" mnemonicParsing="false" selected="true" text="Every activation" toggleGroup="$freqGp" />
-                                          <RadioButton fx:id="rdBtnFreqNever" mnemonicParsing="false" text="Never" toggleGroup="$freqGp" />
+                                          <RadioButton fx:id="rdBtnFreqNever" disable="true" mnemonicParsing="false" text="Never" toggleGroup="$freqGp" />
                                        </children>
                                     </HBox>
                                  </content></TitledPane>
@@ -335,21 +335,20 @@
                                        </toggleGroup>
                                     </RadioButton>
                                     <RadioButton fx:id="rdBtnAlgoLatestVerBranch" mnemonicParsing="false" text="Latest version (per branch)" toggleGroup="$versionCompareGp" />
-                                    <RadioButton fx:id="rdBtnAlgoLatestVerOverall" mnemonicParsing="false" text="Latest version (overall)" toggleGroup="$versionCompareGp" />
+                                    <RadioButton fx:id="rdBtnAlgoLatestVerOverall" disable="true" mnemonicParsing="false" text="Latest version (overall)" toggleGroup="$versionCompareGp" />
                                  </children>
                               </HBox>
                            </content></TitledPane>
-                        <TitledPane collapsible="false" prefHeight="109.0" prefWidth="808.0" text="Settings">
+                        <TitledPane collapsible="false" prefHeight="79.0" prefWidth="808.0" text="Settings">
                            <content>
                               <VBox alignment="CENTER" spacing="8.0">
                                  <children>
                                     <HBox alignment="CENTER" spacing="8.0">
                                        <children>
-                                          <CheckBox fx:id="autoCriticalUpdatesCheckbox" mnemonicParsing="false" text="Automatically accept critical updates" />
-                                          <CheckBox fx:id="autoDownloadApplyPatchesCheckbox" mnemonicParsing="false" text="Automatically download and apply patches" />
+                                          <CheckBox fx:id="autoCriticalUpdatesCheckbox" disable="true" mnemonicParsing="false" text="Automatically accept critical updates" />
+                                          <CheckBox fx:id="autoDownloadApplyPatchesCheckbox" disable="true" mnemonicParsing="false" text="Automatically download and apply patches" />
                                        </children>
                                     </HBox>
-                                    <Button fx:id="checkForUpdatesBtn" mnemonicParsing="false" text="Check for updates now" />
                                  </children>
                               </VBox>
                            </content></TitledPane>
@@ -414,6 +413,16 @@
                                  </children>
                               </VBox>
                            </content></TitledPane>
+                        <TitledPane collapsible="false" prefHeight="87.0" prefWidth="808.0" text="Metrics Data Uploading">
+                           <content>
+                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="9.0">
+                                 <children>
+                                    <Label text="These data allow the developers to know the usage of each feature and occurred exceptions, and thus helping to improve the application." textFill="WHITE" />
+                                    <CheckBox fx:id="metricsCheckbox" mnemonicParsing="false" text="Allow the developers to monitor your usage and any exceptions occurred" />
+                                 </children>
+                              </VBox>
+                           </content>
+                        </TitledPane>
                      </children>
                   </VBox>
                </content>

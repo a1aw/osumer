@@ -182,6 +182,10 @@ public class Configuration {
     private static final String KEY_USE_OLD_PARSER = "useOldParser";
     
     private static final boolean KEY_USE_OLD_PARSER_DEFAULT_VALUE = true;
+    
+    private static final String KEY_METRICS_ENABLED = "metricsEnabled";
+    
+    private static final boolean KEY_METRICS_ENABLED_DEFAULT_VALUE = true;
 
     private JSONObject json;
 
@@ -467,7 +471,9 @@ public class Configuration {
     }
     
     public boolean isUseOldParser() {
-        return json.getBoolean(KEY_USE_OLD_PARSER);
+    	//TODO Force use old
+    	return true;
+        //return json.getBoolean(KEY_USE_OLD_PARSER);
     }
     
     public void setUiSkin(String skin) {
@@ -484,6 +490,14 @@ public class Configuration {
     
     public boolean isOverlayEnabled() {
     	return json.getBoolean(KEY_OVERLAY_ENABLED);
+    }
+    
+    public void setMetricsEnabled(boolean enabled) {
+    	json.put(KEY_METRICS_ENABLED, enabled);
+    }
+    
+    public boolean isMetricsEnabled() {
+    	return json.getBoolean(KEY_METRICS_ENABLED);
     }
 
     private static boolean fillJson(JSONObject json) {
@@ -526,6 +540,7 @@ public class Configuration {
         modified |= ifNullPutValue(json, KEY_SELECTED_TONE_AFTER_DOWNLOAD,
                 KEY_SELECTED_TONE_AFTER_DOWNLOAD_DEFAULT_VALUE);
         modified |= ifNullPutValue(json, KEY_USE_OLD_PARSER, KEY_USE_OLD_PARSER_DEFAULT_VALUE);
+        modified |= ifNullPutValue(json, KEY_METRICS_ENABLED, KEY_METRICS_ENABLED_DEFAULT_VALUE);
         return modified;
     }
 

@@ -2,9 +2,9 @@ package com.github.mob41.osumer.queue.actions;
 
 import java.io.File;
 
-import com.github.mob41.organdebug.DebugDump;
-import com.github.mob41.organdebug.DumpManager;
 import com.github.mob41.osumer.Configuration;
+import com.github.mob41.osumer.debug.DebugDump;
+import com.github.mob41.osumer.debug.DumpManager;
 import com.github.mob41.osumer.queue.Queue;
 import com.github.mob41.osumer.queue.QueueAction;
 
@@ -29,7 +29,7 @@ public class BeforeSoundAction implements QueueAction {
                     mp.play();
                 } catch (Exception e) {
                     e.printStackTrace();
-                    DumpManager.getInstance().addDump(new DebugDump(null, "---", "Play before download sound", "---", "Error occurred when trying to play sound", false, e));
+                    DumpManager.addDump(new DebugDump(null, "---", "Play before download sound", "---", "Error occurred when trying to play sound", false, e));
                 }
             }
         });

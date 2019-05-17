@@ -1,18 +1,30 @@
 package com.github.mob41.osumer.ui;
 
+import java.awt.Desktop;
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import com.github.mob41.organdebug.exceptions.DebuggableException;
 import com.github.mob41.osumer.Configuration;
+import com.github.mob41.osumer.Osumer;
+import com.github.mob41.osumer.debug.DebugDump;
+import com.github.mob41.osumer.debug.DumpManager;
+import com.github.mob41.osumer.debug.WithDumpException;
+import com.github.mob41.osumer.exceptions.NoBuildsForVersionException;
+import com.github.mob41.osumer.exceptions.NoSuchBuildNumberException;
+import com.github.mob41.osumer.exceptions.NoSuchVersionException;
 import com.github.mob41.osumer.queue.QueueStatus;
 import com.github.mob41.osumer.rmi.IDaemon;
-import com.github.mob41.osums.io.beatmap.OsuBeatmap;
-import com.github.mob41.osums.io.beatmap.Osums;
+import com.github.mob41.osumer.updater.UpdateInfo;
+import com.github.mob41.osumer.updater.Updater;
+import com.github.mob41.osums.Osums;
+import com.github.mob41.osums.beatmap.OsuBeatmap;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -85,6 +97,27 @@ public class MainController implements Initializable {
 	@FXML
 	private MenuItem preferencesMenuItem;
 	
+	@FXML
+	private MenuItem updatesMenuItem;
+	
+	@FXML
+	private MenuItem dumpsMenuItem;
+	
+	@FXML
+	private MenuItem locateConfigMenuItem;
+	
+	@FXML
+	private MenuItem closeMenuItem;
+	
+	@FXML
+	private MenuItem docsMenuItem;
+	
+	@FXML
+	private MenuItem issueMenuItem;
+	
+	@FXML
+	private MenuItem aboutMenuItem;
+	
 	private Configuration config;
 	
 	private IDaemon d;
@@ -92,6 +125,10 @@ public class MainController implements Initializable {
 	private Osums osums;
 	
 	private QueueStatus[] queues;
+
+	private Updater updater;
+
+	private boolean checkingUpdate;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -138,6 +175,75 @@ public class MainController implements Initializable {
 		        stage.initStyle(StageStyle.UTILITY);
 		        stage.initModality(Modality.APPLICATION_MODAL);
 		        stage.showAndWait();
+			}
+		});
+        
+        updatesMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				checkUpdate();
+			}
+		});
+        
+        locateConfigMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+		        String configPath = Osumer.isWindows() ? System.getenv("localappdata") + "\\osumerExpress" : "";
+				try {
+					Desktop.getDesktop().open(new File(configPath));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+        
+        closeMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				Platform.exit();
+			}
+		});
+        
+        docsMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				try {
+					Desktop.getDesktop().browse(new URI("https://github.com/mob41/osumer/wiki"));;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+        
+        issueMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				try {
+					Desktop.getDesktop().browse(new URI("https://github.com/mob41/osumer/issues/new"));;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+        
+        aboutMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				Alert alert = new Alert(AlertType.NONE, "", ButtonType.OK);
+				alert.setHeaderText("About");
+				alert.setContentText(
+						"osumer2\n" +
+						"Copyright (c) mob41. 2016-2019\n\n" +
+						"osumer is an application that provides osu! players a\n" +
+						"more comfortable and faster way to download beatmaps."
+						);
+				alert.showAndWait();
 			}
 		});
 	}
@@ -217,6 +323,12 @@ public class MainController implements Initializable {
 	
 	protected void setConfiguration(Configuration config) {
 		this.config = config;
+        
+        updater = new Updater(config);
+        checkingUpdate = false;
+        
+        //TODO do freq check
+        checkUpdate();
 	}
 	
 	protected void setDaemon(IDaemon d) {
@@ -351,7 +463,7 @@ public class MainController implements Initializable {
             		
                     try {
                         osums.login(user, pass);
-                    } catch (DebuggableException e) {
+                    } catch (WithDumpException e) {
                         e.printStackTrace();
                         Platform.runLater(new Runnable() {
 							@Override
@@ -372,7 +484,7 @@ public class MainController implements Initializable {
 					});
                     try {
                         map = osums.getBeatmapInfo(modUrl);
-                    } catch (DebuggableException e) {
+                    } catch (WithDumpException e) {
                         e.printStackTrace();
                         Platform.runLater(new Runnable() {
 							@Override
@@ -480,5 +592,226 @@ public class MainController implements Initializable {
         }
         return success;
 	}
+	
+	private UpdateInfo getUpdateInfoByConfig() throws WithDumpException {
+        String algo = config.getCheckUpdateAlgo();
+        if (algo.equals(Configuration.CHECK_UPDATE_ALGO_PER_VER_PER_BRANCH)) {
+            return updater.getPerVersionPerBranchLatestVersion();
+        } else if (algo.equals(Configuration.CHECK_UPDATE_ALGO_LATEST_VER_PER_BRANCH)) {
+            return updater.getLatestVersion();
+        } else { //TODO: Implement other algo
+            return updater.getLatestVersion();
+        }
+    }
+    
+	public void checkUpdate() {
+        if (checkingUpdate) {
+            return;
+        }
+        
+        checkingUpdate = true;
+        Thread thread = new Thread() {
+            public void run() {
+            	Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+		            	updateText.setText("Checking for updates...");
+					}
+				});
+                
+                UpdateInfo verInfo = null;
+                try {
+                    verInfo = getUpdateInfoByConfig();
+                } catch (NoBuildsForVersionException e){
+                	Platform.runLater(new Runnable() {
+    					@Override
+    					public void run() {
+    						updateText.setText("No builds available for the new version. See dump.");
+    					}
+    				});
+                	checkingUpdate = false;
+                    return;
+                } catch (NoSuchVersionException e){
+                	Platform.runLater(new Runnable() {
+    					@Override
+    					public void run() {
+    						updateText.setText("No current version in the selected branch. See dump.");
+    			    		Alert alert = new Alert(AlertType.INFORMATION, 
+    			    				"We don't have version " + Osumer.OSUMER_VERSION + " in the current update branch\n\n" +
+    			    				"Please try another update branch (snapshot, beta, stable).",
+    			    						ButtonType.OK);
+    			    		alert.setHeaderText("osumer - Version not available");
+    			    		alert.showAndWait();
+    					}
+    				});
+                    checkingUpdate = false;
+                    return;
+                } catch (NoSuchBuildNumberException e){
+                	Platform.runLater(new Runnable() {
+    					@Override
+    					public void run() {
+    						updateText.setText("This version has a invalid build number. See dump");
+    						Alert alert = new Alert(AlertType.WARNING, 
+    								"We don't have build number greater or equal to " + Osumer.OSUMER_BUILD_NUM + " in version " + Osumer.OSUMER_VERSION + ".\n" +
+    			                    "If you are using a modified/development osumer,\n" +
+    			                    " you can just ignore this message.\n" +
+    			                    "If not, this might be the versions.json in GitHub goes wrong,\n" +
+    			                    " post a new issue about this.",
+    			    				ButtonType.OK);
+    			    		alert.setHeaderText("osumer - Build not available");
+    			    		alert.showAndWait();
+    					}
+    				});
+                	checkingUpdate = false;
+                    return;
+                } catch (WithDumpException e){
+                    e.printStackTrace();
+                	Platform.runLater(new Runnable() {
+    					@Override
+    					public void run() {
+    						updateText.setText("Could not connect to update server.");
+    						Alert alert = new Alert(AlertType.ERROR, 
+    								"Could not connect to update server.",
+    			    				ButtonType.OK);
+    			    		alert.setHeaderText("osumer - Error Checking Update");
+    			    		alert.showAndWait();
+    					}
+    				});
+                	checkingUpdate = false;
+                    return;
+                }
+                
+                final UpdateInfo _verInfo = verInfo;
+
+            	Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						if (_verInfo == null) {
+    						updateText.setText("Could not obtain update info.");
+    						Alert alert = new Alert(AlertType.ERROR, 
+    								"Could not obtain update info.",
+    			    				ButtonType.OK);
+    			    		alert.setHeaderText("osumer - Error Checking Update");
+    			    		alert.showAndWait();
+		                	checkingUpdate = false;
+		                    return;
+		                }
+						
+		                if (_verInfo.isThisVersion()) {
+    						updateText.setText("You are running the latest version of osumer"
+    	                            + " (" + _verInfo.getVersion() + "-" + Updater.getBranchStr(_verInfo.getBranch()) + "-b" + _verInfo.getBuildNum() + ")");
+		                	checkingUpdate = false;
+		                    return;
+		                }
+		                
+		                updateText.setText(
+		                        (_verInfo.isUpgradedVersion() ? "Upgrade" : "Update") +
+		                        " available! New version: " + _verInfo.getVersion() +
+		                        "-" + Updater.getBranchStr(_verInfo.getBranch()) +
+		                        "-b" + _verInfo.getBuildNum());
+		                
+		                Alert alert = new Alert(AlertType.INFORMATION, "", ButtonType.YES);
+						alert.getButtonTypes().add(ButtonType.NO);
+			    		alert.setHeaderText("Update available");
+			    		
+		                String desc = _verInfo.getDescription();
+		                
+		                alert.setContentText(
+		                		"New " +
+		                	    (_verInfo.isUpgradedVersion() ? "upgrade" : "update") +
+		                        " available! New version:\n" + _verInfo.getVersion() +
+		                        "-" + Updater.getBranchStr(_verInfo.getBranch()) +
+		                        "-b" + _verInfo.getBuildNum() + "\n\n" +
+		                        "Do you want to update it now?"
+		                );
+		                
+		            	ButtonType detailsBtn = new ButtonType("Details");
+		            	
+		                if (desc != null){
+		    				alert.getButtonTypes().add(detailsBtn);
+		                }
+		                
+		                Alert detailsAlert = new Alert(AlertType.NONE, 
+								"",
+			    				ButtonType.OK);
+						detailsAlert.setHeaderText("Change-log");
+						detailsAlert.setContentText(desc);
+						
+		                ButtonType result;
+		                do {
+		    	    		alert.showAndWait();
+		    	    		
+		                	result = alert.getResult();
+		    	    		
+		                    if (result == detailsBtn){
+	    						detailsAlert.showAndWait();
+		                    }
+		                } while (result == detailsBtn);
+		                
+		                if (result == ButtonType.YES){
+		                    try {
+		                        Desktop.getDesktop().browse(new URI(_verInfo.getWebLink()));
+		                    } catch (IOException | URISyntaxException e) {
+		                        DebugDump dump = new DebugDump(
+		                                _verInfo.getWebLink(),
+		                                "Show option dialog of updating osumer or not",
+		                                "Set checkingUpdate to false",
+		                                "(End of function / thread)",
+		                                "Error when opening the web page",
+		                                false,
+		                                e);
+		                        DumpManager.addDump(dump);
+		                        //DebugDump.showDebugDialog(dump);
+		                    }
+		                    /*
+		                    try {
+		                        String updaterLink = Updater.getUpdaterLink();
+		                        
+		                        if (updaterLink == null){
+		                            System.out.println("No latest updater .exe defined! Falling back to legacy updater!");
+		                            updaterLink = Updater.LEGACY_UPDATER_JAR;
+		                        }
+		                        
+		                        URL url;
+		                        try {
+		                            url = new URL(updaterLink);
+		                        } catch (MalformedURLException e) {
+		                            e.printStackTrace();
+		                            JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+		                            return;
+		                        }
+		                        
+		                        final String folder = System.getProperty("java.io.tmpdir");
+		                        final String fileName = "osumer_updater_" + Calendar.getInstance().getTimeInMillis() + ".exe";
+		                        
+		                        mgr.addQueue(new Queue(
+		                                "osumer Updater",
+		                                new URLDownloader(folder, fileName, url),
+		                                null,
+		                                null,
+		                                new QueueAction[] {
+		                                        new UpdaterRunAction(folder + fileName)
+		                                })
+		                         );
+		                        tab.setSelectedIndex(1);
+		                        new Thread() {
+		                            public void run() {
+		                                JOptionPane.showMessageDialog(UIFrame.this, "The web updater will be downloaded and started very soon.", "Notice", JOptionPane.INFORMATION_MESSAGE);
+		                            }
+		                        }.start();
+		                    } catch (WithDumpException e){
+		                        e.printStackTrace();
+		                        JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
+		                        checkingUpdate = false;
+		                    }
+		                    */
+		                }
+		                checkingUpdate = false;
+	                }
+				});
+            }
+        };
+        thread.start();
+    }
 
 }

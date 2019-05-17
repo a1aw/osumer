@@ -3,6 +3,7 @@ package com.github.mob41.osumer.ui;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.rmi.RemoteException;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
@@ -10,14 +11,13 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.function.UnaryOperator;
 
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
+import org.apache.commons.codec.binary.Base64;
 
-import com.github.mob41.organdebug.exceptions.DebuggableException;
 import com.github.mob41.osumer.Configuration;
+import com.github.mob41.osumer.debug.WithDumpException;
 import com.github.mob41.osumer.installer.Installer;
 import com.github.mob41.osumer.rmi.IDaemon;
-import com.github.mob41.osumer.ui.old.dialog.PreferenceDialog;
+import com.github.mob41.osums.Osums;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -26,6 +26,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
@@ -37,7 +38,6 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
-import javafx.scene.control.Alert.AlertType;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -48,9 +48,19 @@ import javafx.util.converter.IntegerStringConverter;
 public class PreferencesController implements Initializable {
 	
 	//
-	// Toolbar
+	// Constants
 	//
 	
+	private static final String CRED_STATUS_EXIST_PREFIX = "Username: ";
+
+	private static final String CRED_STATUS_NOT_EXIST = "No credentials entered.";
+
+	private static final String CRED_STATUS_CURR_ENCRYPTED = "Crendentials are currently encrypted. Unlock it to manage.";
+	
+	//
+	// Toolbar
+	//
+
 	@FXML
 	private Button saveBtn;
 	
@@ -177,8 +187,8 @@ public class PreferencesController implements Initializable {
 	@FXML
 	private CheckBox autoDownloadApplyPatchesCheckbox;
 	
-	@FXML
-	private Button checkForUpdatesBtn;
+	//@FXML
+	//private Button checkForUpdatesBtn;
 	
 	//
 	// Miscellaneous
@@ -207,6 +217,9 @@ public class PreferencesController implements Initializable {
 	
 	@FXML
 	private Button toneAfterDwnSelectBtn;
+	
+	@FXML
+	private CheckBox metricsCheckbox;
 	
 	private IDaemon d;
 
@@ -328,6 +341,130 @@ public class PreferencesController implements Initializable {
 			}
 		});
         
+        addCredentialsBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				FXMLLoader loader0 = new FXMLLoader();
+		        loader0.setLocation(AppMain.class.getResource("view/LoginDialogLayout.fxml"));
+
+		        DialogPane loginPane = null;
+		        try {
+					loginPane = (DialogPane) loader0.load();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+		        LoginDialogController loginController = loader0.getController();
+		        
+		        Alert loginDialog = new Alert(AlertType.NONE);
+		        loginDialog.initStyle(StageStyle.UTILITY);
+		        loginDialog.initModality(Modality.APPLICATION_MODAL);
+		        loginDialog.setTitle("");
+		        loginDialog.setDialogPane(loginPane);
+		        loginDialog.getButtonTypes().add(ButtonType.OK);
+		        loginDialog.getButtonTypes().add(ButtonType.CANCEL);
+
+		        FXMLLoader loader1 = new FXMLLoader();
+		        loader1.setLocation(AppMain.class.getResource("view/ProgressDialogLayout.fxml"));
+		        DialogPane progressPane = null;
+		        try {
+					progressPane = (DialogPane) loader1.load();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+		        ProgressDialogController progressController = loader1.getController();
+		        
+		        progressController.getHeaderText().setText("Login");
+		        progressController.getStatusText().setText("Status: Logging in...");
+		        progressController.getProgressBar().setProgress(-1);
+		        
+		        Alert progressDialog = new Alert(AlertType.NONE);
+		        progressDialog.initStyle(StageStyle.UTILITY);
+		        progressDialog.initModality(Modality.APPLICATION_MODAL);
+		        progressDialog.setTitle("");
+		        progressDialog.setDialogPane(progressPane);
+		        progressDialog.getButtonTypes().add(ButtonType.CANCEL);
+		        
+		        loginDialog.showAndWait();
+                
+		        if (loginDialog.getResult() == ButtonType.OK) {
+	                final String usr = loginController.getUser();
+	                final String pwd = loginController.getPwd();
+			        
+	                if (usr == null || pwd == null || usr.isEmpty() || pwd.isEmpty()) {
+	                	Alert alert = new Alert(AlertType.WARNING, "Username or password must not be empty.", ButtonType.OK);
+	                	alert.showAndWait();
+	                	return;
+	                }
+	                
+			        Thread thread = new Thread() {
+			        	public void run() {
+	                        
+	    		        	Osums osums = new Osums();
+
+	                        boolean err = false;
+	                        try {
+	                            osums.login(usr, pwd);
+	                        } catch (WithDumpException e1) {
+	                        	err = true;
+	                        }
+	                        
+	                        Platform.runLater(new Runnable() {
+								@Override
+								public void run() {
+	                                progressDialog.close();
+								}
+							});
+	                        
+	                        if (err) {
+	                        	Platform.runLater(new Runnable() {
+	    							@Override
+	    							public void run() {
+	    	                        	Alert alert = new Alert(AlertType.WARNING, "", ButtonType.YES);
+	    	                        	alert.setTitle("Attempting to login");
+	    	                        	alert.setHeaderText("Login Failed");
+	    	                        	alert.setContentText("Cannot login into this osu! account.\nDo you still want to save it?");
+	    	                        	alert.getButtonTypes().add(ButtonType.NO);
+	    	                        	alert.showAndWait();
+	    	                        	
+	    	                        	if (alert.getResult() == ButtonType.YES) {
+	    	                            	updateLoginUi(config, loginController);
+	    	                        	}
+	    							}
+	    						});
+	                        } else {
+	                        	Platform.runLater(new Runnable() {
+	    							@Override
+	    							public void run() {
+	    	                        	updateLoginUi(config, loginController);
+	    							}
+	    						});
+	                        }
+			        	}
+			        };
+		        	progressDialog.show();
+			        thread.start();
+		        }
+			}
+		});
+        
+        removeCredentialsBtn.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				Alert alert = new Alert(AlertType.WARNING, "Are you sure to remove your credentials?", ButtonType.YES);
+				alert.getButtonTypes().add(ButtonType.NO);
+				alert.setHeaderText("Removing Credentials");
+				alert.showAndWait();
+				
+				if (alert.getResult() == ButtonType.YES) {
+					config.setUser("");
+			        config.setPass("");
+			        credentialsStatus.setText(CRED_STATUS_NOT_EXIST);
+				}
+			}
+			
+		});
+        
         NumberFormat format = NumberFormat.getIntegerInstance();
         UnaryOperator<TextFormatter.Change> filter = c -> {
             if (c.isContentChange()) {
@@ -353,6 +490,12 @@ public class PreferencesController implements Initializable {
         nextQueueCheckDelay.setValueFactory(valueFactory1);
         simRunningQueues.getEditor().setTextFormatter(numFormatter0);
         nextQueueCheckDelay.getEditor().setTextFormatter(numFormatter1);
+	}
+	
+	private void updateLoginUi(Configuration config, LoginDialogController loginController) {
+        config.setUser(Base64.encodeBase64String(loginController.getUser().getBytes(StandardCharsets.UTF_8)));
+        config.setPass(Base64.encodeBase64String(loginController.getPwd().getBytes(StandardCharsets.UTF_8)));
+        credentialsStatus.setText(CRED_STATUS_EXIST_PREFIX + loginController.getUser());
 	}
 	
 	private void save() {
@@ -532,6 +675,7 @@ public class PreferencesController implements Initializable {
         config.setToneBeforeDownloadPath(toneBeforeDwnText.getText());
         config.setEnableToneAfterDownload(enableToneAfterDwnCheckbox.isSelected());
         config.setToneAfterDownloadPath(toneAfterDwnText.getText());
+        config.setMetricsEnabled(metricsCheckbox.isSelected());
 	}
 	
 	public void restore() {
@@ -548,18 +692,18 @@ public class PreferencesController implements Initializable {
 		
 		String user = config.getUser();
 		if (config.isUserPassEncrypted()) {
-			credentialsStatus.setText("Crendentials are currently encrypted. Unlock it to manage.");
+			credentialsStatus.setText(CRED_STATUS_CURR_ENCRYPTED);
 		} else if (user == null || user.isEmpty()) {
-			credentialsStatus.setText("No credentials entered.");
+			credentialsStatus.setText(CRED_STATUS_NOT_EXIST);
 		} else {
-			credentialsStatus.setText("Username: " + user);
+			credentialsStatus.setText(CRED_STATUS_EXIST_PREFIX + user);
 		}
 		disabledOeCheckbox.setSelected(!config.isOEEnabled());
 		
         String[] browsers = null;
         try {
             browsers = Installer.getAvailableBrowsers();
-        } catch (DebuggableException e) {
+        } catch (WithDumpException e) {
             e.printStackTrace();
         }
         List<String> items = browsersBox.getItems();
@@ -665,6 +809,7 @@ public class PreferencesController implements Initializable {
         toneBeforeDwnText.setText(config.getToneBeforeDownloadPath());
         enableToneAfterDwnCheckbox.setSelected(config.isEnableToneAfterDownload());
         toneAfterDwnText.setText(config.getToneAfterDownloadPath());
+        metricsCheckbox.setSelected(config.isMetricsEnabled());
 	}
 
 	public void setD(IDaemon d) {

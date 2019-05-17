@@ -42,8 +42,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.github.mob41.organdebug.exceptions.DebuggableException;
 import com.github.mob41.osumer.Osumer;
+import com.github.mob41.osumer.debug.WithDumpException;
 import com.github.mob41.osumer.Configuration;
 import com.github.mob41.osumer.exceptions.InvalidSourceIntegerException;
 import com.github.mob41.osumer.exceptions.NoBuildsForVersionException;
@@ -104,13 +104,13 @@ public class Updater {
         return Osumer.OSUMER_VERSION;
     }
     
-    public JSONObject getVersions() throws DebuggableException{
+    public JSONObject getVersions() throws WithDumpException{
         URL url = null;
         
         try {
             url = new URL(VERSION_LIST + "?update=" + Calendar.getInstance().getTimeInMillis());
         } catch (MalformedURLException e){
-            throw new DebuggableException(
+            throw new WithDumpException(
                     VERSION_LIST,
                     "URL url = null;",
                     "new URL(VERSION_LIST);",
@@ -137,7 +137,7 @@ public class Updater {
                 data += line;
             }
         } catch (IOException e) {
-            throw new DebuggableException(
+            throw new WithDumpException(
                     VERSION_LIST,
                     "URL url = new URL(VERSION_LIST);",
                     "(lots of code) -- Connecting and fetch data",
@@ -147,7 +147,7 @@ public class Updater {
         }
         
         if (data == null || data.isEmpty()){
-            throw new DebuggableException(
+            throw new WithDumpException(
                     VERSION_LIST,
                     "(lots of code) -- Connecting and fetch data",
                     "Data validating (isEmpty / null)",
@@ -160,7 +160,7 @@ public class Updater {
         try {
             json = new JSONObject(data);
         } catch (JSONException e){
-            throw new DebuggableException(
+            throw new WithDumpException(
                     VERSION_LIST,
                     "Data validating (isEmpty / null)",
                     "Create JSONObject",
@@ -171,12 +171,12 @@ public class Updater {
         return json;
     }
     
-    public UpdateInfo getLatestVersion() throws DebuggableException{
+    public UpdateInfo getLatestVersion() throws WithDumpException{
         final int updateSource = config.getUpdateSource();
         JSONObject json = getVersions();
         
         if (json.isNull("sources")){
-            throw new DebuggableException(
+            throw new WithDumpException(
                     VERSION_LIST,
                     "Create JSONObject",
                     "JSONObject validating \"sources\" parameter",
@@ -264,7 +264,7 @@ public class Updater {
         return new UpdateInfo(desc, last, updateSource, latest, webLink, exeLink, jarLink, isThisVersion, !isThisVersion);
     }
 
-    public UpdateInfo getPerVersionPerBranchLatestVersion() throws DebuggableException {
+    public UpdateInfo getPerVersionPerBranchLatestVersion() throws WithDumpException {
         final String thisVersion = Osumer.OSUMER_VERSION;
         final String buildBranch = Osumer.OSUMER_BRANCH;
         final int buildNum = Osumer.OSUMER_BUILD_NUM;
@@ -273,7 +273,7 @@ public class Updater {
         JSONObject json = getVersions();
 
         if (json.isNull("sources")) {
-            throw new DebuggableException(VERSION_LIST, "Create JSONObject",
+            throw new WithDumpException(VERSION_LIST, "Create JSONObject",
                     "JSONObject validating \"sources\" parameter", "Convert source integer to string",
                     "Structure invalid, missing \"sources\" parameter", false);
         }
@@ -387,18 +387,18 @@ public class Updater {
         }
     }
 
-    public boolean isUpdateAvailable() throws DebuggableException {
+    public boolean isUpdateAvailable() throws WithDumpException {
         UpdateInfo latestVer = getLatestVersion();
         return latestVer != null && !latestVer.isThisVersion();
     }
 
-    public static String getUpdaterLink() throws DebuggableException {
+    public static String getUpdaterLink() throws WithDumpException {
         URL url = null;
 
         try {
             url = new URL(VERSION_LIST + "?update=" + Calendar.getInstance().getTimeInMillis());
         } catch (MalformedURLException e) {
-            throw new DebuggableException(VERSION_LIST, "URL url = null;", "new URL(VERSION_LIST);",
+            throw new WithDumpException(VERSION_LIST, "URL url = null;", "new URL(VERSION_LIST);",
                     "URLConnection conn = url.openConnection();", "", false, e);
         }
 
@@ -420,12 +420,12 @@ public class Updater {
                 data += line;
             }
         } catch (IOException e) {
-            throw new DebuggableException(VERSION_LIST, "URL url = new URL(VERSION_LIST);",
+            throw new WithDumpException(VERSION_LIST, "URL url = new URL(VERSION_LIST);",
                     "(lots of code) -- Connecting and fetch data", "Data validating (isEmpty / null)", "", false, e);
         }
 
         if (data == null || data.isEmpty()) {
-            throw new DebuggableException(VERSION_LIST, "(lots of code) -- Connecting and fetch data",
+            throw new WithDumpException(VERSION_LIST, "(lots of code) -- Connecting and fetch data",
                     "Data validating (isEmpty / null)", "Create JSONObject",
                     "No data fetched. \"data\" is null/isEmpty", false);
         }
@@ -434,7 +434,7 @@ public class Updater {
         try {
             json = new JSONObject(data);
         } catch (JSONException e) {
-            throw new DebuggableException(VERSION_LIST, "Data validating (isEmpty / null)", "Create JSONObject",
+            throw new WithDumpException(VERSION_LIST, "Data validating (isEmpty / null)", "Create JSONObject",
                     "JSON stuff", "Structure invalid", false, e);
         }
 

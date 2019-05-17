@@ -35,8 +35,8 @@ import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import com.github.mob41.organdebug.DebugDump;
-import com.github.mob41.organdebug.DumpManager;
+import com.github.mob41.osumer.debug.DebugDump;
+import com.github.mob41.osumer.debug.DumpManager;
 
 public class URLDownloader extends Downloader {
 
@@ -193,7 +193,7 @@ public class URLDownloader extends Downloader {
                 reportState();
             }
         } catch (IOException e) {
-            DumpManager.getInstance().addDump(new DebugDump(null, "(Try&catch try)", "Error reporting and debug dump",
+            DumpManager.addDump(new DebugDump(null, "(Try&catch try)", "Error reporting and debug dump",
                     "(Try&catch finally)", "Error when downloading", false, e));
             error();
         } finally {

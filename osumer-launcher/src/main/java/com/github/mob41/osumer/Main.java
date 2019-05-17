@@ -37,14 +37,13 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 
 import javax.swing.JOptionPane;
-import javax.swing.UIManager;
 
-import com.github.mob41.organdebug.DebugDump;
-import com.github.mob41.organdebug.DumpManager;
-import com.github.mob41.organdebug.exceptions.DebuggableException;
+import com.github.mob41.osumer.debug.DebugDump;
+import com.github.mob41.osumer.debug.DumpManager;
+import com.github.mob41.osumer.debug.WithDumpException;
 import com.github.mob41.osumer.installer.Installer;
 import com.github.mob41.osumer.rmi.IDaemon;
-import com.github.mob41.osums.io.beatmap.Osums;
+import com.github.mob41.osums.Osums;
 
 public class Main {
 
@@ -106,7 +105,7 @@ public class Main {
                         System.out.println("Info@U$\nInstallation success within "
                                 + (System.currentTimeMillis() - startTime) + " ms\nInfo@D$");
                     }
-                } catch (DebuggableException e) {
+                } catch (WithDumpException e) {
                     if (!ap.isNoUiFlag() && !GraphicsEnvironment.isHeadless()) {
                         //TODO: Error Dump Dialog Control
                         /*
@@ -141,7 +140,7 @@ public class Main {
                         System.out.println("Info@U$\nUninstallation success within "
                                 + (System.currentTimeMillis() - startTime) + " ms\nInfo@D$");
                     }
-                } catch (DebuggableException e) {
+                } catch (WithDumpException e) {
                     if (!ap.isNoUiFlag() && !GraphicsEnvironment.isHeadless()) {
                         //TODO: Error Dump Dialog Control
                         /*
@@ -225,7 +224,7 @@ public class Main {
                     e.printStackTrace();
                     DebugDump dump = new DebugDump(null, null, "Opening connection to BG osumer socket", null,
                             "Could not open socket at 46725 for BG call. Not osumer running at that port?", false, e);
-                    DumpManager.getInstance().addDump(dump);
+                    DumpManager.addDump(dump);
                     //ErrorDumpDialog dialog = new ErrorDumpDialog(dump);
                     //dialog.setModal(true);
                     //dialog.setVisible(true);

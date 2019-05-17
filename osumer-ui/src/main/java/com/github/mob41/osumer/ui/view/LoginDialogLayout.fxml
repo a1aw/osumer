@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<DialogPane prefHeight="190.0" prefWidth="465.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.mob41.osumer.ui.LoginDialogController">
+   <header>
+      <Label text="Login">
+         <font>
+            <Font size="24.0" />
+         </font>
+         <padding>
+            <Insets bottom="8.0" left="16.0" right="8.0" top="8.0" />
+         </padding>
+      </Label>
+   </header>
+   <content>
+      <BorderPane>
+         <center>
+            <VBox alignment="TOP_CENTER" spacing="8.0">
+               <padding>
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+               </padding>
+               <children>
+                  <Label alignment="TOP_LEFT" text="Your credentials are only used to log into osu! forum." textAlignment="CENTER">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <GridPane hgap="8.0" vgap="20.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="193.0" minWidth="10.0" prefWidth="74.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="365.0" minWidth="10.0" prefWidth="315.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <TextField fx:id="usr" GridPane.columnIndex="1" />
+                        <PasswordField fx:id="pwd" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label text="Username:" GridPane.halignment="RIGHT" />
+                        <Label text="Password:" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                     </children>
+                     <padding>
+                        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+                     </padding>
+                  </GridPane>
+               </children>
+            </VBox>
+         </center>
+      </BorderPane>
+   </content>
+</DialogPane>

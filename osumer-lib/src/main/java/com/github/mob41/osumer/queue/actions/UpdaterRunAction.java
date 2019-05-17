@@ -2,9 +2,8 @@ package com.github.mob41.osumer.queue.actions;
 
 import java.io.IOException;
 
-import com.github.mob41.organdebug.DebugDump;
-import com.github.mob41.organdebug.DumpManager;
-//import com.github.mob41.osumer.exceptions.ErrorDumpDialog;
+import com.github.mob41.osumer.debug.DebugDump;
+import com.github.mob41.osumer.debug.DumpManager;
 import com.github.mob41.osumer.queue.Queue;
 import com.github.mob41.osumer.queue.QueueAction;
 
@@ -39,7 +38,7 @@ public class UpdaterRunAction implements QueueAction{
                     "Unable to open file",
                     false,
                     e1);
-            DumpManager.getInstance().addDump(dump);
+            DumpManager.addDump(dump);
             //TODO
             /*
             ErrorDumpDialog dialog = new ErrorDumpDialog(dump);

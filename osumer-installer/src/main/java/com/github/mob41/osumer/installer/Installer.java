@@ -44,8 +44,8 @@ import org.apache.commons.codec.binary.Base64;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.github.mob41.organdebug.exceptions.DebuggableException;
 import com.github.mob41.osumer.Osumer;
+import com.github.mob41.osumer.debug.WithDumpException;
 import com.github.mob41.osumer.updater.VersionInfo;
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.Win32Exception;
@@ -213,7 +213,7 @@ public class Installer {
         // https://msdn.microsoft.com/en-us/library/windows/desktop/cc144109(v=vs.85).aspx#reinstall_command
     }
 
-    public static String[] getAvailableBrowsers() throws DebuggableException {
+    public static String[] getAvailableBrowsers() throws WithDumpException {
         try {
             String[] keys = Advapi32Util.registryGetKeys(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_CLIENTS_PATH);
 
@@ -231,7 +231,7 @@ public class Installer {
 
             return out;
         } catch (Win32Exception e) {
-            throw new DebuggableException(null, "(Try&catch try)", "Throw debuggable exception", "(End of function)",
+            throw new WithDumpException(null, "(Try&catch try)", "Throw debuggable exception", "(End of function)",
                     "Error reading registry", false, e);
         }
     }
@@ -316,14 +316,14 @@ public class Installer {
         return false;
     }
 
-    public void install() throws DebuggableException {
+    public void install() throws WithDumpException {
         if (!Osumer.isWindows()) {
-            throw new DebuggableException(null, "Validate OS is Windows", "Throw debuggable exception",
+            throw new WithDumpException(null, "Validate OS is Windows", "Throw debuggable exception",
                     "Validate is osumer elevated", "Installer does not support non-Windows environment", false);
         }
 
         if (!Osumer.isWindowsElevated()) {
-            throw new DebuggableException(null, "Validate OS is Windows", "Validate is osumer elevated",
+            throw new WithDumpException(null, "Validate OS is Windows", "Validate is osumer elevated",
                     "Create File instance of \"osumer.exe\"",
                     "osumer is not elevated. Restart osumer with administrative privileges.", false);
         }
@@ -334,12 +334,12 @@ public class Installer {
                     .decode(Installer.class.getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
         } catch (UnsupportedEncodingException e1) {
             e1.printStackTrace();
-            throw new DebuggableException(null, "Validate is osumer elevated", "Get current running file path",
+            throw new WithDumpException(null, "Validate is osumer elevated", "Get current running file path",
                     "Validate is running file name is ending with .exe", "Unsupported encoding UTF-8", false, e1);
         }
 
         if (!runningFilePath.endsWith(".exe")) {
-            throw new DebuggableException(runningFilePath, "Get current running file path",
+            throw new WithDumpException(runningFilePath, "Get current running file path",
                     "Validate is running file name is ending with .exe", "Create File instance of \"osumer.exe\"",
                     "A Windows executable (.exe) version of osumer is required for installation. It can be downloaded from the releases. If you have it, rename it to \"osumer.exe\" to continue.",
                     false);
@@ -347,7 +347,7 @@ public class Installer {
 
         File file = new File(runningFilePath);
         if (!file.exists()) {
-            throw new DebuggableException(runningFilePath, "Validate is running file name is ending with .exe",
+            throw new WithDumpException(runningFilePath, "Validate is running file name is ending with .exe",
                     "Create File instance of \"osumer.exe\"", "Create File instance of constant field winPath",
                     "Unexpected? The running file-name does not exist!", false);
         }
@@ -376,7 +376,7 @@ public class Installer {
             out.flush();
             out.close();
         } catch (IOException e) {
-            throw new DebuggableException(null,
+            throw new WithDumpException(null,
                     "Create new File instance with \"" + winPath + "\\" + verInfoFile + "\"",
                     "Create application version info",
                     "Create new File instance with \"" + winPath + "\\" + winFile + "\"", "Error creating version info",
@@ -397,7 +397,7 @@ public class Installer {
             out.flush();
             out.close();
         } catch (IOException e) {
-            throw new DebuggableException(null, "Create new File instance with \"" + winPath + "\\" + winFile + "\"",
+            throw new WithDumpException(null, "Create new File instance with \"" + winPath + "\\" + winFile + "\"",
                     "(Try scope) Copying file", "Creating Main osumer link in Start Menu", "Error copying file", false, e);
         }
         
@@ -415,7 +415,7 @@ public class Installer {
         try {
             slMain.saveTo(START_MENU_PATH + "\\osumer.lnk");
         } catch (IOException e1) {
-            throw new DebuggableException(null, "(Try scope) Copying file",
+            throw new WithDumpException(null, "(Try scope) Copying file",
                     "Creating Main osumer link in Start Menu", "Creating Daemon osumer link in Start Menu", "Error copying file", false, e1);
         }
         
@@ -428,7 +428,7 @@ public class Installer {
         try {
             slDaemon.saveTo(START_MENU_PATH + "\\osumer (Start as Daemon).lnk");
         } catch (IOException e1) {
-            throw new DebuggableException(null, "Creating Main osumer link in Start Menu",
+            throw new WithDumpException(null, "Creating Main osumer link in Start Menu",
                     "Creating Daemon osumer link in Start Menu", "(Next Try scope) Writing to registry", "Error copying file", false, e1);
         }
 
@@ -577,12 +577,12 @@ public class Installer {
             // HKLM/SOFTWARE/Microsoft/Windows/CurrentVersion/Run/@osumerDaemon
             Advapi32Util.registrySetStringValue(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_RUN_PATH, WIN_REG_RUN_OSUMERDAEMON_PARA, WIN_REG_RUN_OSUMERDAEMON_VALUE);
         } catch (Win32Exception e) {
-            throw new DebuggableException(null, "(Try&catch try) Writing to registry", "Throw debuggable exception",
+            throw new WithDumpException(null, "(Try&catch try) Writing to registry", "Throw debuggable exception",
                     "(End of function)", "Error writing registry", false, e);
         }
     }
 
-    public void uninstall() throws DebuggableException {
+    public void uninstall() throws WithDumpException {
         File file = new File(winPath + "\\" + winFile);
         if (file.exists()) {
             file.delete();
@@ -640,7 +640,7 @@ public class Installer {
             Advapi32Util.registryDeleteValue(WinReg.HKEY_LOCAL_MACHINE, WIN_REG_RUN_PATH, WIN_REG_RUN_OSUMERDAEMON_PARA); 
         } catch (Win32Exception e) {
             e.printStackTrace();
-            throw new DebuggableException(null, "(Try&catch try) Writing to registry", "Throw debuggable exception",
+            throw new WithDumpException(null, "(Try&catch try) Writing to registry", "Throw debuggable exception",
                     "(End of function)", "Error writing registry", false, e);
         }
     }

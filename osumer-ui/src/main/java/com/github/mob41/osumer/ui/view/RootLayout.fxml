@@ -38,23 +38,23 @@
             <items>
                   <MenuItem fx:id="preferencesMenuItem" mnemonicParsing="false" text="Preferences" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" text="Check for updates" />
+                  <MenuItem fx:id="updatesMenuItem" mnemonicParsing="false" text="Check for updates" />
                   <Menu mnemonicParsing="false" text="Debug">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="View dumps" />
-                      <MenuItem mnemonicParsing="false" text="Locate configuration" />
+                        <MenuItem fx:id="dumpsMenuItem" mnemonicParsing="false" text="View dumps" />
+                      <MenuItem fx:id="locateConfigMenuItem" mnemonicParsing="false" text="Locate configuration" />
                     </items>
                   </Menu>
                   <SeparatorMenuItem mnemonicParsing="false" />
-              <MenuItem mnemonicParsing="false" text="Close" />
+              <MenuItem fx:id="closeMenuItem" mnemonicParsing="false" text="Close" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">
             <items>
-                  <MenuItem mnemonicParsing="false" text="Documentation" />
-                  <MenuItem mnemonicParsing="false" text="Post an issue" />
+                  <MenuItem fx:id="docsMenuItem" mnemonicParsing="false" text="Documentation" />
+                  <MenuItem fx:id="issueMenuItem" mnemonicParsing="false" text="Post an issue" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-              <MenuItem mnemonicParsing="false" text="About" />
+              <MenuItem fx:id="aboutMenuItem" mnemonicParsing="false" text="About" />
             </items>
           </Menu>
         </menus>

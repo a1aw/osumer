@@ -5,7 +5,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import com.github.mob41.osums.io.beatmap.OsuBeatmap;
+import com.github.mob41.osums.beatmap.OsuBeatmap;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
