@@ -28,9 +28,9 @@
  *******************************************************************************/
 package com.github.mob41.osumer.exceptions;
 
-import com.github.mob41.organdebug.exceptions.DebuggableException;
+import com.github.mob41.osumer.debug.WithDumpException;
 
-public class InvalidSourceIntegerException extends DebuggableException {
+public class InvalidSourceIntegerException extends WithDumpException {
 
     /**
      * 

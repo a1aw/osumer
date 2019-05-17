@@ -59,13 +59,13 @@
   <dependencies>
   	<dependency>
   		<groupId>com.github.mob41</groupId>
-  		<artifactId>OrganDebugger</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
+  		<artifactId>osumer-debugdump</artifactId>
+  		<version>2.0.0-SNAPSHOT</version>
   	</dependency>
   	<dependency>
-  		<groupId>com.github.mob41.osums</groupId>
-  		<artifactId>osums-api</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
+  		<groupId>com.github.mob41</groupId>
+  		<artifactId>osumer-osums</artifactId>
+  		<version>2.0.0-SNAPSHOT</version>
   	</dependency>
   	<dependency>
   		<groupId>com.github.mob41</groupId>

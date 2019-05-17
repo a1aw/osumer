@@ -4,7 +4,6 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 import com.github.mob41.osumer.rmi.IUI;
-import com.github.mob41.osumer.ui.old.UIFrame_old;
 
 public class UI extends UnicastRemoteObject implements IUI {
 

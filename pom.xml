@@ -10,5 +10,7 @@
   	<module>osumer-lib</module>
   	<module>osumer-installer</module>
   	<module>osumer-launcher</module>
+  	<module>osumer-debugdump</module>
+  	<module>osumer-osums</module>
   </modules>
 </project>

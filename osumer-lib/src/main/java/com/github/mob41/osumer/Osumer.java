@@ -31,6 +31,8 @@ package com.github.mob41.osumer;
 import java.io.File;
 import java.io.IOException;
 
+import com.github.mob41.osumer.updater.Updater;
+
 public class Osumer {
 
     // TODO: Hard-code version?
@@ -40,6 +42,10 @@ public class Osumer {
     public static final String OSUMER_BRANCH = "snapshot";
 
     public static final int OSUMER_BUILD_NUM = 6;
+    
+    public static String getVersionString() {
+    	return OSUMER_VERSION + "-" + OSUMER_BRANCH + "-b" + OSUMER_BUILD_NUM;
+    }
 
     private Osumer() {
     

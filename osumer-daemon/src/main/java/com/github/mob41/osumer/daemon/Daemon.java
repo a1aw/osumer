@@ -22,9 +22,9 @@ import java.util.Observer;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
-import com.github.mob41.organdebug.exceptions.DebuggableException;
 import com.github.mob41.osumer.Configuration;
 import com.github.mob41.osumer.Osumer;
+import com.github.mob41.osumer.debug.WithDumpException;
 import com.github.mob41.osumer.io.Downloader;
 import com.github.mob41.osumer.io.OsuDownloader;
 import com.github.mob41.osumer.queue.Queue;
@@ -37,8 +37,8 @@ import com.github.mob41.osumer.queue.actions.BeforeSoundAction;
 import com.github.mob41.osumer.queue.actions.CustomImportAction;
 import com.github.mob41.osumer.rmi.IDaemon;
 import com.github.mob41.osumer.rmi.IUI;
-import com.github.mob41.osums.io.beatmap.OsuBeatmap;
-import com.github.mob41.osums.io.beatmap.Osums;
+import com.github.mob41.osums.beatmap.OsuBeatmap;
+import com.github.mob41.osums.Osums;
 
 public class Daemon extends UnicastRemoteObject implements IDaemon {
 
@@ -142,7 +142,7 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
         try {
         	System.out.println("Login");
             System.out.println(osums.login(user, pass));
-        } catch (DebuggableException e) {
+        } catch (WithDumpException e) {
             e.printStackTrace();
             //JOptionPane.showMessageDialog(UIFrame.this, "Error logging in:\n" + e.getDump().getMessage(),
             //        "Error", JOptionPane.ERROR_MESSAGE);
@@ -154,7 +154,7 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
         
         try {
             map = osums.getBeatmapInfo(modBUrl);
-        } catch (DebuggableException e) {
+        } catch (WithDumpException e) {
             e.printStackTrace();
             //JOptionPane.showMessageDialog(UIFrame.this,
             //        "Error getting beatmap info:\n" + e.getDump().getMessage(), "Error",
@@ -257,7 +257,6 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
 			try {
 				ui.onQueueStatusUpdate();
 			} catch (RemoteException e) {
-				e.printStackTrace();
 				if (uis.contains(ui)) {
 					uis.remove(ui);
 				}

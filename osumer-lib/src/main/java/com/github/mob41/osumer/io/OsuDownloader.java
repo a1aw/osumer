@@ -38,9 +38,9 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
-import com.github.mob41.organdebug.DebugDump;
-import com.github.mob41.organdebug.DumpManager;
-import com.github.mob41.osums.io.beatmap.Osums;
+import com.github.mob41.osumer.debug.DebugDump;
+import com.github.mob41.osumer.debug.DumpManager;
+import com.github.mob41.osums.Osums;
 
 public class OsuDownloader extends Downloader {
 
@@ -191,7 +191,7 @@ public class OsuDownloader extends Downloader {
         } catch (IOException e) {
         	System.out.println("Exception!");
         	e.printStackTrace();
-            DumpManager.getInstance().addDump(new DebugDump(null, "(Try&catch try)", "Error reporting and debug dump",
+            DumpManager.addDump(new DebugDump(null, "(Try&catch try)", "Error reporting and debug dump",
                     "(Try&catch finally)", "Error when downloading", false, e));
             error();
         } finally {

@@ -10,9 +10,10 @@ import javax.swing.UIManager;
 
 import com.github.mob41.osumer.Configuration;
 import com.github.mob41.osumer.Osumer;
+import com.github.mob41.osumer.debug.DumpManager;
 import com.github.mob41.osumer.rmi.IDaemon;
 import com.github.mob41.osumer.rmi.IUI;
-import com.github.mob41.osums.io.beatmap.Osums;
+import com.github.mob41.osums.Osums;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -61,6 +62,13 @@ public class AppMain extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
+		
+		try {
+			DumpManager.init(Osumer.getVersionString(), Osumer.getVersionString());
+		} catch (IOException e2) {
+			e2.printStackTrace();
+			System.err.println("DumpManager: Error initializing dump manager");
+		}
 		
 		//Arg is handled by osumer-launcher
 

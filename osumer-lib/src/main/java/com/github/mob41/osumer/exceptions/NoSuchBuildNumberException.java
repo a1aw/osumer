@@ -28,9 +28,9 @@
  *******************************************************************************/
 package com.github.mob41.osumer.exceptions;
 
-import com.github.mob41.organdebug.exceptions.DebuggableException;
+import com.github.mob41.osumer.debug.WithDumpException;
 
-public class NoSuchBuildNumberException extends DebuggableException {
+public class NoSuchBuildNumberException extends WithDumpException {
 
     /**
      * 
