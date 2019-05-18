@@ -14,6 +14,8 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}/minhook/minhook/include")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui/examples")
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/target")
+
 add_subdirectory(gl3w)
 add_subdirectory(minhook)
 add_subdirectory(imgui)
