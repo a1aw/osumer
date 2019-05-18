@@ -21,4 +21,38 @@
   	<maven.compiler.source>1.8</maven.compiler.source>
   	<maven.compiler.target>1.8</maven.compiler.target>
   </properties>
+  <!--<build>
+  	<plugins>
+  		<plugin>
+  			<groupId>com.googlecode.cmake-maven-project</groupId>
+  			<artifactId>cmake-maven-plugin</artifactId>
+  			<version>3.7.2-b1</version>
+  			<executions>
+  				<execution>
+  					<id>cmake-generate</id>
+      				<goals>
+        				<goal>generate</goal>
+      				</goals>
+      				<configuration>
+        				<sourcePath>.</sourcePath>
+    		    		<targetPath>.</targetPath>
+    		    		<generator>Ninja</generator>
+     		   			<classifier>windows-x86_32</classifier>
+      				</configuration>      				
+  				</execution>
+    			<execution>
+      				<id>cmake-compile</id>
+      				<goals>
+        				<goal>compile</goal>
+      				</goals>
+      				<configuration>
+        				<config>x86</config>
+    		    		<projectDirectory>osumer-native</projectDirectory>
+     		   			<classifier>windows-x86_32</classifier>
+      				</configuration>
+    			</execution>
+  			</executions>
+		</plugin>
+  	</plugins>
+  </build>-->
 </project>
