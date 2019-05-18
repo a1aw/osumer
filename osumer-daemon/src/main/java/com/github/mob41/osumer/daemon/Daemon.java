@@ -64,7 +64,7 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
         uis = new ArrayList<IUI>();
         
         trayIcon = new TrayIcon(Toolkit.getDefaultToolkit()
-                .getImage(Daemon.class.getResource("/com/github/mob41/osumer/daemon/trayIcon.png")));
+                .getImage(Daemon.class.getResource("/trayIcon.png")));
         
         trayIcon.addActionListener(new ActionListener() {
 

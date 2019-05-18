@@ -205,12 +205,14 @@ public class AppMain extends Application {
             return;
 		}
 		
+        System.out.println("Add im");
         primaryStage.setTitle("osumer2");
-        primaryStage.getIcons().add(new Image(AppMain.class.getResourceAsStream("image/osumerIcon_64px.png")));
-        
+        primaryStage.getIcons().add(new Image(AppMain.class.getResourceAsStream("/image/osumerIcon_64px.png")));
+        System.out.println("Added");
         osums = new Osums();
 
         initRootLayout();
+        System.out.println("Inited");
 	}
 	
 	@Override
@@ -230,7 +232,7 @@ public class AppMain extends Application {
         try {
             // Load root layout from fxml file.
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(AppMain.class.getResource("view/RootLayout.fxml"));
+            loader.setLocation(AppMain.class.getResource("/view/RootLayout.fxml"));
             rootLayout = (BorderPane) loader.load();
             
             controller = loader.getController();
@@ -247,7 +249,7 @@ public class AppMain extends Application {
             
             String skin = config.getUiSkin();
             new JMetro(skin.equals("light") ? JMetro.Style.LIGHT : JMetro.Style.DARK).applyTheme(scene);
-            scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+            scene.getStylesheets().add(getClass().getResource("/css/application.css").toExternalForm());
             
         } catch (IOException e) {
             e.printStackTrace();

@@ -26,7 +26,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.github.mob41.osumer;
+package com.github.mob41.osumer.launcher;
 
 public class ArgParser {
 
