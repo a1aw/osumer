@@ -200,7 +200,7 @@ public class Main {
             return;
         } else {
             IDaemon d = null;
-            
+            System.out.println("Trying");
             try {
                 d = (IDaemon) Naming.lookup("rmi://localhost:46726/daemon"); //Contact the daemon via RMI
             } catch (Exception e) {
@@ -208,6 +208,7 @@ public class Main {
             }
             
             if (d == null) {
+            	System.out.println("Failed. Starting");
                 try {
 					Runtime.getRuntime().exec("osumer-daemon.exe");
 				} catch (IOException e) {
@@ -226,7 +227,7 @@ public class Main {
                         e.printStackTrace();
                     }
                 	try {
-						Thread.sleep(1000);
+						Thread.sleep(50);
 					} catch (InterruptedException e) {
 						break;
 					}
@@ -242,6 +243,7 @@ public class Main {
             }
             
             if (urlStr != null) {
+            	System.out.println("Sending URL");
                 try {
                     d.addQueue(urlStr);
                     
@@ -271,31 +273,42 @@ public class Main {
     }
 
     private static void runUi(Configuration config, String[] args, ArgParser ap, IDaemon d) {
-        try {
-			Runtime.getRuntime().exec("osumer-ui.exe");
-		} catch (IOException e) {
-			e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Could not start UI. Terminating:\n" + e, "osumer launcher Error",
-                    JOptionPane.ERROR_MESSAGE);
-            System.exit(-1);
-            return;
-		}
-        
+        System.out.println("Starting UI");
+
         IUI ui = null;
-        int c = 0;
-        while (c < 10) {
-        	try {
-                ui = (IUI) Naming.lookup("rmi://localhost:46727/ui"); //Contact the ui via RMI
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        	try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				break;
-			}
-        	c++;
+        System.out.println("Trying");
+        try {
+            ui = (IUI) Naming.lookup("rmi://localhost:46727/ui"); //Contact the ui via RMI
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        
+    	if (ui == null) {
+    		try {
+    			Runtime.getRuntime().exec("osumer-ui.exe");
+    		} catch (IOException e) {
+    			e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Could not start UI. Terminating:\n" + e, "osumer launcher Error",
+                        JOptionPane.ERROR_MESSAGE);
+                System.exit(-1);
+                return;
+    		}
+    		System.out.println("Trying to connect");
+            int c = 0;
+            while (c < 10) {
+            	try {
+                    ui = (IUI) Naming.lookup("rmi://localhost:46727/ui"); //Contact the ui via RMI
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            	try {
+    				Thread.sleep(50);
+    			} catch (InterruptedException e) {
+    				break;
+    			}
+            	c++;
+            }
+    	}
         
         if (ui == null) {
             JOptionPane.showMessageDialog(null, "Could not connect to UI. Terminating", "osumer launcher Error",
@@ -303,6 +316,14 @@ public class Main {
             System.exit(-1);
             return;
         }
+        
+    	try {
+			ui.wake();
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+
+        System.out.println("Finished");
     }
 
     public static void runBrowser(Configuration config, String[] args) {
