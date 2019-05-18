@@ -3,7 +3,7 @@
   <parent>
     <groupId>com.github.mob41</groupId>
     <artifactId>osumer</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>${global.version}</version>
   </parent>
   <artifactId>osumer-osums</artifactId>
   <dependencies>
@@ -15,7 +15,7 @@
   	<dependency>
   		<groupId>com.github.mob41</groupId>
   		<artifactId>osumer-debugdump</artifactId>
-  		<version>2.0.0-SNAPSHOT</version>
+  		<version>${global.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>commons-io</groupId>
@@ -28,4 +28,39 @@
   		<version>2.9.8</version>
   	</dependency>
   </dependencies>
+  <build>
+    <plugins>
+    	<plugin>
+    		<groupId>org.apache.maven.plugins</groupId>
+    		<artifactId>maven-dependency-plugin</artifactId>
+			<executions>
+        		<execution>
+            		<id>copy-dependencies</id>
+            		<phase>prepare-package</phase>
+            		<goals>
+                		<goal>copy-dependencies</goal>
+            		</goals>
+            		<configuration>
+                		<outputDirectory>${project.parent.build.directory}/classes/lib</outputDirectory>
+                		<overWriteReleases>false</overWriteReleases>
+                		<overWriteSnapshots>false</overWriteSnapshots>
+                		<overWriteIfNewer>true</overWriteIfNewer>
+            		</configuration>
+        		</execution>
+    		</executions>
+		</plugin>
+		<!--<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+        	<artifactId>maven-jar-plugin</artifactId>
+        	<configuration>
+        		<outputDirectory>${project.parent.build.directory}/classes</outputDirectory>
+          		<archive>
+            		<manifest>
+              			<addClasspath>true</addClasspath>
+            		</manifest>
+          		</archive>
+        	</configuration>
+      	</plugin>-->
+    </plugins>
+  </build>
 </project>

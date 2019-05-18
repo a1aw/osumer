@@ -345,7 +345,7 @@ public class PreferencesController implements Initializable {
 			@Override
 			public void handle(ActionEvent event) {
 				FXMLLoader loader0 = new FXMLLoader();
-		        loader0.setLocation(AppMain.class.getResource("view/LoginDialogLayout.fxml"));
+		        loader0.setLocation(AppMain.class.getResource("/view/LoginDialogLayout.fxml"));
 
 		        DialogPane loginPane = null;
 		        try {
@@ -364,7 +364,7 @@ public class PreferencesController implements Initializable {
 		        loginDialog.getButtonTypes().add(ButtonType.CANCEL);
 
 		        FXMLLoader loader1 = new FXMLLoader();
-		        loader1.setLocation(AppMain.class.getResource("view/ProgressDialogLayout.fxml"));
+		        loader1.setLocation(AppMain.class.getResource("/view/ProgressDialogLayout.fxml"));
 		        DialogPane progressPane = null;
 		        try {
 					progressPane = (DialogPane) loader1.load();
@@ -505,7 +505,7 @@ public class PreferencesController implements Initializable {
 	
 	private void applyChanges() {
 		FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(AppMain.class.getResource("view/ProgressDialogLayout.fxml"));
+        loader.setLocation(AppMain.class.getResource("/view/ProgressDialogLayout.fxml"));
         DialogPane progressPane = null;
         try {
 			progressPane = (DialogPane) loader.load();

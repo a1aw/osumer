@@ -152,7 +152,7 @@ public class MainController implements Initializable {
 			@Override
 			public void handle(ActionEvent event) {
 	            FXMLLoader loader = new FXMLLoader();
-	            loader.setLocation(AppMain.class.getResource("view/PreferencesLayout.fxml"));
+	            loader.setLocation(AppMain.class.getResource("/view/PreferencesLayout.fxml"));
 	            BorderPane borderPane = null;
 		        try {
 		        	borderPane = (BorderPane) loader.load();
@@ -279,7 +279,7 @@ public class MainController implements Initializable {
 			if (!exist) {
 				//Add queue layout
 	            FXMLLoader loader = new FXMLLoader();
-	            loader.setLocation(AppMain.class.getResource("view/QueueLayout.fxml"));
+	            loader.setLocation(AppMain.class.getResource("/view/QueueLayout.fxml"));
 	            FlowPane queuePane = null;
 		        try {
 		            queuePane = (FlowPane) loader.load();
@@ -365,7 +365,7 @@ public class MainController implements Initializable {
 	
 	private void addQueue(String beatmapUrlId, boolean showPreview, boolean changeTab) {
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(AppMain.class.getResource("view/ProgressDialogLayout.fxml"));
+        loader.setLocation(AppMain.class.getResource("/view/ProgressDialogLayout.fxml"));
         DialogPane progressPane = null;
         try {
 			progressPane = (DialogPane) loader.load();
@@ -503,7 +503,7 @@ public class MainController implements Initializable {
             				progressDialog.hide();
             				
             				FXMLLoader loader = new FXMLLoader();
-                            loader.setLocation(AppMain.class.getResource("view/BeatmapPreviewDialogLayout.fxml"));
+                            loader.setLocation(AppMain.class.getResource("/view/BeatmapPreviewDialogLayout.fxml"));
                             DialogPane dialogPane = null;;
                             try {
                     			dialogPane = (DialogPane) loader.load();

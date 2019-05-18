@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.mob41</groupId>
   <artifactId>osumer</artifactId>
-  <version>2.0.0-SNAPSHOT</version>
+  <version>${global.version}</version>
   <packaging>pom</packaging>
   <modules>
   	<module>osumer-ui</module>
@@ -13,4 +13,9 @@
   	<module>osumer-debugdump</module>
   	<module>osumer-osums</module>
   </modules>
+  <properties>
+  	<global.version>2.0.0-SNAPSHOT</global.version>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
 </project>

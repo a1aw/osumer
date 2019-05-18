@@ -41,7 +41,7 @@
                                        <children>
                                           <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
-                                                <Image url="@../image/osumerIcon_32px.png" />
+                                                <Image url="@/image/osumerIcon_32px.png" />
                                              </image>
                                           </ImageView>
                                           <Label text="osumer">

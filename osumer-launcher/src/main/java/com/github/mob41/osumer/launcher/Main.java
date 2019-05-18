@@ -26,7 +26,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.github.mob41.osumer;
+package com.github.mob41.osumer.launcher;
 
 import java.awt.GraphicsEnvironment;
 import java.io.File;
@@ -38,6 +38,8 @@ import java.rmi.RemoteException;
 
 import javax.swing.JOptionPane;
 
+import com.github.mob41.osumer.Configuration;
+import com.github.mob41.osumer.Osumer;
 import com.github.mob41.osumer.debug.DebugDump;
 import com.github.mob41.osumer.debug.DumpManager;
 import com.github.mob41.osumer.debug.WithDumpException;

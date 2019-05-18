@@ -189,7 +189,7 @@
                               <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                            </FlowPane.margin>
                            <image>
-                              <Image url="@../image/osumerIcon_32px.png" />
+                              <Image url="@/image/osumerIcon_32px.png" />
                            </image>
                         </ImageView>
                         <Label text="osumer">
