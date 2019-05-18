@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.572
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "osumer-setup", "osumer-setup\osumer-setup.vdproj", "{61E5885C-6583-4473-8027-8A54A2C58BF3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Default = Debug|Default
+		Release|Default = Release|Default
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{61E5885C-6583-4473-8027-8A54A2C58BF3}.Debug|Default.ActiveCfg = Debug
+		{61E5885C-6583-4473-8027-8A54A2C58BF3}.Debug|Default.Build.0 = Debug
+		{61E5885C-6583-4473-8027-8A54A2C58BF3}.Release|Default.ActiveCfg = Release
+		{61E5885C-6583-4473-8027-8A54A2C58BF3}.Release|Default.Build.0 = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {74FCBC03-70FA-4B35-994A-7282D8EF9C4F}
+	EndGlobalSection
+EndGlobal
