@@ -51,7 +51,7 @@
                 		<goal>copy-dependencies</goal>
             		</goals>
             		<configuration>
-                		<outputDirectory>${project.parent.build.directory}/classes/lib</outputDirectory>
+                		<outputDirectory>${project.parent.build.directory}/lib</outputDirectory>
                 		<overWriteReleases>false</overWriteReleases>
                 		<overWriteSnapshots>false</overWriteSnapshots>
                 		<overWriteIfNewer>true</overWriteIfNewer>

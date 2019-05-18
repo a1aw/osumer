@@ -41,7 +41,7 @@
                 		<goal>copy-dependencies</goal>
             		</goals>
             		<configuration>
-                		<outputDirectory>${project.parent.build.directory}/classes/lib</outputDirectory>
+                		<outputDirectory>${project.parent.build.directory}/lib</outputDirectory>
                 		<overWriteReleases>false</overWriteReleases>
                 		<overWriteSnapshots>false</overWriteSnapshots>
                 		<overWriteIfNewer>true</overWriteIfNewer>
@@ -53,7 +53,7 @@
 			<groupId>org.apache.maven.plugins</groupId>
         	<artifactId>maven-jar-plugin</artifactId>
         	<configuration>
-        		<outputDirectory>${project.parent.build.directory}/classes</outputDirectory>
+        		<outputDirectory>${project.parent.build.directory}</outputDirectory>
           		<archive>
             		<manifest>
               			<addClasspath>true</addClasspath>
@@ -63,6 +63,48 @@
           		</archive>
         	</configuration>
       	</plugin>
+      	<plugin>
+          <groupId>com.akathist.maven.plugins.launch4j</groupId>
+          <artifactId>launch4j-maven-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>l4j-gui</id>
+              <phase>package</phase>
+              <goals><goal>launch4j</goal></goals>
+              <configuration>
+                <headerType>gui</headerType>
+                <outfile>${project.parent.build.directory}/${project.parent.artifactId}.exe</outfile>
+                <jar>${project.parent.build.directory}/${project.artifactId}-${global.version}.jar</jar>
+                <errTitle>osumer2</errTitle>
+                <supportUrl>https://github.com/mob41/osumer/issues/new</supportUrl>
+                <icon>${project.parent.basedir}/src/main/resources/osumerIcon_128px.ico</icon>
+                <classPath>
+                  <mainClass>com.github.mob41.osumer.launcher.Main</mainClass>
+                  <addDependencies>false</addDependencies>
+                  <preCp>anything</preCp>
+                </classPath>
+                <jre>
+                  <path>jre</path>
+                  <minVersion>1.8.0</minVersion>
+                  <runtimeBits>32</runtimeBits>
+                  <initialHeapSize>64</initialHeapSize>
+                  <maxHeapSize>128</maxHeapSize>
+                </jre>
+                <versionInfo>
+                  <fileVersion>${global.generation}.${global.build}</fileVersion>
+                  <txtFileVersion>${global.version}</txtFileVersion>
+                  <fileDescription>osumer2</fileDescription>
+                  <copyright>Copyright (c) 2019 mob41</copyright>
+                  <productVersion>${global.generation}.${global.build}</productVersion>
+                  <txtProductVersion>${global.version}</txtProductVersion>
+                  <productName>osumer2</productName>
+                  <internalName>osumer</internalName>
+                  <originalFilename>osumer.exe</originalFilename>
+                </versionInfo>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
     </plugins>
   </build>
 </project>

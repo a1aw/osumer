@@ -14,8 +14,11 @@
   	<module>osumer-osums</module>
   </modules>
   <properties>
-  	<global.version>2.0.0-SNAPSHOT</global.version>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+  	<global.generation>2.0.0</global.generation>
+  	<global.branch>SNAPSHOT</global.branch>
+  	<global.build>6</global.build>
+  	<global.version>${global.generation}-${global.branch}</global.version>
+  	<maven.compiler.source>1.8</maven.compiler.source>
+  	<maven.compiler.target>1.8</maven.compiler.target>
   </properties>
 </project>
