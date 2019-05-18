@@ -1,12 +1,9 @@
 [submodule "gl3w"]
 	path = gl3w
 	url = https://github.com/skaslev/gl3w.git
-	branch = master
 [submodule "minhook/minhook"]
 	path = minhook/minhook
 	url = https://github.com/TsudaKageyu/minhook.git
-	branch = master
 [submodule "imgui/imgui"]
 	path = imgui/imgui
 	url = https://github.com/ocornut/imgui.git
-	branch = master
