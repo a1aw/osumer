@@ -418,32 +418,37 @@ public class MainController implements Initializable {
             String pass = config.getPass();
             
             if (user == null || user.isEmpty() || pass == null || pass.isEmpty()) {
-            	//TODO Do JavaFX version login
-            	/*
-                pbd.getLabel().setText("Status: Prompting username and password...");
-                LoginPanel loginPanel = new LoginPanel();
-                int option = JOptionPane.showOptionDialog(UIFrame_old.this, loginPanel, "Login to osu!",
-                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null,
-                        JOptionPane.CANCEL_OPTION);
+            	FXMLLoader loader0 = new FXMLLoader();
+		        loader0.setLocation(AppMain.class.getResource("/view/LoginDialogLayout.fxml"));
 
-                if (option == JOptionPane.OK_OPTION) {
-                    if (loginPanel.getUsername().isEmpty() || loginPanel.getPassword().isEmpty()) {
-                        JOptionPane.showMessageDialog(UIFrame_old.this, "Username or password cannot be empty.",
-                                "Error", JOptionPane.ERROR_MESSAGE);
-                        pbd.dispose();
-                        return;
-                    }
-
-                    user = loginPanel.getUsername();
-                    pass = loginPanel.getPassword();
-                } else {
-                    pbd.dispose();
-                    return;
+		        DialogPane loginPane = null;
+		        try {
+					loginPane = (DialogPane) loader0.load();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+		        LoginDialogController loginController = loader0.getController();
+		        
+		        Alert loginDialog = new Alert(AlertType.NONE);
+		        loginDialog.initStyle(StageStyle.UTILITY);
+		        loginDialog.initModality(Modality.APPLICATION_MODAL);
+		        loginDialog.setTitle("");
+		        loginDialog.setDialogPane(loginPane);
+		        loginDialog.getButtonTypes().add(ButtonType.OK);
+		        loginDialog.getButtonTypes().add(ButtonType.CANCEL);
+		        loginDialog.showAndWait();
+		        
+		        String usr = loginController.getUser();
+                String pwd = loginController.getPwd();
+		        
+                if (usr == null || pwd == null || usr.isEmpty() || pwd.isEmpty()) {
+                	Alert alert = new Alert(AlertType.WARNING, "Username or password must not be empty.", ButtonType.OK);
+                	alert.showAndWait();
+                	return;
                 }
-                */
-        		Alert alert = new Alert(AlertType.INFORMATION, "Not implmented: JavaFX Login", ButtonType.OK);
-        		alert.showAndWait();
-            	return;
+                
+                user = usr;
+                pass = pwd;
             }
             
             //TODO Remove once new parser implemented
@@ -451,6 +456,9 @@ public class MainController implements Initializable {
         	final String _url = url;
         	
             OsuBeatmap map = null;
+            
+            final String _user = user;
+            final String _pass = pass;
             
             Thread thread = new Thread() {
             	public void run() {
@@ -462,7 +470,7 @@ public class MainController implements Initializable {
 					});
             		
                     try {
-                        osums.login(user, pass);
+                        osums.login(_user, _pass);
                     } catch (WithDumpException e) {
                         e.printStackTrace();
                         Platform.runLater(new Runnable() {
