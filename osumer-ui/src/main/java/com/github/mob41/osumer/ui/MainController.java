@@ -3,11 +3,13 @@ package com.github.mob41.osumer.ui;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -19,6 +21,8 @@ import com.github.mob41.osumer.debug.WithDumpException;
 import com.github.mob41.osumer.exceptions.NoBuildsForVersionException;
 import com.github.mob41.osumer.exceptions.NoSuchBuildNumberException;
 import com.github.mob41.osumer.exceptions.NoSuchVersionException;
+import com.github.mob41.osumer.io.OsuDownloader;
+import com.github.mob41.osumer.io.URLDownloader;
 import com.github.mob41.osumer.queue.QueueStatus;
 import com.github.mob41.osumer.rmi.IDaemon;
 import com.github.mob41.osumer.updater.UpdateInfo;
@@ -39,6 +43,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.DialogEvent;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -193,6 +198,25 @@ public class MainController implements Initializable {
 		        String configPath = Osumer.isWindows() ? System.getenv("localappdata") + "\\osumerExpress" : "";
 				try {
 					Desktop.getDesktop().open(new File(configPath));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+        
+        dumpsMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+		        String dumpPath = Osumer.isWindows() ? System.getenv("localappdata") + "\\osumerExpress\\dumps" : "";
+		        File folder = new File(dumpPath);
+		        if (!folder.exists()) {
+                	Alert alert = new Alert(AlertType.ERROR, "There are no dumps currently.", ButtonType.OK);
+                	alert.showAndWait();
+                	return;
+		        }
+				try {
+					Desktop.getDesktop().open(folder);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -455,7 +479,7 @@ public class MainController implements Initializable {
             final String modUrl = config.isUseOldParser() ? url.replace("osu.ppy.sh", "old.ppy.sh") : url;
         	final String _url = url;
         	
-            OsuBeatmap map = null;
+            //OsuBeatmap map = null;
             
             final String _user = user;
             final String _pass = pass;
@@ -757,6 +781,7 @@ public class MainController implements Initializable {
 		                } while (result == detailsBtn);
 		                
 		                if (result == ButtonType.YES){
+		                	/*
 		                    try {
 		                        Desktop.getDesktop().browse(new URI(_verInfo.getWebLink()));
 		                    } catch (IOException | URISyntaxException e) {
@@ -771,7 +796,8 @@ public class MainController implements Initializable {
 		                        DumpManager.addDump(dump);
 		                        //DebugDump.showDebugDialog(dump);
 		                    }
-		                    /*
+		                    */
+		                    
 		                    try {
 		                        String updaterLink = Updater.getUpdaterLink();
 		                        
@@ -785,34 +811,139 @@ public class MainController implements Initializable {
 		                            url = new URL(updaterLink);
 		                        } catch (MalformedURLException e) {
 		                            e.printStackTrace();
-		                            JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
-		                            return;
+		                        	Alert alert0 = new Alert(AlertType.ERROR, "Error:\n" + e, ButtonType.OK);
+		                        	alert0.showAndWait();
+		                        	return;
 		                        }
 		                        
 		                        final String folder = System.getProperty("java.io.tmpdir");
 		                        final String fileName = "osumer_updater_" + Calendar.getInstance().getTimeInMillis() + ".exe";
 		                        
-		                        mgr.addQueue(new Queue(
-		                                "osumer Updater",
-		                                new URLDownloader(folder, fileName, url),
-		                                null,
-		                                null,
-		                                new QueueAction[] {
-		                                        new UpdaterRunAction(folder + fileName)
-		                                })
-		                         );
-		                        tab.setSelectedIndex(1);
-		                        new Thread() {
-		                            public void run() {
-		                                JOptionPane.showMessageDialog(UIFrame.this, "The web updater will be downloaded and started very soon.", "Notice", JOptionPane.INFORMATION_MESSAGE);
-		                            }
-		                        }.start();
+		                        FXMLLoader loader = new FXMLLoader();
+		                        loader.setLocation(AppMain.class.getResource("/view/ProgressDialogLayout.fxml"));
+		                        DialogPane progressPane = null;
+		                        try {
+		                			progressPane = (DialogPane) loader.load();
+		                		} catch (IOException e1) {
+		                			e1.printStackTrace();
+		                		}
+		                        ProgressDialogController progressController = loader.getController();
+		                        
+		                        progressController.getHeaderText().setText("Update");
+		                        progressController.getStatusText().setText("Status: Initializing...");
+		                        progressController.getProgressBar().setProgress(-1);
+		                        
+		                        boolean noClose = false;
+		                        Alert progressDialog = new Alert(AlertType.NONE);
+		                        progressDialog.initStyle(StageStyle.UTILITY);
+		                        progressDialog.initModality(Modality.APPLICATION_MODAL);
+		                        progressDialog.setTitle("");
+		                        progressDialog.setDialogPane(progressPane);
+		                        progressDialog.getButtonTypes().add(ButtonType.CANCEL);
+		                        
+		                        Thread thread = new Thread() {
+		                        	public void run() {
+			        					Platform.runLater(new Runnable() {
+											@Override
+											public void run() {
+						                        progressController.getStatusText().setText("Status: Downloading updater...");
+											}
+										});
+			        					
+				                        URLDownloader dwn = new URLDownloader(folder, fileName, url);
+				                        
+				                        dwn.download();
+				                        
+				                        while (dwn.getStatus() == OsuDownloader.DOWNLOADING){
+				        					if (this.isInterrupted()){
+				        						return;
+				        					}
+				        					
+				        					int progress = (int) dwn.getProgress();
+				        					
+				        					Platform.runLater(new Runnable() {
+												@Override
+												public void run() {
+													progressController.getProgressBar().setProgress(progress / 100.0);
+												}
+											});
+				        					
+				        					try {
+												Thread.sleep(50);
+											} catch (InterruptedException e) {
+												e.printStackTrace();
+											}
+				        				}
+			        					
+			        					Platform.runLater(new Runnable() {
+											@Override
+											public void run() {
+												progressController.getProgressBar().setProgress(-1);
+											}
+										});
+				        				
+				        				if (dwn.getStatus() == OsuDownloader.ERROR){
+				        					Platform.runLater(new Runnable() {
+												@Override
+												public void run() {
+							                        progressController.getStatusText().setText("Status: Error when downloading updater. Please restart osumer.");
+												}
+											});
+				        					
+				        					System.out.println("Download failed.");
+				        				} else if (dwn.getStatus() == OsuDownloader.COMPLETED){
+				        					String loc = folder + "\\" + fileName;
+
+				        					Platform.runLater(new Runnable() {
+												@Override
+												public void run() {
+							                        progressController.getStatusText().setText("Status: Download completed. Starting...");
+												}
+											});
+				        					System.out.println("Download completed...");
+				        					
+				        					try {
+												Thread.sleep(2000);
+											} catch (InterruptedException e) {
+												e.printStackTrace();
+											}
+				        					
+				        					try {
+				        						Runtime.getRuntime().exec("cmd.exe /c " + loc + " -install");
+				        					} catch (IOException e1) {
+				        						e1.printStackTrace();
+				        						DumpManager.addDump(new DebugDump(
+				        								null,
+				        								"(If[openFile] scope) (UI) Set status to lblStatus",
+				        								"(Try scope) Open file loc using Desktop.getDesktop.open()",
+				        								"(Try scope) Sleep 2000 ms (2 sec)",
+				        								"Unable to open file",
+				        								false,
+				        								e1));
+				        					}
+				        					
+				        					try {
+												Thread.sleep(2000);
+											} catch (InterruptedException e) {
+												e.printStackTrace();
+											}
+				        					
+				        					Platform.exit();
+				        					System.exit(0);
+				        					return;
+				        				}
+		                        	}
+		                        };
+		                        thread.start();
+		                        
+		                        progressDialog.showAndWait();
 		                    } catch (WithDumpException e){
 		                        e.printStackTrace();
-		                        JOptionPane.showMessageDialog(null, "Error:\n" + e, "Error", JOptionPane.ERROR_MESSAGE);
 		                        checkingUpdate = false;
+	                        	Alert alert0 = new Alert(AlertType.ERROR, "Error:\n" + e, ButtonType.OK);
+	                        	alert0.showAndWait();
+	                        	return;
 		                    }
-		                    */
 		                }
 		                checkingUpdate = false;
 	                }
