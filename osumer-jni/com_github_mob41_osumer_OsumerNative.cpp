@@ -1,5 +1,5 @@
 #include "jni.h"
-#include "com_github_mob41_osumer_daemon_OsumerNative.h"
+#include "com_github_mob41_osumer_OsumerNative.h"
 #include <stdio.h>
 #include <string>
 #include <Windows.h>
@@ -90,13 +90,13 @@ void inject(HANDLE hProcess) {
     VirtualFreeEx(hProcess, page, MAX_PATH, MEM_RELEASE);
 }
 
-JNIEXPORT jstring JNICALL Java_com_github_mob41_osumer_daemon_OsumerNative_getProgramFiles(JNIEnv *env, jclass thisClass) {
+JNIEXPORT jstring JNICALL Java_com_github_mob41_osumer_OsumerNative_getProgramFiles(JNIEnv *env, jclass thisClass) {
     TCHAR pf[MAX_PATH];
     SHGetSpecialFolderPath(0, pf, CSIDL_PROGRAM_FILES, FALSE);
     return env->NewStringUTF(pf);
 }
 
-JNIEXPORT void JNICALL Java_com_github_mob41_osumer_daemon_OsumerNative_startWithOverlay(JNIEnv *env, jclass thisClass) {
+JNIEXPORT void JNICALL Java_com_github_mob41_osumer_OsumerNative_startWithOverlay(JNIEnv *env, jclass thisClass) {
     char exe_path[MAX_PATH];
     STARTUPINFO si = { 0 };
     PROCESS_INFORMATION pi = { 0 };
@@ -130,7 +130,7 @@ JNIEXPORT void JNICALL Java_com_github_mob41_osumer_daemon_OsumerNative_startWit
     return;
 };
 
-JNIEXPORT void JNICALL Java_com_github_mob41_osumer_daemon_OsumerNative_injectOverlay(JNIEnv *env, jclass thisClass) {
+JNIEXPORT void JNICALL Java_com_github_mob41_osumer_OsumerNative_injectOverlay(JNIEnv *env, jclass thisClass) {
     PROCESSENTRY32 entry;
     entry.dwSize = sizeof(PROCESSENTRY32);
 

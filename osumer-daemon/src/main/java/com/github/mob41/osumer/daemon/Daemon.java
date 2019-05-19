@@ -62,6 +62,8 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
     private final List<IUI> uis;
     
     private OverlayThread thread;
+    
+    private boolean startingUi = false;
 
     protected Daemon(Configuration config) throws RemoteException {
         this.config = config;
@@ -76,11 +78,23 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
 			
 			@Override
 			public void mousePressed(MouseEvent e) {
+				if (startingUi) {
+					return;
+				}
+				startingUi = true;
+				
 				try {
 					Runtime.getRuntime().exec("\"" + OsumerNative.getProgramFiles() + "\\osumer2\\osumer-ui.exe\"");
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+				
+				startingUi = false;
 			}
 			
 		});
