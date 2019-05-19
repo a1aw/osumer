@@ -122,9 +122,11 @@ Put a star if you like this software! I would be happy to continue developing th
     
         1. "Visual Studio Installer Projects" Module
         
-2. Clone this repository via Git or download zip.
+2. Clone this repository via Git: ```git clone https://github.com/mob41/osumer.git```
+
+3. Download all submodules: ```git submodule update --init```
         
-3. Compiling Java
+4. Compiling Java
 
     1. Via Eclipse IDE
     
@@ -138,7 +140,7 @@ Put a star if you like this software! I would be happy to continue developing th
         
         2. Execute ```mvn package```
         
-4. Compiling C++
+5. Compiling C++
 
     1. Start up Visual Studio 2017. From the menubar, navigate ```File > Open... > CMake...```.
     
@@ -148,15 +150,15 @@ Put a star if you like this software! I would be happy to continue developing th
     
     4. If you experience ```...src/gl3w/gl3w.c``` not found error, comment all ```add_subdirectory``` except for ```add_subdirectory(gl3w)``` in the root ```CMakeLists.txt```. Build it once, and uncomment back the lines. And try to build it again.
 
-5. All compiled files are stored in the ```target``` folder in the repository.    
+6. All compiled files are stored in the ```target``` folder in the repository.    
 
-6. Packaging Setup
+7. Packaging Setup
 
     1. Navigate to ```osumer-setup``` module, and open the ```osumer-setup.sln``` solution.
     
     2. Build the project. ```Release``` configuration takes more time to compress the files.
     
-7. The resultant setup is stored in ```Release``` or ```Debug``` folder.
+8. The resultant setup is stored in ```Release``` or ```Debug``` folder.
 
 ## JRE License
 
