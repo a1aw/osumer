@@ -10,7 +10,7 @@ This software does not contain malicious code that will send username and passwo
 
 All osu! credentials are **ONLY** used for logging into osu! forum. No data are programmed to send outside osu! servers. ```osumer-osums``` module is the only one to send credentials to osu! servers. ```osumer-lib``` module contains code to save the credentials into the file-system.
 
-osumer2 is licensed under the MIT License. You may not be able to hold the owner liable for any claims and damages. By using osumer2 Overlay, you agree with terms and license of osumer2.
+osumer2 is licensed under the MIT License. You may not be able to hold the owner liable for any claims and damages. By using osumer2 Overlay, you agree with the terms and license of osumer2.
 
 ## Features
 
@@ -54,11 +54,19 @@ osumer2 is licensed under the MIT License. You may not be able to hold the owner
 
 > ```osumer-setup.msi``` is for advanced users only.
 
-1. Download <b>Release.zip</b> from the [latest releases](https://github.com/mob41/osumer/releases/latest). and extract it.
+1. Install osumer2
+        
+    1. Via ```osumer-updater``` (Recommended)
+    
+        [:checkered_flag: **Click here to install directly using osumer-updater** :checkered_flag:](https://github.com/mob41/osumer-updater/releases/download/legacy/osumer-updater.exe)
+    
+    2. Via GitHub Releases Assets (Only for first-time/advanced users)
+    
+        1. Download <b>Release.zip</b> from the [latest releases](https://github.com/mob41/osumer/releases/latest). and extract it.
+        
+        2. Execute <b>setup.exe</b>
 
-2. Execute <b>setup.exe</b>
-
-3. Make some modifications to the system settings.
+2. Make some modifications to the system settings.
 
     - Windows 10:
 
@@ -89,6 +97,66 @@ Put a star if you like this software! I would be happy to continue developing th
 - Beatmap searching features are removed currently
 - ```View Dumps``` does not work at the moment. Navigate to ```%localappdata%\osumerExpress\dumps``` instead for viewing dumps.
 - ```Start```, ```Pause```, ```Stop``` buttons in ```Queues``` are not implemented to work at the moment.
+
+## Compiling
+
+```osumer2``` is completely open-source and can be compiled easily. It is programmed in several languages so it requires multiple compilers to be installed in your machine. It can **ONLY** be compiled in **Windows** environment.
+
+1. Prepare the development environment
+
+    1. Java
+        
+        1. Java Development Kit Standard Edition 8 Version 212 (32 bit)
+        
+        2. Eclipse IDE (if necessary)
+        
+        3. Apache Maven (only if Eclipse IDE not installed)
+        
+    2. C++
+    
+        1. Visual Studio 2017 (With ```Desktop Application, ```Visual C++ CMake Tools``` installed)
+        
+        2. Python 3.7 (for compiling ```gl3w```)
+        
+    3. Windows Setup
+    
+        1. "Visual Studio Installer Projects" Module
+        
+2. Clone this repository via Git or download zip.
+        
+3. Compiling Java
+
+    1. Via Eclipse IDE
+    
+        1. Import the parent project pom. ```osumer/pom.xml```
+        
+        2. Build the project. ```osumer > Run As... > Maven install```
+        
+    2. Via Apache Maven
+    
+        1. Navigate to the parent project
+        
+        2. Execute ```mvn package```
+        
+4. Compiling C++
+
+    1. Start up Visual Studio 2017. From the menubar, navigate ```File > Open... > CMake...```.
+    
+    2. Navigate to the root folder of the ```osumer2``` repository. Wait the CMake cache to be generated.
+    
+    3. Build the project. ```CMake > Build All```.
+    
+    4. If you experience ```...src/gl3w/gl3w.c``` not found error, comment all ```add_subdirectory``` except for ```add_subdirectory(gl3w)``` in the root ```CMakeLists.txt```. Build it once, and uncomment back the lines. And try to build it again.
+
+5. All compiled files are stored in the ```target``` folder in the repository.    
+
+6. Packaging Setup
+
+    1. Navigate to ```osumer-setup``` module, and open the ```osumer-setup.sln``` solution.
+    
+    2. Build the project. ```Release``` configuration takes more time to compress the files.
+    
+7. The resultant setup is stored in ```Release``` or ```Debug``` folder.
 
 ## JRE License
 
