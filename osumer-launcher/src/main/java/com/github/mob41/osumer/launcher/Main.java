@@ -40,6 +40,7 @@ import javax.swing.JOptionPane;
 
 import com.github.mob41.osumer.Configuration;
 import com.github.mob41.osumer.Osumer;
+import com.github.mob41.osumer.OsumerNative;
 import com.github.mob41.osumer.debug.DebugDump;
 import com.github.mob41.osumer.debug.DumpManager;
 import com.github.mob41.osumer.debug.WithDumpException;
@@ -193,7 +194,8 @@ public class Main {
         //TODO: Too complicated!! Remove isUiFlag or isNoUiFlag!!
         
         if ((config.isSwitchToBrowserIfWithoutUiArg() && !ap.isUiFlag() && ap.isNoUiFlag()) || //Configuration
-                (args != null && args.length > 0 && !config.isOEEnabled())) { //Browser if disabled OE
+        		(urlStr != null && !config.isOEEnabled()) ||
+                (args != null && args.length > 0 && urlStr == null)) { //Browser if disabled OE
             runBrowser(config, args);
 
             System.exit(0);
@@ -210,7 +212,7 @@ public class Main {
             if (d == null) {
             	System.out.println("Failed. Starting");
                 try {
-					Runtime.getRuntime().exec("osumer-daemon.exe");
+					Runtime.getRuntime().exec("\"" + OsumerNative.getProgramFiles() + "\\osumer2\\osumer-daemon.exe\"");
 				} catch (IOException e) {
 					e.printStackTrace();
                     JOptionPane.showMessageDialog(null, "Could not start daemon. Terminating:\n" + e, "osumer launcher Error",
@@ -285,7 +287,7 @@ public class Main {
         
     	if (ui == null) {
     		try {
-    			Runtime.getRuntime().exec("osumer-ui.exe");
+    			Runtime.getRuntime().exec("\"" + OsumerNative.getProgramFiles() + "\\osumer2\\osumer-ui.exe\"");
     		} catch (IOException e) {
     			e.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Could not start UI. Terminating:\n" + e, "osumer launcher Error",
