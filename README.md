@@ -5,45 +5,34 @@ The easiest,express osu! beatmap downloader helper!
 
 Put a star if you like this software! I would be happy to continue developing this software!
 
-## :warning: Legacy Old-site Parsing
-
-Any v2 builds older than ```2.0.0-snapshot-b4``` will not work because of the deprecating of osu!-web old-site. All end users must update to ```2.0.0-snapshot-b4``` to temporarily fix the problem.
-
-## v2 has released
-
-Experimental Builds of osumer v2 has been released at https://github.com/mob41/osumer/releases/latest . And to all osumer clients with updater functionality. Please do not hesitate trying it with new features!
-
-Tutorials (still building) can be found at https://github.com/mob41/osumer/wiki/osumer-tutorial .
-
 ## Disclaimer
-This software does not contain malicious code that will send username and password to another server other than osu!'s login server. You can feel free to look through the code. If you still feel uncomfortable with this software, you can simply stop using it. Thank you!
+This software does not contain malicious code that will send username and password to another server other than osu!'s login server. You can feel free to look through the code. If you still feel uncomfortable with this software, you can simply stop using it.
 
-The application only sends the ```username``` and ```password``` parameters to ```https://osu.ppy.sh/forum/ucp.php?mode=login``` in [Osu.java](https://github.com/mob41/osums-api/blob/master/src/main/java/com/github/mob41/osums/io/beatmap/Osums.java) for logging in to osu! forum. And saves the username and password specified in the user interface to local configuration in [Config.java](https://github.com/mob41/osumer/blob/master/src/main/java/com/github/mob41/osumer/Config.java). Unless the data are sniffed by a hacker or your friends want to play tricks on you, the data is not sent to anywhere other than osu! login server. (alright also sent to, proxies, firewalls, routers, switches, DNS servers, etc.)
+All osu! credentials are **ONLY** used for logging into osu! forum. No data are programmed to send outside osu! servers. ```osumer-osums``` module is the only one to send credentials to osu! servers. ```osumer-lib``` module contains code to save the credentials into the file-system.
 
-By using this software, I take no responsibility here. Use in your own risk.
+osumer2 is licensed under the MIT License. You may not be able to hold the owner liable for any claims and damages. By using osumer2 Overlay, you agree with terms and license of osumer2.
 
 ## Features
 
-- This software can work **without specifying beatmap's URL manually**, and **activate downloads automatically in-game**. More details, check **downstairs** or [[click here for quick scroll]](https://github.com/mob41/osumer#installation-of-osumerexpress) and [[screenshots here]](https://github.com/mob41/osumer#screenshots).
+- Works **without specifying beatmap's link manually**, and **activates downloads automatically in-game**.
 
-- **Requires osu! user account to work.** The software will **download beatmaps from the osu! forum officially without mirroring.** If you are still uncomfortable with specifying your account to the software, you can simply stop using it. See [disclaimer](https://github.com/mob41/osumer#disclaimer).
+- **Requires osu! user account to work.**, and **downloads beatmaps from the osu! forum officially without mirroring.**
 
-- It will start beatmaps download automatically when an arugment of the beatmap URL is passed to the application.
+- Downloads automatically when a beatmap link argument is passed to the application.
 
-- In the user interface, users can download beatmaps manually by pasting a beatmap URL, and press the ```Download & Import``` button.
+- Users can download beatmaps manually by pasting a beatmap link or ID into the user interface.
 
-- Background downloading
-- Pre-started daemon for more, and more faster osumerExpress experience
-- Improved, and more application preferences!
-- In-app down-grade software unlocked
-- Multi-downloading for default 4 threads, at with no modification max 8 threads!
-- Before,Started,After download tones!
-- Estimated Time Arrival (ETA) and elapsed time
-- Listed downloading
-- Allows download queuing
-- Beatmap searching
-- <b>osums</b> beatmap searching
-- <b>osums</b> beatmap management (i.e. exporting, categorizing)
+- Listed background downloading, queuing.
+
+- Supports multi-downloading.
+
+- Customizable preferences.
+
+- Download sounds/tones.
+
+- Estimated Time Arrival (ETA) and elapsed time.
+
+- Beatmap search and management.
 
 ## Screenshots
 
@@ -51,61 +40,64 @@ By using this software, I take no responsibility here. Use in your own risk.
 
 	![gif 1](http://mob41.github.io/images/osumer/osumerExpressGif.gif)
 
-- Download beat-maps manually using a URL
+- Download beatmaps manually using a beatmap link or ID
 
 	![Cap1](http://mob41.github.io/images/osumer/cap1.PNG)
 
-- Downloading dialog
+- Multi-downloading and queuing
 
 	![Cap2](http://mob41.github.io/images/osumer/cap2.PNG)
 
-## Installation of osumerExpress
-> :warning: This only applies on Windows Vista or newer. Non-Windows environment are currently not supported.
+## Installation instructions:
 
-Now here goes to the most exciting part. One-click to activate downloads multiplayer in-game.
+> :warning: <b>osumer is no longer cross-platform compatible. It only supports Windows, and tested on Windows 10 Build 1809.</b>
 
-1. Download the [latest release of osumer](https://github.com/mob41/osumer/releases/latest), the Windows executable (```osumer.exe```) (newer or equal to ```0.0.2-SNAPSHOT```)
+> ```osumer-setup.msi``` is for advanced users only.
 
-2. Start up ```osumer.exe``` with administrative privileges.
+1. Download <b>Release.zip</b> from the [latest releases](https://github.com/mob41/osumer/releases/latest). and extract it.
 
-3. If you haven't installed ```osumerExpress```, press ```Install osumerExpress```.
+2. Execute <b>setup.exe</b>
 
-4. Enter your osu! account login information, and press ```Save configuration for osumerExpress``` button.
+3. Make some modifications to the system settings.
 
-5. Select your default browser to be redirected.
+    - Windows 10:
 
-6. Tick Automatically switch to browser for non-beatmaps. This must be ticked otherwise non-beatmaps URLs (e.g. http://www.google.com) will not be opened.
+        1. Navigate to ```Windows Start > Settings > Apps > Default apps```
+        2. Set ```Web browser``` as ```osumer2```
+        3. If it does not work, please visit [this issue](https://github.com/mob41/osumer/issues/22#issuecomment-487303717) to see if it can help.
 
-7. Once you have set up the osumerExpress settings (e.g. default browser, optimizations). Press ```Save configuration```
+    - Windows 7 or older:
 
-8. Let's move to the ```Control Panel```. Search for ```default programs```. Click ```Default Programs```. Then, click ```Set program access and computer defaults```. Pull-down (click the arrow at the right hand side) the ```Custom``` configuration. Press ```osumerExpress``` in the ```Choose a default web browser:``` part. Click ```OK``` and you're done! This sets ```osumerExpress``` as the default web browser to receive beatmaps links from osu!
-    ![Capture 3](http://mob41.github.io/images/osumer/osumer_defprgs_instruct.gif)
+        1. Navigate to ```Control Panel```.
+        2. Search for ```default programs``` and click on ```Default Programs```.
+        3. Click ```Set program access and computer defaults```.
+        4. Pull-down the ```Custom``` configuration.
+        5. Press ```osumer2``` in the ```Choose a default web browser``` section, and click ```OK```.
     
-9. You can try it by starting up osu! and go to a multiplayer match with a beatmap you don't have. Do the same thing that you do in usual, click the beatmap icon. A downloading dialog will pop out.
+4. You can try it by starting up osu!, and go to a multiplayer match with a beatmap you don't have.
 
-
-## Development stage
-- [x] Osu web-login
-- [x] Graphical user interface
-- [x] Quick download & import interface (osumerExpress)
-- [ ] Command-line interface
-
-These functions will include in next v2 version if download counts and stars interested me to continue to develop:
-
-- [ ] Multi-downloading / Job Queuing
-- [ ] Search beatmaps
+5. Do the same thing that you do in usual, click the beatmap icon. A overlay will pop out.
 
 Put a star if you like this software! I would be happy to continue developing this software!
 
-## Issues
-- Currently no issues found. If you encounter some, please post a [new issue](https://github.com/mob41/osumer/issues/new).
-- Questions are also welcome.
-
 ## My osu! account
 
-[![osu!account](http://osusig.ppy.sh/image1.png?uid=9125315&m=0)](https://osu.ppy.sh/u/9125315)
+[![osu!account](http://lemmmy.pw/osusig/sig.php?colour=pink&uname=mob41)](https://osu.ppy.sh/u/9125315)
 
-## License
+## Known issues:
+
+- Beatmap searching features are removed currently
+- ```View Dumps``` does not work at the moment. Navigate to ```%localappdata%\osumerExpress\dumps``` instead for viewing dumps.
+- ```Start```, ```Pause```, ```Stop``` buttons in ```Queues``` are not implemented to work at the moment.
+
+## JRE License
+
+The installer is bundled with Java Runtime Environment SE 8 Version 212 (32-bit). By installing osumer2, you agree with the terms and license of Oracle Java SE 8.
+
+Please refer to http://java.com/licensereadme and https://java.com/bc_license for more details.
+
+## Application License
+
 [tl;dr](https://tldrlegal.com/license/mit-license) Based on MIT License. 
 
 ```
