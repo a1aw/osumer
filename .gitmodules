@@ -7,3 +7,6 @@
 [submodule "imgui/imgui"]
 	path = imgui/imgui
 	url = https://github.com/ocornut/imgui.git
+[submodule "osumer-jre"]
+	path = osumer-jre
+	url = https://github.com/mob41/osumer-jre.git
