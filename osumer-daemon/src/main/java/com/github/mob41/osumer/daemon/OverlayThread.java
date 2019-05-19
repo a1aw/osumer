@@ -17,12 +17,12 @@ public class OverlayThread extends Thread{
 		while (!this.isInterrupted()) {
 			if (config.isOverlayEnabled()) {
 				OsumerNative.injectOverlay();
-				try {
-					Thread.sleep(2500);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-					break;
-				}
+			}
+			try {
+				Thread.sleep(2500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				break;
 			}
 		}
 	}
