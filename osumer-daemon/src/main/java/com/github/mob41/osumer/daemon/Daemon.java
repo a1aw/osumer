@@ -7,6 +7,9 @@ import java.awt.TrayIcon;
 import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -24,6 +27,7 @@ import javax.swing.JOptionPane;
 
 import com.github.mob41.osumer.Configuration;
 import com.github.mob41.osumer.Osumer;
+import com.github.mob41.osumer.OsumerNative;
 import com.github.mob41.osumer.debug.WithDumpException;
 import com.github.mob41.osumer.io.Downloader;
 import com.github.mob41.osumer.io.OsuDownloader;
@@ -56,6 +60,8 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
     private final TrayIcon trayIcon;
     
     private final List<IUI> uis;
+    
+    private OverlayThread thread;
 
     protected Daemon(Configuration config) throws RemoteException {
         this.config = config;
@@ -66,22 +72,19 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
         trayIcon = new TrayIcon(Toolkit.getDefaultToolkit()
                 .getImage(Daemon.class.getResource("/trayIcon.png")));
         
-        trayIcon.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                /*
-                frame.setVisible(!frame.isVisible());
-
-                if (!frame.isVisible()) {
-                    icon.displayMessage("osumer2", "osumer2 is now running in background.",
-                            TrayIcon.MessageType.INFO);
-                }
-                */
-                //TODO Launch UI remotely
-            }
-
-        });
+        trayIcon.addMouseListener(new MouseAdapter() {
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				try {
+					Runtime.getRuntime().exec("\"" + OsumerNative.getProgramFiles() + "\\osumer2\\osumer-ui.exe\"");
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+			
+		});
+        
         String key = Osumer.OSUMER_VERSION + "-" + Osumer.OSUMER_BRANCH + "-b" + Osumer.OSUMER_BUILD_NUM;
         trayIcon.setToolTip("osumer2 (" + key + ")");
         
@@ -97,6 +100,9 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
             //                + "\nAs a result, you are not able to start osumer from the tray.",
             //        "Warning", JOptionPane.WARNING_MESSAGE);
         }
+        
+        thread = new OverlayThread(config);
+        thread.start();
     }
     
     @Override
@@ -337,7 +343,7 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
 
 	@Override
 	public void startOsuWithOverlay() throws RemoteException {
-		OsumerOverlay.startWithOverlay();
+		OsumerNative.startWithOverlay();
 	}
 
 }

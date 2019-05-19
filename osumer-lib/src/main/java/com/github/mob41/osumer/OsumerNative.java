@@ -1,6 +1,6 @@
-package com.github.mob41.osumer.daemon;
+package com.github.mob41.osumer;
 
-public class OsumerOverlay {
+public class OsumerNative {
 
     static {
         System.loadLibrary("osumer-jni");
@@ -9,5 +9,7 @@ public class OsumerOverlay {
     public static native void startWithOverlay();
     
     public static native void injectOverlay();
+    
+    public static native String getProgramFiles();
     
 }
