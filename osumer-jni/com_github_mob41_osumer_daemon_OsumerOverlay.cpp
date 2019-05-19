@@ -1,11 +1,12 @@
 #include "jni.h"
 #include "com_github_mob41_osumer_daemon_OsumerOverlay.h"
 #include <stdio.h>
+#include <string>
 #include <Windows.h>
 #include <ShlObj.h>
 
 JNIEXPORT void JNICALL Java_com_github_mob41_osumer_daemon_OsumerOverlay_startWithOverlay(JNIEnv *env, jclass thisClass) {
-    char exe_path[32];
+    char exe_path[MAX_PATH];
     char *lib_path;
     void *page;
     STARTUPINFO si = { 0 };
@@ -14,13 +15,15 @@ JNIEXPORT void JNICALL Java_com_github_mob41_osumer_daemon_OsumerOverlay_startWi
 
     TCHAR pf[MAX_PATH];
     SHGetSpecialFolderPath(0, pf, CSIDL_PROGRAM_FILES, FALSE);
+    fprintf(stderr, "pf:%s\n", pf);
 
     TCHAR ad[MAX_PATH];
-    SHGetFolderPath(0, CSIDL_LOCAL_APPDATA, ad, 0, ad);
+    SHGetFolderPath(NULL, CSIDL_LOCAL_APPDATA, NULL, 0, ad);
+    fprintf(stderr, "ap:%s\n", ad);
 
     // Execute the process in suspended mode.
-    strcat(exe_path, ad);
-    strcat(exe_path, "\\Local\\osu!\\osu!.exe");
+    snprintf(exe_path, MAX_PATH, "%s\\%s", ad, "osu!\\osu!.exe");
+    fprintf(stderr, "ep:%s\n", exe_path);
 
     si.cb = sizeof(STARTUPINFO);
     if (!CreateProcess(NULL, exe_path, NULL, NULL, FALSE, CREATE_SUSPENDED, NULL, NULL, &si, &pi)) {
@@ -35,13 +38,11 @@ JNIEXPORT void JNICALL Java_com_github_mob41_osumer_daemon_OsumerOverlay_startWi
         return;
     }
 
-    char jvmDllStr[32];
-    strcat(jvmDllStr, pf);
-    strcat(jvmDllStr, "\\jre\\bin\client\\jvm.dll");
+    char jvmDllStr[MAX_PATH];
+    snprintf(jvmDllStr, MAX_PATH, "%s\\%s", pf, "osumer2\\jre\\bin\\client\\jvm.dll");
 
-    char osumerDllStr[32];
-    strcat(osumerDllStr, pf);
-    strcat(osumerDllStr, "\\osumer2\\osumer-overlay.dll");
+    char osumerDllStr[MAX_PATH];
+    snprintf(osumerDllStr, MAX_PATH, "%s\\%s", pf, "osumer2\\osumer-overlay.dll");
 
     char *libs[2] = {
         jvmDllStr,
