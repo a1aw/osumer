@@ -114,7 +114,7 @@ Put a star if you like this software! I would be happy to continue developing th
         
     2. C++
     
-        1. Visual Studio 2017 (With ```Desktop Application, ```Visual C++ CMake Tools``` installed)
+        1. Visual Studio 2017 (With ```Desktop Application```, ```Visual C++ CMake Tools``` installed)
         
         2. Python 3.7 (for compiling ```gl3w```)
         
