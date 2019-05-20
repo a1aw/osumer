@@ -1389,6 +1389,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_E1F2D5CBCD564A60890763AC954373B7"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_E2887C8A911245DB844FAA259402E178"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1408,6 +1414,12 @@
         "Entry"
         {
         "MsmKey" = "8:_E46279D47AEE4941B892EEFEFA178710"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E4A4BEFC173A42F3BEA853681AC91734"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1663,6 +1675,34 @@
     {
         "CustomAction"
         {
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_5DF9F9B133A14EDE859F17FAF3606830"
+            {
+            "Name" = "8:vc15redist_x86.exe"
+            "Condition" = "8:"
+            "Object" = "8:_E4A4BEFC173A42F3BEA853681AC91734"
+            "FileType" = "3:2"
+            "InstallAction" = "3:1"
+            "Arguments" = "8:/quiet"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:2"
+            "Identifier" = "8:_F02801E5_7A33_4C8A_8F28_4BEC99EF1434"
+            "InstallerClass" = "11:FALSE"
+            "CustomActionData" = "8:"
+            }
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_EDBBF43E82A9450E83173730B5680AA1"
+            {
+            "Name" = "8:vc10redist_x86.exe"
+            "Condition" = "8:"
+            "Object" = "8:_E1F2D5CBCD564A60890763AC954373B7"
+            "FileType" = "3:2"
+            "InstallAction" = "3:1"
+            "Arguments" = "8:/quiet"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_40AA2F8F_F031_478D_B416_3883003AB2EF"
+            "InstallerClass" = "11:FALSE"
+            "CustomActionData" = "8:"
+            }
         }
         "DefaultFeature"
         {
@@ -6266,6 +6306,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E1F2D5CBCD564A60890763AC954373B7"
+            {
+            "SourcePath" = "8:vc10redist_x86.exe"
+            "TargetName" = "8:vc10redist_x86.exe"
+            "Tag" = "8:"
+            "Folder" = "8:_4E3503AB9CE848A9A3834C6C0F639203"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E2887C8A911245DB844FAA259402E178"
             {
             "SourcePath" = "8:..\\osumer-jre\\lib\\cmm\\PYCC.pf"
@@ -6332,6 +6392,26 @@
             "TargetName" = "8:messages_zh_CN.properties"
             "Tag" = "8:"
             "Folder" = "8:_93D35EF73FDB43C9ABE430B1B998729E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E4A4BEFC173A42F3BEA853681AC91734"
+            {
+            "SourcePath" = "8:vc15redist_x86.exe"
+            "TargetName" = "8:vc15redist_x86.exe"
+            "Tag" = "8:"
+            "Folder" = "8:_4E3503AB9CE848A9A3834C6C0F639203"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -7234,7 +7314,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:osumer2"
         "ProductCode" = "8:{3B6AAF3E-1C31-4162-A7BB-B1A32DFD2748}"
-        "PackageCode" = "8:{0D10DF8A-C169-4047-9773-EAB70B0E3771}"
+        "PackageCode" = "8:{DBBB8016-55D3-474F-BBE4-B9585DC07373}"
         "UpgradeCode" = "8:{C6ACFCF0-C116-4504-9CF7-C865BD2B1D66}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
