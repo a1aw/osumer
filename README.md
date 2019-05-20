@@ -54,7 +54,9 @@ osumer2 is licensed under the MIT License. You may not be able to hold the owner
 
 > ```osumer-setup.msi``` is for advanced users only.
 
-1. Install osumer2
+1. Install ```vc10redist_x86.exe``` and ```vc15redist_x86.exe``` from the [releases](https://github.com/mob41/osumer/releases/latest) before installing osumer2.
+
+2. Install osumer2.
         
     1. Via ```osumer-updater``` (Recommended)
     
@@ -66,7 +68,7 @@ osumer2 is licensed under the MIT License. You may not be able to hold the owner
         
         2. Execute <b>setup.exe</b>
 
-2. Make some modifications to the system settings.
+3. Make some modifications to the system settings.
 
     - Windows 10:
 
