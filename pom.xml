@@ -18,6 +18,7 @@
   	<global.branch>SNAPSHOT</global.branch>
   	<global.build>6</global.build>
   	<global.version>${global.generation}-${global.branch}</global.version>
+  	<metrics.version>3.1.0</metrics.version>
   	<maven.compiler.source>1.8</maven.compiler.source>
   	<maven.compiler.target>1.8</maven.compiler.target>
   </properties>

@@ -53,6 +53,8 @@ public class DebugDump {
 	
 	private final String specified_data;
 	
+	private final String exceptionClass;
+	
 	private final String lastoperation;
 	
 	private final String thisoperation;
@@ -84,8 +86,10 @@ public class DebugDump {
 			pw.close();
 			
 			stacktrace = sw.toString();	
+			exceptionClass = e.getClass().getCanonicalName();
 		} else {
 			stacktrace = null;
+			exceptionClass = null;
 		}
 		
 		this.message = message;
@@ -175,6 +179,10 @@ public class DebugDump {
 
 	public String getNextOperation() {
 		return nextoperation;
+	}
+
+	public String getExceptionClass() {
+		return exceptionClass;
 	}
 
 }
