@@ -30,13 +30,23 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetSocketAddress;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import com.codahale.metrics.Metric;
+import com.codahale.metrics.MetricFilter;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.graphite.Graphite;
+import com.codahale.metrics.graphite.GraphiteReporter;
 
 public class DumpManager {
 	
+	private static MetricRegistry metrics;
+
 	private static String osumerVersion;
 	
 	private static String debuggerVersion;
@@ -51,8 +61,29 @@ public class DumpManager {
 		}
 		DumpManager.osumerVersion = osumerVersion;
 		DumpManager.debuggerVersion = debuggerVersion;
+		
+		metrics = new MetricRegistry();
+		
+		final Graphite graphite = new Graphite(new InetSocketAddress("graphite.osumer.ml", 2003));
+		final GraphiteReporter reporter = GraphiteReporter.forRegistry(metrics)
+		                                                  .prefixedWith("osumer.mob41.github.com")
+		                                                  .convertRatesTo(TimeUnit.SECONDS)
+		                                                  .convertDurationsTo(TimeUnit.MILLISECONDS)
+		                                                  .filter(MetricFilter.ALL)
+		                                                  .build(graphite);
+		reporter.start(1, TimeUnit.MINUTES);
+		
+		metrics.meter("debugManagerInit").mark();
+		
 		readDumps();
 		init = true;
+	}
+	
+	public static MetricRegistry getMetrics() {
+		if (!init) {
+			throw new IllegalStateException("DumpManager was not initialized before getting metrics registry!");
+		}
+		return metrics;
 	}
 
 	public static String getDebuggerVersion() {
@@ -140,6 +171,15 @@ public class DumpManager {
 		if (!init) {
 			throw new IllegalStateException("DumpManager was not initialized before writing this dump!");
 		}
+		
+		String name = dump.getExceptionClass();
+		
+		if (name == null) {
+			name = "Typed-Dump";
+		}
+		
+		metrics.meter(MetricRegistry.name("exceptions", name)).mark();
+		
         String path = System.getenv("localappdata") + "\\osumerExpress\\dumps";
         File folder = new File(path);
         folder.mkdirs();

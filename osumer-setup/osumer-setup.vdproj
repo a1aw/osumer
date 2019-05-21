@@ -153,6 +153,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_1A4EDA47878D47BE8466BABCCD633896"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_1A7CEE69167549CA8A21538B53195F1F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -280,6 +286,12 @@
         "Entry"
         {
         "MsmKey" = "8:_399FD06D211A4551ABC90747370F0F67"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_39FB1BDA32BA47B2B37532CC0909B8CB"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -676,12 +688,6 @@
         "Entry"
         {
         "MsmKey" = "8:_786AEBFC215E4F8B929C68C17F1FF8B5"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_78B27B6A79BE4AAF8377F4FFE8D03DFF"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1419,12 +1425,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_E978DD7D6AA54EA69AA04A262574B265"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_EA0FA12CC81B408A974B0F67AD306842"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -2146,6 +2146,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1A4EDA47878D47BE8466BABCCD633896"
+            {
+            "SourcePath" = "8:..\\osumer-jre\\bin\\msvcr100.dll"
+            "TargetName" = "8:msvcr100.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_AFB1E43636C04DC8B17469397040360D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1A7CEE69167549CA8A21538B53195F1F"
             {
             "SourcePath" = "8:..\\osumer-jre\\bin\\ucrtbase.dll"
@@ -2570,6 +2590,26 @@
             {
             "SourcePath" = "8:..\\osumer-jre\\bin\\javacpl.exe"
             "TargetName" = "8:javacpl.exe"
+            "Tag" = "8:"
+            "Folder" = "8:_AFB1E43636C04DC8B17469397040360D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_39FB1BDA32BA47B2B37532CC0909B8CB"
+            {
+            "SourcePath" = "8:..\\osumer-jre\\bin\\msvcp140.dll"
+            "TargetName" = "8:msvcp140.dll"
             "Tag" = "8:"
             "Folder" = "8:_AFB1E43636C04DC8B17469397040360D"
             "Condition" = "8:"
@@ -3890,26 +3930,6 @@
             {
             "SourcePath" = "8:..\\osumer-jre\\bin\\api-ms-win-core-heap-l1-1-0.dll"
             "TargetName" = "8:api-ms-win-core-heap-l1-1-0.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_AFB1E43636C04DC8B17469397040360D"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_78B27B6A79BE4AAF8377F4FFE8D03DFF"
-            {
-            "SourcePath" = "8:..\\osumer-jre\\bin\\msvcp140.dll"
-            "TargetName" = "8:msvcp140.dll"
             "Tag" = "8:"
             "Folder" = "8:_AFB1E43636C04DC8B17469397040360D"
             "Condition" = "8:"
@@ -6366,26 +6386,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E978DD7D6AA54EA69AA04A262574B265"
-            {
-            "SourcePath" = "8:..\\osumer-jre\\bin\\msvcr100.dll"
-            "TargetName" = "8:msvcr100.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_AFB1E43636C04DC8B17469397040360D"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EA0FA12CC81B408A974B0F67AD306842"
             {
             "SourcePath" = "8:..\\osumer-jre\\COPYRIGHT"
@@ -7234,7 +7234,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:osumer2"
         "ProductCode" = "8:{3B6AAF3E-1C31-4162-A7BB-B1A32DFD2748}"
-        "PackageCode" = "8:{FE4FADAD-7BDD-44D8-AE62-7066DAAF676A}"
+        "PackageCode" = "8:{E7E15C40-38E7-420D-8B6D-EF650ECF92FE}"
         "UpgradeCode" = "8:{C6ACFCF0-C116-4504-9CF7-C865BD2B1D66}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
