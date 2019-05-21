@@ -15,6 +15,7 @@
 #include "imgui_internal.h"
 
 #include <windows.h>
+#include <ShlObj.h>
 #include <vector>
 
 #include "jni.h"
@@ -60,8 +61,14 @@ const char* excToStr(JNIEnv* env) {
 }
 
 int fetchThread() {
+    TCHAR pf[MAX_PATH];
+    SHGetSpecialFolderPath(0, pf, CSIDL_PROGRAM_FILES, FALSE);
+
+    char libStr[MAX_PATH];
+    snprintf(libStr, MAX_PATH, "-Djava.class.path=%s\\%s", pf, "osumer2\\lib\\osumer-lib-2.0.0-SNAPSHOT.jar");
+
     JavaVMOption jvmopt[1];
-    jvmopt[0].optionString = "-Djava.class.path=D:\\DevelopmentExports\\osumer-lib\\osumer-lib.jar";
+    jvmopt[0].optionString = libStr;
 
     JavaVMInitArgs vmArgs;
     vmArgs.version = JNI_VERSION_1_2;
@@ -83,7 +90,7 @@ int fetchThread() {
     jclass jRmiClass = jniEnv->FindClass("com/github/mob41/osumer/rmi/OverlayRmi");
 
     if (jRmiClass == NULL) {
-        MessageBox(g_hwnd, "Rmi Class", "osumer2 Overlay Error", MB_ICONERROR | MB_OK);
+        MessageBox(g_hwnd, "Could not find RMI class for operation.", "osumer2 Overlay Error", MB_ICONERROR | MB_OK);
         jniEnv->ExceptionDescribe();
         javaVM->DestroyJavaVM();
         return 1;
@@ -92,7 +99,7 @@ int fetchThread() {
     jclass jQueueClass = jniEnv->FindClass("com/github/mob41/osumer/queue/QueueStatus");
 
     if (jQueueClass == NULL) {
-        MessageBox(g_hwnd, "Queue Class", "osumer2 Overlay Error", MB_ICONERROR | MB_OK);
+        MessageBox(g_hwnd, "Could not find Queue class", "osumer2 Overlay Error", MB_ICONERROR | MB_OK);
         jniEnv->ExceptionDescribe();
         javaVM->DestroyJavaVM();
         return 1;
@@ -101,7 +108,7 @@ int fetchThread() {
     jfieldID jQueueTitleFieldId = jniEnv->GetFieldID(jQueueClass, "title", "Ljava/lang/String;");
 
     if (jQueueTitleFieldId == NULL) {
-        MessageBox(g_hwnd, "title field", "osumer2 Overlay Error", MB_ICONERROR | MB_OK);
+        MessageBox(g_hwnd, "Could not find title field in class", "osumer2 Overlay Error", MB_ICONERROR | MB_OK);
         jniEnv->ExceptionDescribe();
         javaVM->DestroyJavaVM();
         return 1;
@@ -110,7 +117,7 @@ int fetchThread() {
     jfieldID jQueueProgressFieldId = jniEnv->GetFieldID(jQueueClass, "progress", "I");
 
     if (jQueueProgressFieldId == NULL) {
-        MessageBox(g_hwnd, "progress field", "osumer2 Overlay Error", MB_ICONERROR | MB_OK);
+        MessageBox(g_hwnd, "Could not find progress field in class", "osumer2 Overlay Error", MB_ICONERROR | MB_OK);
         jniEnv->ExceptionDescribe();
         javaVM->DestroyJavaVM();
         return 1;
@@ -119,7 +126,7 @@ int fetchThread() {
     jmethodID jRmiInitMethodId = jniEnv->GetMethodID(jRmiClass, "<init>", "()V");
 
     if (jRmiInitMethodId == NULL) {
-        MessageBox(g_hwnd, "Rmi Init med", "osumer2 Overlay Error", MB_ICONERROR | MB_OK);
+        MessageBox(g_hwnd, "Could not find initialization method in RMI class", "osumer2 Overlay Error", MB_ICONERROR | MB_OK);
         jniEnv->ExceptionDescribe();
         javaVM->DestroyJavaVM();
         return 1;
@@ -130,7 +137,7 @@ int fetchThread() {
     jniEnv->CallObjectMethod(jRmiObj, jRmiInitMethodId);
 
     if (jniEnv->ExceptionCheck()) {
-        MessageBox(g_hwnd, excToStr(jniEnv), "Error init", MB_ICONERROR | MB_OK);
+        MessageBox(g_hwnd, excToStr(jniEnv), "Error initializing RMI", MB_ICONERROR | MB_OK);
         jniEnv->ExceptionDescribe();
         javaVM->DestroyJavaVM();
         return 1;
@@ -139,7 +146,7 @@ int fetchThread() {
     jmethodID jRmiTestMethodId = jniEnv->GetMethodID(jRmiClass, "test", "()V");
 
     if (jRmiTestMethodId == NULL) {
-        MessageBox(g_hwnd, "Test med", "osumer2 Overlay Error", MB_ICONERROR | MB_OK);
+        MessageBox(g_hwnd, "Could not find test method", "osumer2 Overlay Error", MB_ICONERROR | MB_OK);
         jniEnv->ExceptionDescribe();
         javaVM->DestroyJavaVM();
         return 1;
@@ -148,7 +155,7 @@ int fetchThread() {
     jmethodID jRmiQueuesMethodId = jniEnv->GetMethodID(jRmiClass, "getQueues", "()[Lcom/github/mob41/osumer/queue/QueueStatus;");
 
     if (jRmiQueuesMethodId == NULL) {
-        MessageBox(g_hwnd, "Queues med", "osumer2 Overlay Error", MB_ICONERROR | MB_OK);
+        MessageBox(g_hwnd, "Could not find get queues method.", "osumer2 Overlay Error", MB_ICONERROR | MB_OK);
         jniEnv->ExceptionDescribe();
         javaVM->DestroyJavaVM();
         return 1;
@@ -157,7 +164,7 @@ int fetchThread() {
     jniEnv->CallVoidMethod(jRmiObj, jRmiTestMethodId);
 
     if (jniEnv->ExceptionCheck()) {
-        MessageBox(g_hwnd, excToStr(jniEnv), "Error test", MB_ICONERROR | MB_OK);
+        MessageBox(g_hwnd, excToStr(jniEnv), "Error executing test method", MB_ICONERROR | MB_OK);
         jniEnv->ExceptionDescribe();
         javaVM->DestroyJavaVM();
         return 1;
@@ -167,7 +174,7 @@ int fetchThread() {
         jobjectArray jQueues = (jobjectArray)jniEnv->CallObjectMethod(jRmiObj, jRmiQueuesMethodId); //TODO: Event oriented
 
         if (jniEnv->ExceptionCheck()) {
-            MessageBox(g_hwnd, excToStr(jniEnv), "queues Error test", MB_ICONERROR | MB_OK);
+            MessageBox(g_hwnd, excToStr(jniEnv), "Error executing queues method", MB_ICONERROR | MB_OK);
             jniEnv->ExceptionDescribe();
             javaVM->DestroyJavaVM();
             return 1;
