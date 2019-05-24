@@ -527,14 +527,6 @@ public class Osums {
                     cmgr.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
                 }
             }
-
-            File file = new File("osumsHtml_" + Calendar.getInstance().getTimeInMillis() + ".html");
-            FileOutputStream out = new FileOutputStream(file);
-            PrintWriter writer = new PrintWriter(out, true);
-            writer.println(data);
-            writer.flush();
-            writer.close();
-            out.close();
             
             Document doc = Jsoup.parse(data);
             
