@@ -8,6 +8,7 @@ import java.rmi.registry.LocateRegistry;
 
 import javax.swing.UIManager;
 
+import com.codahale.metrics.MetricRegistry;
 import com.github.mob41.osumer.Configuration;
 import com.github.mob41.osumer.Osumer;
 import com.github.mob41.osumer.debug.DumpManager;
@@ -205,14 +206,13 @@ public class AppMain extends Application {
             return;
 		}
 		
-        System.out.println("Add im");
         primaryStage.setTitle("osumer2");
         primaryStage.getIcons().add(new Image(AppMain.class.getResourceAsStream("/image/osumerIcon_64px.png")));
-        System.out.println("Added");
         osums = new Osums();
 
         initRootLayout();
-        System.out.println("Inited");
+        
+		DumpManager.getMetrics().meter(MetricRegistry.name("active", "ui")).mark();
 	}
 	
 	@Override

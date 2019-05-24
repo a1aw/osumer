@@ -25,9 +25,11 @@ import java.util.Observer;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
+import com.codahale.metrics.MetricRegistry;
 import com.github.mob41.osumer.Configuration;
 import com.github.mob41.osumer.Osumer;
 import com.github.mob41.osumer.OsumerNative;
+import com.github.mob41.osumer.debug.DumpManager;
 import com.github.mob41.osumer.debug.WithDumpException;
 import com.github.mob41.osumer.io.Downloader;
 import com.github.mob41.osumer.io.OsuDownloader;
@@ -126,6 +128,7 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
     
     @Override
     public boolean addQueue(String url, int downloadAction, String targetFileOrFolder) throws RemoteException {
+		DumpManager.getMetrics().meter(MetricRegistry.name("event", "queueAdd")).mark();
     	System.out.println("Requested to use " + url);
         if (config.getCheckUpdateFreq() == Configuration.CHECK_UPDATE_FREQ_EVERY_ACT) {
             //TODO do check update
@@ -261,6 +264,12 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
     				requestAllUiUpdateQueues();
     			}
     		});
+    		DumpManager.getMetrics().meter(MetricRegistry.name("event", "queueAdded")).mark();
+    		
+            if (!url.endsWith("/")) {
+                String beatmapNum = url.replaceAll("\\D+","");;
+        		DumpManager.getMetrics().meter(MetricRegistry.name("beatmap", "queueFrequency",  beatmapNum)).mark();
+            }
         } else {
             trayIcon.displayMessage("Could not add \"" + mapName + "\" to queue", "It has already in queue/downloading or completed.", TrayIcon.MessageType.INFO);
         }
@@ -288,6 +297,7 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
     public void reloadConfiguration() throws RemoteException, IOException{
         try {
             config.load();
+    		DumpManager.getMetrics().meter(MetricRegistry.name("event", "configReload")).mark();
         } catch (IOException e) {
             throw e;
         }
@@ -325,12 +335,14 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
 
     @Override
     public boolean removeQueue(String name) throws RemoteException {
+		DumpManager.getMetrics().meter(MetricRegistry.name("event", "queueRemove")).mark();
         Queue queue = queueManager.getQueue(name);
         if (queue == null) {
             return false;
         }
         boolean result = queueManager.removeQueue(queue);
         if (result) {
+    		DumpManager.getMetrics().meter(MetricRegistry.name("event", "queueRemoved")).mark();
             requestAllUiUpdateQueues();
         }
         return result;
@@ -338,18 +350,19 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
 
 	@Override
 	public void test() throws RemoteException {
-		System.out.println("testing great!");
-		
+		DumpManager.getMetrics().meter(MetricRegistry.name("active", "overlay")).mark();
 	}
 
 	@Override
 	public void registerUi(IUI ui) throws RemoteException {
+		DumpManager.getMetrics().meter(MetricRegistry.name("event", "uiDaemonRegister")).mark();
 		System.out.println("Registered");
 		uis.add(ui);
 	}
 
 	@Override
 	public void unregisterUi(IUI ui) throws RemoteException {
+		DumpManager.getMetrics().meter(MetricRegistry.name("event", "uiDaemonUnregister")).mark();
 		if (uis.contains(ui)) {
 			uis.remove(ui);
 		}
@@ -357,6 +370,7 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
 
 	@Override
 	public void startOsuWithOverlay() throws RemoteException {
+		DumpManager.getMetrics().meter(MetricRegistry.name("event", "startOsuWithOverlay")).mark();
 		OsumerNative.startWithOverlay();
 	}
 

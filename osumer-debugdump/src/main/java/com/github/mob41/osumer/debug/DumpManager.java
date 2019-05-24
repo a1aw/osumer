@@ -30,9 +30,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -54,6 +58,12 @@ public class DumpManager {
 	private static Map<Long, String> dumps;
 	
 	private static boolean init = false;
+
+	private static String macAddr;
+
+	private static Graphite graphite;
+
+	private static GraphiteReporter reporter;
 	
 	public static void init(String osumerVersion, String debuggerVersion) throws IOException {
 		if (init) {
@@ -64,9 +74,9 @@ public class DumpManager {
 		
 		metrics = new MetricRegistry();
 		
-		final Graphite graphite = new Graphite(new InetSocketAddress("graphite.osumer.ml", 2003));
-		final GraphiteReporter reporter = GraphiteReporter.forRegistry(metrics)
-		                                                  .prefixedWith("osumer.mob41.github.com")
+		graphite = new Graphite(new InetSocketAddress("graphite.osumer.ml", 2003));
+		reporter = GraphiteReporter.forRegistry(metrics)
+		                                                  .prefixedWith("osumer")
 		                                                  .convertRatesTo(TimeUnit.SECONDS)
 		                                                  .convertDurationsTo(TimeUnit.MILLISECONDS)
 		                                                  .filter(MetricFilter.ALL)
@@ -74,9 +84,17 @@ public class DumpManager {
 		reporter.start(1, TimeUnit.MINUTES);
 		
 		metrics.meter("debugManagerInit").mark();
+		metrics.meter(MetricRegistry.name("version", osumerVersion)).mark();
 		
-		readDumps();
+		readDumps();		
 		init = true;
+	}
+	
+	public static void forceMetricsReport() {
+		if (!init) {
+			throw new IllegalStateException("DumpManager was not initialized before getting metrics registry!");
+		}
+		reporter.report();
 	}
 	
 	public static MetricRegistry getMetrics() {

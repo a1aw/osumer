@@ -7,6 +7,7 @@ import java.rmi.registry.LocateRegistry;
 
 import javax.swing.JOptionPane;
 
+import com.codahale.metrics.MetricRegistry;
 import com.github.mob41.osumer.Configuration;
 import com.github.mob41.osumer.Osumer;
 import com.github.mob41.osumer.debug.DumpManager;
@@ -54,6 +55,8 @@ public class Main {
             
             Daemon daemon = new Daemon(config);
             Naming.bind("rmi://localhost:" + port + "/daemon", daemon);
+            
+            DumpManager.getMetrics().meter(MetricRegistry.name("active", "daemon")).mark();
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(-1);
