@@ -31,19 +31,17 @@ package com.github.mob41.osumer.launcher;
 import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 
 import javax.swing.JOptionPane;
 
+import com.codahale.metrics.MetricRegistry;
 import com.github.mob41.osumer.Configuration;
 import com.github.mob41.osumer.Osumer;
 import com.github.mob41.osumer.OsumerNative;
 import com.github.mob41.osumer.debug.DebugDump;
 import com.github.mob41.osumer.debug.DumpManager;
-import com.github.mob41.osumer.debug.WithDumpException;
 import com.github.mob41.osumer.installer.Installer;
 import com.github.mob41.osumer.rmi.IDaemon;
 import com.github.mob41.osumer.rmi.IUI;
@@ -60,6 +58,15 @@ public class Main {
             + "feel uncomfortable with this software, you can simply\n" + "stop using it. Thank you!\n";;
 
     public static void main(String[] args) {
+		try {
+			DumpManager.init(Osumer.getVersionString(), Osumer.getVersionString());
+		} catch (IOException e2) {
+			e2.printStackTrace();
+			System.err.println("DumpManager: Error initializing dump manager");
+		}
+		
+        DumpManager.getMetrics().meter(MetricRegistry.name("active", "launcher")).mark();
+		
         ArgParser ap = new ArgParser(args);
 
         if (ap.isVersionFlag()) {
@@ -78,12 +85,15 @@ public class Main {
             Installer installer = new Installer();
 
             if (ap.isHideIconsFlag()) {
+                DumpManager.getMetrics().meter(MetricRegistry.name("event", "launcherHideIcons")).mark();
                 installer.hideIcons();
 
             } else if (ap.isShowIconsFlag()) {
+                DumpManager.getMetrics().meter(MetricRegistry.name("event", "launcherShowIcons")).mark();
                 installer.showIcons();
 
             } else if (ap.isReinstallFlag()) {
+                DumpManager.getMetrics().meter(MetricRegistry.name("event", "launcherReinstall")).mark();
                 installer.reinstall();
 
             }/* else if (ap.isInstallFlag()) {
@@ -154,6 +164,7 @@ public class Main {
                 }
             }*/
 
+            DumpManager.forceMetricsReport();
             System.exit(0);
             return;
         }
@@ -173,8 +184,11 @@ public class Main {
             System.err.println("Unable to load configuration");
             e1.printStackTrace();
 
+            DumpManager.addDump(new DebugDump(null, "Configuration initialization", "Load configuration", "Set String urlStr to null", "Unable to load configuration", false, e1));
+            DumpManager.forceMetricsReport();
+            
             if (!GraphicsEnvironment.isHeadless()) {
-                JOptionPane.showMessageDialog(null, "Could not load configuration: " + e1, "Configuration Error",
+                JOptionPane.showMessageDialog(null, "Could not load configuration. For more details, check dump:\n" + e1, "Configuration Error",
                         JOptionPane.ERROR_MESSAGE);
             }
 
@@ -197,36 +211,40 @@ public class Main {
         		(urlStr != null && !config.isOEEnabled()) ||
                 (args != null && args.length > 0 && urlStr == null)) { //Browser if disabled OE
             runBrowser(config, args);
-
+            
+            DumpManager.getMetrics().meter(MetricRegistry.name("event", "launcherRunBrowser")).mark();
+            DumpManager.forceMetricsReport();
+            
             System.exit(0);
             return;
         } else {
             IDaemon d = null;
-            System.out.println("Trying");
             try {
                 d = (IDaemon) Naming.lookup("rmi://localhost:46726/daemon"); //Contact the daemon via RMI
             } catch (Exception e) {
-                e.printStackTrace();
+            	
             }
             
             if (d == null) {
-            	System.out.println("Failed. Starting");
                 try {
 					Runtime.getRuntime().exec("\"" + OsumerNative.getProgramFiles() + "\\osumer2\\osumer-daemon.exe\"");
 				} catch (IOException e) {
 					e.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Could not start daemon. Terminating:\n" + e, "osumer launcher Error",
+		            DumpManager.addDump(new DebugDump(null, "Check if \"d\" is null", "Execute osumer-daemon.exe", "Initialize \"c\" as 0", "Could not start daemon. Terminating", false, e));
+		            DumpManager.forceMetricsReport();
+		            
+                    JOptionPane.showMessageDialog(null, "Could not start daemon. For more details, check dump. Terminating:\n" + e, "osumer launcher Error",
                             JOptionPane.ERROR_MESSAGE);
                     System.exit(-1);
                     return;
 				}
                 
                 int c = 0;
-                while (c < 10) {
+                while (c < 20) {
                 	try {
                         d = (IDaemon) Naming.lookup("rmi://localhost:46726/daemon"); //Contact the daemon via RMI
                     } catch (Exception e) {
-                        e.printStackTrace();
+                    	
                     }
                 	try {
 						Thread.sleep(50);
@@ -237,7 +255,10 @@ public class Main {
                 }
                 
                 if (d == null) {
-                    JOptionPane.showMessageDialog(null, "Could not connect to daemon. Terminating", "osumer launcher Error",
+		            DumpManager.addDump(new DebugDump(null, "(While-loop) Look up daemon RMI", "Check if \\\"d\\\" is null", "Check if \"urlStr\" is null", false, "Could not connect to daemon. Terminating"));
+		            DumpManager.forceMetricsReport();
+		            
+                    JOptionPane.showMessageDialog(null, "Could not connect to daemon. For more details, check dump. Terminating", "osumer launcher Error",
                             JOptionPane.ERROR_MESSAGE);
                     System.exit(-1);
                     return;
@@ -245,7 +266,6 @@ public class Main {
             }
             
             if (urlStr != null) {
-            	System.out.println("Sending URL");
                 try {
                     d.addQueue(urlStr);
                     
@@ -253,12 +273,11 @@ public class Main {
                     return;
                 } catch (RemoteException e) {
                     e.printStackTrace();
-                    DebugDump dump = new DebugDump(null, null, "Opening connection to BG osumer socket", null,
-                            "Could not open socket at 46725 for BG call. Not osumer running at that port?", false, e);
-                    DumpManager.addDump(dump);
-                    //ErrorDumpDialog dialog = new ErrorDumpDialog(dump);
-                    //dialog.setModal(true);
-                    //dialog.setVisible(true);
+		            DumpManager.addDump(new DebugDump(null, "Check if \\\"urlStr\\\" is null", "Request daemon to add queue", "System Exit", "Could not connect or add queue to daemon", false, e));
+		            DumpManager.forceMetricsReport();
+		            
+                    JOptionPane.showMessageDialog(null, "Could not connect or add queue to daemon. For more details, check dump:\n" + e, "osumer launcher Error",
+                            JOptionPane.ERROR_MESSAGE);
                     System.exit(-1);
                     return;
                 }
@@ -272,17 +291,15 @@ public class Main {
             }
             runUi(config, args, ap, d);
         }
+        DumpManager.forceMetricsReport();
     }
 
     private static void runUi(Configuration config, String[] args, ArgParser ap, IDaemon d) {
-        System.out.println("Starting UI");
-
         IUI ui = null;
-        System.out.println("Trying");
         try {
             ui = (IUI) Naming.lookup("rmi://localhost:46727/ui"); //Contact the ui via RMI
         } catch (Exception e) {
-            e.printStackTrace();
+        	
         }
         
     	if (ui == null) {
@@ -290,18 +307,21 @@ public class Main {
     			Runtime.getRuntime().exec("\"" + OsumerNative.getProgramFiles() + "\\osumer2\\osumer-ui.exe\"");
     		} catch (IOException e) {
     			e.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Could not start UI. Terminating:\n" + e, "osumer launcher Error",
+	            DumpManager.addDump(new DebugDump(null, "Check if \"ui\" is null", "Execute osumer-ui.exe", "Initialize \"c\" as 0", "Could not start UI. Terminating", false, e));
+	            DumpManager.forceMetricsReport();
+	            
+                JOptionPane.showMessageDialog(null, "Could not start UI. For more details, check dump. Terminating:\n" + e, "osumer launcher Error",
                         JOptionPane.ERROR_MESSAGE);
                 System.exit(-1);
                 return;
     		}
-    		System.out.println("Trying to connect");
+    		
             int c = 0;
-            while (c < 10) {
+            while (c < 20) {
             	try {
                     ui = (IUI) Naming.lookup("rmi://localhost:46727/ui"); //Contact the ui via RMI
                 } catch (Exception e) {
-                    e.printStackTrace();
+                	
                 }
             	try {
     				Thread.sleep(50);
@@ -313,7 +333,10 @@ public class Main {
     	}
         
         if (ui == null) {
-            JOptionPane.showMessageDialog(null, "Could not connect to UI. Terminating", "osumer launcher Error",
+            DumpManager.addDump(new DebugDump(null, "(While-loop) Look up UI RMI", "Check if \\\"ui\\\" is null", "Try to wake up UI", false, "Could not connect to UI. Terminating"));
+            DumpManager.forceMetricsReport();
+            
+            JOptionPane.showMessageDialog(null, "Could not connect to UI. For more details, check dump. Terminating", "osumer launcher Error",
                     JOptionPane.ERROR_MESSAGE);
             System.exit(-1);
             return;
@@ -322,34 +345,36 @@ public class Main {
     	try {
 			ui.wake();
 		} catch (RemoteException e) {
-			e.printStackTrace();
+            e.printStackTrace();
+            DumpManager.addDump(new DebugDump(null, "Check if \\\\\\\"ui\\\\\\\" is null", "Try to wake up UI", "End of runUi()", "Could not connect or wake UI", false, e));
+            DumpManager.forceMetricsReport();
+            
+            JOptionPane.showMessageDialog(null, "Could not connect or wake UI. For more details, check dump:\n" + e, "osumer launcher Error",
+                    JOptionPane.ERROR_MESSAGE);
+            System.exit(-1);
+            return;
 		}
-
-        System.out.println("Finished");
     }
 
     public static void runBrowser(Configuration config, String[] args) {
         String argstr = buildArgStr(args);
         // Run the default browser application
         if (!GraphicsEnvironment.isHeadless() && Osumer.isWindows()) {
-
-            System.out.println(config.getDefaultBrowser());
+        	
             if (config.getDefaultBrowser() == null || config.getDefaultBrowser().isEmpty()) {
-                System.out.println(config.getDefaultBrowser());
                 JOptionPane.showInputDialog(null,
                         "No default browser path is specified. Please maunally launch the browser the following arguments:",
-                        "osumer - Automatic browser switching", JOptionPane.INFORMATION_MESSAGE, null, null, argstr);
+                        "osumer2", JOptionPane.INFORMATION_MESSAGE, null, null, argstr);
                 System.exit(-1);
                 return;
             }
 
             String browserPath = Installer.getBrowserExePath(config.getDefaultBrowser());
-            System.out.println(browserPath);
             if (browserPath == null) {
                 JOptionPane.showMessageDialog(null,
                         "Cannot read browser executable path in registry.\nCannot start default browser application for:\n"
                                 + argstr,
-                        "Configuration Error", JOptionPane.ERROR_MESSAGE);
+                        "osumer2", JOptionPane.ERROR_MESSAGE);
                 System.exit(-1);
                 return;
             }
@@ -359,7 +384,7 @@ public class Main {
                 JOptionPane.showMessageDialog(null,
                         "The specified browser application does not exist.\nCannot start default browser application for:\n"
                                 + argstr,
-                        "Configuration Error", JOptionPane.ERROR_MESSAGE);
+                        "osumer2", JOptionPane.ERROR_MESSAGE);
                 System.exit(-1);
                 return;
             }
@@ -368,6 +393,13 @@ public class Main {
                 Runtime.getRuntime().exec(browserPath + " " + argstr);
             } catch (IOException e) {
                 e.printStackTrace();
+                DumpManager.addDump(new DebugDump(null, "Check if the file exists", "Execute browser with args", "System Exit", "Could not execute browser with arguments", false, e));
+                DumpManager.forceMetricsReport();
+                
+                JOptionPane.showMessageDialog(null, "Could not execute browser with arguments. For more details, check dump:\n" + e, "osumer launcher Error",
+                        JOptionPane.ERROR_MESSAGE);
+                System.exit(-1);
+                return;
             }
 
             System.exit(0);
@@ -384,15 +416,6 @@ public class Main {
             }
         }
         return out;
-    }
-
-    private static boolean isUrl(String url) {
-        try {
-            new URL(url);
-            return true;
-        } catch (MalformedURLException e) {
-            return false;
-        }
     }
 
 }

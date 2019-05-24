@@ -34,10 +34,13 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.CookieManager;
 import java.net.HttpCookie;
@@ -47,6 +50,7 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -128,12 +132,8 @@ public class Osums {
                 URL url = new URL(searchLink + "&page=" + i);
 
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-                if (cmgr.getCookieStore().getCookies().size() > 0) {
-                    // While joining the Cookies, use ',' or ';' as needed. Most of
-                    // the servers are using ';'
-                    conn.setRequestProperty("Cookie", join(";", cmgr.getCookieStore().getCookies()));
-                }
+                
+                setCookies(conn);
 
                 conn.setUseCaches(false);
                 conn.setDoOutput(false);
@@ -173,13 +173,7 @@ public class Osums {
 
                 Map<String, List<String>> headerFields = conn.getHeaderFields();
 
-                List<String> cookiesHeader = headerFields.get("Set-Cookie");
-
-                if (cookiesHeader != null) {
-                    for (String cookie : cookiesHeader) {
-                        cmgr.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
-                    }
-                }
+                retrieveCookies(headerFields);
                 
                 reader.close();
 
@@ -375,11 +369,8 @@ public class Osums {
 //                        
 //                        HttpURLConnection tuConn = (HttpURLConnection) tu.openConnection();
 //
-//                        if (cmgr.getCookieStore().getCookies().size() > 0) {
-//                            // While joining the Cookies, use ',' or ';' as needed. Most of
-//                            // the servers are using ';'
-//                            tuConn.setRequestProperty("Cookie", join(";", cmgr.getCookieStore().getCookies()));
-//                        }
+//                           
+//                        setCookies(conn);
 //                        
 //                        tuConn.setConnectTimeout(100);
 //                        //tuConn.setUseCaches(false);
@@ -465,11 +456,7 @@ public class Osums {
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-            if (cmgr.getCookieStore().getCookies().size() > 0) {
-                // While joining the Cookies, use ',' or ';' as needed. Most of
-                // the servers are using ';'
-                conn.setRequestProperty("Cookie", join(";", cmgr.getCookieStore().getCookies()));
-            }
+            setCookies(conn);
 
             conn.setUseCaches(false);
             conn.setDoOutput(false);
@@ -509,31 +496,48 @@ public class Osums {
             }
 
             Map<String, List<String>> headerFields = conn.getHeaderFields();
+
+            List<String> cookiesHeader = new ArrayList<String>();
             
             Iterator<String> it = headerFields.keySet().iterator();
             String key;
             while (it.hasNext()) {
                 key = it.next();
-                if (key != null && key.toLowerCase().equals("location")) {
-                    new Thread() {
-                        public void run() {
-                            Toolkit.getDefaultToolkit().beep();
-                            JOptionPane.showInputDialog("Sorry, this beatmap redirects to new osu! layout page, which is not supported currently.\nYou are recommended to enable old-site redirection in Preferences to fix this problem temporarily.\nPlease manually download it in a browser:", beatmapLink);
-                        }
-                    }.start();
-                    return null;
+                
+                if (key != null) {
+                    if (key.toLowerCase().equals("set-cookie")) {
+                    	cookiesHeader.addAll(headerFields.get(key));
+                    }
+                    
+                    if (key.toLowerCase().equals("location")) {
+                        new Thread() {
+                            public void run() {
+                                Toolkit.getDefaultToolkit().beep();
+                                JOptionPane.showInputDialog("Sorry, this beatmap redirects to new osu! layout page, which is not supported currently.\nYou are recommended to enable old-site redirection in Preferences to fix this problem temporarily.\nPlease manually download it in a browser:", beatmapLink);
+                            }
+                        }.start();
+                        return null;
+                    }
                 }
             }
-            
-            List<String> cookiesHeader = headerFields.get("Set-Cookie");
 
-            if (cookiesHeader != null) {
+            if (cookiesHeader.size() > 0) {
                 for (String cookie : cookiesHeader) {
+                	System.out.println("GetCookie: " + cookie);
                     cmgr.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
                 }
             }
 
+            File file = new File("osumsHtml_" + Calendar.getInstance().getTimeInMillis() + ".html");
+            FileOutputStream out = new FileOutputStream(file);
+            PrintWriter writer = new PrintWriter(out, true);
+            writer.println(data);
+            writer.flush();
+            writer.close();
+            out.close();
+            
             Document doc = Jsoup.parse(data);
+            
             return OsuBeatmap.createInstance(beatmapLink, doc);
             /*
              * Elements elements =
@@ -570,13 +574,9 @@ public class Osums {
 
         conn.setRequestMethod("GET");
         conn.setInstanceFollowRedirects(false);
-
-        if (cmgr.getCookieStore().getCookies().size() > 0) {
-            // While joining the Cookies, use ',' or ';' as needed. Most of
-            // the servers are using ';'
-            conn.setRequestProperty("Cookie", join(";", cmgr.getCookieStore().getCookies()));
-        }
-
+        
+        setCookies(conn);
+        
         // Fake environment from Chrome
         conn.setRequestProperty("Connection", "Keep-alive");
         conn.setRequestProperty("Cache-Control", "max-age=0");
@@ -601,6 +601,31 @@ public class Osums {
             return false;
         } else {
             return true;
+        }
+    }
+    
+    private void setCookies(URLConnection conn) {
+        if (cmgr.getCookieStore().getCookies().size() > 0) {
+            // While joining the Cookies, use ',' or ';' as needed. Most of
+            // the servers are using ';'
+            conn.setRequestProperty("Cookie", join(";", cmgr.getCookieStore().getCookies()));
+        }
+    }
+    
+    private void retrieveCookies(Map<String, List<String>> headerFields) {
+    	List<String> cookiesHeader = new ArrayList<String>();
+        Iterator<String> it = headerFields.keySet().iterator();
+        while (it.hasNext()) {
+        	String key = it.next();
+            if (key != null && key.toLowerCase().equals("set-cookie")) {
+            	cookiesHeader.addAll(headerFields.get(key));
+            }
+        }
+
+        if (cookiesHeader.size() > 0) {
+            for (String cookie : cookiesHeader) {
+                cmgr.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
+            }
         }
     }
 
@@ -629,12 +654,8 @@ public class Osums {
 
             conn.setRequestMethod("POST");
             conn.setInstanceFollowRedirects(false);
-
-            if (cmgr.getCookieStore().getCookies().size() > 0) {
-                // While joining the Cookies, use ',' or ';' as needed. Most of
-                // the servers are using ';'
-                conn.setRequestProperty("Cookie", join(";", cmgr.getCookieStore().getCookies()));
-            }
+            
+            setCookies(conn);
 
             conn.setDoOutput(true);
             conn.setUseCaches(false);
@@ -669,7 +690,7 @@ public class Osums {
              */
 
             Map<String, List<String>> headerFields = conn.getHeaderFields();
-
+            
             List<String> locationHeader = headerFields.get("Location");
 
             if (locationHeader == null || locationHeader.size() != 1
@@ -680,13 +701,7 @@ public class Osums {
                         "Login failed. Redirected to a non-index page.", true);
             }
 
-            List<String> cookiesHeader = headerFields.get("Set-Cookie");
-
-            if (cookiesHeader != null) {
-                for (String cookie : cookiesHeader) {
-                    cmgr.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
-                }
-            }
+            retrieveCookies(headerFields);
 
             loggedIn = true;
 
@@ -703,12 +718,8 @@ public class Osums {
 
             URL url = new URL(LOGOUT_URL + "?" + urlPara);
             URLConnection conn = url.openConnection();
-
-            if (cmgr.getCookieStore().getCookies().size() > 0) {
-                // While joining the Cookies, use ',' or ';' as needed. Most of
-                // the servers are using ';'
-                conn.setRequestProperty("Cookie", join(";", cmgr.getCookieStore().getCookies()));
-            }
+            
+            setCookies(conn);
 
             conn.setUseCaches(false);
 
@@ -716,14 +727,8 @@ public class Osums {
             conn.setRequestProperty("Content-Length", "0");
 
             Map<String, List<String>> headerFields = conn.getHeaderFields();
-
-            List<String> cookiesHeader = headerFields.get("Set-Cookie");
-
-            if (cookiesHeader != null) {
-                for (String cookie : cookiesHeader) {
-                    cmgr.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
-                }
-            }
+            
+            retrieveCookies(headerFields);
 
             String data = "";
             String line;
