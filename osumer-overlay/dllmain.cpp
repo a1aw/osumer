@@ -42,6 +42,10 @@ std::vector<queueStatus_t> queues;
 
 bool agreed = false;
 
+bool isShowErrorMsg = false;
+char *errorHeader;
+char *errorMsg;
+
 const char* excToStr(JNIEnv* env) {
     jthrowable e = env->ExceptionOccurred();
     env->ExceptionClear(); // clears the exception; e seems to remain valid
@@ -58,6 +62,12 @@ const char* excToStr(JNIEnv* env) {
     env->DeleteLocalRef(clazz);
     env->DeleteLocalRef(e);
     return mstr;
+}
+
+void showErrorMsg(char* msg, char* header) {
+    isShowErrorMsg = true;
+    errorHeader = header;
+    errorMsg = msg;
 }
 
 int fetchThread() {
@@ -83,14 +93,16 @@ int fetchThread() {
     long flag = JNI_CreateJavaVM(&javaVM, (void**)
         &jniEnv, &vmArgs);
     if (flag == JNI_ERR) {
-        MessageBox(g_hwnd, "Could not create Java VM!", "osumer2 Overlay Error", MB_ICONERROR | MB_OK);
+        //MessageBox(g_hwnd, "Could not create Java VM!", "osumer2 Overlay Error", MB_ICONERROR | MB_OK);
+        showErrorMsg("Could not create Java VM!", "osumer2 Overlay Error");
         return 1;
     }
 
     jclass jRmiClass = jniEnv->FindClass("com/github/mob41/osumer/rmi/OverlayRmi");
 
     if (jRmiClass == NULL) {
-        MessageBox(g_hwnd, "Could not find RMI class for operation.", "osumer2 Overlay Error", MB_ICONERROR | MB_OK);
+        //MessageBox(g_hwnd, "Could not find RMI class for operation.", "osumer2 Overlay Error", MB_ICONERROR | MB_OK);
+        showErrorMsg("Could not find RMI class for operation.", "osumer2 Overlay Error");
         jniEnv->ExceptionDescribe();
         javaVM->DestroyJavaVM();
         return 1;
@@ -99,7 +111,8 @@ int fetchThread() {
     jclass jQueueClass = jniEnv->FindClass("com/github/mob41/osumer/queue/QueueStatus");
 
     if (jQueueClass == NULL) {
-        MessageBox(g_hwnd, "Could not find Queue class", "osumer2 Overlay Error", MB_ICONERROR | MB_OK);
+        //MessageBox(g_hwnd, "Could not find Queue class", "osumer2 Overlay Error", MB_ICONERROR | MB_OK);
+        showErrorMsg("Could not find Queue class", "osumer2 Overlay Error");
         jniEnv->ExceptionDescribe();
         javaVM->DestroyJavaVM();
         return 1;
@@ -108,7 +121,8 @@ int fetchThread() {
     jfieldID jQueueTitleFieldId = jniEnv->GetFieldID(jQueueClass, "title", "Ljava/lang/String;");
 
     if (jQueueTitleFieldId == NULL) {
-        MessageBox(g_hwnd, "Could not find title field in class", "osumer2 Overlay Error", MB_ICONERROR | MB_OK);
+        //MessageBox(g_hwnd, "Could not find title field in class", "osumer2 Overlay Error", MB_ICONERROR | MB_OK);
+        showErrorMsg("Could not find title field in class", "osumer2 Overlay Error");
         jniEnv->ExceptionDescribe();
         javaVM->DestroyJavaVM();
         return 1;
@@ -117,7 +131,8 @@ int fetchThread() {
     jfieldID jQueueProgressFieldId = jniEnv->GetFieldID(jQueueClass, "progress", "I");
 
     if (jQueueProgressFieldId == NULL) {
-        MessageBox(g_hwnd, "Could not find progress field in class", "osumer2 Overlay Error", MB_ICONERROR | MB_OK);
+        //MessageBox(g_hwnd, "Could not find progress field in class", "osumer2 Overlay Error", MB_ICONERROR | MB_OK);
+        showErrorMsg("Could not find progress field in class", "osumer2 Overlay Error");
         jniEnv->ExceptionDescribe();
         javaVM->DestroyJavaVM();
         return 1;
@@ -126,7 +141,8 @@ int fetchThread() {
     jmethodID jRmiInitMethodId = jniEnv->GetMethodID(jRmiClass, "<init>", "()V");
 
     if (jRmiInitMethodId == NULL) {
-        MessageBox(g_hwnd, "Could not find initialization method in RMI class", "osumer2 Overlay Error", MB_ICONERROR | MB_OK);
+        //MessageBox(g_hwnd, "Could not find initialization method in RMI class", "osumer2 Overlay Error", MB_ICONERROR | MB_OK);
+        showErrorMsg("Could not find initialization method in RMI class", "osumer2 Overlay Error");
         jniEnv->ExceptionDescribe();
         javaVM->DestroyJavaVM();
         return 1;
@@ -137,7 +153,8 @@ int fetchThread() {
     jniEnv->CallObjectMethod(jRmiObj, jRmiInitMethodId);
 
     if (jniEnv->ExceptionCheck()) {
-        MessageBox(g_hwnd, excToStr(jniEnv), "Error initializing RMI", MB_ICONERROR | MB_OK);
+        //MessageBox(g_hwnd, excToStr(jniEnv), "Error initializing RMI", MB_ICONERROR | MB_OK);
+        showErrorMsg((char*) excToStr(jniEnv), "Error initializing RMI");
         jniEnv->ExceptionDescribe();
         javaVM->DestroyJavaVM();
         return 1;
@@ -146,7 +163,8 @@ int fetchThread() {
     jmethodID jRmiTestMethodId = jniEnv->GetMethodID(jRmiClass, "test", "()V");
 
     if (jRmiTestMethodId == NULL) {
-        MessageBox(g_hwnd, "Could not find test method", "osumer2 Overlay Error", MB_ICONERROR | MB_OK);
+        //MessageBox(g_hwnd, "Could not find test method", "osumer2 Overlay Error", MB_ICONERROR | MB_OK);
+        showErrorMsg("Could not find test method", "osumer2 Overlay Error");
         jniEnv->ExceptionDescribe();
         javaVM->DestroyJavaVM();
         return 1;
@@ -155,7 +173,8 @@ int fetchThread() {
     jmethodID jRmiQueuesMethodId = jniEnv->GetMethodID(jRmiClass, "getQueues", "()[Lcom/github/mob41/osumer/queue/QueueStatus;");
 
     if (jRmiQueuesMethodId == NULL) {
-        MessageBox(g_hwnd, "Could not find get queues method.", "osumer2 Overlay Error", MB_ICONERROR | MB_OK);
+        //MessageBox(g_hwnd, "Could not find get queues method.", "osumer2 Overlay Error", MB_ICONERROR | MB_OK);
+        showErrorMsg("Could not find get queues method.", "osumer2 Overlay Error");
         jniEnv->ExceptionDescribe();
         javaVM->DestroyJavaVM();
         return 1;
@@ -164,7 +183,8 @@ int fetchThread() {
     jniEnv->CallVoidMethod(jRmiObj, jRmiTestMethodId);
 
     if (jniEnv->ExceptionCheck()) {
-        MessageBox(g_hwnd, excToStr(jniEnv), "Error executing test method", MB_ICONERROR | MB_OK);
+        //MessageBox(g_hwnd, excToStr(jniEnv), "Error executing test method", MB_ICONERROR | MB_OK);
+        showErrorMsg((char*)excToStr(jniEnv), "Error executing test method");
         jniEnv->ExceptionDescribe();
         javaVM->DestroyJavaVM();
         return 1;
@@ -174,7 +194,8 @@ int fetchThread() {
         jobjectArray jQueues = (jobjectArray)jniEnv->CallObjectMethod(jRmiObj, jRmiQueuesMethodId); //TODO: Event oriented
 
         if (jniEnv->ExceptionCheck()) {
-            MessageBox(g_hwnd, excToStr(jniEnv), "Error executing queues method", MB_ICONERROR | MB_OK);
+            //MessageBox(g_hwnd, excToStr(jniEnv), "Error executing queues method", MB_ICONERROR | MB_OK);
+            showErrorMsg((char*)excToStr(jniEnv), "Error executing queues method");
             jniEnv->ExceptionDescribe();
             javaVM->DestroyJavaVM();
             return 1;
@@ -254,7 +275,10 @@ BOOL _stdcall hkSwapBuffers(HDC hdc) {
     ImGui::NewFrame();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
 
-
+    if (isShowErrorMsg) {
+        isShowErrorMsg = false;
+        ImGui::OpenPopup("Error occurred");
+    }
 
     if (!agreed) {
         ImGui::OpenPopup("osumer2 Overlay License Agreement");
@@ -291,6 +315,29 @@ BOOL _stdcall hkSwapBuffers(HDC hdc) {
         }
     }
 
+    if (ImGui::BeginPopupModal("Error occurred", NULL, NULL)) {
+        io.WantCaptureMouse = true;
+        io.MouseDrawCursor = true;
+        ImGui::Text(errorHeader);
+        ImGui::Separator();
+        ImGui::Text(errorMsg);
+
+        if (ImGui::Button("Dismiss")) {
+            io.WantCaptureMouse = false;
+            io.MouseDrawCursor = false;
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Terminate osu!")) {
+            DestroyWindow(g_hwnd);
+        }
+
+        ImGui::EndPopup();
+    }
+    else {
+        io.MouseDrawCursor = false;
+    }
+
     if (ImGui::BeginPopupModal("osumer2 Overlay License Agreement", NULL, NULL)) {
         io.MouseDrawCursor = true;
         ImGui::Text("By using the osumer2 overlay program, \nyou agree with the terms in osumer2's License, \nand you are using this in your risk.\n\nPressing \"Disagree\" will terminate the application.");
@@ -298,6 +345,7 @@ BOOL _stdcall hkSwapBuffers(HDC hdc) {
         if (ImGui::Button("Agree")) {
             agreed = true;
             io.WantCaptureMouse = false;
+            io.MouseDrawCursor = false;
             ImGui::CloseCurrentPopup();
         }
         ImGui::SameLine();
@@ -306,9 +354,6 @@ BOOL _stdcall hkSwapBuffers(HDC hdc) {
         }
 
         ImGui::EndPopup();
-    }
-    else {
-        io.MouseDrawCursor = false;
     }
 
     // Rendering
