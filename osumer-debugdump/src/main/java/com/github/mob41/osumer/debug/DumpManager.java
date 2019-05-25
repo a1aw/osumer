@@ -196,7 +196,7 @@ public class DumpManager {
 			name = "Typed-Dump";
 		}
 		
-		metrics.meter(MetricRegistry.name("exceptions", name)).mark();
+		metrics.meter(MetricRegistry.name("exceptions", name.replaceAll(".", "-"))).mark();
 		
         String path = System.getenv("localappdata") + "\\osumerExpress\\dumps";
         File folder = new File(path);
