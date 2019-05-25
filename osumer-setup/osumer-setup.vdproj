@@ -15,6 +15,12 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_02706B2307914C87926D3C90CA432D1E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_035AB54E84264C22ADE3417F5398FDC4"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -22,6 +28,12 @@
         "Entry"
         {
         "MsmKey" = "8:_038236E174E54D8D82B632B5DFAD10D8"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_03A305C0EF624531AD60079771160B1E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -63,6 +75,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_07D4DC1E152A468E8BAC79EEE5C3BEBF"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_07FA4ABD4EBC465E9FA824DAB918407F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -70,6 +88,12 @@
         "Entry"
         {
         "MsmKey" = "8:_0839BBBC61F74695A96973A06A7F2C74"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_091B9A120F9046FCAE186376EE0C444D"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -195,6 +219,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_258A7BD7506C46BEAE85E3A157AA9F8F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_25C8CF022A224D18A4586C2874DF270B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -226,6 +256,12 @@
         "Entry"
         {
         "MsmKey" = "8:_2D4F1828F9094B10B93596E27D9C0512"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_2D62696EA198411DB98D2B8727998EDD"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -285,6 +321,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_39383C6B3BE344CF9E19002B132DCA17"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_399FD06D211A4551ABC90747370F0F67"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -304,18 +346,6 @@
         "Entry"
         {
         "MsmKey" = "8:_3B0A537677D1465D8426F88487D10991"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_3CFEEF62C816491F815B0CAD8F96DEEC"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_423D1D18FCF744FBB9F3302F48418FE3"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -345,6 +375,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_459EC751C0864E919C90AF7DDE8A7AB9"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_4679A0996FAA4B838DBBED38ADDC57A8"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -352,12 +388,6 @@
         "Entry"
         {
         "MsmKey" = "8:_486DB2BB7AAC490186C64E490BD765EC"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_48775BC38E7147F78288B49852E0AF99"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -376,12 +406,6 @@
         "Entry"
         {
         "MsmKey" = "8:_496C7F865D424A179139589C8841FA3B"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_4ADF9892EA1E4546BA3B561E389CFFF4"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -429,7 +453,19 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_51A229B515EC4229BE4E73CC6662F7DB"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_51C6F0752F53487E9FE07EC83CC4B8BA"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_53C8279F7FCF472AA834591107FA861E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -465,7 +501,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_5815C46EB1934C4DA419161A6076BF06"
+        "MsmKey" = "8:_59BCD8B10E9B4C0986B44FF80D84437A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -484,12 +520,6 @@
         "Entry"
         {
         "MsmKey" = "8:_5C4CF063E9C9467989741BFF163A6545"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_5D218D350DC84E4B95BB805CF7114564"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -585,7 +615,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_6CE1BC9A3FB641D39EAA3F78AE05B400"
+        "MsmKey" = "8:_6DC28BF1B2904E3BB811DBF9ABF090E1"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -615,7 +645,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_728165EB02E64E0F9592FECE85D73592"
+        "MsmKey" = "8:_7101044185104851BE30B7D220891B27"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -640,12 +670,6 @@
         "Entry"
         {
         "MsmKey" = "8:_745FFEAAEC1A471AA82850CE16DA0FB0"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_74ADFC5347BD4B068489559FBC361E0E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -873,18 +897,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_950E75EB9EFD43519B9407E7F7837629"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_951CA76FD6F14BB2A3C626A32D1EA75A"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_95332ED5984F497EAD6F477C4498B1DE"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -988,6 +1000,12 @@
         "Entry"
         {
         "MsmKey" = "8:_A0DFA6C1EDD1456CB42947EACBA9985E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A27E6558B76840708F96BB6733CC0DA1"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1107,12 +1125,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_AF65521C66774035A566E04F1874455B"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_AF776ADD87D14A0F83BD66CE341D0AD4"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1149,6 +1161,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_B1DD39DFAB7D405892DA2D9FEDBCA4CA"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_B1FCEF9BA9E540878398AFD90AFC7402"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1167,7 +1185,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_B38060F9A9AF411CA02ED5B7E5DDD9AC"
+        "MsmKey" = "8:_B35B2CBCCFC04774B5F8DC16E56E9ED7"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1180,6 +1198,12 @@
         "Entry"
         {
         "MsmKey" = "8:_B510FA9456CC4826B77B66057165FE13"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B69F9314C52E4F29B57F55C2375BAE56"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1240,6 +1264,12 @@
         "Entry"
         {
         "MsmKey" = "8:_C2A9FD18122943C6B5594496787562B0"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C6A517984EC54A868934D147D6F21C85"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1341,6 +1371,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_D7A0882F2DAD4A02A31F4632963489B1"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_D83805C18C71429FA69724EA20AFF03D"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1348,12 +1384,6 @@
         "Entry"
         {
         "MsmKey" = "8:_D83FCB7E537C418DAEF164C73D6BA66A"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_D8596D490FF046069874C0D94130974F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1443,6 +1473,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_EB4DE9CBC0974CE9ABAA8102F2DCB1AC"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_EBE605669F1B4B8DBFDBEFAA0C5E1EE2"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1468,12 +1504,6 @@
         "Entry"
         {
         "MsmKey" = "8:_EF772EF12F614B0C97D1911FE79C7074"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_F25F8214269B4A6BA972AB852150D4F5"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1533,19 +1563,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_FA02A6B6E753447F85F2DD959BBF0651"
+        "MsmKey" = "8:_F95306BE996447F39AC86A7A5859A733"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_FC188653EB3B49B2A8F670CBE010B5A0"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_FC38B787D24944D5B54AF0DF1E806B5B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1576,12 +1600,6 @@
         "Entry"
         {
         "MsmKey" = "8:_FEB4C840BD414A3DA53DB173996B42C5"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_FF0049CE52414E1EA3086A1C7F4129E8"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1686,6 +1704,26 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_02706B2307914C87926D3C90CA432D1E"
+            {
+            "SourcePath" = "8:..\\target\\lib\\mslinks-1.0.4.jar"
+            "TargetName" = "8:mslinks-1.0.4.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_035AB54E84264C22ADE3417F5398FDC4"
             {
             "SourcePath" = "8:..\\osumer-jre\\bin\\javaw.exe"
@@ -1712,6 +1750,26 @@
             "TargetName" = "8:win32_LinkDrop32x32.gif"
             "Tag" = "8:"
             "Folder" = "8:_F53355E402ED4D3BA9065515D7B14566"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_03A305C0EF624531AD60079771160B1E"
+            {
+            "SourcePath" = "8:..\\target\\lib\\jna-platform-4.2.2.jar"
+            "TargetName" = "8:jna-platform-4.2.2.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1846,6 +1904,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_07D4DC1E152A468E8BAC79EEE5C3BEBF"
+            {
+            "SourcePath" = "8:..\\target\\lib\\jackson-databind-2.9.9.jar"
+            "TargetName" = "8:jackson-databind-2.9.9.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_07FA4ABD4EBC465E9FA824DAB918407F"
             {
             "SourcePath" = "8:..\\osumer-jre\\lib\\deploy\\messages_it.properties"
@@ -1872,6 +1950,26 @@
             "TargetName" = "8:msvcr100.dll"
             "Tag" = "8:"
             "Folder" = "8:_C028C044CEC74A77846E605B1117C833"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_091B9A120F9046FCAE186376EE0C444D"
+            {
+            "SourcePath" = "8:..\\target\\lib\\metrics-graphite-3.1.0.jar"
+            "TargetName" = "8:metrics-graphite-3.1.0.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2286,6 +2384,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_258A7BD7506C46BEAE85E3A157AA9F8F"
+            {
+            "SourcePath" = "8:..\\target\\lib\\jackson-core-2.9.9.jar"
+            "TargetName" = "8:jackson-core-2.9.9.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_25C8CF022A224D18A4586C2874DF270B"
             {
             "SourcePath" = "8:..\\osumer-jre\\bin\\jfxmedia.dll"
@@ -2392,6 +2510,26 @@
             "TargetName" = "8:api-ms-win-core-synch-l1-2-0.dll"
             "Tag" = "8:"
             "Folder" = "8:_AFB1E43636C04DC8B17469397040360D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2D62696EA198411DB98D2B8727998EDD"
+            {
+            "SourcePath" = "8:..\\target\\lib\\gson-2.8.5.jar"
+            "TargetName" = "8:gson-2.8.5.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2586,6 +2724,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_39383C6B3BE344CF9E19002B132DCA17"
+            {
+            "SourcePath" = "8:..\\target\\lib\\jmetro-5.2.jar"
+            "TargetName" = "8:jmetro-5.2.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_399FD06D211A4551ABC90747370F0F67"
             {
             "SourcePath" = "8:..\\osumer-jre\\bin\\javacpl.exe"
@@ -2652,46 +2810,6 @@
             "TargetName" = "8:deployJava1.dll"
             "Tag" = "8:"
             "Folder" = "8:_287FA4BEEFE842C2B33D9C45D4288010"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3CFEEF62C816491F815B0CAD8F96DEEC"
-            {
-            "SourcePath" = "8:..\\target\\lib\\jna-platform-4.2.2.jar"
-            "TargetName" = "8:jna-platform-4.2.2.jar"
-            "Tag" = "8:"
-            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_423D1D18FCF744FBB9F3302F48418FE3"
-            {
-            "SourcePath" = "8:..\\target\\lib\\osumer-debugdump-2.0.0-SNAPSHOT.jar"
-            "TargetName" = "8:osumer-debugdump-2.0.0-SNAPSHOT.jar"
-            "Tag" = "8:"
-            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2786,6 +2904,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_459EC751C0864E919C90AF7DDE8A7AB9"
+            {
+            "SourcePath" = "8:..\\target\\lib\\slf4j-api-1.7.7.jar"
+            "TargetName" = "8:slf4j-api-1.7.7.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4679A0996FAA4B838DBBED38ADDC57A8"
             {
             "SourcePath" = "8:..\\osumer-jre\\bin\\jaas_nt.dll"
@@ -2812,26 +2950,6 @@
             "TargetName" = "8:plugin.jar"
             "Tag" = "8:"
             "Folder" = "8:_0661FE42AD0C4C3B9E818E0CDD1FD979"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_48775BC38E7147F78288B49852E0AF99"
-            {
-            "SourcePath" = "8:..\\target\\lib\\annotations-15.0.jar"
-            "TargetName" = "8:annotations-15.0.jar"
-            "Tag" = "8:"
-            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2892,26 +3010,6 @@
             "TargetName" = "8:splash@2x.gif"
             "Tag" = "8:"
             "Folder" = "8:_93D35EF73FDB43C9ABE430B1B998729E"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4ADF9892EA1E4546BA3B561E389CFFF4"
-            {
-            "SourcePath" = "8:..\\target\\lib\\osumer-lib-2.0.0-SNAPSHOT.jar"
-            "TargetName" = "8:osumer-lib-2.0.0-SNAPSHOT.jar"
-            "Tag" = "8:"
-            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -3066,12 +3164,52 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_51A229B515EC4229BE4E73CC6662F7DB"
+            {
+            "SourcePath" = "8:..\\target\\lib\\controlsfx-8.40.14.jar"
+            "TargetName" = "8:controlsfx-8.40.14.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_51C6F0752F53487E9FE07EC83CC4B8BA"
             {
             "SourcePath" = "8:..\\osumer-jre\\bin\\jsound.dll"
             "TargetName" = "8:jsound.dll"
             "Tag" = "8:"
             "Folder" = "8:_AFB1E43636C04DC8B17469397040360D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_53C8279F7FCF472AA834591107FA861E"
+            {
+            "SourcePath" = "8:..\\target\\lib\\commons-codec-1.10.jar"
+            "TargetName" = "8:commons-codec-1.10.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -3186,10 +3324,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5815C46EB1934C4DA419161A6076BF06"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_59BCD8B10E9B4C0986B44FF80D84437A"
             {
-            "SourcePath" = "8:..\\target\\lib\\commons-codec-1.10.jar"
-            "TargetName" = "8:commons-codec-1.10.jar"
+            "SourcePath" = "8:..\\target\\lib\\osumer-osums-2.0.0-SNAPSHOT.jar"
+            "TargetName" = "8:osumer-osums-2.0.0-SNAPSHOT.jar"
             "Tag" = "8:"
             "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
             "Condition" = "8:"
@@ -3252,26 +3390,6 @@
             "TargetName" = "8:dcpr.dll"
             "Tag" = "8:"
             "Folder" = "8:_AFB1E43636C04DC8B17469397040360D"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5D218D350DC84E4B95BB805CF7114564"
-            {
-            "SourcePath" = "8:..\\target\\lib\\jackson-annotations-2.9.0.jar"
-            "TargetName" = "8:jackson-annotations-2.9.0.jar"
-            "Tag" = "8:"
-            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -3586,10 +3704,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6CE1BC9A3FB641D39EAA3F78AE05B400"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6DC28BF1B2904E3BB811DBF9ABF090E1"
             {
-            "SourcePath" = "8:..\\target\\lib\\jackson-core-2.9.8.jar"
-            "TargetName" = "8:jackson-core-2.9.8.jar"
+            "SourcePath" = "8:..\\target\\lib\\osumer-installer-2.0.0-SNAPSHOT.jar"
+            "TargetName" = "8:osumer-installer-2.0.0-SNAPSHOT.jar"
             "Tag" = "8:"
             "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
             "Condition" = "8:"
@@ -3686,10 +3804,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_728165EB02E64E0F9592FECE85D73592"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7101044185104851BE30B7D220891B27"
             {
-            "SourcePath" = "8:..\\target\\lib\\controlsfx-8.40.14.jar"
-            "TargetName" = "8:controlsfx-8.40.14.jar"
+            "SourcePath" = "8:..\\target\\lib\\jackson-annotations-2.9.0.jar"
+            "TargetName" = "8:jackson-annotations-2.9.0.jar"
             "Tag" = "8:"
             "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
             "Condition" = "8:"
@@ -3772,26 +3890,6 @@
             "TargetName" = "8:local_policy.jar"
             "Tag" = "8:"
             "Folder" = "8:_D1314AFDF936411C9AF0EC667A1B94EE"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_74ADFC5347BD4B068489559FBC361E0E"
-            {
-            "SourcePath" = "8:..\\target\\lib\\gson-2.8.5.jar"
-            "TargetName" = "8:gson-2.8.5.jar"
-            "Tag" = "8:"
-            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -4546,46 +4644,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_950E75EB9EFD43519B9407E7F7837629"
-            {
-            "SourcePath" = "8:..\\target\\lib\\jna-4.2.2.jar"
-            "TargetName" = "8:jna-4.2.2.jar"
-            "Tag" = "8:"
-            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_951CA76FD6F14BB2A3C626A32D1EA75A"
-            {
-            "SourcePath" = "8:..\\target\\lib\\jackson-databind-2.9.8.jar"
-            "TargetName" = "8:jackson-databind-2.9.8.jar"
-            "Tag" = "8:"
-            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_95332ED5984F497EAD6F477C4498B1DE"
             {
             "SourcePath" = "8:..\\osumer-jre\\bin\\jfr.dll"
@@ -4932,6 +4990,26 @@
             "TargetName" = "8:LucidaBrightItalic.ttf"
             "Tag" = "8:"
             "Folder" = "8:_15C604A30F1D422B8D8904CD74417729"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A27E6558B76840708F96BB6733CC0DA1"
+            {
+            "SourcePath" = "8:..\\target\\lib\\annotations-15.0.jar"
+            "TargetName" = "8:annotations-15.0.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -5326,26 +5404,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AF65521C66774035A566E04F1874455B"
-            {
-            "SourcePath" = "8:..\\target\\lib\\jmetro-5.2.jar"
-            "TargetName" = "8:jmetro-5.2.jar"
-            "Tag" = "8:"
-            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AF776ADD87D14A0F83BD66CE341D0AD4"
             {
             "SourcePath" = "8:..\\osumer-jre\\bin\\java_crw_demo.dll"
@@ -5466,6 +5524,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B1DD39DFAB7D405892DA2D9FEDBCA4CA"
+            {
+            "SourcePath" = "8:..\\target\\lib\\commons-io-2.5.jar"
+            "TargetName" = "8:commons-io-2.5.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B1FCEF9BA9E540878398AFD90AFC7402"
             {
             "SourcePath" = "8:..\\osumer-jre\\lib\\deploy.jar"
@@ -5526,10 +5604,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B38060F9A9AF411CA02ED5B7E5DDD9AC"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B35B2CBCCFC04774B5F8DC16E56E9ED7"
             {
-            "SourcePath" = "8:..\\target\\lib\\osumer-osums-2.0.0-SNAPSHOT.jar"
-            "TargetName" = "8:osumer-osums-2.0.0-SNAPSHOT.jar"
+            "SourcePath" = "8:..\\target\\lib\\jsoup-1.10.1.jar"
+            "TargetName" = "8:jsoup-1.10.1.jar"
             "Tag" = "8:"
             "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
             "Condition" = "8:"
@@ -5572,6 +5650,26 @@
             "TargetName" = "8:jabswitch.exe"
             "Tag" = "8:"
             "Folder" = "8:_AFB1E43636C04DC8B17469397040360D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B69F9314C52E4F29B57F55C2375BAE56"
+            {
+            "SourcePath" = "8:..\\target\\lib\\jna-4.2.2.jar"
+            "TargetName" = "8:jna-4.2.2.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -5772,6 +5870,26 @@
             "TargetName" = "8:fontmanager.dll"
             "Tag" = "8:"
             "Folder" = "8:_AFB1E43636C04DC8B17469397040360D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C6A517984EC54A868934D147D6F21C85"
+            {
+            "SourcePath" = "8:..\\target\\lib\\osumer-lib-2.0.0-SNAPSHOT.jar"
+            "TargetName" = "8:osumer-lib-2.0.0-SNAPSHOT.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -6106,6 +6224,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D7A0882F2DAD4A02A31F4632963489B1"
+            {
+            "SourcePath" = "8:..\\target\\lib\\json-20160212.jar"
+            "TargetName" = "8:json-20160212.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D83805C18C71429FA69724EA20AFF03D"
             {
             "SourcePath" = "8:..\\osumer-jre\\lib\\fontconfig.properties.src"
@@ -6132,26 +6270,6 @@
             "TargetName" = "8:api-ms-win-crt-time-l1-1-0.dll"
             "Tag" = "8:"
             "Folder" = "8:_AFB1E43636C04DC8B17469397040360D"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D8596D490FF046069874C0D94130974F"
-            {
-            "SourcePath" = "8:..\\target\\lib\\jsoup-1.10.1.jar"
-            "TargetName" = "8:jsoup-1.10.1.jar"
-            "Tag" = "8:"
-            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -6446,6 +6564,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EB4DE9CBC0974CE9ABAA8102F2DCB1AC"
+            {
+            "SourcePath" = "8:..\\target\\lib\\osumer-debugdump-2.0.0-SNAPSHOT.jar"
+            "TargetName" = "8:osumer-debugdump-2.0.0-SNAPSHOT.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EBE605669F1B4B8DBFDBEFAA0C5E1EE2"
             {
             "SourcePath" = "8:..\\osumer-jre\\lib\\management\\jmxremote.password.template"
@@ -6532,26 +6670,6 @@
             "TargetName" = "8:LucidaBrightDemiItalic.ttf"
             "Tag" = "8:"
             "Folder" = "8:_15C604A30F1D422B8D8904CD74417729"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F25F8214269B4A6BA972AB852150D4F5"
-            {
-            "SourcePath" = "8:..\\target\\lib\\json-20160212.jar"
-            "TargetName" = "8:json-20160212.jar"
-            "Tag" = "8:"
-            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -6746,10 +6864,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FA02A6B6E753447F85F2DD959BBF0651"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F95306BE996447F39AC86A7A5859A733"
             {
-            "SourcePath" = "8:..\\target\\lib\\commons-io-2.5.jar"
-            "TargetName" = "8:commons-io-2.5.jar"
+            "SourcePath" = "8:..\\target\\lib\\metrics-core-3.1.0.jar"
+            "TargetName" = "8:metrics-core-3.1.0.jar"
             "Tag" = "8:"
             "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
             "Condition" = "8:"
@@ -6772,26 +6890,6 @@
             "TargetName" = "8:jp2ssv.dll"
             "Tag" = "8:"
             "Folder" = "8:_AFB1E43636C04DC8B17469397040360D"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FC38B787D24944D5B54AF0DF1E806B5B"
-            {
-            "SourcePath" = "8:..\\target\\lib\\osumer-installer-2.0.0-SNAPSHOT.jar"
-            "TargetName" = "8:osumer-installer-2.0.0-SNAPSHOT.jar"
-            "Tag" = "8:"
-            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -6892,26 +6990,6 @@
             "TargetName" = "8:ssvagent.exe"
             "Tag" = "8:"
             "Folder" = "8:_AFB1E43636C04DC8B17469397040360D"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FF0049CE52414E1EA3086A1C7F4129E8"
-            {
-            "SourcePath" = "8:..\\target\\lib\\mslinks-1.0.4.jar"
-            "TargetName" = "8:mslinks-1.0.4.jar"
-            "Tag" = "8:"
-            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -7233,15 +7311,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:osumer2"
-        "ProductCode" = "8:{3B6AAF3E-1C31-4162-A7BB-B1A32DFD2748}"
-        "PackageCode" = "8:{E7E15C40-38E7-420D-8B6D-EF650ECF92FE}"
+        "ProductCode" = "8:{ABB4E0D9-1D7B-44F0-A704-0D023F565631}"
+        "PackageCode" = "8:{54CBB04D-C797-4C9B-B630-AC123DED46E5}"
         "UpgradeCode" = "8:{C6ACFCF0-C116-4504-9CF7-C865BD2B1D66}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:2.0.06"
+        "ProductVersion" = "8:2.0.07"
         "Manufacturer" = "8:mob41"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://github.com/mob41/osumer/issues/new"

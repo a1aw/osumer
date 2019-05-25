@@ -413,12 +413,12 @@
                                  </children>
                               </VBox>
                            </content></TitledPane>
-                        <TitledPane collapsible="false" prefHeight="87.0" prefWidth="808.0" text="Metrics Data Uploading">
+                        <TitledPane collapsible="false" prefHeight="87.0" prefWidth="808.0" text="Metrics Data Uploading (Under Testing)">
                            <content>
                               <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="9.0">
                                  <children>
                                     <Label text="These data allow the developers to know the usage of each feature and occurred exceptions, and thus helping to improve the application." textFill="WHITE" />
-                                    <CheckBox fx:id="metricsCheckbox" mnemonicParsing="false" text="Allow the developers to monitor your usage and any exceptions occurred" />
+                                    <CheckBox fx:id="metricsCheckbox" disable="true" mnemonicParsing="false" text="Allow the developers to monitor your usage and any exceptions occurred" />
                                  </children>
                               </VBox>
                            </content>
