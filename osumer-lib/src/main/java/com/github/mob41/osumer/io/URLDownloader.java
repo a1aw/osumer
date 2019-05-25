@@ -54,6 +54,8 @@ public class URLDownloader extends Downloader {
 
     private int status = -1;
 
+	private DebugDump dump;
+
     public URLDownloader(String downloadFolder, String fileName, URL downloadUrl) {
         this.url = downloadUrl;
         this.folder = downloadFolder;
@@ -193,7 +195,7 @@ public class URLDownloader extends Downloader {
                 reportState();
             }
         } catch (IOException e) {
-            DumpManager.addDump(new DebugDump(null, "(Try&catch try)", "Error reporting and debug dump",
+            DumpManager.addDump(dump = new DebugDump(null, "(Try&catch try)", "Error reporting and debug dump",
                     "(Try&catch finally)", "Error when downloading", false, e));
             error();
         } finally {
@@ -219,5 +221,10 @@ public class URLDownloader extends Downloader {
         setChanged();
         notifyObservers();
     }
+
+	@Override
+	public DebugDump getErrorDump() {
+		return dump;
+	}
 
 }

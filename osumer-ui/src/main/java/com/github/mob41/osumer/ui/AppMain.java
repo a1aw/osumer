@@ -11,6 +11,7 @@ import javax.swing.UIManager;
 import com.codahale.metrics.MetricRegistry;
 import com.github.mob41.osumer.Configuration;
 import com.github.mob41.osumer.Osumer;
+import com.github.mob41.osumer.debug.DebugDump;
 import com.github.mob41.osumer.debug.DumpManager;
 import com.github.mob41.osumer.rmi.IDaemon;
 import com.github.mob41.osumer.rmi.IUI;
@@ -66,9 +67,17 @@ public class AppMain extends Application {
 		
 		try {
 			DumpManager.init(Osumer.getVersionString(), Osumer.getVersionString());
-		} catch (IOException e2) {
-			e2.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 			System.err.println("DumpManager: Error initializing dump manager");
+            
+    		Alert alert = new Alert(AlertType.ERROR, e.getMessage(), ButtonType.OK);
+    		alert.setHeaderText("Error initializing dump manager");
+    		alert.showAndWait();
+    		
+			Platform.exit();
+			System.exit(-1);
+			return;
 		}
 		
 		//Arg is handled by osumer-launcher
@@ -79,16 +88,18 @@ public class AppMain extends Application {
 
         try {
             config.load();
-        } catch (IOException e1) {
+        } catch (IOException e) {
+            e.printStackTrace();
             System.err.println("Unable to load configuration");
-            e1.printStackTrace();
-
-            if (!GraphicsEnvironment.isHeadless()) {
-        		Alert alert = new Alert(AlertType.ERROR, e1.getMessage(), ButtonType.OK);
-        		alert.setHeaderText("Could not load configuration");
-        		alert.showAndWait();
-            }
-
+            
+            DumpManager.addDump(new DebugDump(null, "Initialize Configuration", "Load configuration from file", "Set uiSuffix", "Unable to load configuration", false, e));
+            
+    		Alert alert = new Alert(AlertType.ERROR, e.getMessage(), ButtonType.OK);
+    		alert.setHeaderText("Could not load configuration");
+    		alert.showAndWait();
+    		
+            DumpManager.forceMetricsReport();
+            Platform.exit();
             System.exit(-1);
             return;
         }
@@ -98,26 +109,27 @@ public class AppMain extends Application {
         ui = null;
         try {
             ui = (IUI) Naming.lookup("rmi://localhost:" + uiSuffix); //Find any running UI
-        } catch (Exception e) {
-            //e.printStackTrace();
-        }
+        } catch (Exception ignore) {}
         
         if (ui != null) {
             try {
                 ui.wake();
             } catch (RemoteException e) {
                 e.printStackTrace();
+                
                 String msg = 
                         "Unable to wake up the UI:\n" +
                         e.getMessage();
                 System.err.println(msg);
+                
+                DumpManager.addDump(new DebugDump(null, "Check if ui is not null", "Call ui to wake", "Stop this UI", msg, false, e));
 
-                if (!GraphicsEnvironment.isHeadless()) {
-            		Alert alert = new Alert(AlertType.ERROR, msg, ButtonType.OK);
-            		alert.setHeaderText("osumer RMI Connection Error");
-            		alert.showAndWait();
-                }
+        		Alert alert = new Alert(AlertType.ERROR, msg, ButtonType.OK);
+        		alert.setHeaderText("osumer RMI Connection Error");
+        		alert.showAndWait();
 
+                DumpManager.forceMetricsReport();
+                Platform.exit();
                 System.exit(-1);
                 return;
             }
@@ -126,12 +138,6 @@ public class AppMain extends Application {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-            return;
-        }
-        
-        if (GraphicsEnvironment.isHeadless()) {
-            System.err.println("osumer-ui requires a graphics environment to launch its user interface.");
-            System.exit(-1);
             return;
         }
         
@@ -145,33 +151,25 @@ public class AppMain extends Application {
                     "Could not connect to daemon! Please ensure osumer-daemon is running properly.\n" +
                     "Instead of starting directly with \"osumer-ui.exe\", please use \"osumer.exe\" to launch osumer.";
             System.err.println(msg);
+            
+            DumpManager.addDump(new DebugDump(null, "Set d as null", "Look for running daemon", "Create RMI Registry for UI", msg, false, e));
 
     		Alert alert = new Alert(AlertType.ERROR, msg, ButtonType.OK);
     		alert.setHeaderText("osumer RMI Connection Error");
     		alert.showAndWait();
-
+    		
+    		DumpManager.forceMetricsReport();
+            Platform.exit();
             System.exit(-1);
             return;
         }
         
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
-        try {
             LocateRegistry.createRegistry(RMI_UI_PORT);
-
-            //AppUI.launch(args);
-            
-            //UIFrame_old frame = new UIFrame_old(config, d);
             
             ui = new UI(this);
             
             Naming.bind("rmi://localhost:" + uiSuffix, ui);
-            //frame.setVisible(true);
-            
         } catch (Exception e) {
             e.printStackTrace();
             
@@ -179,11 +177,15 @@ public class AppMain extends Application {
                     "Could not register UI RMI registry on port " + RMI_UI_PORT + ":\n" +
                     e.getMessage();
             System.err.println(msg);
+            
+            DumpManager.addDump(new DebugDump(null, "Look for running daemon", "Create RMI Registry for UI", "Register UI to daemon", msg, false, e));
 
     		Alert alert = new Alert(AlertType.ERROR, msg, ButtonType.OK);
     		alert.setHeaderText("osumer RMI Initialization Error");
     		alert.showAndWait();
-            
+    		
+    		DumpManager.forceMetricsReport();
+            Platform.exit();
             System.exit(-1);
             return;
         }
@@ -197,11 +199,15 @@ public class AppMain extends Application {
                     "Could not register UI to daemon\n" +
                     e.getMessage();
             System.err.println(msg);
+            
+            DumpManager.addDump(new DebugDump(null, "Create RMI Registry for UI", "Register UI to daemon", "Set stage title", msg, false, e));
 
     		Alert alert = new Alert(AlertType.ERROR, msg, ButtonType.OK);
     		alert.setHeaderText("osumer RMI Initialization Error");
     		alert.showAndWait();
-            
+    		
+    		DumpManager.forceMetricsReport();
+            Platform.exit();
             System.exit(-1);
             return;
 		}
@@ -253,6 +259,16 @@ public class AppMain extends Application {
             
         } catch (IOException e) {
             e.printStackTrace();
+            DumpManager.addDump(new DebugDump(null, "(Method Start)", "Initialize root layout for UI", "(Method End)", "Could not initialize root layout", false, e));
+            
+            Alert alert = new Alert(AlertType.ERROR, "Could not initialize root layout, check dumps for details:\n" + e, ButtonType.OK);
+    		alert.setHeaderText("osumer UI Layout Error");
+    		alert.showAndWait();
+    		
+    		DumpManager.forceMetricsReport();
+            Platform.exit();
+            System.exit(-1);
+            return;
         }
     }
 

@@ -30,6 +30,8 @@ package com.github.mob41.osumer.io;
 
 import java.util.Observable;
 
+import com.github.mob41.osumer.debug.DebugDump;
+
 public abstract class Downloader extends Observable implements Runnable {
 
     public static final int DOWNLOADING = 0;
@@ -41,6 +43,8 @@ public abstract class Downloader extends Observable implements Runnable {
     public static final int CANCELLED = 3;
 
     public static final int ERROR = 4;
+    
+    public abstract DebugDump getErrorDump();
 
     public abstract String getDownloadFolder();
 

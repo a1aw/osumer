@@ -1,11 +1,8 @@
 package com.github.mob41.osums.search;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-
 import com.github.mob41.osumer.debug.WithDumpException;
 import com.github.mob41.osums.Osums;
-import com.github.mob41.osums.beatmap.BeatmapPage;
+import com.github.mob41.osums.beatmap.OsuBeatmap;
 
 public class ResultBeatmap {
     
@@ -74,7 +71,7 @@ public class ResultBeatmap {
         return beatmapUrl;
     }
     
-    public BeatmapPage getBeatmap(Osums osums) throws WithDumpException{
+    public OsuBeatmap getBeatmap(Osums osums) throws WithDumpException{
         return osums.getBeatmapInfo(beatmapUrl != null ? beatmapUrl : "https://osu.ppy.sh/s/" + id);
     }
 
