@@ -523,7 +523,6 @@ public class Osums {
 
             if (cookiesHeader.size() > 0) {
                 for (String cookie : cookiesHeader) {
-                	System.out.println("GetCookie: " + cookie);
                     cmgr.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
                 }
             }
@@ -585,8 +584,6 @@ public class Osums {
         Map<String, List<String>> headerFields = conn.getHeaderFields();
 
         List<String> locationHeader = headerFields.get("Location");
-        
-        System.out.println(locationHeader.get(0));
 
         if (locationHeader == null || locationHeader.size() != 1
                 || !locationHeader.get(0).startsWith(INDEX_LOCATION_NO_INDEXPHP_URL)) {
@@ -623,7 +620,6 @@ public class Osums {
 
     public int login(String username, String password) throws WithDumpException {
         if (loggedIn) {
-        	System.out.println("Already logged");
             return ALREADY_LOGGED_IN;
         }
         try {
@@ -730,7 +726,6 @@ public class Osums {
                 data += line;
             }
 
-            System.out.println(data);
             return SUCCESS;
         } catch (Exception e) {
             throw new WithDumpException("", "(Try&catch try) Logging out", "Throw debuggable exception on catch",

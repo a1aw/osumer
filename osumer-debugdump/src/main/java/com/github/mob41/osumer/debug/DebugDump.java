@@ -65,7 +65,7 @@ public class DebugDump {
 		this(specified_data, last_op, this_op, next_op, message, containsPrivateData, null);
 	}
 	
-	public DebugDump(String specified_data, String last_op, String this_op, String next_op, String message, boolean containsPrivateData, Exception e) {
+	public DebugDump(String specified_data, String last_op, String this_op, String next_op, String message, boolean containsPrivateData, Throwable e) {
 		os = System.getProperty("os.name");
 		osumerVersion = DumpManager.getOsumerVersion();
 		debuggerVersion = DumpManager.getDebuggerVersion();

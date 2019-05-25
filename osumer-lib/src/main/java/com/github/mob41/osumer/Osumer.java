@@ -41,7 +41,7 @@ public class Osumer {
 
     public static final String OSUMER_BRANCH = "snapshot";
 
-    public static final int OSUMER_BUILD_NUM = 6;
+    public static final int OSUMER_BUILD_NUM = 7;
     
     public static String getVersionString() {
     	return OSUMER_VERSION + "-" + OSUMER_BRANCH + "-b" + OSUMER_BUILD_NUM;

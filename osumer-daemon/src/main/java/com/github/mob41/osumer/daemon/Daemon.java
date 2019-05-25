@@ -29,10 +29,13 @@ import com.codahale.metrics.MetricRegistry;
 import com.github.mob41.osumer.Configuration;
 import com.github.mob41.osumer.Osumer;
 import com.github.mob41.osumer.OsumerNative;
+import com.github.mob41.osumer.debug.DebugDump;
 import com.github.mob41.osumer.debug.DumpManager;
 import com.github.mob41.osumer.debug.WithDumpException;
 import com.github.mob41.osumer.io.Downloader;
 import com.github.mob41.osumer.io.OsuDownloader;
+import com.github.mob41.osumer.method.ErrorCode;
+import com.github.mob41.osumer.method.MethodResult;
 import com.github.mob41.osumer.queue.Queue;
 import com.github.mob41.osumer.queue.QueueAction;
 import com.github.mob41.osumer.queue.QueueManager;
@@ -89,12 +92,15 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
 					Runtime.getRuntime().exec("\"" + OsumerNative.getProgramFiles() + "\\osumer2\\osumer-ui.exe\"");
 				} catch (IOException e1) {
 					e1.printStackTrace();
+		            JOptionPane.showMessageDialog(null,
+		                    "Could not execute UI! Check dumps for more details.",
+		                    "osumer-daemon Error", JOptionPane.ERROR_MESSAGE);
+					DumpManager.addDump(new DebugDump(null, "Set \"startingUi\" as true", "Execute osumer-ui.exe", "Sleep 5000 ms", "Could not execute UI", false, e1));
 				}
+				
 				try {
 					Thread.sleep(5000);
-				} catch (InterruptedException e1) {
-					e1.printStackTrace();
-				}
+				} catch (InterruptedException ignore) {}
 				
 				startingUi = false;
 			}
@@ -111,10 +117,11 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
             trayIcon.displayMessage("osumer2", "osumer2 is now running in background.", TrayIcon.MessageType.INFO);
         } catch (AWTException e) {
             e.printStackTrace();
-            //JOptionPane.showMessageDialog(null,
-            //        "Error when adding tray icon: " + e
-            //                + "\nAs a result, you are not able to start osumer from the tray.",
-            //        "Warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(null,
+                    "Error when adding tray icon: " + e
+                            + "\nAs a result, you are not able to start osumer from the tray.",
+                    "osumer-daemon Warning", JOptionPane.WARNING_MESSAGE);
+			DumpManager.addDump(new DebugDump(null, "Get System Tray", "Add tray icon into system tray", "Start Overlay Thread", "Could not add icon into system tray", false, e));
         }
         
         thread = new OverlayThread(config);
@@ -122,54 +129,26 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
     }
     
     @Override
-    public boolean addQueue(String url) throws RemoteException {
+    public MethodResult<Integer> addQueue(String url) throws RemoteException {
         return addQueue(url, -1, null);
     }
     
     @Override
-    public boolean addQueue(String url, int downloadAction, String targetFileOrFolder) throws RemoteException {
+    public MethodResult<Integer> addQueue(String url, int downloadAction, String targetFileOrFolder) throws RemoteException {
 		DumpManager.getMetrics().meter(MetricRegistry.name("event", "queueAdd")).mark();
-    	System.out.println("Requested to use " + url);
-        if (config.getCheckUpdateFreq() == Configuration.CHECK_UPDATE_FREQ_EVERY_ACT) {
-            //TODO do check update
-            //checkUpdate();
-        }
         
         String user = config.getUser();
         String pass = config.getPass();
 
         if (user == null || user.isEmpty() || pass == null || pass.isEmpty()) {
-            /*
-            LoginPanel loginPanel = new LoginPanel();
-            int option = JOptionPane.showOptionDialog(UIFrame.this, loginPanel, "Login to osu!",
-                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null,
-                    JOptionPane.CANCEL_OPTION);
-
-            if (option == JOptionPane.OK_OPTION) {
-                if (loginPanel.getUsername().isEmpty() || loginPanel.getPassword().isEmpty()) {
-                    JOptionPane.showMessageDialog(UIFrame.this, "Username or password cannot be empty.",
-                            "Error", JOptionPane.ERROR_MESSAGE);
-                    return false;
-                }
-
-                user = loginPanel.getUsername();
-                pass = loginPanel.getPassword();
-            } else {
-                return false;
-            }
-            */
-            //TODO Do login
-            return false;
+            return new MethodResult<Integer>(ErrorCode.RESULT_NO_CREDENTIALS);
         }
         
         try {
-        	System.out.println("Login");
-            System.out.println(osums.login(user, pass));
+        	osums.login(user, pass);
         } catch (WithDumpException e) {
             e.printStackTrace();
-            //JOptionPane.showMessageDialog(UIFrame.this, "Error logging in:\n" + e.getDump().getMessage(),
-            //        "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
+            return new MethodResult<Integer>(ErrorCode.RESULT_LOGIN_FAILED, e.getDump());
         }
         
         String modBUrl = config.isUseOldParser() ? url.replace("osu.ppy.sh", "old.ppy.sh") : url;
@@ -179,53 +158,30 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
             map = osums.getBeatmapInfo(modBUrl);
         } catch (WithDumpException e) {
             e.printStackTrace();
-            //JOptionPane.showMessageDialog(UIFrame.this,
-            //        "Error getting beatmap info:\n" + e.getDump().getMessage(), "Error",
-            //        JOptionPane.ERROR_MESSAGE);
-            return false;
+            return new MethodResult<Integer>(ErrorCode.RESULT_GET_BEATMAP_INFO_FAILED, e.getDump());
         }
         
         String thumbUrl = "http:" + map.getThumbUrl();
         
-        /*
-        URLConnection conn = null;
-        try {
-            conn = thumbUrl.openConnection();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-
-        conn.setConnectTimeout(5000);
-        conn.setReadTimeout(5000);
+        String dwnUrlStr = map.getDwnUrl();
         
-
-        try {
-            thumb = ImageIO.read(conn.getInputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-            thumb = null;
+        if (dwnUrlStr.length() <= 3) {
+            return new MethodResult<Integer>(ErrorCode.RESULT_DOWNLOAD_URL_TOO_SHORT);
         }
-        */
         
         URL downloadUrl = null;
         try {
-            downloadUrl = new URL("https://osu.ppy.sh" + map.getDwnUrl());
-        } catch (MalformedURLException e1) {
-            e1.printStackTrace();
-            //JOptionPane.showMessageDialog(UIFrame.this, "Error validating download URL:\n" + e1, "Error",
-            //        JOptionPane.ERROR_MESSAGE);
-            return false;
+            downloadUrl = new URL("https://osu.ppy.sh" + dwnUrlStr);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return new MethodResult<Integer>(ErrorCode.RESULT_VALIDATE_DOWNLOAD_URL_FAILED);
         }
         String tmpdir = System.getProperty("java.io.tmpdir");
 
         final String mapName = map.getName();
-        System.out.println("Add download");
+        String fileName = dwnUrlStr.substring(3, map.getDwnUrl().length()) + " " + mapName;
         
-        String fileName = 
-        		map.getDwnUrl().substring(3, map.getDwnUrl().length()) + 
-        		" " + 
-        		map.getName().replaceAll("[^A-Za-z0-9()\\[\\]]", "");
+        fileName = fileName.replaceAll("[\\/:*?\"<>|]", " ");
         
         OsuDownloader dwn = new OsuDownloader(tmpdir, fileName, osums, downloadUrl);
         
@@ -273,11 +229,10 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
         } else {
             trayIcon.displayMessage("Could not add \"" + mapName + "\" to queue", "It has already in queue/downloading or completed.", TrayIcon.MessageType.INFO);
         }
-        
-        //tableModel.fireTableDataChanged();
 
         requestAllUiUpdateQueues();
-        return true;
+        
+        return new MethodResult<Integer>(ErrorCode.RESULT_OK);
     }
 
     private void requestAllUiUpdateQueues() {
@@ -356,7 +311,6 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
 	@Override
 	public void registerUi(IUI ui) throws RemoteException {
 		DumpManager.getMetrics().meter(MetricRegistry.name("event", "uiDaemonRegister")).mark();
-		System.out.println("Registered");
 		uis.add(ui);
 	}
 

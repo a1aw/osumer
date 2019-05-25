@@ -23,6 +23,8 @@ import com.github.mob41.osumer.exceptions.NoSuchBuildNumberException;
 import com.github.mob41.osumer.exceptions.NoSuchVersionException;
 import com.github.mob41.osumer.io.OsuDownloader;
 import com.github.mob41.osumer.io.URLDownloader;
+import com.github.mob41.osumer.method.ErrorCode;
+import com.github.mob41.osumer.method.MethodResult;
 import com.github.mob41.osumer.queue.QueueStatus;
 import com.github.mob41.osumer.rmi.IDaemon;
 import com.github.mob41.osumer.updater.UpdateInfo;
@@ -262,7 +264,7 @@ public class MainController implements Initializable {
 				Alert alert = new Alert(AlertType.NONE, "", ButtonType.OK);
 				alert.setHeaderText("About");
 				alert.setContentText(
-						"osumer2\n" +
+						"osumer2 (" + Osumer.getVersionString() +  ")\n" +
 						"Copyright (c) mob41. 2016-2019\n\n" +
 						"osumer is an application that provides osu! players a\n" +
 						"more comfortable and faster way to download beatmaps."
@@ -616,13 +618,64 @@ public class MainController implements Initializable {
         }
 
 
-		boolean success = false;
+		MethodResult<Integer> result = null;
         try {
-            success = d.addQueue(url, downloadAction, targetFileOrFolder);
+            result = d.addQueue(url, downloadAction, targetFileOrFolder);
         } catch (RemoteException e) {
             e.printStackTrace();
+            
+            DumpManager.addDump(new DebugDump(null, "Process download action", "Request daemon to add queue", "(Method End)", "Unable to request daemon to add queue", false, e));
+            
+    		Alert alert = new Alert(AlertType.ERROR, e.getMessage(), ButtonType.OK);
+    		alert.setHeaderText("Unable to request daemon to add queue");
+    		alert.showAndWait();
+    		
+            DumpManager.forceMetricsReport();
+            return false;
         }
-        return success;
+        
+        if (result == null) {
+        	Alert alert = new Alert(AlertType.ERROR, "No result was returned from daemon.", ButtonType.OK);
+    		alert.setHeaderText("Unable to request daemon to add queue");
+    		alert.showAndWait();
+        	return false;
+        } else if (result.getResult() != ErrorCode.RESULT_OK) {
+        	String header = null;
+        	String msg = null;
+        	AlertType type = null;
+        	switch (result.getResult()) {
+        	case ErrorCode.RESULT_NO_CREDENTIALS:
+        		header = "No credentials available";
+        		msg = "Please enter your credentials in the Preferences in order to download beatmaps.";
+        		type = AlertType.WARNING;
+        		break;
+        	case ErrorCode.RESULT_LOGIN_FAILED:
+        		header = "Login Failed";
+        		msg = "Please validate your credentials entered in the Preferences.";
+        		type = AlertType.ERROR;
+        		break;
+        	case ErrorCode.RESULT_GET_BEATMAP_INFO_FAILED:
+        		header = "Could not obtain beatmap info";
+        		msg = "Is your beatmap link/ID correct?";
+        		type = AlertType.ERROR;
+        		break;
+        	case ErrorCode.RESULT_VALIDATE_DOWNLOAD_URL_FAILED:
+        		header = "Invalid download link received";
+        		msg = "Is your beatmap link/ID correct?";
+        		type = AlertType.ERROR;
+        		break;
+            default:
+            	header = "Unable to request daemon to add queue";
+            	msg = "Unknown result code.";
+        		type = AlertType.ERROR;
+        	}
+        	Alert alert = new Alert(type, msg, ButtonType.OK);
+    		alert.setHeaderText(header);
+    		alert.showAndWait();
+        	return false;
+        } else {
+        	return true;
+        }
 	}
 	
 	private UpdateInfo getUpdateInfoByConfig() throws WithDumpException {
@@ -730,15 +783,15 @@ public class MainController implements Initializable {
 		                }
 						
 		                if (_verInfo.isThisVersion()) {
-    						updateText.setText("You are running the latest version of osumer"
-    	                            + " (" + _verInfo.getVersion() + "-" + Updater.getBranchStr(_verInfo.getBranch()) + "-b" + _verInfo.getBuildNum() + ")");
+    						updateText.setText("Running the latest: "
+    	                            + " " + _verInfo.getVersion() + "-" + Updater.getBranchStr(_verInfo.getBranch()) + "-b" + _verInfo.getBuildNum());
 		                	checkingUpdate = false;
 		                    return;
 		                }
 		                
 		                updateText.setText(
 		                        (_verInfo.isUpgradedVersion() ? "Upgrade" : "Update") +
-		                        " available! New version: " + _verInfo.getVersion() +
+		                        " now to " + _verInfo.getVersion() +
 		                        "-" + Updater.getBranchStr(_verInfo.getBranch()) +
 		                        "-b" + _verInfo.getBuildNum());
 		                

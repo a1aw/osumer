@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
+import com.github.mob41.osumer.method.MethodResult;
 import com.github.mob41.osumer.queue.Queue;
 import com.github.mob41.osumer.queue.QueueManager;
 import com.github.mob41.osumer.queue.QueueStatus;
@@ -13,9 +14,9 @@ public interface IDaemon extends Remote{
 	
 	public void test() throws RemoteException;
     
-    public boolean addQueue(String url) throws RemoteException;
+    public MethodResult<Integer> addQueue(String url) throws RemoteException;
     
-    public boolean addQueue(String url, int downloadAction, String targetFileOrFolder) throws RemoteException;
+    public MethodResult<Integer> addQueue(String url, int downloadAction, String targetFileOrFolder) throws RemoteException;
     
     public boolean removeQueue(String name) throws RemoteException;
     

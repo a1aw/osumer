@@ -38,12 +38,7 @@ import org.jsoup.select.Elements;
 
 import com.github.mob41.osumer.debug.WithDumpException;
 
-public class OsuBeatmap extends BeatmapPage implements Serializable{
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 5568409538053247272L;
+public class OsuBeatmap extends OsuSong{
 
 	private final String originalUrl;
 	

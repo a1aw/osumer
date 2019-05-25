@@ -16,7 +16,7 @@
   <properties>
   	<global.generation>2.0.0</global.generation>
   	<global.branch>SNAPSHOT</global.branch>
-  	<global.build>6</global.build>
+  	<global.build>7</global.build>
   	<global.version>${global.generation}-${global.branch}</global.version>
   	<metrics.version>3.1.0</metrics.version>
   	<maven.compiler.source>1.8</maven.compiler.source>
