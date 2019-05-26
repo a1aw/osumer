@@ -41,6 +41,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import com.codahale.metrics.Counter;
+import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Metric;
 import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
@@ -74,20 +76,81 @@ public class DumpManager {
 		
 		metrics = new MetricRegistry();
 		
-		graphite = new Graphite(new InetSocketAddress("graphite.osumer.ml", 2003));
+		graphite = new Graphite(new InetSocketAddress("graphite1.osumer.ml", 2003));
 		reporter = GraphiteReporter.forRegistry(metrics)
-		                                                  .prefixedWith("osumer")
-		                                                  .convertRatesTo(TimeUnit.SECONDS)
-		                                                  .convertDurationsTo(TimeUnit.MILLISECONDS)
-		                                                  .filter(MetricFilter.ALL)
-		                                                  .build(graphite);
+								.prefixedWith("osumer")
+								.convertRatesTo(TimeUnit.SECONDS)
+								.convertDurationsTo(TimeUnit.MILLISECONDS)
+								.filter(new NotReportedFilter())
+								.build(graphite);
 		reporter.start(1, TimeUnit.MINUTES);
 		
-		metrics.meter("debugManagerInit").mark();
-		metrics.meter(MetricRegistry.name("version", osumerVersion)).mark();
-		
-		readDumps();		
+		readDumps();
 		init = true;
+		
+		reportEvent("debugManagerInit");
+		
+		if (osumerVersion != null) {
+			reportEvent("version", osumerVersion.replaceAll("\\.", "-"));
+		}
+		
+		String mac = obtainMac();
+		
+		if (mac != null) {
+			reportEvent("activeUsers", mac);
+		}
+	}
+
+    private static boolean isVMMac(byte[] mac) {
+        if(null == mac) return false;
+        byte invalidMacs[][] = {
+                {0x00, 0x05, 0x69},             //VMWare
+                {0x00, 0x1C, 0x14},             //VMWare
+                {0x00, 0x0C, 0x29},             //VMWare
+                {0x00, 0x50, 0x56},             //VMWare
+                {0x08, 0x00, 0x27},             //Virtualbox
+                {0x0A, 0x00, 0x27},             //Virtualbox
+                {0x00, 0x03, (byte)0xFF},       //Virtual-PC
+                {0x00, 0x15, 0x5D}              //Hyper-V
+        };
+
+        for (byte[] invalid: invalidMacs){
+            if (invalid[0] == mac[0] && invalid[1] == mac[1] && invalid[2] == mac[2]) return true;
+        }
+
+        return false;
+    }
+	
+	private static String obtainMac() {
+		try {
+			Enumeration<NetworkInterface> net = NetworkInterface.getNetworkInterfaces();
+
+	        while (net.hasMoreElements()) {
+	            NetworkInterface element = net.nextElement();
+	            Enumeration<InetAddress> addresses = element.getInetAddresses();
+	            
+	            byte[] mac = element.getHardwareAddress();
+	            if (mac == null || mac.length == 0 || isVMMac(mac)) {
+	            	continue;
+	            }
+	            
+	            while (addresses.hasMoreElements()) {
+	                InetAddress ip = addresses.nextElement();
+	                if (ip.isSiteLocalAddress()) {
+	                	StringBuilder sb = new StringBuilder();
+	                    for (int i = 0; i < mac.length; i++) {
+	                        sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
+	                    }
+	                    return sb.toString();
+	                }
+	            }
+	        }
+		} catch (Exception e) {
+			e.printStackTrace();
+			DumpManager.addDump(new DebugDump(null, "(Method Start)", "Obtain MAC", "(Method End)", "Could not obtain MAC", false, e));
+			System.err.println("Could not obtain MAC");
+		}
+        return null;
 	}
 	
 	public static void forceMetricsReport() {
@@ -97,11 +160,22 @@ public class DumpManager {
 		reporter.report();
 	}
 	
-	public static MetricRegistry getMetrics() {
+	public static void reportEvent(String name, String... names) {
 		if (!init) {
 			throw new IllegalStateException("DumpManager was not initialized before getting metrics registry!");
 		}
-		return metrics;
+		String key = MetricRegistry.name(name, names);
+		
+		@SuppressWarnings("rawtypes")
+		Map<String, Gauge> map = metrics.getGauges();
+
+		Counter c = metrics.counter(key + "_not_reported");
+		
+		if (!map.containsKey(key)) {
+			metrics.register(key, new ResettableGauge(c));
+		}
+		
+		c.inc();
 	}
 
 	public static String getDebuggerVersion() {
@@ -196,7 +270,7 @@ public class DumpManager {
 			name = "Typed-Dump";
 		}
 		
-		metrics.meter(MetricRegistry.name("exceptions", name.replaceAll(".", "-"))).mark();
+		reportEvent("exceptions", name.replaceAll("\\.", "-"));
 		
         String path = System.getenv("localappdata") + "\\osumerExpress\\dumps";
         File folder = new File(path);

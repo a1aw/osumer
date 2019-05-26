@@ -218,7 +218,7 @@ public class AppMain extends Application {
 
         initRootLayout();
         
-		DumpManager.getMetrics().meter(MetricRegistry.name("active", "ui")).mark();
+		DumpManager.reportEvent("active", "ui");
 	}
 	
 	@Override
