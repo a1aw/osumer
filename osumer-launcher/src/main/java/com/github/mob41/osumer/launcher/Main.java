@@ -65,7 +65,7 @@ public class Main {
 			System.err.println("DumpManager: Error initializing dump manager");
 		}
 		
-        DumpManager.getMetrics().meter(MetricRegistry.name("active", "launcher")).mark();
+        DumpManager.reportEvent("active", "launcher");
 		
         ArgParser ap = new ArgParser(args);
 
@@ -85,15 +85,15 @@ public class Main {
             Installer installer = new Installer();
 
             if (ap.isHideIconsFlag()) {
-                DumpManager.getMetrics().meter(MetricRegistry.name("event", "launcherHideIcons")).mark();
+                DumpManager.reportEvent("event", "launcherHideIcons");
                 installer.hideIcons();
 
             } else if (ap.isShowIconsFlag()) {
-                DumpManager.getMetrics().meter(MetricRegistry.name("event", "launcherShowIcons")).mark();
+                DumpManager.reportEvent("event", "launcherShowIcons");
                 installer.showIcons();
 
             } else if (ap.isReinstallFlag()) {
-                DumpManager.getMetrics().meter(MetricRegistry.name("event", "launcherReinstall")).mark();
+                DumpManager.reportEvent("event", "launcherReinstall");
                 installer.reinstall();
 
             }/* else if (ap.isInstallFlag()) {
@@ -212,7 +212,7 @@ public class Main {
                 (args != null && args.length > 0 && urlStr == null)) { //Browser if disabled OE
             runBrowser(config, args);
             
-            DumpManager.getMetrics().meter(MetricRegistry.name("event", "launcherRunBrowser")).mark();
+            DumpManager.reportEvent("event", "launcherRunBrowser");
             DumpManager.forceMetricsReport();
             
             System.exit(0);

@@ -56,7 +56,7 @@ public class Main {
             Daemon daemon = new Daemon(config);
             Naming.bind("rmi://localhost:" + port + "/daemon", daemon);
             
-            DumpManager.getMetrics().meter(MetricRegistry.name("active", "daemon")).mark();
+            DumpManager.reportEvent("active", "daemon");
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(-1);
