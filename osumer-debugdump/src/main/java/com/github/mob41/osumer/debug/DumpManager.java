@@ -88,9 +88,9 @@ public class DumpManager {
 								.build(graphite);
 		reporter.start(1, TimeUnit.MINUTES);
 		
-		//metrics.register("gc", new GarbageCollectorMetricSet());
-        //metrics.register("threads", new CachedThreadStatesGaugeSet(10, TimeUnit.SECONDS));
-        //metrics.register("memory", new MemoryUsageGaugeSet());
+		metrics.register("jvm.gc", new GarbageCollectorMetricSet());
+        metrics.register("jvm.threads", new CachedThreadStatesGaugeSet(10, TimeUnit.SECONDS));
+        metrics.register("jvm.memory", new MemoryUsageGaugeSet());
 		
 		readDumps();
 		init = true;
