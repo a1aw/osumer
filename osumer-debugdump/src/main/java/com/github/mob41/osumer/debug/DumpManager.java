@@ -48,6 +48,9 @@ import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.graphite.Graphite;
 import com.codahale.metrics.graphite.GraphiteReporter;
+import com.codahale.metrics.jvm.CachedThreadStatesGaugeSet;
+import com.codahale.metrics.jvm.GarbageCollectorMetricSet;
+import com.codahale.metrics.jvm.MemoryUsageGaugeSet;
 
 public class DumpManager {
 	
@@ -84,6 +87,10 @@ public class DumpManager {
 								.filter(new NotReportedFilter())
 								.build(graphite);
 		reporter.start(1, TimeUnit.MINUTES);
+		
+		//metrics.register("gc", new GarbageCollectorMetricSet());
+        //metrics.register("threads", new CachedThreadStatesGaugeSet(10, TimeUnit.SECONDS));
+        //metrics.register("memory", new MemoryUsageGaugeSet());
 		
 		readDumps();
 		init = true;

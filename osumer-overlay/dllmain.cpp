@@ -40,7 +40,9 @@ typedef struct {
 
 std::vector<queueStatus_t> queues;
 
-bool agreed = false;
+bool agreed = true;
+
+bool chgToAgreed = false;
 
 bool isShowErrorMsg = false;
 char *errorHeader;
@@ -180,6 +182,24 @@ int fetchThread() {
         return 1;
     }
 
+    jmethodID jRmiLicenseAgreedMethodId = jniEnv->GetMethodID(jRmiClass, "isLicenseAgreed", "()Z");
+
+    if (jRmiLicenseAgreedMethodId == NULL) {
+        showErrorMsg("Could not find license agreed method.", "osumer2 Overlay Error");
+        jniEnv->ExceptionDescribe();
+        javaVM->DestroyJavaVM();
+        return 1;
+    }
+
+    jmethodID jRmiSetLicenseAgreedMethodId = jniEnv->GetMethodID(jRmiClass, "setLicenseAgreed", "(Z)V");
+
+    if (jRmiSetLicenseAgreedMethodId == NULL) {
+        showErrorMsg("Could not find set license agreed method.", "osumer2 Overlay Error");
+        jniEnv->ExceptionDescribe();
+        javaVM->DestroyJavaVM();
+        return 1;
+    }
+
     jniEnv->CallVoidMethod(jRmiObj, jRmiTestMethodId);
 
     if (jniEnv->ExceptionCheck()) {
@@ -190,7 +210,32 @@ int fetchThread() {
         return 1;
     }
 
+    jboolean jLicenseAgreedBool = jniEnv->CallBooleanMethod(jRmiObj, jRmiLicenseAgreedMethodId);
+
+    if (jniEnv->ExceptionCheck()) {
+        //MessageBox(g_hwnd, excToStr(jniEnv), "Error executing test method", MB_ICONERROR | MB_OK);
+        showErrorMsg((char*)excToStr(jniEnv), "Error executing license agreed method");
+        jniEnv->ExceptionDescribe();
+        javaVM->DestroyJavaVM();
+        return 1;
+    }
+
+    agreed = jLicenseAgreedBool == JNI_TRUE;
+
     while (true) {
+        if (chgToAgreed) {
+            chgToAgreed = false;
+
+            jniEnv->CallVoidMethod(jRmiObj, jRmiSetLicenseAgreedMethodId, JNI_TRUE);
+
+            if (jniEnv->ExceptionCheck()) {
+                showErrorMsg((char*)excToStr(jniEnv), "Error setting license agreed!");
+                jniEnv->ExceptionDescribe();
+                javaVM->DestroyJavaVM();
+                return 1;
+            }
+        }
+
         jobjectArray jQueues = (jobjectArray)jniEnv->CallObjectMethod(jRmiObj, jRmiQueuesMethodId); //TODO: Event oriented
 
         if (jniEnv->ExceptionCheck()) {
@@ -284,19 +329,13 @@ BOOL _stdcall hkSwapBuffers(HDC hdc) {
         ImGui::OpenPopup("osumer2 Overlay License Agreement");
     }
     else {
-        {
-            static float f = 0.0f;
-            static int counter = 0;
+        if (queues.size() > 0) {
+            {
+                static float f = 0.0f;
+                static int counter = 0;
 
-            ImGui::Begin("osumer2", NULL, ImGuiWindowFlags_AlwaysAutoResize);
+                ImGui::Begin("osumer2", NULL, ImGuiWindowFlags_AlwaysAutoResize);
 
-            if (queues.size() == 0) {
-                ImGui::SetWindowCollapsed(true);
-                ImGui::SetWindowPos(ImVec2(0.0f, 0.0f), ImGuiCond_Always);
-
-                ImGui::Text("No pending downloads.");
-            }
-            else {
                 ImGui::SetWindowCollapsed(false);
                 ImGui::SetWindowPos(ImVec2(0.0f, g_display_h / 3.0f), ImGuiCond_Always);
 
@@ -309,9 +348,9 @@ BOOL _stdcall hkSwapBuffers(HDC hdc) {
                     ImGui::Text(status.title);
                     ImGui::ProgressBar(status.progress / 100.0f, ImVec2(-1.0f, 0.0f));
                 }
-            }
 
-            ImGui::End();
+                ImGui::End();
+            }
         }
     }
 
@@ -344,6 +383,7 @@ BOOL _stdcall hkSwapBuffers(HDC hdc) {
 
         if (ImGui::Button("Agree")) {
             agreed = true;
+            chgToAgreed = true;
             io.WantCaptureMouse = false;
             io.MouseDrawCursor = false;
             ImGui::CloseCurrentPopup();
