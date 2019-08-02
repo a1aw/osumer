@@ -328,4 +328,23 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
 		OsumerNative.startWithOverlay();
 	}
 
+	@Override
+	public void setOverlayAgreement(boolean agreed) throws RemoteException {
+		config.setOverlayAgreement(agreed);
+		try {
+			config.write();
+		} catch (IOException e) {
+			e.printStackTrace();
+            JOptionPane.showMessageDialog(null,
+                    "Could not write configuration! Check dumps for more details.",
+                    "osumer-daemon Error", JOptionPane.ERROR_MESSAGE);
+			DumpManager.addDump(new DebugDump(null, "Set overlay agreement", "Write config", "(End of function)", "Could not write configuration", false, e));
+		}
+	}
+
+	@Override
+	public boolean isOverlayAgreement() throws RemoteException {
+		return config.isOverlayAgreement();
+	}
+
 }

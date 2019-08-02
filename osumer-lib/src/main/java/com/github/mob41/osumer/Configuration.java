@@ -73,6 +73,14 @@ public class Configuration {
     private static final String KEY_DEFAULT_BROWSER = "defaultBrowser";
 
     private static final String KEY_DEFAULT_BROWSER_DEFAULT_VALUE = "IEXPLORE.EXE";
+
+    private static final String KEY_USE_CUSTOM_BROWSER = "useCustomBrowser";
+
+    private static final boolean KEY_USE_CUSTOM_BROWSER_DEFAULT_VALUE = false;
+
+    private static final String KEY_CUSTOM_BROWSER = "customBrowser";
+
+    private static final String KEY_CUSTOM_BROWSER_DEFAULT_VALUE = "";
     
     private static final String KEY_DEFAULT_OPEN_BEATMAP_ACTION = "defaultOpenBeatmapAction";
     
@@ -93,6 +101,10 @@ public class Configuration {
     private static final String KEY_OVERLAY_ENABLED = "overlayEnabled";
     
     private static final boolean KEY_OVERLAY_ENABLED_DEFAULT_VALUE = true;
+    
+    private static final String KEY_OVERLAY_AGREEMENT = "overlayAgreement";
+    
+    private static final boolean KEY_OVERLAY_AGREEMENT_DEFAULT_VALUE = false;
 
     private static final String KEY_AUTO_SWITCH_BROWSER = "autoSwitchBrowser";
 
@@ -492,6 +504,14 @@ public class Configuration {
     	return json.getBoolean(KEY_OVERLAY_ENABLED);
     }
     
+    public void setOverlayAgreement(boolean agreed) {
+    	json.put(KEY_OVERLAY_AGREEMENT, agreed);
+    }
+    
+    public boolean isOverlayAgreement() {
+    	return json.getBoolean(KEY_OVERLAY_AGREEMENT);
+    }
+    
     public void setMetricsEnabled(boolean enabled) {
     	json.put(KEY_METRICS_ENABLED, enabled);
     }
@@ -509,6 +529,7 @@ public class Configuration {
         modified |= ifNullPutValue(json, KEY_DEFAULT_BEATMAP_SAVE_LOCATION, KEY_DEFAULT_BEATMAP_SAVE_LOCATION_DEFAULT_VALUE);
         modified |= ifNullPutValue(json, KEY_OE_ENABLED, KEY_OE_ENABLED_DEFAULT_VALUE);
         modified |= ifNullPutValue(json, KEY_OVERLAY_ENABLED, KEY_OVERLAY_ENABLED_DEFAULT_VALUE);
+        modified |= ifNullPutValue(json, KEY_OVERLAY_AGREEMENT, KEY_OVERLAY_AGREEMENT_DEFAULT_VALUE);
         modified |= ifNullPutValue(json, KEY_NO_UI_ARG_SWITCH_BROWSER, KEY_NO_UI_ARG_SWITCH_BROWSER_DEFAULT_VALUE);
         modified |= ifNullPutValue(json, KEY_AUTO_SWITCH_BROWSER, KEY_AUTO_SWITCH_BROWSER_DEFAULT_VALUE);
         modified |= ifNullPutValue(json, KEY_GETTING_STARTED_STARTUP, KEY_GETTING_STARTED_STARTUP_DEFAULT_VALUE);

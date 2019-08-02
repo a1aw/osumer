@@ -37,6 +37,14 @@ public class OverlayRmi {
         }
 	}
 	
+	public void setLicenseAgreed(boolean agreed) throws RemoteException {
+		d.setOverlayAgreement(agreed);
+	}
+	
+	public boolean isLicenseAgreed() throws RemoteException {
+		return d.isOverlayAgreement();
+	}
+	
 	public QueueStatus[] getQueues() throws RemoteException{
 		return d.getQueues();
 	}

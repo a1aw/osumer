@@ -26,6 +26,10 @@ public interface IDaemon extends Remote{
     
     public void unregisterUi(IUI ui) throws RemoteException;
     
+    public void setOverlayAgreement(boolean agreed) throws RemoteException;
+    
+    public boolean isOverlayAgreement() throws RemoteException;
+    
     public void startOsuWithOverlay() throws RemoteException;
     
     public void trayIconDisplayMessage(String caption, String text, MessageType msgType) throws RemoteException;
