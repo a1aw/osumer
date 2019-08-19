@@ -1,6 +1,6 @@
 package com.github.mob41.osums.server;
 
-import com.github.mob41.osums.search.ResultBeatmap;
+import com.github.mob41.osums.search.SongResult;
 
 public class QueryOutput {
 
@@ -12,6 +12,6 @@ public class QueryOutput {
 	
 	public int totalPages;
 	
-	public ResultBeatmap[] output;
+	public SongResult[] output;
 	
 }

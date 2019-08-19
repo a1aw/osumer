@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -29,7 +28,7 @@ import com.github.mob41.osumer.queue.QueueStatus;
 import com.github.mob41.osumer.rmi.IDaemon;
 import com.github.mob41.osumer.updater.UpdateInfo;
 import com.github.mob41.osumer.updater.Updater;
-import com.github.mob41.osums.Osums;
+import com.github.mob41.osums.AbstractOsums;
 import com.github.mob41.osums.beatmap.OsuBeatmap;
 
 import javafx.application.Platform;
@@ -45,7 +44,6 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.DialogEvent;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -129,7 +127,7 @@ public class MainController implements Initializable {
 	
 	private IDaemon d;
 	
-	private Osums osums;
+	private AbstractOsums osums;
 	
 	private QueueStatus[] queues;
 
@@ -343,7 +341,7 @@ public class MainController implements Initializable {
 		}
 	}
 	
-	protected void setOsums(Osums osums) {
+	protected void setOsums(AbstractOsums osums) {
 		this.osums = osums;
 	}
 	
@@ -428,7 +426,7 @@ public class MainController implements Initializable {
         		url = "https://osu.ppy.sh/s/" + id;
         	}
         } else {
-        	if (Osums.isVaildBeatMapUrl(beatmapUrlId)) {
+        	if (osums.isVaildBeatmapUrl(beatmapUrlId)) {
         		url = beatmapUrlId;
         	} else {
         		Alert alert = new Alert(AlertType.WARNING, "Please enter a valid osu! beatmap link.", ButtonType.OK);

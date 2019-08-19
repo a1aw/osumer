@@ -17,7 +17,9 @@ import com.github.mob41.osumer.Configuration;
 import com.github.mob41.osumer.debug.WithDumpException;
 import com.github.mob41.osumer.installer.Installer;
 import com.github.mob41.osumer.rmi.IDaemon;
+import com.github.mob41.osums.AbstractOsums;
 import com.github.mob41.osums.Osums;
+import com.github.mob41.osums.OsumsOld;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -398,8 +400,7 @@ public class PreferencesController implements Initializable {
 	                
 			        Thread thread = new Thread() {
 			        	public void run() {
-	                        
-	    		        	Osums osums = new Osums();
+	    		        	AbstractOsums osums = config.isUseOldParser() ? new OsumsOld() : new Osums();
 
 	                        boolean err = false;
 	                        try {

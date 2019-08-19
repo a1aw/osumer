@@ -8,8 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.github.mob41.osumer.debug.WithDumpException;
-import com.github.mob41.osums.Osums;
-import com.github.mob41.osums.search.ResultBeatmap;
+import com.github.mob41.osums.AbstractOsums;
+import com.github.mob41.osums.Osums_old;
+import com.github.mob41.osums.search.SongResult;
 import com.google.gson.Gson;
 
 public class QueryServlet extends HttpServlet {
@@ -19,9 +20,9 @@ public class QueryServlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 9033797298845660820L;
 	
-	public Osums osums;
+	public AbstractOsums osums;
 	
-	public QueryServlet(Osums osums) {
+	public QueryServlet(AbstractOsums osums) {
 		this.osums = osums;
 	}
 
@@ -47,9 +48,9 @@ public class QueryServlet extends HttpServlet {
 			key = "";
 		}
 		
-		ResultBeatmap[] results = null;
+		SongResult[] results = null;
 		try {
-			results = osums.getOimgr().searchDatabase(key);
+			results = null;
 		} catch (WithDumpException e) {
 			e.printStackTrace();
 			output.result = -2;
@@ -90,7 +91,7 @@ public class QueryServlet extends HttpServlet {
 		}
 		
 		int offset = items * (page - 1);
-		ResultBeatmap[] out = new ResultBeatmap[items];
+		SongResult[] out = new SongResult[items];
 		for (int i = offset; i < items + offset; i++) {
 			out[i - offset] = results[i];
 		}

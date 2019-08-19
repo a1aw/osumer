@@ -1,12 +1,16 @@
 package com.github.mob41.osums.search;
 
 import com.github.mob41.osumer.debug.WithDumpException;
-import com.github.mob41.osums.Osums;
-import com.github.mob41.osums.beatmap.OsuBeatmap;
+import com.github.mob41.osums.AbstractOsums;
+import com.github.mob41.osums.beatmap.OsuSong;
 
-public class ResultBeatmap {
+public class SongResult {
+	
+	private static final String SONG_URL = "https://osu.ppy.sh/s/";
     
     private int id;
+    
+    private String rank;
 
     private String artist;
     
@@ -20,27 +24,19 @@ public class ResultBeatmap {
     
     private int plays;
     
-    private String beatmapUrl;
-    
-    private String thumbUrl;
-    
-    private String thumbData;
-    
-    protected ResultBeatmap(){
+    protected SongResult(){
         
     }
     
-    public ResultBeatmap(int id, String artist, String title, String creator, String[] tags, int favourites, int plays, String beatmapUrl, String thumbUrl, String thumbData) {
+    public SongResult(int id, String rank, String artist, String title, String creator, String[] tags, int favourites, int plays) {
         this.id = id;
+        this.rank = rank;
         this.artist = artist;
         this.title = title;
         this.creator = creator;
         this.tags = tags;
         this.favourites = favourites;
         this.plays = plays;
-        this.beatmapUrl = beatmapUrl;
-        this.thumbUrl = thumbUrl;
-        this.thumbData = thumbData;
     }
 
     public String getArtist() {
@@ -66,27 +62,19 @@ public class ResultBeatmap {
     public int getPlays() {
         return plays;
     }
-
-    public String getBeatmapUrl() {
-        return beatmapUrl;
-    }
     
-    public OsuBeatmap getBeatmap(Osums osums) throws WithDumpException{
-        return osums.getBeatmapInfo(beatmapUrl != null ? beatmapUrl : "https://osu.ppy.sh/s/" + id);
+    public OsuSong getOsuSong(AbstractOsums osums) throws WithDumpException{
+        return osums.getSongInfo(SONG_URL + id);
     }
 
     public int getId() {
         return id;
     }
 
-    public String getThumbUrl() {
-        return thumbUrl;
-    }
-
-    public String getThumbData() {
-        return thumbData;
-    }
-
+	public String getRank() {
+		return rank;
+	}
+    
     /*
     public JSONObject toJson(){
         JSONArray arr = new JSONArray();

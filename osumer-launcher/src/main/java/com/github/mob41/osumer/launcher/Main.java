@@ -36,7 +36,6 @@ import java.rmi.RemoteException;
 
 import javax.swing.JOptionPane;
 
-import com.codahale.metrics.MetricRegistry;
 import com.github.mob41.osumer.Configuration;
 import com.github.mob41.osumer.Osumer;
 import com.github.mob41.osumer.OsumerNative;
@@ -46,6 +45,7 @@ import com.github.mob41.osumer.installer.Installer;
 import com.github.mob41.osumer.rmi.IDaemon;
 import com.github.mob41.osumer.rmi.IUI;
 import com.github.mob41.osums.Osums;
+import com.github.mob41.osums.OsumsOld;
 
 public class Main {
 
@@ -198,7 +198,7 @@ public class Main {
 
         String urlStr = null;
         for (int i = 0; i < args.length; i++) {
-            if (Osums.isVaildBeatMapUrl(args[i])) {
+        	if (config.isUseOldParser() ? OsumsOld.checkVaildBeatmapUrl(args[i]) : Osums.checkVaildBeatmapUrl(args[i])) {
                 urlStr = args[i];
                 break;
             }

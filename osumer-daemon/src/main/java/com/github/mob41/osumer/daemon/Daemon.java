@@ -5,16 +5,11 @@ import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.TrayIcon.MessageType;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -22,10 +17,8 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
-import com.codahale.metrics.MetricRegistry;
 import com.github.mob41.osumer.Configuration;
 import com.github.mob41.osumer.Osumer;
 import com.github.mob41.osumer.OsumerNative;
@@ -46,8 +39,10 @@ import com.github.mob41.osumer.queue.actions.BeforeSoundAction;
 import com.github.mob41.osumer.queue.actions.CustomImportAction;
 import com.github.mob41.osumer.rmi.IDaemon;
 import com.github.mob41.osumer.rmi.IUI;
-import com.github.mob41.osums.beatmap.OsuBeatmap;
+import com.github.mob41.osums.AbstractOsums;
 import com.github.mob41.osums.Osums;
+import com.github.mob41.osums.OsumsOld;
+import com.github.mob41.osums.beatmap.OsuBeatmap;
 
 public class Daemon extends UnicastRemoteObject implements IDaemon {
 
@@ -60,7 +55,7 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
     
     private final Configuration config;
     
-    private final Osums osums;
+    private final AbstractOsums osums;
     
     private final TrayIcon trayIcon;
     
@@ -73,7 +68,13 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
     protected Daemon(Configuration config) throws RemoteException {
         this.config = config;
         queueManager = new QueueManager(config);
-        osums = new Osums();
+        
+        if (config.isUseOldParser()) {
+        	osums = new OsumsOld();
+        } else {
+        	osums = new Osums();
+        }
+        
         uis = new ArrayList<IUI>();
         
         trayIcon = new TrayIcon(Toolkit.getDefaultToolkit()
