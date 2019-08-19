@@ -15,6 +15,12 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_004617669FF84D8DAA75248FA9805918"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_02706B2307914C87926D3C90CA432D1E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -70,12 +76,6 @@
         "Entry"
         {
         "MsmKey" = "8:_07A46FC93B684ABF8059A42F4374634F"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_07D4DC1E152A468E8BAC79EEE5C3BEBF"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -214,12 +214,6 @@
         "Entry"
         {
         "MsmKey" = "8:_2484885AE26C48558246D0E4019D395D"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_258A7BD7506C46BEAE85E3A157AA9F8F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -525,6 +519,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_5EB7753A019C458D8207647506FB5A71"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_5F8C2EF9958247CD864D1F92A79B96DB"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -646,6 +646,12 @@
         "Entry"
         {
         "MsmKey" = "8:_7101044185104851BE30B7D220891B27"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7195EC71B947483BB49482D243456CF1"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1704,6 +1710,26 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_004617669FF84D8DAA75248FA9805918"
+            {
+            "SourcePath" = "8:..\\target\\lib\\jackson-core-2.9.9.jar"
+            "TargetName" = "8:jackson-core-2.9.9.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_02706B2307914C87926D3C90CA432D1E"
             {
             "SourcePath" = "8:..\\target\\lib\\mslinks-1.0.4.jar"
@@ -1890,26 +1916,6 @@
             "TargetName" = "8:resources.jar"
             "Tag" = "8:"
             "Folder" = "8:_0661FE42AD0C4C3B9E818E0CDD1FD979"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_07D4DC1E152A468E8BAC79EEE5C3BEBF"
-            {
-            "SourcePath" = "8:..\\target\\lib\\jackson-databind-2.9.9.jar"
-            "TargetName" = "8:jackson-databind-2.9.9.jar"
-            "Tag" = "8:"
-            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2370,26 +2376,6 @@
             "TargetName" = "8:jfxrt.jar"
             "Tag" = "8:"
             "Folder" = "8:_5C25A409F3D547B998FDFECC37D8C0BC"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_258A7BD7506C46BEAE85E3A157AA9F8F"
-            {
-            "SourcePath" = "8:..\\target\\lib\\jackson-core-2.9.9.jar"
-            "TargetName" = "8:jackson-core-2.9.9.jar"
-            "Tag" = "8:"
-            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -3404,6 +3390,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5EB7753A019C458D8207647506FB5A71"
+            {
+            "SourcePath" = "8:..\\target\\lib\\jackson-databind-2.9.9.2.jar"
+            "TargetName" = "8:jackson-databind-2.9.9.2.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5F8C2EF9958247CD864D1F92A79B96DB"
             {
             "SourcePath" = "8:..\\osumer-jre\\lib\\cmm\\sRGB.pf"
@@ -3808,6 +3814,26 @@
             {
             "SourcePath" = "8:..\\target\\lib\\jackson-annotations-2.9.0.jar"
             "TargetName" = "8:jackson-annotations-2.9.0.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7195EC71B947483BB49482D243456CF1"
+            {
+            "SourcePath" = "8:..\\target\\lib\\metrics-jvm-3.1.0.jar"
+            "TargetName" = "8:metrics-jvm-3.1.0.jar"
             "Tag" = "8:"
             "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
             "Condition" = "8:"
@@ -7312,7 +7338,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:osumer2"
         "ProductCode" = "8:{81161642-EA9C-4534-A53B-0F9BA518D3E6}"
-        "PackageCode" = "8:{5530645A-7BDD-4733-95A2-BCF7BD6F213B}"
+        "PackageCode" = "8:{ED7C5E16-7015-439C-90B0-48BAA7BFCFA7}"
         "UpgradeCode" = "8:{C6ACFCF0-C116-4504-9CF7-C865BD2B1D66}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
