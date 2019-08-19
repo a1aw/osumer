@@ -11,7 +11,8 @@
   	<module>osumer-installer</module>
   	<module>osumer-launcher</module>
   	<module>osumer-debugdump</module>
-  	<module>osumer-osums</module>
+  	<module>osums-api</module>
+  	<module>osums-server</module>
   </modules>
   <properties>
   	<global.generation>2.0.0</global.generation>

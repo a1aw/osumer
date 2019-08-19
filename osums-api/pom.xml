@@ -5,7 +5,7 @@
     <artifactId>osumer</artifactId>
     <version>${global.version}</version>
   </parent>
-  <artifactId>osumer-osums</artifactId>
+  <artifactId>osums-api</artifactId>
   <dependencies>
   	<dependency>
   		<groupId>org.jsoup</groupId>

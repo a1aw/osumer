@@ -14,7 +14,7 @@
   	</dependency>
   	<dependency>
   		<groupId>com.github.mob41</groupId>
-  		<artifactId>osumer-osums</artifactId>
+  		<artifactId>osums-api</artifactId>
   		<version>${global.version}</version>
   	</dependency>
   	<dependency>
