@@ -6,13 +6,13 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 
-import com.github.mob41.osumer.debug.DumpManager;
-import com.github.mob41.osums.Osums;
+import com.github.mob41.osums.AbstractOsums;
+import com.github.mob41.osums.OsumsOld;
 
 public class Main {
 
 	public static void main(String[] args) throws Exception {
-		Osums osums = new Osums();
+		AbstractOsums osums = new OsumsOld();
 		
 		Server server = new Server(6099);
 		

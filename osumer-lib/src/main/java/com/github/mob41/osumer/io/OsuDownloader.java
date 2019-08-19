@@ -36,11 +36,10 @@ import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
-import java.util.Map;
 
 import com.github.mob41.osumer.debug.DebugDump;
 import com.github.mob41.osumer.debug.DumpManager;
-import com.github.mob41.osums.Osums;
+import com.github.mob41.osums.AbstractOsums;
 
 public class OsuDownloader extends Downloader {
 
@@ -48,7 +47,7 @@ public class OsuDownloader extends Downloader {
 
     private final URL url;
 
-    private final Osums osu;
+    private final AbstractOsums osu;
 
     private final String folder;
 
@@ -62,7 +61,7 @@ public class OsuDownloader extends Downloader {
 
 	private DebugDump dump;
 
-    public OsuDownloader(String downloadFolder, String fileName, Osums osu, URL downloadUrl) {
+    public OsuDownloader(String downloadFolder, String fileName, AbstractOsums osu, URL downloadUrl) {
         this.url = downloadUrl;
         this.osu = osu;
         this.folder = downloadFolder;
@@ -143,11 +142,7 @@ public class OsuDownloader extends Downloader {
 
             conn.setRequestProperty("Range", "bytes=" + downloaded + "-");
 
-            if (osu.getCookies().getCookieStore().getCookies().size() > 0) {
-                // While joining the Cookies, use ',' or ';' as needed. Most of
-                // the servers are using ';'
-                conn.setRequestProperty("Cookie", join(";", osu.getCookies().getCookieStore().getCookies()));
-            }
+            osu.setCookies(conn);
 
             conn.connect();
             
