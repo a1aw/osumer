@@ -11,9 +11,9 @@ import com.github.mob41.osumer.debug.DebugDump;
 import com.github.mob41.osumer.debug.DumpManager;
 import com.github.mob41.osumer.rmi.IDaemon;
 import com.github.mob41.osumer.rmi.IUI;
-import com.github.mob41.osums.AbstractOsums;
 import com.github.mob41.osums.Osums;
-import com.github.mob41.osums.OsumsOld;
+import com.github.mob41.osums.OsumsNewParser;
+import com.github.mob41.osums.OsumsOldParser;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -53,7 +53,7 @@ public class AppMain extends Application {
     
     private IDaemon d;
     
-    private AbstractOsums osums;
+    private Osums osums;
 
 	private MainController controller;
 
@@ -212,7 +212,7 @@ public class AppMain extends Application {
 		
         primaryStage.setTitle("osumer2");
         primaryStage.getIcons().add(new Image(AppMain.class.getResourceAsStream("/image/osumerIcon_64px.png")));
-        osums = config.isUseOldParser() ? new OsumsOld() : new Osums();
+        osums = config.isUseOldParser() ? new OsumsOldParser() : new OsumsNewParser();
 
         initRootLayout();
         

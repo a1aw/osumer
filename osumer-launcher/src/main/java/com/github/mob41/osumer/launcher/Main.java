@@ -44,8 +44,8 @@ import com.github.mob41.osumer.debug.DumpManager;
 import com.github.mob41.osumer.installer.Installer;
 import com.github.mob41.osumer.rmi.IDaemon;
 import com.github.mob41.osumer.rmi.IUI;
-import com.github.mob41.osums.Osums;
-import com.github.mob41.osums.OsumsOld;
+import com.github.mob41.osums.OsumsNewParser;
+import com.github.mob41.osums.OsumsOldParser;
 
 public class Main {
 
@@ -198,7 +198,7 @@ public class Main {
 
         String urlStr = null;
         for (int i = 0; i < args.length; i++) {
-        	if (config.isUseOldParser() ? OsumsOld.checkVaildBeatmapUrl(args[i]) : Osums.checkVaildBeatmapUrl(args[i])) {
+        	if (config.isUseOldParser() ? OsumsOldParser.checkVaildBeatmapUrl(args[i]) : OsumsNewParser.checkVaildBeatmapUrl(args[i])) {
                 urlStr = args[i];
                 break;
             }

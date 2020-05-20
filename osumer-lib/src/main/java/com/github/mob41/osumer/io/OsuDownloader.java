@@ -39,7 +39,7 @@ import java.util.List;
 
 import com.github.mob41.osumer.debug.DebugDump;
 import com.github.mob41.osumer.debug.DumpManager;
-import com.github.mob41.osums.AbstractOsums;
+import com.github.mob41.osums.Osums;
 
 public class OsuDownloader extends Downloader {
 
@@ -47,7 +47,7 @@ public class OsuDownloader extends Downloader {
 
     private final URL url;
 
-    private final AbstractOsums osu;
+    private final Osums osu;
 
     private final String folder;
 
@@ -61,7 +61,7 @@ public class OsuDownloader extends Downloader {
 
 	private DebugDump dump;
 
-    public OsuDownloader(String downloadFolder, String fileName, AbstractOsums osu, URL downloadUrl) {
+    public OsuDownloader(String downloadFolder, String fileName, Osums osu, URL downloadUrl) {
         this.url = downloadUrl;
         this.osu = osu;
         this.folder = downloadFolder;

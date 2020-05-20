@@ -35,10 +35,12 @@ public class OsumerNative {
         	}
         } else {
         	JOptionPane.showMessageDialog(null, "Could not find any osumer2 DLL in both 32, 64 bit folders!\nYou might not be able to use overlay features.\nPlease check if you have installed osumer2 properly.", "osumer2 Native Error", JOptionPane.ERROR_MESSAGE);
+        	System.exit(-1);
         }
         
         if (!success) {
         	JOptionPane.showMessageDialog(null, "Could not load osumer2 DLL!\nPlease check if you have installed osumer2 properly.\nReason:\n" + reason, "osumer2 Native Error", JOptionPane.ERROR_MESSAGE);
+        	System.exit(-1);
         }
     }
     

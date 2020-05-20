@@ -6,13 +6,14 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 
-import com.github.mob41.osums.AbstractOsums;
-import com.github.mob41.osums.OsumsOld;
+import com.github.mob41.osums.Osums;
+import com.github.mob41.osums.OsumsOldParser;
 
 public class Main {
 
 	public static void main(String[] args) throws Exception {
-		AbstractOsums osums = new OsumsOld();
+		Osums osums = new OsumsOldParser();
+		OsumsServer osumsServer = new OsumsServer(osums, OsumsServer.DEFAULT_PROP_FILE_NAME);
 		
 		Server server = new Server(6099);
 		
@@ -23,7 +24,7 @@ public class Main {
 		
 		ServletContextHandler servletHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         servletHandler.setContextPath("/");
-        servletHandler.addServlet(new ServletHolder(new QueryServlet(osums)), "/query");
+        servletHandler.addServlet(new ServletHolder(new QueryServlet(osums, osumsServer)), "/query");
         servletHandler.addFilter(filterHolder, "/query", null);
         
         server.setHandler(servletHandler);
