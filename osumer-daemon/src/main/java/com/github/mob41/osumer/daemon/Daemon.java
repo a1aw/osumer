@@ -39,9 +39,9 @@ import com.github.mob41.osumer.queue.actions.BeforeSoundAction;
 import com.github.mob41.osumer.queue.actions.CustomImportAction;
 import com.github.mob41.osumer.rmi.IDaemon;
 import com.github.mob41.osumer.rmi.IUI;
-import com.github.mob41.osums.AbstractOsums;
 import com.github.mob41.osums.Osums;
-import com.github.mob41.osums.OsumsOld;
+import com.github.mob41.osums.OsumsNewParser;
+import com.github.mob41.osums.OsumsOldParser;
 import com.github.mob41.osums.beatmap.OsuBeatmap;
 
 public class Daemon extends UnicastRemoteObject implements IDaemon {
@@ -55,7 +55,7 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
     
     private final Configuration config;
     
-    private final AbstractOsums osums;
+    private final Osums osums;
     
     private final TrayIcon trayIcon;
     
@@ -70,9 +70,9 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
         queueManager = new QueueManager(config);
         
         if (config.isUseOldParser()) {
-        	osums = new OsumsOld();
+        	osums = new OsumsOldParser();
         } else {
-        	osums = new Osums();
+        	osums = new OsumsNewParser();
         }
         
         uis = new ArrayList<IUI>();

@@ -30,7 +30,7 @@ import com.github.mob41.osums.search.SearchResult;
  * @author Anthony
  *
  */
-public class OsumsOld extends AbstractOsums {
+public class OsumsOldParser extends Osums {
 
     private static final String LOGOUT_URL = "http://old.ppy.sh/forum/ucp.php?mode=logout";
 
@@ -38,9 +38,7 @@ public class OsumsOld extends AbstractOsums {
     
     private static final String SEARCH_URL = "https://old.ppy.sh/p/beatmaplist?q=";
 
-    private static final String INDEX_LOCATION_URL = "http://old.ppy.sh/forum/index.php";
-
-    private static final String INDEX_LOCATION_NO_INDEXPHP_URL = "http://old.ppy.sh/forum/";
+    private static final String INDEX_LOCATION_URL = "https://osu.ppy.sh/index.php";
 
     private static final String URL_PREFIX = "http://osu.ppy.sh/";
 
@@ -64,14 +62,20 @@ public class OsumsOld extends AbstractOsums {
 
 	@Override
 	public SearchResult searchOnlineMaps(String keywords, SearchFilter[] filters, int page) throws WithDumpException {
+		if (keywords == null) {
+			keywords = "";
+		}
+		
 		String url = SEARCH_URL + keywords;
 		
 		String rank = null;
-		for (SearchFilter filter : filters) {
-			if (filter instanceof RankFilter) {
-				rank = ((RankFilter) filter).getRank();
+		if (filters != null) {
+			for (SearchFilter filter : filters) {
+				if (filter instanceof RankFilter) {
+					rank = ((RankFilter) filter).getRank();
+				}
+				url = filter.handleUrl(url);
 			}
-			url = filter.handleUrl(url);
 		}
 		
 		if (rank == null) {
@@ -185,10 +189,10 @@ public class OsumsOld extends AbstractOsums {
                         }
                         
                         if (lastPageNum > totalPages){
-                            System.out.println("Last page num is bigger than total pages: " + lastPageNum + " > " + totalPages);
+                            //System.out.println("Last page num is bigger than total pages: " + lastPageNum + " > " + totalPages);
                             totalPages = lastPageNum;
                         } else {
-                            System.out.println("Last page num is sammler than total pages: " + lastPageNum + " < " + totalPages);
+                            //System.out.println("Last page num is sammler than total pages: " + lastPageNum + " < " + totalPages);
                         }
                     }
                 }
@@ -282,7 +286,7 @@ public class OsumsOld extends AbstractOsums {
         List<String> locationHeader = headerFields.get("Location");
 
         if (locationHeader == null || locationHeader.size() != 1
-                || !locationHeader.get(0).startsWith(INDEX_LOCATION_NO_INDEXPHP_URL)) {
+                || !locationHeader.get(0).startsWith(INDEX_LOCATION_URL)) {
             return false;
         } else {
             return true;

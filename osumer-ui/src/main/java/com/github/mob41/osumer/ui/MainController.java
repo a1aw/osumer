@@ -28,7 +28,7 @@ import com.github.mob41.osumer.queue.QueueStatus;
 import com.github.mob41.osumer.rmi.IDaemon;
 import com.github.mob41.osumer.updater.UpdateInfo;
 import com.github.mob41.osumer.updater.Updater;
-import com.github.mob41.osums.AbstractOsums;
+import com.github.mob41.osums.Osums;
 import com.github.mob41.osums.beatmap.OsuBeatmap;
 
 import javafx.application.Platform;
@@ -127,7 +127,7 @@ public class MainController implements Initializable {
 	
 	private IDaemon d;
 	
-	private AbstractOsums osums;
+	private Osums osums;
 	
 	private QueueStatus[] queues;
 
@@ -341,7 +341,7 @@ public class MainController implements Initializable {
 		}
 	}
 	
-	protected void setOsums(AbstractOsums osums) {
+	protected void setOsums(Osums osums) {
 		this.osums = osums;
 	}
 	

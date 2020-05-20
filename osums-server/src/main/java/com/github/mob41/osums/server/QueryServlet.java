@@ -7,9 +7,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.github.mob41.osumer.debug.WithDumpException;
-import com.github.mob41.osums.AbstractOsums;
-import com.github.mob41.osums.Osums_old;
+import com.github.mob41.osums.Osums;
+import com.github.mob41.osums.search.SearchResult;
 import com.github.mob41.osums.search.SongResult;
 import com.google.gson.Gson;
 
@@ -20,10 +19,13 @@ public class QueryServlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 9033797298845660820L;
 	
-	public AbstractOsums osums;
+	private Osums osums;
 	
-	public QueryServlet(AbstractOsums osums) {
+	private OsumsServer srv;
+	
+	public QueryServlet(Osums osums, OsumsServer srv) {
 		this.osums = osums;
+		this.srv = srv;
 	}
 
 	@Override
@@ -48,25 +50,6 @@ public class QueryServlet extends HttpServlet {
 			key = "";
 		}
 		
-		SongResult[] results = null;
-		try {
-			results = null;
-		} catch (WithDumpException e) {
-			e.printStackTrace();
-			output.result = -2;
-			output.msg = "Server Error";
-			resp.setStatus(503);
-			end(resp, output);
-			return;
-		}
-		
-		if (results == null) {
-			output.result = -3;
-			output.msg = "No result";
-			end(resp, output);
-			return;
-		}
-		
 		int items = -1;
 		int page = -1;
 		try {
@@ -79,7 +62,7 @@ public class QueryServlet extends HttpServlet {
 			end(resp, output);
 			return;
 		}
-		
+		/*
 		int max = (int) Math.ceil(results.length / items);
 		
 		if (page > max) {
@@ -89,17 +72,33 @@ public class QueryServlet extends HttpServlet {
 			end(resp, output);
 			return;
 		}
+		*/
 		
-		int offset = items * (page - 1);
-		SongResult[] out = new SongResult[items];
-		for (int i = offset; i < items + offset; i++) {
-			out[i - offset] = results[i];
+		SearchResult result = null;
+		try {
+			result = srv.searchSong(key, null, items, page);
+		} catch (Exception e) {
+			e.printStackTrace();
+			output.result = -2;
+			output.msg = "Server Error";
+			resp.setStatus(503);
+			end(resp, output);
+			return;
+		}
+		
+		SongResult[] results = result.getResult();
+		
+		if (results == null) {
+			output.result = -3;
+			output.msg = "No result";
+			end(resp, output);
+			return;
 		}
 
 		output.currentPage = page;
-		output.totalPages = max;
+		output.totalPages = result.getTotalPages();
 		output.result = 0;
-		output.output = out;
+		output.output = results;
 		end(resp, output);
 		return;
 	}

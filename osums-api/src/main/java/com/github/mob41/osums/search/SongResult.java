@@ -1,7 +1,7 @@
 package com.github.mob41.osums.search;
 
 import com.github.mob41.osumer.debug.WithDumpException;
-import com.github.mob41.osums.AbstractOsums;
+import com.github.mob41.osums.Osums;
 import com.github.mob41.osums.beatmap.OsuSong;
 
 public class SongResult {
@@ -63,7 +63,7 @@ public class SongResult {
         return plays;
     }
     
-    public OsuSong getOsuSong(AbstractOsums osums) throws WithDumpException{
+    public OsuSong getOsuSong(Osums osums) throws WithDumpException{
         return osums.getSongInfo(SONG_URL + id);
     }
 
