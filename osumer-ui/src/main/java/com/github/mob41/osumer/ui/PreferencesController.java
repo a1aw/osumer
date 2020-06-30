@@ -400,7 +400,9 @@ public class PreferencesController implements Initializable {
 	                
 			        Thread thread = new Thread() {
 			        	public void run() {
-	    		        	Osums osums = config.isUseOldParser() ? new OsumsOldParser() : new OsumsNewParser();
+			        		//TODO Allow the use of new parser
+			        		Osums osums = new OsumsOldParser();
+	    		        	//Osums osums = config.isUseOldParser() ? new OsumsOldParser() : new OsumsNewParser();
 
 	                        boolean err = false;
 	                        try {

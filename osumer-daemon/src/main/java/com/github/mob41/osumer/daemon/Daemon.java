@@ -43,6 +43,7 @@ import com.github.mob41.osums.Osums;
 import com.github.mob41.osums.OsumsNewParser;
 import com.github.mob41.osums.OsumsOldParser;
 import com.github.mob41.osums.beatmap.OsuBeatmap;
+import com.github.mob41.osums.beatmap.OsuSong;
 
 public class Daemon extends UnicastRemoteObject implements IDaemon {
 
@@ -68,12 +69,16 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
     protected Daemon(Configuration config) throws RemoteException {
         this.config = config;
         queueManager = new QueueManager(config);
-        
+
+        //TODO allow the use of new parser
+    	osums = new OsumsOldParser();
+    	/*
         if (config.isUseOldParser()) {
         	osums = new OsumsOldParser();
         } else {
         	osums = new OsumsNewParser();
         }
+        */
         
         uis = new ArrayList<IUI>();
         
@@ -152,11 +157,14 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
             return new MethodResult<Integer>(ErrorCode.RESULT_LOGIN_FAILED, e.getDump());
         }
         
-        String modBUrl = config.isUseOldParser() ? url.replace("osu.ppy.sh", "old.ppy.sh") : url;
-        OsuBeatmap map;
+        OsuSong map;
         
         try {
-            map = osums.getBeatmapInfo(modBUrl);
+        	if (url.contains("b/")) {
+                map = osums.getBeatmapInfo(url);
+        	} else {
+        		map = osums.getSongInfo(url);
+        	}
         } catch (WithDumpException e) {
             e.printStackTrace();
             return new MethodResult<Integer>(ErrorCode.RESULT_GET_BEATMAP_INFO_FAILED, e.getDump());

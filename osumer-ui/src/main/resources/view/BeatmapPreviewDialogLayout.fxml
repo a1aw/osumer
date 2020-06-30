@@ -40,7 +40,7 @@
                         </ScrollPane>
                      </content>
                 </Tab>
-                <Tab id="beatmapTab" text="Beatmap">
+                <Tab fx:id="beatmapTab" text="Beatmap">
                      <content>
                         <ScrollPane prefHeight="200.0" prefWidth="200.0">
                            <content>
