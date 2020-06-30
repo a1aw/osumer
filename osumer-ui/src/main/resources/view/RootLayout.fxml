@@ -67,7 +67,7 @@
               <tabs>
                 <Tab text="Quick Start">
                      <content>
-                        <VBox prefHeight="200.0" prefWidth="100.0">
+                        <VBox prefHeight="200.0" prefWidth="600.0">
                            <children>
                               <VBox minHeight="-Infinity" minWidth="-Infinity" prefHeight="94.0" prefWidth="600.0">
                                  <children>
@@ -100,7 +100,15 @@
                                           </Button>
                                        </right>
                                     </BorderPane>
-                                    <Label prefWidth="568.0" text="Specify a beatmap link or ID to start downloading. (e.g. s320118 or b714001 or https://osu.ppy.sh/s/320118/)" wrapText="true">
+                                    <Label prefHeight="34.0" prefWidth="600.0" text="Specify a beatmap link or ID to start downloading." wrapText="true">
+                                       <VBox.margin>
+                                          <Insets left="16.0" right="16.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <Label layoutX="26.0" layoutY="51.0" prefHeight="34.0" prefWidth="600.0" text="(e.g. s320118 or b714001 or https://osu.ppy.sh/s/320118/)" wrapText="true">
+                                       <opaqueInsets>
+                                          <Insets />
+                                       </opaqueInsets>
                                        <VBox.margin>
                                           <Insets bottom="16.0" left="16.0" right="16.0" />
                                        </VBox.margin>
@@ -212,7 +220,7 @@
                         </Label>
                      </children>
                   </FlowPane>
-                  <Label fx:id="updateText" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="296.0" text="Checking for updates..." GridPane.columnIndex="1" />
+                  <Label fx:id="updateText" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="296.0" text="Checking for updates..." wrapText="true" GridPane.columnIndex="1" />
                </children>
                <BorderPane.margin>
                   <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
@@ -222,6 +230,6 @@
       </BorderPane>
    </center>
    <bottom>
-      <Label fx:id="announcementLabel" text="Loading announcements..." BorderPane.alignment="CENTER" />
+      <Label fx:id="announcementLabel" text="Loading announcements..." wrapText="true" BorderPane.alignment="CENTER" />
    </bottom>
 </BorderPane>

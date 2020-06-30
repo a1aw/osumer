@@ -267,7 +267,7 @@ public class MainController implements Initializable {
 				alert.setHeaderText("About");
 				alert.setContentText(
 						"osumer2 (" + Osumer.getVersionString() +  ")\n" +
-						"Copyright (c) mob41. 2016-2019\n\n" +
+						"Copyright (c) mob41. 2016-2020\n\n" +
 						"osumer is an application that provides osu! players a\n" +
 						"more comfortable and faster way to download beatmaps."
 						);
