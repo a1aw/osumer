@@ -212,7 +212,10 @@ public class AppMain extends Application {
 		
         primaryStage.setTitle("osumer2");
         primaryStage.getIcons().add(new Image(AppMain.class.getResourceAsStream("/image/osumerIcon_64px.png")));
-        osums = config.isUseOldParser() ? new OsumsOldParser() : new OsumsNewParser();
+        
+        //TODO Use new parser
+        osums = new OsumsOldParser();
+        //osums = config.isUseOldParser() ? new OsumsOldParser() : new OsumsNewParser();
 
         initRootLayout();
         

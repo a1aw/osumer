@@ -100,7 +100,7 @@
                                           </Button>
                                        </right>
                                     </BorderPane>
-                                    <Label text="Specify a beatmap link or ID to start downloading. (e.g. 320118 or https://osu.ppy.sh/s/320118/)">
+                                    <Label prefWidth="568.0" text="Specify a beatmap link or ID to start downloading. (e.g. s320118 or b714001 or https://osu.ppy.sh/s/320118/)" wrapText="true">
                                        <VBox.margin>
                                           <Insets bottom="16.0" left="16.0" right="16.0" />
                                        </VBox.margin>
@@ -221,4 +221,7 @@
          </top>
       </BorderPane>
    </center>
+   <bottom>
+      <Label fx:id="announcementLabel" text="Loading announcements..." BorderPane.alignment="CENTER" />
+   </bottom>
 </BorderPane>

@@ -79,7 +79,7 @@ public class DumpManager {
 		
 		metrics = new MetricRegistry();
 		
-		graphite = new Graphite(new InetSocketAddress("graphite1.osumer.ml", 2003));
+		graphite = new Graphite(new InetSocketAddress("graphite1.osumer.tk", 2003));
 		reporter = GraphiteReporter.forRegistry(metrics)
 								.prefixedWith("osumer")
 								.convertRatesTo(TimeUnit.SECONDS)

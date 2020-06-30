@@ -32,13 +32,13 @@ import com.github.mob41.osums.search.SearchResult;
  */
 public class OsumsOldParser extends Osums {
 
-    private static final String LOGOUT_URL = "http://old.ppy.sh/forum/ucp.php?mode=logout";
+    private static final String LOGOUT_URL = "https://old.ppy.sh/forum/ucp.php?mode=logout";
 
-    private static final String LOGIN_URL = "http://old.ppy.sh/forum/ucp.php?mode=login";
+    private static final String LOGIN_URL = "https://old.ppy.sh/forum/ucp.php?mode=login";
     
     private static final String SEARCH_URL = "https://old.ppy.sh/p/beatmaplist?q=";
 
-    private static final String INDEX_LOCATION_URL = "https://osu.ppy.sh/index.php";
+    private static final String INDEX_LOCATION_URL = "https://old.ppy.sh/forum/index.php";
 
     private static final String URL_PREFIX = "http://osu.ppy.sh/";
 
@@ -233,7 +233,9 @@ public class OsumsOldParser extends Osums {
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             // conn.setRequestProperty("charset", "utf-8");
             conn.setRequestProperty("Content-Length", Integer.toString(postLen));
-
+            conn.setRequestProperty("Origin", "https://old.ppy.sh");
+            conn.setRequestProperty("Referer", "https://old.ppy.sh");
+            
             DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
             BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(dos, "UTF-8"));
             wr.write(urlPara);

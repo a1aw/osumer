@@ -6,11 +6,13 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import com.github.mob41.osums.beatmap.OsuBeatmap;
+import com.github.mob41.osums.beatmap.OsuSong;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -25,19 +27,22 @@ public class BeatmapPreviewDialogController implements Initializable {
 	private TabPane tab;
 	
 	@FXML
+	private Tab beatmapTab;
+	
+	@FXML
 	private VBox songBox;
 	
 	@FXML
 	private VBox beatmapBox;
 	
-	private OsuBeatmap map;
+	private OsuSong map;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
 	}
 	
-	protected void preview(OsuBeatmap map) {
+	protected void preview(OsuSong map) {
 		this.map = map;
 		
 		DecimalFormat df = new DecimalFormat("#.##");
@@ -54,14 +59,18 @@ public class BeatmapPreviewDialogController implements Initializable {
 		songNodes.add(new Label("Good/Bad Votes: " + map.getGoodRating() + "/" + map.getBadRating()));
 		
 		if (map instanceof OsuBeatmap) { //TODO Future use
+			OsuBeatmap bmap = (OsuBeatmap) map;
+			
 			List<Node> beatmapNodes = beatmapBox.getChildren();
 			
-			beatmapNodes.add(new Label("Circle Size: " + df.format(map.getCircleSize())));
-			beatmapNodes.add(new Label("Approach Rate: " + df.format(map.getApproachRate())));
-			beatmapNodes.add(new Label("Accuracy: " + df.format(map.getAccuracy())));
-			beatmapNodes.add(new Label("HP Drain: " + df.format(map.getHpDrain())));
-			beatmapNodes.add(new Label("Star Difficulty: " + df.format(map.getStarDifficulty())));
-			beatmapNodes.add(new Label("Success Rate: " + df.format(map.getSuccessRate()) + "%"));
+			beatmapNodes.add(new Label("Circle Size: " + df.format(bmap.getCircleSize())));
+			beatmapNodes.add(new Label("Approach Rate: " + df.format(bmap.getApproachRate())));
+			beatmapNodes.add(new Label("Accuracy: " + df.format(bmap.getAccuracy())));
+			beatmapNodes.add(new Label("HP Drain: " + df.format(bmap.getHpDrain())));
+			beatmapNodes.add(new Label("Star Difficulty: " + df.format(bmap.getStarDifficulty())));
+			beatmapNodes.add(new Label("Success Rate: " + df.format(bmap.getSuccessRate()) + "%"));
+		} else {
+			beatmapTab.setDisable(true);
 		}
 		
 		image.setImage(new Image("http:" + map.getThumbUrl()));

@@ -30,6 +30,7 @@ import com.github.mob41.osumer.updater.UpdateInfo;
 import com.github.mob41.osumer.updater.Updater;
 import com.github.mob41.osums.Osums;
 import com.github.mob41.osums.beatmap.OsuBeatmap;
+import com.github.mob41.osums.beatmap.OsuSong;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -65,6 +66,9 @@ public class MainController implements Initializable {
     
 	@FXML
     private Label updateText;
+	
+	@FXML
+	private Label announcementLabel;
 
 	@FXML
     private TextField beatmapUrlText;
@@ -410,27 +414,27 @@ public class MainController implements Initializable {
         progressDialog.getButtonTypes().add(ButtonType.CANCEL);
         progressDialog.show();
         
-        int id = -1;
-        try {
-        	id = Integer.parseInt(beatmapUrlId);
-        } catch (NumberFormatException ignore) {
-        	
-        }
-        
         String url = null;
         
-        if (id > 0) {
-        	if (id > 999999) { //probably beatmap? //TODO Modify to use new parser
-        		url = "https://osu.ppy.sh/b/" + id;
+        boolean isBeatmap = false;
+        
+        if (beatmapUrlId.matches("^[sb]\\d+") && beatmapUrlId.length() > 1) {
+        	if (beatmapUrlId.startsWith("b")) {
+        		isBeatmap = true;
+        		url = "https://osu.ppy.sh/b/" + beatmapUrlId.substring(1);
         	} else {
-        		url = "https://osu.ppy.sh/s/" + id;
+        		url = "https://osu.ppy.sh/s/" + beatmapUrlId.substring(1);
         	}
         } else {
         	if (osums.isVaildBeatmapUrl(beatmapUrlId)) {
         		url = beatmapUrlId;
+        		if (url.contains("b/")) {
+        			isBeatmap = true;
+        		}
         	} else {
         		Alert alert = new Alert(AlertType.WARNING, "Please enter a valid osu! beatmap link.", ButtonType.OK);
         		alert.showAndWait();
+        		progressDialog.close();
         		return;
         	}
         }
@@ -468,6 +472,7 @@ public class MainController implements Initializable {
                 if (usr == null || pwd == null || usr.isEmpty() || pwd.isEmpty()) {
                 	Alert alert = new Alert(AlertType.WARNING, "Username or password must not be empty.", ButtonType.OK);
                 	alert.showAndWait();
+                	progressDialog.close();
                 	return;
                 }
                 
@@ -475,14 +480,13 @@ public class MainController implements Initializable {
                 pass = pwd;
             }
             
-            //TODO Remove once new parser implemented
-            final String modUrl = config.isUseOldParser() ? url.replace("osu.ppy.sh", "old.ppy.sh") : url;
         	final String _url = url;
         	
             //OsuBeatmap map = null;
             
             final String _user = user;
             final String _pass = pass;
+            final boolean _isBeatmap = isBeatmap;
             
             Thread thread = new Thread() {
             	public void run() {
@@ -502,33 +506,39 @@ public class MainController implements Initializable {
 							public void run() {
 		                		Alert alert = new Alert(AlertType.INFORMATION, "Error logging in:\n" + e.getDump().getStacktrace(), ButtonType.OK);
 		                		alert.showAndWait();
+		                    	progressDialog.close();
 							}
 						});
                         return;
                     }
                     
-                    OsuBeatmap map = null;
+                    OsuSong map = null;
             		Platform.runLater(new Runnable() {
 						@Override
 						public void run() {
-		                    progressController.getStatusText().setText("Status: Obtaining beatmap information...");
+		                    progressController.getStatusText().setText("Status: Obtaining song/beatmap information...");
 						}
 					});
                     try {
-                        map = osums.getBeatmapInfo(modUrl);
+                    	if (_isBeatmap) {
+                            map = osums.getBeatmapInfo(_url);
+                    	} else {
+                    		map = osums.getSongInfo(_url);
+                    	}
                     } catch (WithDumpException e) {
                         e.printStackTrace();
                         Platform.runLater(new Runnable() {
 							@Override
 							public void run() {
-		                		Alert alert = new Alert(AlertType.INFORMATION, "Error getting beatmap info:\n" + e.getDump().getStacktrace(), ButtonType.OK);
+		                		Alert alert = new Alert(AlertType.INFORMATION, "Error getting song/beatmap info:\n" + e.getDump().getStacktrace(), ButtonType.OK);
 		                		alert.showAndWait();
+		                    	progressDialog.close();
 							}
 						});
                         return;
                     }
                     
-                    final OsuBeatmap _map = map;
+                    final OsuSong _map = map;
                     Platform.runLater(new Runnable() {
             			@Override
             			public void run() {
