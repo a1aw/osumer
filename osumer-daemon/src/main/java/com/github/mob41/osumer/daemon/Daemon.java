@@ -356,4 +356,9 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
 		return config.isOverlayAgreement();
 	}
 
+	@Override
+	public void shutdown() throws RemoteException {
+		System.exit(0);
+	}
+
 }

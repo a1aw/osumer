@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.rmi.RemoteException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -26,12 +27,16 @@ import com.github.mob41.osumer.method.ErrorCode;
 import com.github.mob41.osumer.method.MethodResult;
 import com.github.mob41.osumer.queue.QueueStatus;
 import com.github.mob41.osumer.rmi.IDaemon;
+import com.github.mob41.osumer.updater.Announcement;
+import com.github.mob41.osumer.updater.AnnouncementChecker;
 import com.github.mob41.osumer.updater.UpdateInfo;
 import com.github.mob41.osumer.updater.Updater;
 import com.github.mob41.osums.Osums;
 import com.github.mob41.osums.beatmap.OsuBeatmap;
 import com.github.mob41.osums.beatmap.OsuSong;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -60,6 +65,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 import jfxtras.styles.jmetro8.JMetro;
 
 public class MainController implements Initializable {
@@ -127,6 +133,9 @@ public class MainController implements Initializable {
 	@FXML
 	private MenuItem aboutMenuItem;
 	
+	@FXML
+	private MenuItem exitMenuItem;
+	
 	private Configuration config;
 	
 	private IDaemon d;
@@ -136,8 +145,18 @@ public class MainController implements Initializable {
 	private QueueStatus[] queues;
 
 	private Updater updater;
+	
+	private AnnouncementChecker annChecker;
 
 	private boolean checkingUpdate;
+	
+	private boolean checkingAnnouncements;
+	
+	private Announcement[] ann;
+	
+	private int currAnnIndex;
+	
+	private Timeline updateAnnUiTimeline;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -192,6 +211,7 @@ public class MainController implements Initializable {
 			@Override
 			public void handle(ActionEvent event) {
 				checkUpdate();
+				checkAnnouncements();
 			}
 		});
         
@@ -231,6 +251,22 @@ public class MainController implements Initializable {
 			
 			@Override
 			public void handle(ActionEvent event) {
+				Platform.exit();
+			}
+		});
+        
+        exitMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				try {
+					d.shutdown();
+					d = null;
+				} catch (RemoteException e) {
+					//e.printStackTrace();
+                	//Alert alert = new Alert(AlertType.ERROR, "Could not shutdown daemon. Please do this manually in task manager by terminating Java VM.", ButtonType.OK);
+                	//alert.showAndWait();
+				}
 				Platform.exit();
 			}
 		});
@@ -355,8 +391,13 @@ public class MainController implements Initializable {
         updater = new Updater(config);
         checkingUpdate = false;
         
+        annChecker = new AnnouncementChecker();
+        checkingAnnouncements = false;
+        ann = null;
+        
         //TODO do freq check
         checkUpdate();
+		checkAnnouncements();
 	}
 	
 	protected void setDaemon(IDaemon d) {
@@ -696,6 +737,78 @@ public class MainController implements Initializable {
             return updater.getLatestVersion();
         }
     }
+	
+	public void checkAnnouncements() {
+		if (checkingAnnouncements) {
+			return;
+		}
+		
+		checkingAnnouncements = true;
+		Thread thread = new Thread() {
+			public void run() {
+            	Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+		            	announcementLabel.setText("Loading announcements...");
+					}
+				});
+            	
+            	if (updateAnnUiTimeline != null) {
+            		updateAnnUiTimeline.stop();
+            	}
+            	
+            	currAnnIndex = -1;
+            	ann = null;
+            	try {
+					ann = annChecker.getAnnouncements();
+				} catch (WithDumpException e) {
+                	Platform.runLater(new Runnable() {
+    					@Override
+    					public void run() {
+    		            	announcementLabel.setText("Error checking announcements. See dump for more details.");
+    					}
+    				});
+                	checkingAnnouncements = false;
+                    return;
+				}
+            	
+            	nextAnnouncement();
+            	updateAnnUiTimeline = new Timeline(new KeyFrame(Duration.seconds(15), new EventHandler<ActionEvent>() {
+
+					@Override
+					public void handle(ActionEvent event) {
+						if (ann == null) {
+							updateAnnUiTimeline.stop();
+							return;
+						}
+						nextAnnouncement();
+					}
+            		
+            	}));
+            	updateAnnUiTimeline.setCycleCount(Timeline.INDEFINITE);
+            	updateAnnUiTimeline.play();
+            	
+            	checkingAnnouncements = false;
+			}
+		};
+		thread.start();
+	}
+	
+	private void nextAnnouncement() {
+		currAnnIndex = (currAnnIndex + 1) % ann.length;
+		
+		Announcement a = ann[currAnnIndex];
+		SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
+		String text = "[" + f.format(a.getTime().getTime()) + "] " + a.getText();
+		Platform.runLater(new Runnable() {
+
+			@Override
+			public void run() {
+				announcementLabel.setText(text);
+			}
+			
+		});
+	}
     
 	public void checkUpdate() {
         if (checkingUpdate) {
