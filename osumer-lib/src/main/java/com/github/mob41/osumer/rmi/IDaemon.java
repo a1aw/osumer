@@ -36,4 +36,6 @@ public interface IDaemon extends Remote{
     
     public void reloadConfiguration() throws RemoteException, IOException;
     
+    public void shutdown() throws RemoteException;
+    
 }
