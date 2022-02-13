@@ -469,7 +469,7 @@ public class MainController implements Initializable {
         } else {
         	if (osums.isVaildBeatmapUrl(beatmapUrlId)) {
         		url = beatmapUrlId;
-        		if (url.contains("b/")) {
+        		if (url.contains("b/") || url.contains("beatmaps/")) {
         			isBeatmap = true;
         		}
         	} else {
