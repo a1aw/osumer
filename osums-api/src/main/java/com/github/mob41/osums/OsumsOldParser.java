@@ -48,6 +48,12 @@ public class OsumsOldParser extends Osums {
 
     private static final String SONG_DIR = "s/";
 	
+    private static final String BEATMAP_NEW = "beatmaps/";
+
+    private static final String SONG_NEW = "beatmapsets/#osu/";
+	
+    private static final String BEATMAPSETS_NEW = "beatmapsets/";
+	
 	private static final int RANK_RANKED_INT = 1;
 	
 	private static final int RANK_PENDING_INT = 2;
@@ -299,6 +305,9 @@ public class OsumsOldParser extends Osums {
 	public OsuSong getSongInfo(String link) throws WithDumpException {
 		try {
 			link = link.replaceFirst("osu.ppy.sh", "old.ppy.sh");
+			link = link.replaceFirst("beatmaps\\w*/\\d+\\D+", "b/");
+			link = link.replaceFirst("beatmaps", "b");
+			link = link.replaceFirst("beatmapsets", "s");
 			
             String data = getHttpCookiedContent(link);
             
@@ -313,9 +322,9 @@ public class OsumsOldParser extends Osums {
 
 	@Override
 	public OsuBeatmap getBeatmapInfo(String link) throws WithDumpException {
-		if (!link.contains("/b/")) {
-			throw new WithDumpException(link, "(Start of function)", "Checking if link is beatmap url", "Start parsing", "The link provided is not a beatmap url", false);
-		}
+//		if (!link.contains("/b/") || !link.contains("/beatmaps/")) {
+//			throw new WithDumpException(link, "(Start of function)", "Checking if link is beatmap url", "Start parsing", "The link provided is not a beatmap url", false);
+//		}
 		return (OsuBeatmap) getSongInfo(link);
 	}
 
@@ -893,7 +902,10 @@ public class OsumsOldParser extends Osums {
                         || url.substring(0, URL_PREFIX.length() + 2).equals(URL_PREFIX + SONG_DIR)))
                 || (url.length() > URL_PREFIX_SSL.length() + 2
                         && (url.substring(0, URL_PREFIX_SSL.length() + 2).equals(URL_PREFIX_SSL + BEATMAP_DIR)
-                                || url.substring(0, URL_PREFIX_SSL.length() + 2).equals(URL_PREFIX_SSL + SONG_DIR)));
+                                || url.substring(0, URL_PREFIX_SSL.length() + 2).equals(URL_PREFIX_SSL + SONG_DIR)
+								|| url.substring(0, URL_PREFIX_SSL.length() + 9).equals(URL_PREFIX_SSL + BEATMAP_NEW)
+								|| url.substring(0, URL_PREFIX_SSL.length() + 17).equals(URL_PREFIX_SSL + SONG_NEW)
+								|| url.substring(0, URL_PREFIX_SSL.length() + 12).equals(URL_PREFIX_SSL + BEATMAPSETS_NEW)));
     
 	}
 
