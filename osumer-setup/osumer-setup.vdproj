@@ -1,4 +1,4 @@
-﻿"DeployProject"
+"DeployProject"
 {
 "VSVersion" = "3:800"
 "ProjectType" = "8:{978C614F-708E-4E1A-B201-565925725DBA}"
@@ -13,12 +13,6 @@
 "SccProvider" = "8:"
     "Hierarchy"
     {
-        "Entry"
-        {
-        "MsmKey" = "8:_004617669FF84D8DAA75248FA9805918"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
         "Entry"
         {
         "MsmKey" = "8:_02706B2307914C87926D3C90CA432D1E"
@@ -525,12 +519,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_5F8C2EF9958247CD864D1F92A79B96DB"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_63205EDFCACE4E2DBA552E8CB45AAEC6"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -640,12 +628,6 @@
         "Entry"
         {
         "MsmKey" = "8:_704015E14B504B3CBA2849C2522305E7"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_7101044185104851BE30B7D220891B27"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1710,26 +1692,6 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_004617669FF84D8DAA75248FA9805918"
-            {
-            "SourcePath" = "8:..\\target\\lib\\jackson-core-2.9.9.jar"
-            "TargetName" = "8:jackson-core-2.9.9.jar"
-            "Tag" = "8:"
-            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_02706B2307914C87926D3C90CA432D1E"
             {
             "SourcePath" = "8:..\\target\\lib\\mslinks-1.0.4.jar"
@@ -3312,8 +3274,8 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_59BCD8B10E9B4C0986B44FF80D84437A"
             {
-            "SourcePath" = "8:..\\target\\lib\\osumer-osums-2.0.0-SNAPSHOT.jar"
-            "TargetName" = "8:osumer-osums-2.0.0-SNAPSHOT.jar"
+            "SourcePath" = "8:..\\target\\lib\\osums-api-2.0.0-SNAPSHOT.jar"
+            "TargetName" = "8:osums-api-2.0.0-SNAPSHOT.jar"
             "Tag" = "8:"
             "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
             "Condition" = "8:"
@@ -3376,26 +3338,6 @@
             "TargetName" = "8:dcpr.dll"
             "Tag" = "8:"
             "Folder" = "8:_AFB1E43636C04DC8B17469397040360D"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5EB7753A019C458D8207647506FB5A71"
-            {
-            "SourcePath" = "8:..\\target\\lib\\jackson-databind-2.9.9.2.jar"
-            "TargetName" = "8:jackson-databind-2.9.9.2.jar"
-            "Tag" = "8:"
-            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -3796,26 +3738,6 @@
             "TargetName" = "8:tnameserv.exe"
             "Tag" = "8:"
             "Folder" = "8:_AFB1E43636C04DC8B17469397040360D"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7101044185104851BE30B7D220891B27"
-            {
-            "SourcePath" = "8:..\\target\\lib\\jackson-annotations-2.9.0.jar"
-            "TargetName" = "8:jackson-annotations-2.9.0.jar"
-            "Tag" = "8:"
-            "Folder" = "8:_F456D4B4B5434F479C6BC44B572C9B3E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -7104,6 +7026,1201 @@
                                     "Property" = "8:_D93FC508F190478BB3F174485F353D89"
                                         "Folders"
                                         {
+                                            "{9EF0B969-E518-4E46-987F-47570745A589}:_F53355E402ED4D3BA9065515D7B14566"
+                                            {
+                                            "Name" = "8:cursors"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_13388D73BFB04B9CA5A969439C51BDCB"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_05C1C79856364E5E86693D28D9380DB3"
+                                    {
+                                    "Name" = "8:applet"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_4EB4068A48774DDF98A0731E31C603E3"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_15C604A30F1D422B8D8904CD74417729"
+                                    {
+                                    "Name" = "8:fonts"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_1613007260A549889FEFE4F60AB6FDEB"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_239774EC033A4541A267A20BBA2AB6F2"
+                                    {
+                                    "Name" = "8:jfr"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_6B4D7FF8D62F42D3AC5AFDFB4E8DBAB9"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_403182CCD77142DF98BB7E2FB0F8A205"
+                                    {
+                                    "Name" = "8:i386"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_42C1ED8FD28D415BBC50A05A70A27287"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_5C25A409F3D547B998FDFECC37D8C0BC"
+                                    {
+                                    "Name" = "8:ext"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_D42A07BAEF504163AD5740DABEEF6FC7"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_62A1EBF3B8374351812F0550FA5BA0F1"
+                                    {
+                                    "Name" = "8:management"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_742F6F497BFC46879D522908BAB11971"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_702352CDACEB47CF911C27DB16119920"
+                                    {
+                                    "Name" = "8:security"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_A6B45B99893F47E3BB5D59BFB47DCCD0"
+                                        "Folders"
+                                        {
+                                            "{9EF0B969-E518-4E46-987F-47570745A589}:_A47ADEB2D62A472F96384BD6A697CEDD"
+                                            {
+                                            "Name" = "8:policy"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_18A7A8EDB5FB4A5391A76785D39CCA58"
+                                                "Folders"
+                                                {
+                                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_B663A669FED74F9997BF46569D2444DE"
+                                                    {
+                                                    "Name" = "8:limited"
+                                                    "AlwaysCreate" = "11:FALSE"
+                                                    "Condition" = "8:"
+                                                    "Transitive" = "11:FALSE"
+                                                    "Property" = "8:_A5BD8A252E224078B43B76038FE51280"
+                                                        "Folders"
+                                                        {
+                                                        }
+                                                    }
+                                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_D1314AFDF936411C9AF0EC667A1B94EE"
+                                                    {
+                                                    "Name" = "8:unlimited"
+                                                    "AlwaysCreate" = "11:FALSE"
+                                                    "Condition" = "8:"
+                                                    "Transitive" = "11:FALSE"
+                                                    "Property" = "8:_E8B84410096647B89B09EBBA8F3A682D"
+                                                        "Folders"
+                                                        {
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_81C524EF83F54ADAA83246D56D387FED"
+                                    {
+                                    "Name" = "8:cmm"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_2C702335E5274EE587FA06AF715D1CDE"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_93D35EF73FDB43C9ABE430B1B998729E"
+                                    {
+                                    "Name" = "8:deploy"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_4B8142AEAA934817BD54F32E61FB2AFB"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                }
+                            }
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_AFB1E43636C04DC8B17469397040360D"
+                            {
+                            "Name" = "8:bin"
+                            "AlwaysCreate" = "11:FALSE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_66C3A96EF59B4779BADE51846BFD3842"
+                                "Folders"
+                                {
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_287FA4BEEFE842C2B33D9C45D4288010"
+                                    {
+                                    "Name" = "8:dtplugin"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_A2FA298BCC7B4D629BEB973CA820D3AF"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_C028C044CEC74A77846E605B1117C833"
+                                    {
+                                    "Name" = "8:plugin2"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_8556B7F5A809402ABB75FF648509C322"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_C1606908BE5E417493FAECB756BCFDF1"
+                                    {
+                                    "Name" = "8:client"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_C5A774E4D6BB49CB859785377A16A70C"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_F456D4B4B5434F479C6BC44B572C9B3E"
+                    {
+                    "Name" = "8:lib"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_965EBFE0BDEE40E8A7A512C612A9AF75"
+                        "Folders"
+                        {
+                        }
+                    }
+                }
+            }
+            "{1525181F-901A-416C-8A58-119130FE478E}:_61DC1D5DBC6A4E2D8EAFB5B7E2CC1120"
+            {
+            "Name" = "8:#1916"
+            "AlwaysCreate" = "11:FALSE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Property" = "8:DesktopFolder"
+                "Folders"
+                {
+                }
+            }
+        }
+        "LaunchCondition"
+        {
+        }
+        "Locator"
+        {
+        }
+        "MsiBootstrapper"
+        {
+        "LangId" = "3:1033"
+        "RequiresElevation" = "11:FALSE"
+        }
+        "Product"
+        {
+        "Name" = "8:Microsoft Visual Studio"
+        "ProductName" = "8:osumer2"
+        "ProductCode" = "8:{81161642-EA9C-4534-A53B-0F9BA518D3E6}"
+        "PackageCode" = "8:{ED7C5E16-7015-439C-90B0-48BAA7BFCFA7}"
+        "UpgradeCode" = "8:{C6ACFCF0-C116-4504-9CF7-C865BD2B1D66}"
+        "AspNetVersion" = "8:4.0.30319.0"
+        "RestartWWWService" = "11:FALSE"
+        "RemovePreviousVersions" = "11:TRUE"
+        "DetectNewerInstalledVersion" = "11:TRUE"
+        "InstallAllUsers" = "11:TRUE"
+        "ProductVersion" = "8:2.0.09"
+        "Manufacturer" = "8:mob41"
+        "ARPHELPTELEPHONE" = "8:"
+        "ARPHELPLINK" = "8:https://github.com/mob41/osumer/issues/new"
+        "Title" = "8:osumer-setup"
+        "Subject" = "8:"
+        "ARPCONTACT" = "8:mob41"
+        "Keywords" = "8:"
+        "ARPCOMMENTS" = "8:osu! express beatmap downloader"
+        "ARPURLINFOABOUT" = "8:https://github.com/mob41/osumer"
+        "ARPPRODUCTICON" = "8:_1061B2E80D4949ACA402F704AD1490C3"
+        "ARPIconIndex" = "3:0"
+        "SearchPath" = "8:"
+        "UseSystemSearchPath" = "11:TRUE"
+        "TargetPlatform" = "3:0"
+        "PreBuildEvent" = "8:"
+        "PostBuildEvent" = "8:"
+        "RunPostBuildEvent" = "3:0"
+        }
+        "Registry"
+        {
+            "HKLM"
+            {
+                "Keys"
+                {
+                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_094F0EBE8B934F21B8100BB2BFBCAC04"
+                    {
+                    "Name" = "8:Software"
+                    "Condition" = "8:"
+                    "AlwaysCreate" = "11:FALSE"
+                    "DeleteAtUninstall" = "11:FALSE"
+                    "Transitive" = "11:FALSE"
+                        "Keys"
+                        {
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_44E759639C7F4259835541FE12D5D53E"
+                            {
+                            "Name" = "8:Clients"
+                            "Condition" = "8:"
+                            "AlwaysCreate" = "11:FALSE"
+                            "DeleteAtUninstall" = "11:FALSE"
+                            "Transitive" = "11:FALSE"
+                                "Keys"
+                                {
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_B5A500C1C5DF466E9F332E2403653992"
+                                    {
+                                    "Name" = "8:StartMenuInternet"
+                                    "Condition" = "8:"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "DeleteAtUninstall" = "11:FALSE"
+                                    "Transitive" = "11:FALSE"
+                                        "Keys"
+                                        {
+                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_9B66CBFDD39A44BDA96522012FA2F242"
+                                            {
+                                            "Name" = "8:osumer2"
+                                            "Condition" = "8:"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "DeleteAtUninstall" = "11:FALSE"
+                                            "Transitive" = "11:FALSE"
+                                                "Keys"
+                                                {
+                                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_40C7D5794868450C860B99645632C34F"
+                                                    {
+                                                    "Name" = "8:Capabilities"
+                                                    "Condition" = "8:"
+                                                    "AlwaysCreate" = "11:FALSE"
+                                                    "DeleteAtUninstall" = "11:FALSE"
+                                                    "Transitive" = "11:FALSE"
+                                                        "Keys"
+                                                        {
+                                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_5318C56F27C343A2A350DB37C7095F52"
+                                                            {
+                                                            "Name" = "8:FileAssociations"
+                                                            "Condition" = "8:"
+                                                            "AlwaysCreate" = "11:FALSE"
+                                                            "DeleteAtUninstall" = "11:FALSE"
+                                                            "Transitive" = "11:FALSE"
+                                                                "Keys"
+                                                                {
+                                                                }
+                                                                "Values"
+                                                                {
+                                                                }
+                                                            }
+                                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_825B920CD591486BACCEA94F15422DC1"
+                                                            {
+                                                            "Name" = "8:Startmenu"
+                                                            "Condition" = "8:"
+                                                            "AlwaysCreate" = "11:FALSE"
+                                                            "DeleteAtUninstall" = "11:FALSE"
+                                                            "Transitive" = "11:FALSE"
+                                                                "Keys"
+                                                                {
+                                                                }
+                                                                "Values"
+                                                                {
+                                                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_DA8409E279F949278BB058F44D6C4881"
+                                                                    {
+                                                                    "Name" = "8:StartMenuInternet"
+                                                                    "Condition" = "8:"
+                                                                    "Transitive" = "11:FALSE"
+                                                                    "ValueTypes" = "3:1"
+                                                                    "Value" = "8:osumer2"
+                                                                    }
+                                                                }
+                                                            }
+                                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_A3FB5CF032A24FEFAED4D798CEEC6B19"
+                                                            {
+                                                            "Name" = "8:URLAssociations"
+                                                            "Condition" = "8:"
+                                                            "AlwaysCreate" = "11:FALSE"
+                                                            "DeleteAtUninstall" = "11:FALSE"
+                                                            "Transitive" = "11:FALSE"
+                                                                "Keys"
+                                                                {
+                                                                }
+                                                                "Values"
+                                                                {
+                                                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_0200D65055694E23811A0ED4810F5F72"
+                                                                    {
+                                                                    "Name" = "8:http"
+                                                                    "Condition" = "8:"
+                                                                    "Transitive" = "11:FALSE"
+                                                                    "ValueTypes" = "3:1"
+                                                                    "Value" = "8:osumer2"
+                                                                    }
+                                                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_75AE86B7873E45D5B209E0AC0A3200DD"
+                                                                    {
+                                                                    "Name" = "8:https"
+                                                                    "Condition" = "8:"
+                                                                    "Transitive" = "11:FALSE"
+                                                                    "ValueTypes" = "3:1"
+                                                                    "Value" = "8:osumer2"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        "Values"
+                                                        {
+                                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_2D81115E2D684AD4AB77F17C7315D681"
+                                                            {
+                                                            "Name" = "8:ApplicationName"
+                                                            "Condition" = "8:"
+                                                            "Transitive" = "11:FALSE"
+                                                            "ValueTypes" = "3:1"
+                                                            "Value" = "8:osumer2"
+                                                            }
+                                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_6E4B82D4177B4FB89ED04CE8FBDA8166"
+                                                            {
+                                                            "Name" = "8:ApplicationIcon"
+                                                            "Condition" = "8:"
+                                                            "Transitive" = "11:FALSE"
+                                                            "ValueTypes" = "3:1"
+                                                            "Value" = "8:[ProgramFilesFolder][ProductName]\\osumer.exe,0"
+                                                            }
+                                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_8C4F4414FFC74A9DB67D29D43E18C3DF"
+                                                            {
+                                                            "Name" = "8:ApplicationDescription"
+                                                            "Condition" = "8:"
+                                                            "Transitive" = "11:FALSE"
+                                                            "ValueTypes" = "3:1"
+                                                            "Value" = "8:osumer2"
+                                                            }
+                                                        }
+                                                    }
+                                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_4A2F05F9F8D1424AA9088C9C934434FD"
+                                                    {
+                                                    "Name" = "8:DefaultIcon"
+                                                    "Condition" = "8:"
+                                                    "AlwaysCreate" = "11:FALSE"
+                                                    "DeleteAtUninstall" = "11:FALSE"
+                                                    "Transitive" = "11:FALSE"
+                                                        "Keys"
+                                                        {
+                                                        }
+                                                        "Values"
+                                                        {
+                                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_C81615BD0F564DC6962C128D6EC6B1C1"
+                                                            {
+                                                            "Name" = "8:"
+                                                            "Condition" = "8:"
+                                                            "Transitive" = "11:FALSE"
+                                                            "ValueTypes" = "3:1"
+                                                            "Value" = "8:[ProgramFilesFolder][ProductName]\\osumer.exe,0"
+                                                            }
+                                                        }
+                                                    }
+                                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_A27983822ADF48F3B94B5A203FC95212"
+                                                    {
+                                                    "Name" = "8:shell"
+                                                    "Condition" = "8:"
+                                                    "AlwaysCreate" = "11:FALSE"
+                                                    "DeleteAtUninstall" = "11:FALSE"
+                                                    "Transitive" = "11:FALSE"
+                                                        "Keys"
+                                                        {
+                                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_AFACB2565A724FEE964964C2CB1C2967"
+                                                            {
+                                                            "Name" = "8:open"
+                                                            "Condition" = "8:"
+                                                            "AlwaysCreate" = "11:FALSE"
+                                                            "DeleteAtUninstall" = "11:FALSE"
+                                                            "Transitive" = "11:FALSE"
+                                                                "Keys"
+                                                                {
+                                                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_0FB834B073534816867D25811799C136"
+                                                                    {
+                                                                    "Name" = "8:command"
+                                                                    "Condition" = "8:"
+                                                                    "AlwaysCreate" = "11:FALSE"
+                                                                    "DeleteAtUninstall" = "11:FALSE"
+                                                                    "Transitive" = "11:FALSE"
+                                                                        "Keys"
+                                                                        {
+                                                                        }
+                                                                        "Values"
+                                                                        {
+                                                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_3E9F8A0E979746F2BD82F1C533D8A58C"
+                                                                            {
+                                                                            "Name" = "8:"
+                                                                            "Condition" = "8:"
+                                                                            "Transitive" = "11:FALSE"
+                                                                            "ValueTypes" = "3:1"
+                                                                            "Value" = "8:\"[ProgramFilesFolder][ProductName]\\osumer.exe\""
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                                "Values"
+                                                                {
+                                                                }
+                                                            }
+                                                        }
+                                                        "Values"
+                                                        {
+                                                        }
+                                                    }
+                                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_EEC8CD993D044B5694A8374642F083EE"
+                                                    {
+                                                    "Name" = "8:InstallInfo"
+                                                    "Condition" = "8:"
+                                                    "AlwaysCreate" = "11:FALSE"
+                                                    "DeleteAtUninstall" = "11:FALSE"
+                                                    "Transitive" = "11:FALSE"
+                                                        "Keys"
+                                                        {
+                                                        }
+                                                        "Values"
+                                                        {
+                                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_24156209C0C74D529FE95FD103E0B292"
+                                                            {
+                                                            "Name" = "8:ReinstallCommand"
+                                                            "Condition" = "8:"
+                                                            "Transitive" = "11:FALSE"
+                                                            "ValueTypes" = "3:1"
+                                                            "Value" = "8:\"[ProgramFilesFolder][ProductName]\\osumer.exe\" -reinstall"
+                                                            }
+                                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_2ABC811605374BB19FA9B03D9AD55D7D"
+                                                            {
+                                                            "Name" = "8:HideIconsCommand"
+                                                            "Condition" = "8:"
+                                                            "Transitive" = "11:FALSE"
+                                                            "ValueTypes" = "3:1"
+                                                            "Value" = "8:\"[ProgramFilesFolder][ProductName]\\osumer.exe\" -hideicons"
+                                                            }
+                                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_C4D5EC1624854809A75039ABABA84726"
+                                                            {
+                                                            "Name" = "8:ShowIconsCommand"
+                                                            "Condition" = "8:"
+                                                            "Transitive" = "11:FALSE"
+                                                            "ValueTypes" = "3:1"
+                                                            "Value" = "8:\"[ProgramFilesFolder][ProductName]\\osumer.exe\" -showicons"
+                                                            }
+                                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_D5D0A1C735C04C5CB3992782438FC405"
+                                                            {
+                                                            "Name" = "8:IconsVisible"
+                                                            "Condition" = "8:"
+                                                            "Transitive" = "11:FALSE"
+                                                            "ValueTypes" = "3:3"
+                                                            "Value" = "3:1"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                "Values"
+                                                {
+                                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_7E09B50F04E544F9B8DCB8A7AA580517"
+                                                    {
+                                                    "Name" = "8:"
+                                                    "Condition" = "8:"
+                                                    "Transitive" = "11:FALSE"
+                                                    "ValueTypes" = "3:1"
+                                                    "Value" = "8:osumer2"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        "Values"
+                                        {
+                                        }
+                                    }
+                                }
+                                "Values"
+                                {
+                                }
+                            }
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_7F615DD7921B4110A0E604DE5B9D1032"
+                            {
+                            "Name" = "8:Microsoft"
+                            "Condition" = "8:"
+                            "AlwaysCreate" = "11:FALSE"
+                            "DeleteAtUninstall" = "11:FALSE"
+                            "Transitive" = "11:FALSE"
+                                "Keys"
+                                {
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_85F3649C91514852B7141CBBD538F831"
+                                    {
+                                    "Name" = "8:Windows"
+                                    "Condition" = "8:"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "DeleteAtUninstall" = "11:FALSE"
+                                    "Transitive" = "11:FALSE"
+                                        "Keys"
+                                        {
+                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_5B18BA851416439EB6C296D0AA5CB300"
+                                            {
+                                            "Name" = "8:CurrentVersion"
+                                            "Condition" = "8:"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "DeleteAtUninstall" = "11:FALSE"
+                                            "Transitive" = "11:FALSE"
+                                                "Keys"
+                                                {
+                                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_1126A4D117994E2AB8FD618D238F7E5A"
+                                                    {
+                                                    "Name" = "8:Run"
+                                                    "Condition" = "8:"
+                                                    "AlwaysCreate" = "11:FALSE"
+                                                    "DeleteAtUninstall" = "11:FALSE"
+                                                    "Transitive" = "11:FALSE"
+                                                        "Keys"
+                                                        {
+                                                        }
+                                                        "Values"
+                                                        {
+                                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_87F560B66D5F44468DD9C4AE9DBFBDF0"
+                                                            {
+                                                            "Name" = "8:osumer2Daemon"
+                                                            "Condition" = "8:"
+                                                            "Transitive" = "11:FALSE"
+                                                            "ValueTypes" = "3:1"
+                                                            "Value" = "8:\"[ProgramFilesFolder][ProductName]\\osumer-daemon.exe\""
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                "Values"
+                                                {
+                                                }
+                                            }
+                                        }
+                                        "Values"
+                                        {
+                                        }
+                                    }
+                                }
+                                "Values"
+                                {
+                                }
+                            }
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_B0F2ABBF70A24DDF8EA36EB972255C8D"
+                            {
+                            "Name" = "8:Classes"
+                            "Condition" = "8:"
+                            "AlwaysCreate" = "11:FALSE"
+                            "DeleteAtUninstall" = "11:FALSE"
+                            "Transitive" = "11:FALSE"
+                                "Keys"
+                                {
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_7D79E5249D03428595EED7A2FD625FB5"
+                                    {
+                                    "Name" = "8:osumer2"
+                                    "Condition" = "8:"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "DeleteAtUninstall" = "11:FALSE"
+                                    "Transitive" = "11:FALSE"
+                                        "Keys"
+                                        {
+                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_CE341D1DB51B40E89C9162D65C5E806B"
+                                            {
+                                            "Name" = "8:shell"
+                                            "Condition" = "8:"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "DeleteAtUninstall" = "11:FALSE"
+                                            "Transitive" = "11:FALSE"
+                                                "Keys"
+                                                {
+                                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_0CF54F818C25402A8B30BB937A839D39"
+                                                    {
+                                                    "Name" = "8:open"
+                                                    "Condition" = "8:"
+                                                    "AlwaysCreate" = "11:FALSE"
+                                                    "DeleteAtUninstall" = "11:FALSE"
+                                                    "Transitive" = "11:FALSE"
+                                                        "Keys"
+                                                        {
+                                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_EDEB26B7D14549679ADFC3B485158B59"
+                                                            {
+                                                            "Name" = "8:command"
+                                                            "Condition" = "8:"
+                                                            "AlwaysCreate" = "11:FALSE"
+                                                            "DeleteAtUninstall" = "11:FALSE"
+                                                            "Transitive" = "11:FALSE"
+                                                                "Keys"
+                                                                {
+                                                                }
+                                                                "Values"
+                                                                {
+                                                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_9845501F2CCA406B8E5974B270FF95D5"
+                                                                    {
+                                                                    "Name" = "8:"
+                                                                    "Condition" = "8:"
+                                                                    "Transitive" = "11:FALSE"
+                                                                    "ValueTypes" = "3:1"
+                                                                    "Value" = "8:\"[ProgramFilesFolder][ProductName]\\osumer.exe\" \"%1\""
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        "Values"
+                                                        {
+                                                        }
+                                                    }
+                                                }
+                                                "Values"
+                                                {
+                                                }
+                                            }
+                                        }
+                                        "Values"
+                                        {
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_1E95D2E04A8B4BEE946CCAABE17EF823"
+                                            {
+                                            "Name" = "8:"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "ValueTypes" = "3:1"
+                                            "Value" = "8:osumer2"
+                                            }
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_557F9B596E1C4E2E8DD70157F8C2F43C"
+                                            {
+                                            "Name" = "8:FriendlyTypeName"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "ValueTypes" = "3:1"
+                                            "Value" = "8:osumer2"
+                                            }
+                                        }
+                                    }
+                                }
+                                "Values"
+                                {
+                                }
+                            }
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_FFB17965712648A98047068ACB0E9F00"
+                            {
+                            "Name" = "8:RegisteredApplications"
+                            "Condition" = "8:"
+                            "AlwaysCreate" = "11:FALSE"
+                            "DeleteAtUninstall" = "11:FALSE"
+                            "Transitive" = "11:FALSE"
+                                "Keys"
+                                {
+                                }
+                                "Values"
+                                {
+                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_BA348A87CB454CE7A4E497D7796369AF"
+                                    {
+                                    "Name" = "8:osumer2"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "ValueTypes" = "3:1"
+                                    "Value" = "8:SOFTWARE\\Clients\\StartMenuInternet\\osumer2\\Capabilities"
+                                    }
+                                }
+                            }
+                        }
+                        "Values"
+                        {
+                        }
+                    }
+                }
+            }
+            "HKCU"
+            {
+                "Keys"
+                {
+                }
+            }
+            "HKCR"
+            {
+                "Keys"
+                {
+                }
+            }
+            "HKU"
+            {
+                "Keys"
+                {
+                }
+            }
+            "HKPU"
+            {
+                "Keys"
+                {
+                }
+            }
+        }
+        "Sequences"
+        {
+        }
+        "Shortcut"
+        {
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_16DBA1C11329436E90B803586254CA87"
+            {
+            "Name" = "8:osumer2"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_77D4992A2EF04E4FA3897A05B6422FAA"
+            "Folder" = "8:_61DC1D5DBC6A4E2D8EAFB5B7E2CC1120"
+            "WorkingFolder" = "8:_4E3503AB9CE848A9A3834C6C0F639203"
+            "Icon" = "8:"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_4AB0BD19DF004FE5A228246E43250DEC"
+            {
+            "Name" = "8:osumer2"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_77D4992A2EF04E4FA3897A05B6422FAA"
+            "Folder" = "8:_058BF2F6A8FF40B3A0760E178A660D52"
+            "WorkingFolder" = "8:_4E3503AB9CE848A9A3834C6C0F639203"
+            "Icon" = "8:"
+            "Feature" = "8:"
+            }
+        }
+        "UserInterface"
+        {
+            "{DF760B10-853B-4699-99F2-AFF7185B4A62}:_1317FC211A084407BF6A7F877B277352"
+            {
+            "Name" = "8:#1900"
+            "Sequence" = "3:1"
+            "Attributes" = "3:1"
+                "Dialogs"
+                {
+                    "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_7A3FB9B1E70441378C3F2A6721E9B308"
+                    {
+                    "Sequence" = "3:200"
+                    "DisplayName" = "8:Installation Folder"
+                    "UseDynamicProperties" = "11:TRUE"
+                    "IsDependency" = "11:FALSE"
+                    "SourcePath" = "8:<VsdDialogDir>\\VsdFolderDlg.wid"
+                        "Properties"
+                        {
+                            "BannerBitmap"
+                            {
+                            "Name" = "8:BannerBitmap"
+                            "DisplayName" = "8:#1001"
+                            "Description" = "8:#1101"
+                            "Type" = "3:8"
+                            "ContextData" = "8:Bitmap"
+                            "Attributes" = "3:4"
+                            "Setting" = "3:1"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                            "InstallAllUsersVisible"
+                            {
+                            "Name" = "8:InstallAllUsersVisible"
+                            "DisplayName" = "8:#1059"
+                            "Description" = "8:#1159"
+                            "Type" = "3:5"
+                            "ContextData" = "8:1;True=1;False=0"
+                            "Attributes" = "3:0"
+                            "Setting" = "3:0"
+                            "Value" = "3:0"
+                            "DefaultValue" = "3:1"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                        }
+                    }
+                    "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_84C64F5BF6D5415C9C7B2306082F7C24"
+                    {
+                    "Sequence" = "3:100"
+                    "DisplayName" = "8:Welcome"
+                    "UseDynamicProperties" = "11:TRUE"
+                    "IsDependency" = "11:FALSE"
+                    "SourcePath" = "8:<VsdDialogDir>\\VsdWelcomeDlg.wid"
+                        "Properties"
+                        {
+                            "BannerBitmap"
+                            {
+                            "Name" = "8:BannerBitmap"
+                            "DisplayName" = "8:#1001"
+                            "Description" = "8:#1101"
+                            "Type" = "3:8"
+                            "ContextData" = "8:Bitmap"
+                            "Attributes" = "3:4"
+                            "Setting" = "3:1"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                            "CopyrightWarning"
+                            {
+                            "Name" = "8:CopyrightWarning"
+                            "DisplayName" = "8:#1002"
+                            "Description" = "8:#1102"
+                            "Type" = "3:3"
+                            "ContextData" = "8:"
+                            "Attributes" = "3:0"
+                            "Setting" = "3:1"
+                            "Value" = "8:#1202"
+                            "DefaultValue" = "8:#1202"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                            "Welcome"
+                            {
+                            "Name" = "8:Welcome"
+                            "DisplayName" = "8:#1003"
+                            "Description" = "8:#1103"
+                            "Type" = "3:3"
+                            "ContextData" = "8:"
+                            "Attributes" = "3:0"
+                            "Setting" = "3:1"
+                            "Value" = "8:#1203"
+                            "DefaultValue" = "8:#1203"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                        }
+                    }
+                    "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_C90FA995CDF94FDB85BA87CCF13FA3BA"
+                    {
+                    "Sequence" = "3:300"
+                    "DisplayName" = "8:Confirm Installation"
+                    "UseDynamicProperties" = "11:TRUE"
+                    "IsDependency" = "11:FALSE"
+                    "SourcePath" = "8:<VsdDialogDir>\\VsdConfirmDlg.wid"
+                        "Properties"
+                        {
+                            "BannerBitmap"
+                            {
+                            "Name" = "8:BannerBitmap"
+                            "DisplayName" = "8:#1001"
+                            "Description" = "8:#1101"
+                            "Type" = "3:8"
+                            "ContextData" = "8:Bitmap"
+                            "Attributes" = "3:4"
+                            "Setting" = "3:1"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                        }
+                    }
+                }
+            }
+            "{DF760B10-853B-4699-99F2-AFF7185B4A62}:_1F87F1D4887A4AA184DB0112863D3623"
+            {
+            "Name" = "8:#1901"
+            "Sequence" = "3:2"
+            "Attributes" = "3:2"
+                "Dialogs"
+                {
+                    "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_1E97F54EC185495AAF1945F7DF2A3270"
+                    {
+                    "Sequence" = "3:100"
+                    "DisplayName" = "8:Progress"
+                    "UseDynamicProperties" = "11:TRUE"
+                    "IsDependency" = "11:FALSE"
+                    "SourcePath" = "8:<VsdDialogDir>\\VsdAdminProgressDlg.wid"
+                        "Properties"
+                        {
+                            "BannerBitmap"
+                            {
+                            "Name" = "8:BannerBitmap"
+                            "DisplayName" = "8:#1001"
+                            "Description" = "8:#1101"
+                            "Type" = "3:8"
+                            "ContextData" = "8:Bitmap"
+                            "Attributes" = "3:4"
+                            "Setting" = "3:1"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                            "ShowProgress"
+                            {
+                            "Name" = "8:ShowProgress"
+                            "DisplayName" = "8:#1009"
+                            "Description" = "8:#1109"
+                            "Type" = "3:5"
+                            "ContextData" = "8:1;True=1;False=0"
+                            "Attributes" = "3:0"
+                            "Setting" = "3:0"
+                            "Value" = "3:1"
+                            "DefaultValue" = "3:1"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                        }
+                    }
+                }
+            }
+            "{DF760B10-853B-4699-99F2-AFF7185B4A62}:_4412650C29A04B5A9632886535608E28"
+            {
+            "Name" = "8:#1900"
+            "Sequence" = "3:2"
+            "Attributes" = "3:1"
+                "Dialogs"
+                {
+                    "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_37F69CE8637A4124BA67D2CDE46C8217"
+                    {
+                    "Sequence" = "3:300"
+                    "DisplayName" = "8:Confirm Installation"
+                    "UseDynamicProperties" = "11:TRUE"
+                    "IsDependency" = "11:FALSE"
+                    "SourcePath" = "8:<VsdDialogDir>\\VsdAdminConfirmDlg.wid"
+                        "Properties"
+                        {
+                            "BannerBitmap"
+                            {
+                            "Name" = "8:BannerBitmap"
+                            "DisplayName" = "8:#1001"
+                            "Description" = "8:#1101"
+                            "Type" = "3:8"
+                            "ContextData" = "8:Bitmap"
+                            "Attributes" = "3:4"
+                            "Setting" = "3:1"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                        }
+                    }
+                    "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_439D249154EC421B82F4079A9AD2AE3A"
+                    {
+                    "Sequence" = "3:200"
+                    "DisplayName" = "8:Installation Folder"
+                    "UseDynamicProperties" = "11:TRUE"
+                    "IsDependency" = "11:FALSE"
+                    "SourcePath" = "8:<VsdDialogDir>\\VsdAdminFolderDlg.wid"
+                        "Properties"
+                        {
+                            "BannerBitmap"
+                            {
+                            "Name" = "8:BannerBitmap"
+                            "DisplayName" = "8:#1001"
+                            "Description" = "8:#1101"
+                            "Type" = "3:8"
+                            "ContextData" = "8:Bitmap"
+                            "Attributes" = "3:4"
+                            "Setting" = "3:1"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                        }
+                    }
+                    "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_941F0C6424634BE4A9A372570F189D63"
+                    {
+                    "Sequence" = "3:100"
+                    "DisplayName" = "8:Welcome"
+                    "UseDynamicProperties" = "11:TRUE"
+                    "IsDependency" = "11:FALSE"
+                    "SourcePath" = "8:<VsdDialogDir>\\VsdAdminWelcomeDlg.wid"
+                        "Properties"
+                        {
+                            "BannerBitmap"
+                            {
+                            "Name" = "8:BannerBitmap"
+                            "DisplayName" = "8:#1001"
+                            "Description" = "8:#1101"
+                            "Type" = "3:8"
+                            "ContextData" = "8:Bitmap"
+                            "Attributes" = "3:4"
+                            "Setting" = "3:1"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                            "CopyrightWarning"
+                            {
+                            "Name" = "8:CopyrightWarning"
+                            "DisplayName" = "8:#1002"
+                            "Description" = "8:#1102"
+                            "Type" = "3:3"
+                            "ContextData" = "8:"
+                            "Attributes" = "3:0"
+                            "Setting" = "3:1"
+                            "Value" = "8:#1202"
+                            "DefaultValue" = "8:#1202"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                            "Welcome"
+                            {
+                            "Name" = "8:Welcome"
+                            "DisplayName" = "8:#1003"
+                            "Description" = "8:#1103"
+                            "Type" = "3:3"
+                            "ContextData" = "8:"
+                            "Attributes" = "3:0"
+                            "Setting" = "3:1"
+                            "Value" = "8:#1203"
+                            "DefaultValue" = "8:#1203"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                        }
+                    }
+                }
+            }
+            "{DF760B10-853B-4699-99F2-AFF7185B4A62}:_517132CB64B24EDB97C95DF58CEC7416"
+            {
+            "Name" = "8:#1902"
+            "Sequence" = "3:1"
+            "Attributes" = "3:3"
+                "Dialogs"
+                {
+                    "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_AF482C62C0264D0F9D5FDBBB7A1F9073"
+                    {
+                    "Sequence" = "3:100"
+                    "DisplayName" = "8:Finished"
+                    "UseDynamicProperties" = "11:TRUE"
+                    "IsDependency" = "11:FALSE"
+                    "SourcePath" = "8:<VsdDialogDir>\\VsdFinishedDlg.wid"
+                        "Properties"
+                        {
+                            "BannerBitmap"
+                            {
+                            "Name" = "8:BannerBitmap"
+                            "DisplayName" = "8:#1001"
+                            "Description" = "8:#1101"
+                            "Type" = "3:8"
+                            "ContextData" = "8:Bitmap"
+                            "Attributes" = "3:4"
+                            "Setting" = "3:1"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                            "UpdateText"
+                            {
+                            "Name" = "8:UpdateText"
+                            "DisplayName" = "8:#1058"
+                            "Description" = "8:#1158"
+                            "Type" = "3:15"
+                            "ContextData" = "8:"
+                            "Attributes" = "3:0"
+                            "Setting" = "3:1"
+                            "Value" = "8:#1258"
+                            "DefaultValue" = "8:#1258"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                        }
+                    }
+                }
+            }
+            "{2479F3F5-0309-486D-8047-8187E2CE5BA0}:_5EA85E1F091544B18A0857620A099F59"
+            {
+            "UseDynamicProperties" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "SourcePath" = "8:<VsdDialogDir>\\VsdBasicDialogs.wim"
+            }
+            "{2479F3F5-0309-486D-8047-8187E2CE5BA0}:_6368381EE45F48C1B105A79ABCEC0C4B"
+            {
+            "UseDynamicProperties" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "SourcePath" = "8:<VsdDialogDir>\\VsdUserInterface.wim"
+            }
+            "{DF760B10-853B-4699-99F2-AFF7185B4A62}:_9F12F6F304E344DC997357A549190E8B"
+            {
+            "Name" = "8:#1902"
+            "Sequence" = "3:2"
+            "Attributes" = "3:3"
+                "Dialogs"
+                {
+                    "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_BAA6E21EFA284049A1F5BAFF8DACA9AC"
+                    {
+                    "Sequence" = "3:100"
+                    "DisplayName" = "8:Finished"
+                    "UseDynamicProperties" = "11:TRUE"
+                    "IsDependency" = "11:FALSE"
+                    "SourcePath" = "8:<VsdDialogDir>\\VsdAdminFinishedDlg.wid"
+                        "Properties"
+                        {
+                            "BannerBitmap"
+                            {
+                            "Name" = "8:BannerBitmap"
+                            "DisplayName" = "8:#1001"
+                            "Description" = "8:#1101"
+                            "Type" = "3:8"
+                            "ContextData" = "8:Bitmap"
+                            "Attributes" = "3:4"
+                            "Setting" = "3:1"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                        }
+                    }
+                }
+            }
+            "{DF760B10-853B-4699-99F2-AFF7185B4A62}:_F162BA621E2648CF99893679B5696912"
+            {
+            "Name" = "8:#1901"
+            "Sequence" = "3:1"
+            "Attributes" = "3:2"
+                "Dialogs"
+                {
+                    "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_7B8E15E403774A01862E00EE48AEFE0D"
+                    {
+                    "Sequence" = "3:100"
+                    "DisplayName" = "8:Progress"
+                    "UseDynamicProperties" = "11:TRUE"
+                    "IsDependency" = "11:FALSE"
+                    "SourcePath" = "8:<VsdDialogDir>\\VsdProgressDlg.wid"
+                        "Properties"
+                        {
+                            "BannerBitmap"
+                            {
+                            "Name" = "8:BannerBitmap"
+                            "DisplayName" = "8:#1001"
+                            "Description" = "8:#1101"
+                            "Type" = "3:8"
+                            "ContextData" = "8:Bitmap"
+                            "Attributes" = "3:4"
+                            "Setting" = "3:1"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                            "ShowProgress"
+                            {
+                            "Name" = "8:ShowProgress"
+                            "DisplayName" = "8:#1009"
+                            "Description" = "8:#1109"
+                            "Type" = "3:5"
+                            "ContextData" = "8:1;True=1;False=0"
+                            "Attributes" = "3:0"
+                            "Setting" = "3:0"
+                            "Value" = "3:1"
+                            "DefaultValue" = "3:1"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        "MergeModule"
+        {
+        }
+        "ProjectOutput"
+        {
+        }
+    }
+}
+                  {
                                             "{9EF0B969-E518-4E46-987F-47570745A589}:_F53355E402ED4D3BA9065515D7B14566"
                                             {
                                             "Name" = "8:cursors"
