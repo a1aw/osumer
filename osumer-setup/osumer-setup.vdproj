@@ -7267,7 +7267,7 @@
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:2.0.09"
+        "ProductVersion" = "8:2.0.11"
         "Manufacturer" = "8:mob41"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://github.com/mob41/osumer/issues/new"
