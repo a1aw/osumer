@@ -160,7 +160,7 @@ public class Daemon extends UnicastRemoteObject implements IDaemon {
         OsuSong map;
         
         try {
-        	if (url.contains("b/")) {
+        	if (url.contains("b/") || url.contains("beatmaps/")) {
                 map = osums.getBeatmapInfo(url);
         	} else {
         		map = osums.getSongInfo(url);
