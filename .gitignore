@@ -1,7 +1,10 @@
 .vs
 .vs/*
+.idea
 .project
 .classpath
 .settings
 .settings/*
+**/target/
 /target/
+*.iml

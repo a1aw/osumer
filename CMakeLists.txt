@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.0)
 
 project("osumer-native")
 
-set(JAVA_HOME "C:\\Program Files (x86)\\Java\\jdk1.8.0_212")
+set(JAVA_HOME "C:\\Program Files (x86)\\Java\\jdk1.8.0_311")
 set(DIRECTX_SDK "C:\\Program Files (x86)\\Microsoft DirectX SDK (June 2010)")
 #find_package(JNI REQUIRED)
 
