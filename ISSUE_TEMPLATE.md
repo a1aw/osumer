@@ -1,4 +1,9 @@
 <!--
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Before you start reporting issues, read this first to understand the state right now:
+https://github.com/mob41/osumer/issues/50
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 Instructions:
 
 If you just encountered an unexpected error or a bug in the application, please fill the form below.
